@@ -32,3 +32,8 @@ By default, each rule has `MONITOR_MODE` set to false. Monitor model will return
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) file to add a contribution.
+
+## Attribution
+Some of our rules were inspired by [cfn-nag](https://github.com/stelligent/cfn_nag). We also use their example scripts in our test cases.
+
+We use [aws-cfn-template-flip](https://github.com/awslabs/aws-cfn-template-flip) to convert CloudFormation scripts before transforming them into a Python model.
