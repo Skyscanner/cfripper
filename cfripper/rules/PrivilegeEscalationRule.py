@@ -42,16 +42,15 @@ class PrivilegeEscalationRule(Rule):
 
     def invoke(self, resources):
         for resource in resources.get("AWS::IAM::Policy", []):
-            resource.policy_document.get_iam_actions()
             actions = set(resource.policy_document.get_iam_actions())
             intersection = actions.intersection(self.IAM_BLACKLIST)
 
-        if len(intersection):
-            for violation in intersection:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(
-                        resource.logical_id,
-                        violation,
-                    ),
-                )
+            if len(intersection):
+                for violation in intersection:
+                    self.add_failure(
+                        type(self).__name__,
+                        self.REASON.format(
+                            resource.logical_id,
+                            violation,
+                        ),
+                    )
