@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 install_requires = [
     'boto3==1.4.7',
     'PyYAML==3.12',
-    'pycfmodel==0.2.1',
+    'pycfmodel==0.2.4',
 ]
 
 dev_requires = [
