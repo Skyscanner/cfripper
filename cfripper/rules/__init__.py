@@ -24,6 +24,7 @@ from cfripper.rules.SNSTopicPolicyNotPrincipalRule import SNSTopicPolicyNotPrinc
 from cfripper.rules.SQSQueuePolicyNotPrincipalRule import SQSQueuePolicyNotPrincipalRule
 from cfripper.rules.S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
+from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -36,4 +37,5 @@ ALL_RULES = {
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
     "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
     "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
+    "PrivilegeEscalationRule": PrivilegeEscalationRule,
 }
