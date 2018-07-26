@@ -67,6 +67,8 @@ class IAMRolesOverprivilegedRule(Rule):
 
     def __check_actions(self, logical_name_of_resource, policy_name, statement):
         """Check if there's a * action for a resource in the blacklist."""
+        if statement.effect and statement.effect == "Deny":
+            return
         for action in statement.get_action_list():
             for prefix in self._config.FORBIDDEN_RESOURCE_STAR_ACTION_PREFIXES:
                 if action.startswith(prefix):
