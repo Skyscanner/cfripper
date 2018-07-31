@@ -49,8 +49,6 @@ def handler(event, context):
     if not event.get("stack_template_url"):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' in request.")
 
-    logger.info("Scan started")
-
     result = Result()
 
     s3 = S3Adapter()
@@ -73,6 +71,12 @@ def handler(event, context):
         rules=ALL_RULES.keys(),
     )
 
+    logger.info("Scan started for: {}; {}; {};".format(
+        config.project_name,
+        config.service_name,
+        config.stack_name,
+    ))
+
     rules = [ALL_RULES.get(rule)(config, result) for rule in config.RULES]
     processor = RuleProcessor(*rules)
 
@@ -88,9 +92,17 @@ def handler(event, context):
             result.warnings,
             event["stack_template_url"],
         )
+        logger.info("FAIL: {}; {}; {}".format(
+            config.project_name,
+            config.service_name,
+            config.stack_name,
+        ))
     else:
-        logger.info("Template passed validation")
-
+        logger.info("PASS: {}; {}; {}".format(
+            config.project_name,
+            config.service_name,
+            config.stack_name,
+        ))
     if len(result.failed_monitored_rules) > 0 or len(result.warnings) > 0:
         log_results(
             "Failed monitored rules",

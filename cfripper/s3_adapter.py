@@ -69,7 +69,7 @@ class S3Adapter:
         try:
             return json.loads(file_contents)
         except (TypeError, json.JSONDecodeError):
-            logger.info("File invalid JSON. Try YAML...")
+            pass
 
         try:
             return json.loads(self.strip_shorthand_from_yaml(file_contents))
