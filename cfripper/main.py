@@ -25,7 +25,7 @@ logger = get_logger()
 
 
 def log_results(project_name, service_name, stack_name, rules, _type, warnings, template_url):
-    logger.error("{}: project - {}, service- {}, stack - {}. {} {} URL: {}".format(
+    logger.info("{}: project - {}, service- {}, stack - {}. {} {} URL: {}".format(
         _type,
         project_name,
         service_name,
