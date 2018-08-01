@@ -57,7 +57,7 @@ class RuleProcessor:
             try:
                 rule.invoke(cf_model.resources)
             except Exception as other_exception:
-                logger.error("{} failed with {} for project - {}, service- {}, stack - {}".format(
+                logger.error("{} crashed with {} for project - {}, service- {}, stack - {}".format(
                     type(rule).__name__,
                     type(other_exception).__name__,
                     config.project_name,
