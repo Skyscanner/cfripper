@@ -4,10 +4,10 @@ Lambda function to "rip apart" a CloudFormation template and check it for securi
 
 ## Sample pipeline with Cfripper
 
-Cfripper is a Python tool that aims to prevent vulnerabilities from getting to production infrasturcture through vulnerable CloudFormation scripts. As with the other security tools that we use at Skyscanner, Cfripper is part of the CI/CD piepeline. It runs just before a CloudFormation stack is deployed or updated and if the CloudFormation script fails to pass the security check it fails the deployment and notifies the team that owns the stack. This is an example of how you might set up Cfripper as an AWS Lambda:
+Cfripper is a Python tool that aims to prevent vulnerabilities from getting to production infrastructure through vulnerable CloudFormation scripts. As with the other security tools that we use at Skyscanner, Cfripper is part of the CI/CD pipeline. It runs just before a CloudFormation stack is deployed or updated and if the CloudFormation script fails to pass the security check it fails the deployment and notifies the team that owns the stack. This is an example of how you might set up Cfripper as an AWS Lambda:
 ![CfripperPipeline](docs/images/cfripper.png)
 
-Another approach that we use at Skyscanner is the Infrastructure as Code piepline. Code is built and tested using drone and then our internal CD tool deals with calling Cfripper to validate the script and then trigger the deployment of the infrastructure provided that the CloudFormation script is valid:
+Another approach that we use at Skyscanner is the Infrastructure as Code pipeline. Code is built and tested using drone and then our internal CD tool deals with calling Cfripper to validate the script and then trigger the deployment of the infrastructure provided that the CloudFormation script is valid:
 ![CfripperPipeline](docs/images/cfripper2.png)
 
 ## Developing
@@ -32,12 +32,12 @@ Be sure to also add them in the `scripts` dictionary with their name, service na
 
 To add custom rules first extend the [Rule](cfripper/model/rule_processor.py) class. The implement the `invoke` method by adding your logic.
 
-CFripper uses [pycfmodel](https://github.com/Skyscanner/pycfmodel) to create a Python model of the CloudFormation script. This model is passed to the `invoke` function as the `resources` parameter. You can use the model's itterate through the resources and other objects of the model and use the helper functions to perform various checks. Look at the [current rules](cfripper/rules) for examples.
+CFripper uses [pycfmodel](https://github.com/Skyscanner/pycfmodel) to create a Python model of the CloudFormation script. This model is passed to the `invoke` function as the `resources` parameter. You can use the model's iterate through the resources and other objects of the model and use the helper functions to perform various checks. Look at the [current rules](cfripper/rules) for examples.
 
 ![CfripperRule](docs/images/rule.png)
 
 ## Monitor Mode
-By default, each rule has `MONITOR_MODE` set to false. Monitor model will return the failed rules in another field in the responce, instead in the main "failed rules". This way new rules can be tested before they are removed from monitor mode and start triggering alarms.
+By default, each rule has `MONITOR_MODE` set to false. Monitor model will return the failed rules in another field in the response, instead in the main "failed rules". This way new rules can be tested before they are removed from monitor mode and start triggering alarms.
 
 ## Contributing
 
