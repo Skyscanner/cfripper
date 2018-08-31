@@ -1,3 +1,5 @@
+<img src="docs/images/logo.png" width="200">
+
 # CFripper
 
 Lambda function to "rip apart" a CloudFormation template and check it for security compliance.
