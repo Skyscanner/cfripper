@@ -2,6 +2,9 @@
 
 # CFripper
 
+[![Build Status](https://travis-ci.org/Skyscanner/cfripper.svg?branch=master)](https://travis-ci.org/Skyscanner/cfripper)
+[![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
+
 Lambda function to "rip apart" a CloudFormation template and check it for security compliance.
 
 ## Sample pipeline with CFripper
