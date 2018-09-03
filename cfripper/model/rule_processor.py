@@ -18,6 +18,7 @@ import pycfmodel
 
 from cfripper.config.logger import get_logger
 from cfripper.config.config import Config
+from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
 
 logger = get_logger()
 
@@ -52,6 +53,10 @@ class RuleProcessor:
             return
 
         cf_model = pycfmodel.parse(cf_template_dict)
+
+        # Fetch referenced managed policies for validation
+        transformer = ManagedPolicyTransformer(cf_model)
+        transformer.transform_managed_policies()
 
         for rule in self.rules:
             try:
