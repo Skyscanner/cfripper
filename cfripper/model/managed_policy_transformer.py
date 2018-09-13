@@ -40,6 +40,8 @@ class ManagedPolicyTransformer(object):
     def parse_fetch_update(self, resources):
         for resource in resources:
             for managed_policy_arn in resource.managed_policy_arns:
+                if len(managed_policy_arn) < 20:  # TODO: parse conditions
+                    continue
                 managed_policy = self.iam_client.get_policy(
                     PolicyArn=managed_policy_arn,
                 )
