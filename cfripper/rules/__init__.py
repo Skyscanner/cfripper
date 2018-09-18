@@ -25,6 +25,7 @@ from cfripper.rules.SQSQueuePolicyNotPrincipalRule import SQSQueuePolicyNotPrinc
 from cfripper.rules.S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
 from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
+from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -38,4 +39,5 @@ ALL_RULES = {
     "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
     "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
     "PrivilegeEscalationRule": PrivilegeEscalationRule,
+    "CrossAccountTrustRule": CrossAccountTrustRule,
 }
