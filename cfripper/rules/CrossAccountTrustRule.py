@@ -33,7 +33,11 @@ class CrossAccountTrustRule(Rule):
                     continue
 
                 for principal in aws_principals:
-                    if self.ROOT_PATTERN.match(principal):
+                    cross_account = (
+                        self._config.account_id and
+                        self._config.account_id not in principal
+                    )
+                    if self.ROOT_PATTERN.match(principal) or cross_account:
                         self.add_failure(
                             type(self).__name__,
                             self.REASON.format(
