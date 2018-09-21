@@ -28,6 +28,6 @@ def default_session_fixture(request):
 
 @pytest.fixture(scope='session', autouse=True)
 def my_thing_mock():
-    m = Mock(return_value="1")
+    m = Mock(return_value="123456789")
     with patch('cfripper.config.config.Config.get_account_id', m) as _fixture:
         yield _fixture
