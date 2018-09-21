@@ -57,7 +57,7 @@ test_template = {
 }
 
 
-class TestS3BucketPolicyWildcardActionRule:
+class TestCrossAccountTrustRule:
 
     @pytest.fixture(scope="class")
     def template(self):
