@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import boto3
+
 from cfripper.config.whitelist import get_stack_exemption_list
 
 
@@ -21,6 +23,7 @@ class Config:
         self.service_name = service_name
         self.stack_name = stack_name
         self.RULES = rules
+        self.account_id = self.get_account_id()
 
         self.init_rules()
         self.init_world_open_ports()
@@ -44,6 +47,11 @@ class Config:
 
     def init_world_open_ports(self):
         self.ALLOWED_WORLD_OPEN_PORTS = ['80', '443']
+
+    def get_account_id(self):
+        client = boto3.client("sts")
+        caller_identity = client.get_caller_identity()
+        return caller_identity.get("Account")
 
     def init_forbidden_managed_policies(self):
         self.FORBIDDEN_MANAGED_POLICY_ARNS = [
