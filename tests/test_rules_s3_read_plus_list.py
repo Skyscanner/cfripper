@@ -37,7 +37,7 @@ class TestS3BucketPublicReadAclAndListStatementRule:
 
         rule.invoke(template.resources)
 
-        assert not result.valid
-        assert len(result.failed_rules) == 2
-        assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "S3 Bucket policy should not have a public read acl and list bucket statement"
+        assert result.valid
+        assert len(result.failed_rules) == 0
+        assert len(result.failed_monitored_rules) == 2
+        assert result.failed_monitored_rules[0]["reason"] == "S3 Bucket S3Bucket should not have a public read acl and list bucket statement"
