@@ -29,7 +29,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
         for resource in resources.get("AWS::S3::Bucket", []):
             try:
                 public_read = resource.access_control == "PublicRead"
-                public_list = any(resource.policy_document.wildcard_allowed_actions(pattern=r"^List.*$"))
+                public_list = any(resource.policy_document.wildcard_allowed_actions(pattern=r"^s3:List.*$"))
 
                 if public_read and public_list:
                     self.add_failure(
