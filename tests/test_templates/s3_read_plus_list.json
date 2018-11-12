@@ -3,21 +3,24 @@
     "S3Bucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
-        "BucketName" : "fakebucketfakebucket"
+        "BucketName" : "fakebucketfakebucket",
+        "AccessControl" : "PublicRead"
       }
     },
 
     "S3Bucket2" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
-        "BucketName" : "fakebucketfakebucket2"
+        "BucketName" : "fakebucketfakebucket2",
+        "AccessControl" : "PublicRead"
       }
     },
 
     "S3Bucket3" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
-        "BucketName" : "fakebucketfakebucket3"
+        "BucketName" : "fakebucketfakebucket3",
+        "AccessControl" : "PublicRead"
       }
     },
 
@@ -56,13 +59,10 @@
           "Statement": [
             {
               "Action": [
-                "s3:*"
+                "s3:ListBucket"
               ],
               "Effect": "Allow",
               "Resource": "arn:aws:s3:::fakebucketfakebucket2/*",
-              "Principal": {
-                "AWS": "*"
-              }
             }
           ]
         }
@@ -79,16 +79,11 @@
           "Statement": [
             {
               "Action": [
-                "s3:PutObject"
+                "s3:List*"
               ],
               "Effect": "Deny",
               "Resource": "arn:aws:s3:::fakebucketfakebucket3/*",
               "Principal": "*",
-              "Condition": {
-                "StringNotEquals": {
-                  "s3:x-amz-server-side-encryption" : "AES256"
-                }
-              }
             }
           ]
         }
