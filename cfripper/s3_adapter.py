@@ -73,5 +73,5 @@ class S3Adapter:
 
         try:
             return json.loads(self.strip_shorthand_from_yaml(file_contents))
-        except custom_yaml.YAMLError as err:
+        except custom_yaml.YAMLError:
             return None
