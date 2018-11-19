@@ -34,11 +34,7 @@ class TestConfig:
 
     def test_with_exemption(self):
         whitelist = {
-            'test_project': {
-                'test_service': {
-                    'test_stack': ['IAMRolesOverprivilegedRule'],
-                }
-            }
+            'test_stack': ['IAMRolesOverprivilegedRule'],
         }
 
         with patch('cfripper.config.whitelist.whitelist', new=whitelist):

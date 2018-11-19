@@ -18,21 +18,14 @@ A list of projects that are allowed to skip specific checks.
 The format:
 
 whitelist = {
-    "project_name": {
-        "service_name": {
-            "stack_name1": [
-                "RULE1",
-                "RULE2",
-                "RULE3",
-            ]
-        }
-        "service_name2": {
-            "stack_name2": [
-                "RULE2",
-                "RULE3",
-            ]
-        }
-    }
+    "stack_name1": [
+        "RULE2",
+        "RULE3",
+    ],
+    "stack_name2": [
+        "RULE2",
+        "RULE3",
+    ]
 }
 
 """
@@ -40,5 +33,5 @@ whitelist = {
 whitelist = {}
 
 
-def get_stack_exemption_list(project_name, service_name, stack_name):
-    return whitelist.get(project_name, {}).get(service_name, {}).get(stack_name, [])
+def get_stack_exemption_list(stack_name):
+    return whitelist.get(stack_name, [])

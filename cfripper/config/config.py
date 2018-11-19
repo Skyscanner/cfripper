@@ -36,11 +36,7 @@ class Config:
             # going with the defaults
             # TODO: log this
             return
-        exemption_list = get_stack_exemption_list(
-            self.project_name,
-            self.service_name,
-            self.stack_name,
-        )
+        exemption_list = get_stack_exemption_list(self.stack_name)
 
         # set difference to get a list of allowed rules to be ran for this stack
         self.RULES = list(set(self.RULES).difference(set(exemption_list)))
