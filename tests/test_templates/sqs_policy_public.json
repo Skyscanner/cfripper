@@ -1,0 +1,84 @@
+{
+  "Resources": {
+    "queue1": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": "queue1"
+      }
+    },
+
+    "QueuePolicyPublic1": {
+      "Type":"AWS::SQS::QueuePolicy",
+      "Properties": {
+        "Queues": [{"Ref":"queue1"}],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                  "AWS": "*"
+              },
+              "Action": "sqs:*",
+              "Resource": "*",
+              "Condition": {} 
+            }
+          ]
+        }
+      }
+    },
+
+    "QueuePolicyPublic2": {
+      "Type":"AWS::SQS::QueuePolicy",
+      "Properties": {
+        "Queues": [{"Ref":"queue1"}],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                  "AWS": "*"
+              },
+              "Action": "sqs:*",
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+
+    "QueuePolicyPublic3": {
+      "Type":"AWS::SQS::QueuePolicy",
+      "Properties": {
+        "Queues": [{"Ref":"queue1"}],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "sqs:*",
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+
+    "QueuePolicyPublic4": {
+      "Type":"AWS::SQS::QueuePolicy",
+      "Properties": {
+        "Queues": [{"Ref":"queue1"}],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "sqs:*",
+              "Resource": "*",
+              "Condition": {}
+            }
+          ]
+        }
+      }
+    }
+  }
+}
