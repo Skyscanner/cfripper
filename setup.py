@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 install_requires = [
     'boto3==1.4.7',
     'PyYAML==3.12',
-    'pycfmodel==0.2.7',
+    'pycfmodel==0.2.8',
 ]
 
 dev_requires = [
@@ -19,7 +19,7 @@ dev_requires = [
 
 setup(
     name='cfripper',
-    version='0.2.2',
+    version='0.2.8',
     author='Skyscanner Product Security',
     author_email='security@skyscanner.net',
     long_description=long_description,
