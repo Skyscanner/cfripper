@@ -35,6 +35,9 @@ class CrossAccountTrustRule(Rule):
                 for principal in aws_principals:
                     cross_account = self._config.account_id and self._config.account_id not in principal
 
+                    if not isinstance(principal, str):
+                        continue
+
                     if self.ROOT_PATTERN.match(principal) or cross_account:
                         self.add_failure(
                             type(self).__name__,
