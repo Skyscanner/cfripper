@@ -28,24 +28,24 @@ class CrossAccountTrustRule(Rule):
         for resource in resources.get("AWS::IAM::Role", []):
             arpd = resource.assume_role_policy_document
             for statement in arpd.statements:
-                aws_principals = self.get_aws_principals(statement)
-                if not aws_principals:
-                    continue
+                aws_principals = self.get_aws_principals(statement) or []
+                self.check_principals(aws_principals, resource.logical_id)
 
-                for principal in aws_principals:
-                    cross_account = self._config.account_id and self._config.account_id not in principal
+    def check_principals(self, principals, logical_id):
+        for principal in principals:
+            cross_account = self._config.account_id and self._config.account_id not in principal
 
-                    if not isinstance(principal, str):
-                        continue
+            if not isinstance(principal, str):
+                continue
 
-                    if self.ROOT_PATTERN.match(principal) or cross_account:
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(
-                                resource.logical_id,
-                                principal,
-                            ),
-                        )
+            if self.ROOT_PATTERN.match(principal) or cross_account:
+                self.add_failure(
+                    type(self).__name__,
+                    self.REASON.format(
+                        logical_id,
+                        principal,
+                    ),
+                )
 
     def get_aws_principals(self, statement):
         for principal in statement.principal:
