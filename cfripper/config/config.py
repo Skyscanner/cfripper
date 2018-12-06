@@ -18,10 +18,11 @@ from cfripper.config.whitelist import get_stack_exemption_list
 
 
 class Config:
-    def __init__(self, project_name=None, service_name=None, stack_name=None, rules=None):
+    def __init__(self, project_name=None, service_name=None, stack_name=None, rules=None, event=None):
         self.project_name = project_name
         self.service_name = service_name
         self.stack_name = stack_name
+        self.event = event
         self.RULES = rules
         self.account_id = self.get_account_id()
 
