@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import re
+
 """
 A list of projects that are allowed to skip specific checks.
 
@@ -29,9 +31,12 @@ whitelist = {
 }
 
 """
-
 whitelist = {}
 
 
 def get_stack_exemption_list(stack_name):
-    return whitelist.get(stack_name, [])
+    for k, v in whitelist.items():
+        if re.match(k, stack_name):
+            return v
+
+    return []
