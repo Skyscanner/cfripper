@@ -15,7 +15,10 @@ specific language governing permissions and limitations under the License.
 
 
 import re
+from cfripper.config.logger import get_logger
 from cfripper.model.rule_processor import Rule
+
+logger = get_logger()
 
 
 class CrossAccountTrustRule(Rule):
@@ -36,6 +39,10 @@ class CrossAccountTrustRule(Rule):
             cross_account = self._config.account_id and self._config.account_id not in principal
 
             if not isinstance(principal, str):
+                logger.error(
+                    f"{self.__name__}/{self._config.stack_name}/{self._config.service_name} \
+                    - Skipping validation: principal is possibly a function."
+                )
                 continue
 
             if self.ROOT_PATTERN.match(principal) or cross_account:
