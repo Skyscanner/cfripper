@@ -31,7 +31,7 @@ class TestSQSQueuePolicyPublicRule:
         cf_script = open('{}/test_templates/sqs_policy_public.json'.format(dir_path))
         cf_template = S3Adapter().convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
-        
+
     def test_public(self, template):
         result = Result()
         rule = SQSQueuePolicyPublicRule(None, result)
@@ -40,7 +40,7 @@ class TestSQSQueuePolicyPublicRule:
 
         assert not result.valid
         assert len(result.failed_rules) == 4
-        assert result.failed_rules[0]['reason'] == 'SQS Queue policy QueuePolicyPublic1 is public'
-        assert result.failed_rules[1]['reason'] == 'SQS Queue policy QueuePolicyPublic2 is public'
-        assert result.failed_rules[2]['reason'] == 'SQS Queue policy QueuePolicyPublic3 is public'
-        assert result.failed_rules[3]['reason'] == 'SQS Queue policy QueuePolicyPublic4 is public'
+        assert result.failed_rules[0]['reason'] == 'SQS Queue policy QueuePolicyPublic1 should not be public'
+        assert result.failed_rules[1]['reason'] == 'SQS Queue policy QueuePolicyPublic2 should not be public'
+        assert result.failed_rules[2]['reason'] == 'SQS Queue policy QueuePolicyPublic3 should not be public'
+        assert result.failed_rules[3]['reason'] == 'SQS Queue policy QueuePolicyPublic4 should not be public'

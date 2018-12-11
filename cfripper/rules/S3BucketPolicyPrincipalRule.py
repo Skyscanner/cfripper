@@ -19,14 +19,15 @@ from cfripper.model.rule_processor import Rule
 
 class S3BucketPolicyPrincipalRule(Rule):
 
-    REASON = "S3 Bucket {} policy has non-whitelisted principle"
+    REASON = "S3 Bucket {} policy has non-whitelisted principles {}"
     MONITOR_MODE = True
     AWS_PRINCIPALS = []  # add principals here
 
     def invoke(self, resources):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
-            if resource.policy_document.nonwhitelisted_allowed_principals(self.AWS_PRINCIPALS):
+            non_whitelisted = resource.policy_document.nonwhitelisted_allowed_principals(self.AWS_PRINCIPALS)
+            if non_whitelisted:
                 self.add_failure(
                     type(self).__name__,
-                    self.REASON.format(resource.logical_id),
+                    self.REASON.format(resource.logical_id, non_whitelisted),
                 )

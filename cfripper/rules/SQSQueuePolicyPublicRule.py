@@ -19,7 +19,7 @@ from cfripper.model.rule_processor import Rule
 
 class SQSQueuePolicyPublicRule(Rule):
 
-    REASON = "SQS Queue policy {} is public"
+    REASON = "SQS Queue policy {} should not be public"
     MONITOR_MODE = False
 
     def invoke(self, resources):
