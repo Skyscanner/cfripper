@@ -69,7 +69,8 @@ def handler(event, context):
         service_name=event.get("serviceName"),
         stack_name=event.get("stack", {}).get("name"),
         rules=ALL_RULES.keys(),
-        event=event.get("event")
+        event=event.get("event"),
+        template_url=event.get("stack_template_url"),
     )
 
     logger.info("Scan started for: {}; {}; {};".format(
