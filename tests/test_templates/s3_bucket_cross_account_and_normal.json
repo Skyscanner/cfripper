@@ -74,7 +74,9 @@
       "S3BucketPolicyAccountAccess": {
         "Type": "AWS::S3::BucketPolicy",
         "Properties": {
-          "Bucket": "S3Bucket",
+          "Bucket": {
+            "Ref": "S3Bucket"
+          },
           "PolicyDocument": {
             "Version": "2012-10-17",
             "Statement": [
