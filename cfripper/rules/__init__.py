@@ -28,6 +28,7 @@ from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
+from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -43,5 +44,6 @@ ALL_RULES = {
     "PrivilegeEscalationRule": PrivilegeEscalationRule,
     "CrossAccountTrustRule": CrossAccountTrustRule,
     "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
-    "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule
+    "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
+    "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
 }
