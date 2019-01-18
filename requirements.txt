@@ -10,6 +10,6 @@ docutils==0.14            # via botocore
 jmespath==0.9.3           # via boto3, botocore
 pycfmodel==0.2.8
 python-dateutil==2.7.3    # via botocore
-pyyaml==3.12
+pyyaml==4.2b4
 s3transfer==0.1.13        # via boto3
 six==1.11.0               # via python-dateutil
