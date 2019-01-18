@@ -11,7 +11,7 @@ install_requires = [
 
 dev_requires = [
     'flake8>=3.3.0',
-    'pytest>=3.0.7',
+    'pytest>=3.6',
     'pytest-cov>=2.5.1',
     'pip-tools==2.0.2',
     'moto==1.1.6',
@@ -19,7 +19,7 @@ dev_requires = [
 
 setup(
     name='cfripper',
-    version='0.3.0',
+    version='0.3.1',
     author='Skyscanner Product Security',
     author_email='security@skyscanner.net',
     long_description=long_description,
