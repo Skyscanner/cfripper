@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -26,7 +26,7 @@ setup(
     long_description_content_type="text/markdown",
     url='https://github.com/Skyscanner/cfripper',
     description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
-    packages=['cfripper'],
+    packages=find_packages(),
     platforms='any',
     install_requires=install_requires,
     tests_require=dev_requires,
