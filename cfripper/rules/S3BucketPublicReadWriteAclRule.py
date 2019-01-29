@@ -25,7 +25,7 @@ class S3BucketPublicReadWriteAclRule(Rule):
     REASON = "S3 Bucket {} should not have a public read-write acl"
     MONITOR_MODE = False
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::Bucket", []):
             try:
                 if resource.access_control == "PublicReadWrite":

@@ -22,7 +22,7 @@ class ManagedPolicyOnUserRule(Rule):
     REASON = "IAM managed policy {} should not apply directly to users. Should be on group"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::ManagedPolicy", []):
             if resource.users:
                 self.add_failure(

@@ -22,7 +22,7 @@ class S3BucketPolicyWildcardActionRule(Rule):
     REASON = "S3 Bucket policy {} should not allow * action"
     MONITOR_MODE = False
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
             if resource.policy_document.wildcard_allowed_actions(pattern=r"^(\w*:){0,1}\*$"):
                 self.add_failure(

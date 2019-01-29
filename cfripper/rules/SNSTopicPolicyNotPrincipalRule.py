@@ -21,7 +21,7 @@ class SNSTopicPolicyNotPrincipalRule(Rule):
     REASON = "SNS Topic {} policy should not allow Allow+NotPrincipal"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SNS::TopicPolicy", []):
             if resource.policy_document.allows_not_principal():
                 self.add_failure(

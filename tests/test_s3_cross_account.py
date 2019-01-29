@@ -37,7 +37,7 @@ class TestS3CrossAccountTrustRule:
         result = Result()
         rule = S3CrossAccountTrustRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert result.valid
         assert len(result.failed_rules) == 0
@@ -62,7 +62,7 @@ class TestS3CrossAccountTrustRuleWithNormalAccess:
         result = Result()
         rule = S3CrossAccountTrustRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert result.valid
         assert len(result.failed_rules) == 0

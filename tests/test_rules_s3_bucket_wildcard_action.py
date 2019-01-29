@@ -35,7 +35,7 @@ class TestS3BucketPolicyWildcardActionRule:
         result = Result()
         rule = S3BucketPolicyWildcardActionRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
         assert len(result.failed_rules) == 2

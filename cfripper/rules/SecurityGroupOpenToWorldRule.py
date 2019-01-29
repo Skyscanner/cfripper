@@ -22,7 +22,7 @@ logger = get_logger()
 
 class SecurityGroupOpenToWorldRule(Rule):
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         rs = resources.get("AWS::EC2::SecurityGroup", [])
         for resource in rs:
             self.process_resource(resource.logical_id, resource)

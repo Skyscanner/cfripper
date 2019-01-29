@@ -36,7 +36,7 @@ class TestSQSQueuePolicyWildcardActionRule:
         result = Result()
         rule = SQSQueuePolicyWildcardActionRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
         assert len(result.failed_rules) == 4

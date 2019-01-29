@@ -22,7 +22,7 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     REASON = "IAM role {} should not allow * action on its permissions policy {}"
     MONITOR_MODE = False
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             for policy in resource.policies:
                 if policy.policy_document.wildcard_allowed_actions(pattern=r"^(\w*:){0,1}\*$"):

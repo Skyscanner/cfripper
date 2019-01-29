@@ -22,7 +22,7 @@ logger = get_logger()
 
 class IAMRolesOverprivilegedRule(Rule):
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             self.process_resource(resource.logical_id, resource)
 
