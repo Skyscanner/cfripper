@@ -43,7 +43,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert not result.valid
         assert result.failed_rules[0]['reason'] == 'Port 22 open to the world in security group "RootRole"'
@@ -71,7 +71,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.valid
         assert len(result.failed_rules) == 0
@@ -98,7 +98,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.valid
         assert len(result.failed_rules) == 0
@@ -125,7 +125,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.valid
         assert len(result.failed_rules) == 0
@@ -152,7 +152,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.failed_rules[0]['reason'] == 'Port 22 open to the world in security group "RootRole"'
         assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
@@ -179,7 +179,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.failed_rules[0]['reason'] == 'Ports 0 - 100 open in Security Group RootRole'
         assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
@@ -211,7 +211,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.failed_rules[0]['reason'] == 'Port 9090 open to the world in security group "RootRole"'
         assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
@@ -241,7 +241,7 @@ class TestSecurityGroupOpenToWorldRule:
         result = Result()
         rule = SecurityGroupOpenToWorldRule(None, result)
         resources = parse(role_props).resources
-        rule.invoke(resources)
+        rule.invoke(resources, [])
 
         assert result.valid
         assert len(result.failed_rules) == 0

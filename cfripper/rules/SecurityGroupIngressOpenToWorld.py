@@ -19,7 +19,7 @@ from cfripper.rules.SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorld
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::EC2::SecurityGroupIngress", []):
             self.process_resource(resource.logical_id, resource)
 

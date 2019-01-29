@@ -30,7 +30,7 @@ class Rule:
         self._config = config if config else Config()
         self._result = result
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         raise NotImplementedError("Can't process the base Rule class.")
 
     def process_resource(self, logical_name, properties):
@@ -60,7 +60,7 @@ class RuleProcessor:
 
         for rule in self.rules:
             try:
-                rule.invoke(cf_model.resources)
+                rule.invoke(cf_model.resources, cf_model.parameters)
             except Exception as other_exception:
                 logger.error("{} crashed with {} for project - {}, service- {}, stack - {}".format(
                     type(rule).__name__,

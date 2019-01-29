@@ -35,7 +35,7 @@ class TestS3BucketPublicReadAclAndListStatementRule:
         result = Result()
         rule = S3BucketPublicReadAclAndListStatementRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert result.valid
         assert len(result.failed_rules) == 0

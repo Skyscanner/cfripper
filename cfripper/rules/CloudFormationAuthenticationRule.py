@@ -22,7 +22,7 @@ class CloudFormationAuthenticationRule(Rule):
     REASON = "Possible hardcoded credentials in {}"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for name, resource_list in resources.items():
             for resource in resource_list:
                 if resource.has_hardcoded_credentials():

@@ -23,7 +23,7 @@ class S3BucketPolicyPrincipalRule(Rule):
     MONITOR_MODE = True
     AWS_PRINCIPALS = []  # add principals here
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
             non_whitelisted = resource.policy_document.nonwhitelisted_allowed_principals(self.AWS_PRINCIPALS)
             if non_whitelisted:
