@@ -57,7 +57,7 @@ def test_with_valid_role_inline_policy():
 
     rule.check_managed_policies = Mock()
 
-    rule.invoke(resource)
+    rule.invoke(resource, [])
     rule.check_managed_policies.assert_called()
 
     assert result.valid
@@ -98,7 +98,7 @@ def test_with_invalid_role_inline_policy():
     rule = IAMRolesOverprivilegedRule(None, result)
     rule.check_managed_policies = Mock()
     resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources)
+    rule.invoke(resources, [])
     rule.check_managed_policies.assert_called()
 
     assert not result.valid
@@ -142,7 +142,7 @@ def test_with_invalid_role_inline_policy_resource_as_array():
     rule = IAMRolesOverprivilegedRule(None, result)
     rule.check_managed_policies = Mock()
     resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources)
+    rule.invoke(resources, [])
     rule.check_managed_policies.assert_called()
 
     assert not result.valid
@@ -170,7 +170,7 @@ def test_with_valid_role_managed_policy():
     rule = IAMRolesOverprivilegedRule(None, result)
     rule.check_inline_policies = Mock()
     resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources)
+    rule.invoke(resources, [])
     rule.check_inline_policies.assert_called()
 
     assert result.valid
@@ -196,7 +196,7 @@ def test_with_invalid_role_managed_policy():
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
     resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources)
+    rule.invoke(resources, [])
 
     assert not result.valid
     assert result.failed_rules[0]['reason'] == 'Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess'
@@ -255,7 +255,7 @@ def test_with_invalid_role_inline_policy_fn_if():
     rule = IAMRolesOverprivilegedRule(None, result)
     rule.check_managed_policies = Mock()
     resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources)
+    rule.invoke(resources, [])
     rule.check_managed_policies.assert_called()
 
     assert not result.valid

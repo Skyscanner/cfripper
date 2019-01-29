@@ -25,7 +25,7 @@ class S3CrossAccountTrustRule(Rule):
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
             for statement in resource.policy_document.statements:
                 if statement.effect == "Allow":

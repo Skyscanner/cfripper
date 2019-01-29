@@ -22,7 +22,7 @@ class EBSVolumeHasSSERule(Rule):
     REASON = "EBS volume {} should have server-side encryption enabled"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::EC2::Volume", []):
             if hasattr(resource, "encrypted") and resource.encrypted is True:
                 continue

@@ -22,7 +22,7 @@ class SQSQueuePolicyPublicRule(Rule):
     REASON = "SQS Queue policy {} should not be public"
     MONITOR_MODE = False
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):
             if resource.policy_document.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
                 for statement in resource.policy_document.statements:

@@ -36,7 +36,7 @@ class TestSQSQueuePolicyPublicRule:
         result = Result()
         rule = SQSQueuePolicyPublicRule(None, result)
 
-        rule.invoke(template.resources)
+        rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
         assert len(result.failed_rules) == 4

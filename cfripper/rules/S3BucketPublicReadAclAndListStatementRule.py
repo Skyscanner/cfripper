@@ -25,7 +25,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         # Get all bucket policies and filter to get the ones that allow list actions
         bucket_policies = []
         for policy in resources.get("AWS::S3::BucketPolicy", []):

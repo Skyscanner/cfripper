@@ -27,7 +27,7 @@ class CrossAccountTrustRule(Rule):
     MONITOR_MODE = True
     ROOT_PATTERN = re.compile(r"arn:aws:iam::\d*:root")
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             arpd = resource.assume_role_policy_document
             for statement in arpd.statements:

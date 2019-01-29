@@ -22,7 +22,7 @@ class IAMManagedPolicyWildcardActionRule(Rule):
     REASON = "IAM managed policy {} should not allow * action"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::ManagedPolicy", []):
             if resource.policy_document.wildcard_allowed_actions(pattern=r"^(\w*:){0,1}\*$"):
                 self.add_failure(

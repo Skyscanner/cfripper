@@ -22,7 +22,7 @@ class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     REASON = "IAM role {} should not allow * action on its trust policy"
     MONITOR_MODE = True
 
-    def invoke(self, resources):
+    def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             if resource.assume_role_policy_document.wildcard_allowed_actions(pattern=r"^(\w*:){0,1}\*$"):
                 self.add_failure(
