@@ -17,9 +17,9 @@ from io import StringIO
 from urllib import parse
 
 import boto3
+import yaml
 
-from cfripper.cfn_flip import to_json
-from cfripper.cfn_flip.custom_yaml import custom_yaml
+from cfn_flip import to_json
 from cfripper.config.logger import get_logger
 
 logger = get_logger()
@@ -73,5 +73,5 @@ class S3Adapter:
 
         try:
             return json.loads(self.strip_shorthand_from_yaml(file_contents))
-        except custom_yaml.YAMLError:
+        except yaml.YAMLError:
             return None

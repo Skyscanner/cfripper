@@ -28,4 +28,4 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
             return
 
         if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
-                self.check_ports(logical_name, ingress)
+            self.check_ports(logical_name, ingress)

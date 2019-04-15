@@ -23,7 +23,7 @@ logger = get_logger()
 class S3CrossAccountTrustRule(Rule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
-    MONITOR_MODE = True
+    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
@@ -39,7 +39,7 @@ class S3CrossAccountTrustRule(Rule):
             )
 
             if not isinstance(principal, str):
-                logger.error(
+                logger.warn(
                     f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name} \
                     - Skipping validation: principal is possibly a function."
                 )

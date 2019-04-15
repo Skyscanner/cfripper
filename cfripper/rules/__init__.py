@@ -29,6 +29,7 @@ from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
+from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -46,4 +47,5 @@ ALL_RULES = {
     "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
     "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
+    "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
 }

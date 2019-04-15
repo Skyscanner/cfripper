@@ -1,4 +1,2 @@
 [flake8]
-exclude =
-    cfripper/cfn_flip
-ignore = E501
+ignore = E501, W504
