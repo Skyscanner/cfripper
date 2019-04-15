@@ -24,7 +24,7 @@ logger = get_logger()
 class CrossAccountTrustRule(Rule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
-    MONITOR_MODE = True
+    MONITOR_MODE = False
     ROOT_PATTERN = re.compile(r"arn:aws:iam::\d*:root")
 
     def invoke(self, resources, parameters):
@@ -39,7 +39,7 @@ class CrossAccountTrustRule(Rule):
             cross_account = self._config.account_id and self._config.account_id not in principal
 
             if not isinstance(principal, str):
-                logger.error(
+                logger.warn(
                     f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name} \
                     - Skipping validation: principal is possibly a function."
                 )

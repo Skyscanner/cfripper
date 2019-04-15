@@ -24,10 +24,9 @@ class SQSQueuePolicyPublicRule(Rule):
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):
-            if resource.policy_document.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
-                for statement in resource.policy_document.statements:
-                    if not statement.condition:
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(resource.logical_id),
-                        )
+            for statement in resource.policy_document.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
+                if not statement.condition:
+                    self.add_failure(
+                        type(self).__name__,
+                        self.REASON.format(resource.logical_id),
+                    )
