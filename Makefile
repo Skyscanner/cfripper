@@ -3,13 +3,9 @@ SOURCES = $(shell find . -name "*.py")
 clean:
 	rm -f lambda.zip
 	rm -rf package
-	rm -rf ./cfripper/cfn_flip/
 
 install:
 	pip install -r requirements.txt
-	git submodule update --init
-	mkdir -p ./cfripper/cfn_flip/
-	cp -r ./aws-cfn-template-flip/cfn_flip/* cfripper/cfn_flip/
 
 install-dev: install
 	pip install -e ".[dev]"

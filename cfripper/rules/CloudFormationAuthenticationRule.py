@@ -20,7 +20,7 @@ from cfripper.model.rule_processor import Rule
 class CloudFormationAuthenticationRule(Rule):
 
     REASON = "Possible hardcoded credentials in {}"
-    MONITOR_MODE = True
+    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for name, resource_list in resources.items():

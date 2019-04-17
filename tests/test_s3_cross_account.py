@@ -39,11 +39,11 @@ class TestS3CrossAccountTrustRule:
 
         rule.invoke(template.resources, template.parameters)
 
-        assert result.valid
-        assert len(result.failed_rules) == 0
-        assert len(result.failed_monitored_rules) == 1
+        assert not result.valid
+        assert len(result.failed_rules) == 1
+        assert len(result.failed_monitored_rules) == 0
         assert (
-            result.failed_monitored_rules[0]["reason"]
+            result.failed_rules[0]["reason"]
             == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
         )
 
@@ -64,10 +64,10 @@ class TestS3CrossAccountTrustRuleWithNormalAccess:
 
         rule.invoke(template.resources, template.parameters)
 
-        assert result.valid
-        assert len(result.failed_rules) == 0
-        assert len(result.failed_monitored_rules) == 1
+        assert not result.valid
+        assert len(result.failed_rules) == 1
+        assert len(result.failed_monitored_rules) == 0
         assert (
-            result.failed_monitored_rules[0]["reason"]
+            result.failed_rules[0]["reason"]
             == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
         )

@@ -20,30 +20,30 @@ from cfripper.model.rule_processor import Rule
 class PrivilegeEscalationRule(Rule):
 
     REASON = "{} has blacklisted IAM action {}"
-    MONITOR_MODE = True
+    MONITOR_MODE = False
     IAM_BLACKLIST = set(
         [
-            "IAM:CreateAccessKey",
-            "IAM:CreateLoginProfile",
-            "IAM:UpdateLoginProfile",
-            "IAM:AttachUserPolicy",
-            "IAM:AttachGroupPolicy",
-            "IAM:AttachRolePolicy",
-            "IAM:PutUserPolicy",
-            "IAM:PutGroupPolicy",
-            "IAM:PutRolePolicy",
-            "IAM:CreatePolicy",
-            "IAM:AddUserToGroup",
-            "IAM:UpdateAssumeRolePolicy",
-            "IAM:CreatePolicyVersion",
-            "IAM:SetDefaultPolicyVersion",
+            "iam:CreateAccessKey",
+            "iam:CreateLoginProfile",
+            "iam:UpdateLoginProfile",
+            "iam:AttachUserPolicy",
+            "iam:AttachGroupPolicy",
+            "iam:AttachRolePolicy",
+            "iam:PutUserPolicy",
+            "iam:PutGroupPolicy",
+            "iam:PutRolePolicy",
+            "iam:CreatePolicy",
+            "iam:AddUserToGroup",
+            "iam:UpdateAssumeRolePolicy",
+            "iam:CreatePolicyVersion",
+            "iam:SetDefaultPolicyVersion",
         ]
     )
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Policy", []):
-            actions = set(resource.policy_document.get_iam_actions())
-            intersection = actions.intersection(self.IAM_BLACKLIST)
+            actions = set(map(lambda x: x.lower(), resource.policy_document.get_iam_actions()))
+            intersection = actions.intersection(set(map(lambda x: x.lower(), self.IAM_BLACKLIST)))
 
             if len(intersection):
                 for violation in intersection:
