@@ -13,19 +13,20 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 
-
 from cfripper.model.rule_processor import Rule
+from cfripper.rules.WildcardPrincipal import GenericWildcardPrincipal
 
 
-class SecurityGroupMissingEgressRule(Rule):
+class PartialWildcardPrincipal(GenericWildcardPrincipal):
 
-    REASON = "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
+
     RULE_MODE = Rule.MONITOR
+    RISK_VALUE = Rule.MEDIUM
+    """
+    Will catch:
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::EC2::SecurityGroup", []):
-            if not resource.security_group_egress:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+    - Principal: arn:aws:iam:12345:12345*
+
+    """
+    FULL_REGEX = r"^arn:aws:iam::.*:(.*\*|root)$"

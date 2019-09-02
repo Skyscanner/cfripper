@@ -20,7 +20,7 @@ from cfripper.model.rule_processor import Rule
 class EBSVolumeHasSSERule(Rule):
 
     REASON = "EBS volume {} should have server-side encryption enabled"
-    MONITOR_MODE = True
+    RULE_MODE = Rule.MONITOR
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::EC2::Volume", []):

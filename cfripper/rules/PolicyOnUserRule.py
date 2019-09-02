@@ -20,7 +20,7 @@ from cfripper.model.rule_processor import Rule
 class PolicyOnUserRule(Rule):
 
     REASON = "IAM policy {} should not apply directly to users. Should be on group"
-    MONITOR_MODE = True
+    RULE_MODE = Rule.MONITOR
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Policy", []):

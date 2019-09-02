@@ -13,21 +13,42 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 
-
+import re
 from cfripper.model.rule_processor import Rule
+from cfripper.config.logger import get_logger
+
+logger = get_logger()
 
 
 class S3BucketPolicyPrincipalRule(Rule):
 
-    REASON = "S3 Bucket {} policy has non-whitelisted principles {}"
-    MONITOR_MODE = True
-    AWS_PRINCIPALS = []  # add principals here
+    REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
+    RULE_MODE = Rule.MONITOR
+    RISK_VALUE = Rule.HIGH
+    PATTERN = r"arn:aws:iam::(\d*):.*"
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
-            non_whitelisted = resource.policy_document.nonwhitelisted_allowed_principals(self.AWS_PRINCIPALS)
-            if non_whitelisted:
+            for statement in resource.policy_document.statements:
+                if statement.condition:
+                    continue
+                for principal in statement.principal:
+                    self.check_account_number(principal, resource.logical_id)
+
+    def check_account_number(self, p, logical_id):
+        for principal in p.principals:
+            if not isinstance(principal, str):
+                logger.warn(
+                    f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
+                    " - Skipping validation: principal is possibly a function."
+                )
+                continue
+            account_id_match = re.match(self.PATTERN, principal)
+            if not account_id_match:
+                continue
+            account_id = account_id_match.group(1)
+            if account_id not in self._config.AWS_PRINCIPALS:
                 self.add_failure(
                     type(self).__name__,
-                    self.REASON.format(resource.logical_id, non_whitelisted),
+                    self.REASON.format(logical_id, account_id),
                 )

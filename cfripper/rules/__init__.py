@@ -24,12 +24,16 @@ from cfripper.rules.SNSTopicPolicyNotPrincipalRule import SNSTopicPolicyNotPrinc
 from cfripper.rules.SQSQueuePolicyNotPrincipalRule import SQSQueuePolicyNotPrincipalRule
 from cfripper.rules.S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
+from cfripper.rules.SecretsRolesOverprivilegedRule import SecretsRolesOverprivilegedRule
 from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
 from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
+from cfripper.rules.KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
+from cfripper.rules.FullWildcardPrincipal import FullWildcardPrincipal
+from cfripper.rules.PartialWildcardPrincipal import PartialWildcardPrincipal
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -42,10 +46,14 @@ ALL_RULES = {
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
     "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
     "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
+    "SecretsRolesOverprivilegedRule": SecretsRolesOverprivilegedRule,
     "PrivilegeEscalationRule": PrivilegeEscalationRule,
     "CrossAccountTrustRule": CrossAccountTrustRule,
     "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
     "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
     "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
+    "KMSKeyWildcardPrincipal": KMSKeyWildcardPrincipal,
+    "FullWildcardPrincipal": FullWildcardPrincipal,
+    "PartialWildcardPrincipal": PartialWildcardPrincipal,
 }

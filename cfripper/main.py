@@ -15,11 +15,12 @@ specific language governing permissions and limitations under the License.
 import json
 
 from cfripper.config.config import Config
-from cfripper.s3_adapter import S3Adapter
+from cfripper.boto3_client import Boto3Client
 from cfripper.model.rule_processor import RuleProcessor
 from cfripper.rules import ALL_RULES
 from cfripper.model.result import Result
 from cfripper.config.logger import get_logger
+
 
 logger = get_logger()
 
@@ -36,54 +37,7 @@ def log_results(project_name, service_name, stack_name, rules, _type, warnings, 
     ))
 
 
-def handler(event, context):
-    """
-    Main entry point of the Lambda function.
-
-    :param event: {
-        "stack_template_url": String
-    }
-    :param context:
-    :return:
-    """
-    if not event.get("stack_template_url"):
-        raise ValueError("Invalid event type: no parameter 'stack_template_url' in request.")
-
-    result = Result()
-
-    s3 = S3Adapter()
-    template = s3.download_template_to_dictionary(event["stack_template_url"])
-    if not template:
-        # In case of an ivalid script log a warning and return early
-        result.add_exception(TypeError("Malformated CF script: {}".format(event["stack_template_url"])))
-        return {
-            "valid": "true",
-            "reason": '',
-            "failed_rules": [],
-            "exceptions": [x.args[0] for x in result.exceptions],
-        }
-
-    # Process Rules
-    config = Config(
-        project_name=event.get("project"),
-        service_name=event.get("serviceName"),
-        stack_name=event.get("stack", {}).get("name"),
-        rules=ALL_RULES.keys(),
-        event=event.get("event"),
-        template_url=event.get("stack_template_url"),
-    )
-
-    logger.info("Scan started for: {}; {}; {};".format(
-        config.project_name,
-        config.service_name,
-        config.stack_name,
-    ))
-
-    rules = [ALL_RULES.get(rule)(config, result) for rule in config.RULES]
-    processor = RuleProcessor(*rules)
-
-    processor.process_cf_template(template, config, result)
-
+def perform_logging(result, config, event):
     if not result.valid:
         log_results(
             "Failed rules",
@@ -92,7 +46,7 @@ def handler(event, context):
             config.stack_name,
             result.failed_rules,
             result.warnings,
-            event["stack_template_url"],
+            event.get("stack_template_url", "N/A"),
         )
         logger.info("FAIL: {}; {}; {}".format(
             config.project_name,
@@ -113,12 +67,101 @@ def handler(event, context):
             config.stack_name,
             result.failed_monitored_rules,
             result.warnings,
-            event["stack_template_url"],
+            event.get("stack_template_url", "N/A"),
         )
+
+
+def handler(event, context):
+    """
+    Main entry point of the Lambda function.
+
+    :param event: {
+        "stack_template_url": String,
+        "project": String,
+        "stack": {
+            "name": String,
+        },
+        "event": String,
+        "region": String,
+        "account": {
+            "name": String,
+            "id": String,
+        },
+        "user_agent": String,
+    }
+    :param context:
+    :return:
+    """
+    if not event.get("stack_template_url") and not event.get("stack", {}).get("name"):
+        raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
+
+    result = Result()
+
+    try:
+        account_id = event.get("account", {}).get("id")
+        region = event.get("region")
+        stack_name = event.get("stack", {}).get("name")
+        boto3_client = Boto3Client(account_id, region, stack_name)
+    except Exception:
+        logger.exception("Could not create Boto3 Cloudformation Client...")
+
+    template = None
+    try:
+        if event.get("stack_template_url"):
+            template = boto3_client.download_template_to_dictionary(event["stack_template_url"])
+        else:
+            logger.info(f"stack_template_url not available")
+    except Exception:
+        logger.exception(f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}")
+
+    if not template:
+        try:
+            template = boto3_client.get_template()
+        except Exception:
+            logger.exception(f"Error calling get_template for: {stack_name} on {account_id} - {region}")
+
+    if not template:
+        # In case of an invalid script log a warning and return early
+        result.add_exception(TypeError(f"Malformed Event - could not parse!! Event: {str(event)}"))
+        logger.exception(f"Malformed Event - could not parse!! Event: {str(event)}")
+        return {
+            "valid": True,
+            "reason": '',
+            "failed_rules": [],
+            "exceptions": [x.args[0] for x in result.exceptions],
+        }
+
+    # Process Rules
+    config = Config(
+        project_name=event.get("project"),
+        service_name=event.get("serviceName"),
+        stack_name=event.get("stack", {}).get("name"),
+        rules=ALL_RULES.keys(),
+        event=event.get("event"),
+        template_url=event.get("stack_template_url", "N/A"),
+        aws_region=event.get("region", "N/A"),
+        aws_account_name=event.get("account", {}).get("name", "N/A"),
+        aws_account_id=event.get("account", {}).get("id", "N/A"),
+        aws_user_agent=event.get("user_agent", "N/A"),
+    )
+
+    logger.info("Scan started for: {}; {}; {};".format(
+        config.project_name,
+        config.service_name,
+        config.stack_name,
+    ))
+
+    rules = [ALL_RULES.get(rule)(config, result) for rule in config.RULES]
+    processor = RuleProcessor(*rules)
+
+    processor.process_cf_template(template, config, result)
+
+    perform_logging(result, config, event)
+
     return {
-        "valid": str(result.valid).lower(),
+        "valid": result.valid,
         "reason": ",".join(["{}-{}".format(r["rule"], r["reason"]) for r in result.failed_rules]),
-        "failed_rules": result.failed_rules,
+        "failed_rules": RuleProcessor.remove_debug_rules(rules=result.failed_rules),
         "exceptions": [x.args[0] for x in result.exceptions],
-        "warnings": result.failed_monitored_rules,
+        "warnings": RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules),
     }

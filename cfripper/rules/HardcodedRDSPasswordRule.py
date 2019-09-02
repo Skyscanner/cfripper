@@ -20,7 +20,6 @@ from cfripper.model.rule_processor import Rule
 class HardcodedRDSPasswordRule(Rule):
 
     REASON = "Default RDS password parameter or missing NoEcho for {}."
-    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::RDS::DBInstance", []):

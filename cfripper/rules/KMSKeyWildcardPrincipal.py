@@ -17,15 +17,16 @@ specific language governing permissions and limitations under the License.
 from cfripper.model.rule_processor import Rule
 
 
-class SecurityGroupMissingEgressRule(Rule):
+class KMSKeyWildcardPrincipal(Rule):
 
-    REASON = "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired configuration"
-    RULE_MODE = Rule.MONITOR
+    REASON = "KMS Key policy {} should not allow wildcard principals"
 
     def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::EC2::SecurityGroup", []):
-            if not resource.security_group_egress:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+        for resource in resources.get("AWS::KMS::Key", []):
+            if resource.key_policy.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
+                for statement in resource.key_policy.statements:
+                    if not statement.condition:
+                        self.add_failure(
+                            type(self).__name__,
+                            self.REASON.format(resource.logical_id),
+                        )

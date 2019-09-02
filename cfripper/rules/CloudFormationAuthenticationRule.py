@@ -17,10 +17,28 @@ specific language governing permissions and limitations under the License.
 from cfripper.model.rule_processor import Rule
 
 
+"""
+This rule will incorrectly block the following stack:
+"Metadata": {
+        "AWS::CloudFormation::Authentication": {
+          "testBasic": {
+            "type": "basic",
+            "username": {
+              "Ref": "MasterUsername"
+            },
+            "password": {
+              "Ref": "MasterUserPassword"
+            },
+            "uris": ["http://www.example.com/test"]
+          }
+        }
+      }
+"""
+
+
 class CloudFormationAuthenticationRule(Rule):
 
     REASON = "Possible hardcoded credentials in {}"
-    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for name, resource_list in resources.items():

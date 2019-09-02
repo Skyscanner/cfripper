@@ -17,29 +17,26 @@ specific language governing permissions and limitations under the License.
 import pytest
 import os
 import pycfmodel
-from cfripper.model.result import Result
-from cfripper.model.rule_processor import Rule
+from cfripper.rules.SecurityGroupMissingEgressRule import SecurityGroupMissingEgressRule
 from cfripper.model.utils import convert_json_or_yaml_to_dict
-from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
+from cfripper.model.result import Result
 
 
-class TestS3BucketPublicReadAclAndListStatementRule:
+class TestSecurityGroupMissingEgressRule:
 
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/test_templates/s3_read_plus_list.json") as cf_script:
+        with open(f'{dir_path}/test_templates/single_security_group_one_cidr_ingress.json') as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
-    def test_with_test_template_wildcards(self, template):
+    def test_no_egress_found(self, template):
         result = Result()
-        rule = S3BucketPublicReadAclAndListStatementRule(None, result)
+        rule = SecurityGroupMissingEgressRule(None, result)
 
         rule.invoke(template.resources, template.parameters)
 
         assert result.valid
-        assert len(result.failed_rules) == 0
-        assert len(result.failed_monitored_rules) == 2
-        assert result.failed_monitored_rules[0]["reason"] == "S3 Bucket S3Bucket should not have a public read acl and list bucket statement"
-        assert result.failed_monitored_rules[0]["rule_mode"] == Rule.DEBUG
+        assert len(result.failed_monitored_rules) == 1
+        assert result.failed_monitored_rules[0]['reason'] == 'Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration'

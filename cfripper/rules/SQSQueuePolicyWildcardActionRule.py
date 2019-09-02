@@ -20,7 +20,6 @@ from cfripper.model.rule_processor import Rule
 class SQSQueuePolicyWildcardActionRule(Rule):
 
     REASON = "SQS Queue policy {} should not allow * action"
-    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):

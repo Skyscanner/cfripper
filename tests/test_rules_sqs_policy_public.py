@@ -19,8 +19,9 @@ import os
 import pycfmodel
 
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
-from cfripper.s3_adapter import S3Adapter
+from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
+from cfripper.model.rule_processor import Rule
 
 
 class TestSQSQueuePolicyPublicRule:
@@ -28,8 +29,8 @@ class TestSQSQueuePolicyPublicRule:
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        cf_script = open('{}/test_templates/sqs_policy_public.json'.format(dir_path))
-        cf_template = S3Adapter().convert_json_or_yaml_to_dict(cf_script.read())
+        with open(f'{dir_path}/test_templates/sqs_policy_public.json') as cf_script:
+            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
     def test_public(self, template):
@@ -44,3 +45,5 @@ class TestSQSQueuePolicyPublicRule:
         assert result.failed_rules[1]['reason'] == 'SQS Queue policy QueuePolicyPublic2 should not be public'
         assert result.failed_rules[2]['reason'] == 'SQS Queue policy QueuePolicyPublic3 should not be public'
         assert result.failed_rules[3]['reason'] == 'SQS Queue policy QueuePolicyPublic4 should not be public'
+
+        assert result.failed_rules[0]['risk_value'] == Rule.HIGH

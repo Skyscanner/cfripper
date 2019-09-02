@@ -20,7 +20,6 @@ from cfripper.model.rule_processor import Rule
 class PrivilegeEscalationRule(Rule):
 
     REASON = "{} has blacklisted IAM action {}"
-    MONITOR_MODE = False
     IAM_BLACKLIST = set(
         [
             "iam:CreateAccessKey",

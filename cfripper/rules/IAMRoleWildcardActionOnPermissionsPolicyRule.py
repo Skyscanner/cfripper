@@ -14,18 +14,18 @@ specific language governing permissions and limitations under the License.
 """
 
 
+from cfripper.config.regex import REGEX_WILDCARD_POLICY_ACTION
 from cfripper.model.rule_processor import Rule
 
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
     REASON = "IAM role {} should not allow * action on its permissions policy {}"
-    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             for policy in resource.policies:
-                if policy.policy_document.wildcard_allowed_actions(pattern=r"^(\w*:){0,1}\*$"):
+                if policy.policy_document.wildcard_allowed_actions(pattern=REGEX_WILDCARD_POLICY_ACTION):
                     self.add_failure(
                         type(self).__name__,
                         self.REASON.format(

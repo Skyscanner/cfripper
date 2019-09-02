@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 
 
 from unittest.mock import Mock
+from cfripper.model.rule_processor import Rule
 from cfripper.model.rule_processor import RuleProcessor
 
 
@@ -108,3 +109,47 @@ class TestRuleProcessor:
         processor.process_cf_template(EXAMPLE_CF_TEMPLATE, config, result)
 
         rule.invoke.assert_called()
+
+    def test_remove_debug_rules(self):
+        original_failed_monitored_rules = [
+            {
+                "rule": "a",
+                "reason": "something",
+                "rule_mode": Rule.MONITOR,
+                "risk_value": Rule.HIGH,
+            },
+            {
+                "rule": "b",
+                "reason": "something",
+                "rule_mode": Rule.DEBUG,
+                "risk_value": Rule.MEDIUM,
+            },
+            {
+                "rule": "c",
+                "reason": "something",
+                "rule_mode": Rule.MONITOR,
+                "risk_value": Rule.LOW,
+            }
+        ]
+
+        list_with_no_debug_rules = [
+            {
+                "rule": "a",
+                "reason": "something",
+                "rule_mode": Rule.MONITOR,
+                "risk_value": Rule.HIGH,
+            },
+            {
+                "rule": "c",
+                "reason": "something",
+                "rule_mode": Rule.MONITOR,
+                "risk_value": Rule.LOW,
+            }
+        ]
+
+        processed_list = RuleProcessor.remove_debug_rules(rules=original_failed_monitored_rules)
+        assert list_with_no_debug_rules == processed_list
+
+    def test_remove_debug_rules_no_rules(self):
+        processed_list = RuleProcessor.remove_debug_rules(rules=[])
+        assert [] == processed_list
