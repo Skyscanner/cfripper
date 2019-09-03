@@ -96,29 +96,7 @@ def handler(event, context):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
 
     result = Result()
-
-    try:
-        account_id = event.get("account", {}).get("id")
-        region = event.get("region")
-        stack_name = event.get("stack", {}).get("name")
-        boto3_client = Boto3Client(account_id, region, stack_name)
-    except Exception:
-        logger.exception("Could not create Boto3 Cloudformation Client...")
-
-    template = None
-    try:
-        if event.get("stack_template_url"):
-            template = boto3_client.download_template_to_dictionary(event["stack_template_url"])
-        else:
-            logger.info(f"stack_template_url not available")
-    except Exception:
-        logger.exception(f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}")
-
-    if not template:
-        try:
-            template = boto3_client.get_template()
-        except Exception:
-            logger.exception(f"Error calling get_template for: {stack_name} on {account_id} - {region}")
+    template = get_template(event)
 
     if not template:
         # In case of an invalid script log a warning and return early
@@ -165,3 +143,31 @@ def handler(event, context):
         "exceptions": [x.args[0] for x in result.exceptions],
         "warnings": RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules),
     }
+
+
+def get_template(event):
+    try:
+        account_id = event.get("account", {}).get("id")
+        region = event.get("region")
+        stack_name = event.get("stack", {}).get("name")
+        boto3_client = Boto3Client(account_id, region, stack_name)
+    except Exception:
+        boto3_client = None
+        logger.exception("Could not create Boto3 Cloudformation Client...")
+    template = None
+    if boto3_client:
+        try:
+            if event.get("stack_template_url"):
+                template = boto3_client.download_template_to_dictionary(event["stack_template_url"])
+            else:
+                logger.info(f"stack_template_url not available")
+        except Exception:
+            logger.exception(
+                f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}")
+
+        if not template:
+            try:
+                template = boto3_client.get_template()
+            except Exception:
+                logger.exception(f"Error calling get_template for: {stack_name} on {account_id} - {region}")
+    return template
