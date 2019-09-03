@@ -82,5 +82,5 @@ class RuleProcessor:
         return [
             rule
             for rule in rules
-            if not rule["rule_mode"] == Rule.DEBUG
+            if rule["rule_mode"] != Rule.DEBUG
         ]
