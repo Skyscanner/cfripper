@@ -47,7 +47,7 @@ class S3BucketPolicyPrincipalRule(Rule):
             if not account_id_match:
                 continue
             account_id = account_id_match.group(1)
-            if account_id not in self._config.AWS_PRINCIPALS:
+            if self._config.AWS_PRINCIPALS and account_id not in self._config.AWS_PRINCIPALS:
                 self.add_failure(
                     type(self).__name__,
                     self.REASON.format(logical_id, account_id),

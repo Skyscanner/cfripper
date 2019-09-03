@@ -123,4 +123,5 @@ class Config:
 
         self.FORBIDDEN_RESOURCE_STAR_ACTION_PREFIXES = list(self.DEFAULT_FORBIDDEN_RESOURCE_STAR_ACTION_PREFIXES)
 
+        # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.AWS_PRINCIPALS = []

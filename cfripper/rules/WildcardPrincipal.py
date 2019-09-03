@@ -70,7 +70,7 @@ class GenericWildcardPrincipal(Rule):
     def validate_account_id(self, account_id, logical_id):
 
         if (
-            account_id not in self._config.AWS_PRINCIPALS and
+            self._config.AWS_PRINCIPALS and account_id not in self._config.AWS_PRINCIPALS and
             not self.resource_is_whitelisted(logical_id)
         ):
             self.add_failure(
