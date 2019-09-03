@@ -23,11 +23,10 @@ from cfripper.model.result import Result
 
 
 class TestS3BucketPolicyWildcardActionRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/s3_bucket_with_wildcards.json') as cf_script:
+        with open(f"{dir_path}/test_templates/s3_bucket_with_wildcards.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
@@ -40,4 +39,4 @@ class TestS3BucketPolicyWildcardActionRule:
         assert not result.valid
         assert len(result.failed_rules) == 2
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]['reason'] == 'S3 Bucket policy S3BucketPolicy should not allow * action'
+        assert result.failed_rules[0]["reason"] == "S3 Bucket policy S3BucketPolicy should not allow * action"

@@ -33,14 +33,7 @@ class Result(object):
         if self.valid:
             self.valid = False
 
-        self.failed_rules.append(
-            {
-                "rule": rule,
-                "reason": reason,
-                "rule_mode": rule_mode,
-                "risk_value": risk_value,
-            }
-        )
+        self.failed_rules.append({"rule": rule, "reason": reason, "rule_mode": rule_mode, "risk_value": risk_value})
 
     def add_exception(self, ex):
         self.exceptions.append(ex)
@@ -50,10 +43,5 @@ class Result(object):
 
     def add_failed_monitored_rule(self, rule, reason, rule_mode, risk_value):
         self.failed_monitored_rules.append(
-            {
-                "rule": rule,
-                "reason": reason,
-                "rule_mode": rule_mode,
-                "risk_value": risk_value,
-            }
+            {"rule": rule, "reason": reason, "rule_mode": rule_mode, "risk_value": risk_value}
         )

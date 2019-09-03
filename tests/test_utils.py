@@ -23,10 +23,22 @@ class TestUtils:
         "template_url, bucket, path",
         [
             ("https://cf-templates.s3.amazonaws.com/path/to/template.yml", "cf-templates", "path/to/template.yml"),
-            ("https://cf-templates.s3-eu-central-1.amazonaws.com/path/to/template.yml", "cf-templates", "path/to/template.yml"),
+            (
+                "https://cf-templates.s3-eu-central-1.amazonaws.com/path/to/template.yml",
+                "cf-templates",
+                "path/to/template.yml",
+            ),
             ("https://s3.amazonaws.com/cf-templates/path/to/template.yml", "cf-templates", "path/to/template.yml"),
-            ("https://s3.eu-central-1.amazonaws.com/cf-templates/path/to/template.yml", "cf-templates", "path/to/template.yml"),
-            ("https://s3-eu-central-1.amazonaws.com/cf-templates/path/to/template.yml", "cf-templates", "path/to/template.yml"),
+            (
+                "https://s3.eu-central-1.amazonaws.com/cf-templates/path/to/template.yml",
+                "cf-templates",
+                "path/to/template.yml",
+            ),
+            (
+                "https://s3-eu-central-1.amazonaws.com/cf-templates/path/to/template.yml",
+                "cf-templates",
+                "path/to/template.yml",
+            ),
         ],
     )
     def test_stack_delete(self, template_url, bucket, path):

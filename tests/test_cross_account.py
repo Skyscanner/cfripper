@@ -43,38 +43,40 @@ test_template = {
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com"
+                                    "arn:aws:iam::123456789:user/someuser@bla.com",
                                 ]
                             },
-                            "Action": "sts:AssumeRole"
+                            "Action": "sts:AssumeRole",
                         }
-                    ]
+                    ],
                 },
                 "Path": "/",
-                "Policies": []
-            }
+                "Policies": [],
+            },
         }
-    }
+    },
 }
 
 
 class TestCrossAccountTrustRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         return pycfmodel.parse(test_template)
 
     def test_with_test_template_wildcards(self, template):
         result = Result()
-        rule = CrossAccountTrustRule(
-            Config(aws_account_id="123456789"),
-            result,
-        )
+        rule = CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
 
         rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
         assert len(result.failed_rules) == 2
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]['reason'] == 'RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root'
-        assert result.failed_rules[1]['reason'] == 'RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com'
+        assert (
+            result.failed_rules[0]["reason"]
+            == "RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root"
+        )
+        assert (
+            result.failed_rules[1]["reason"]
+            == "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com"
+        )

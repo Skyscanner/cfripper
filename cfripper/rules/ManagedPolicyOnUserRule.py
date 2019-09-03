@@ -25,7 +25,4 @@ class ManagedPolicyOnUserRule(Rule):
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::ManagedPolicy", []):
             if resource.users:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

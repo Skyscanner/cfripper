@@ -27,7 +27,4 @@ class EBSVolumeHasSSERule(Rule):
             if hasattr(resource, "encrypted") and resource.encrypted is True:
                 continue
             else:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

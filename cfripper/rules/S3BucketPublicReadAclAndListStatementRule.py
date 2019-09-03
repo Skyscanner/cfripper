@@ -12,12 +12,11 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
+import logging
 
 from cfripper.model.rule_processor import Rule
-from cfripper.config.logger import get_logger
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class S3BucketPublicReadAclAndListStatementRule(Rule):
@@ -49,9 +48,6 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
         for resource in buckets:
             try:
                 if resource.access_control == "PublicRead" and resource.logical_id in bucket_policies:
-                    self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(resource.logical_id),
-                    )
+                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
             except AttributeError:
                 logger.info("No access control on bucket")

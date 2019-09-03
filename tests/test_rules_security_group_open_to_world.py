@@ -27,17 +27,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "0.0.0.0/0",
-                                'FromPort': 22,
-                                'ToPort': 22
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIp": "0.0.0.0/0", "FromPort": 22, "ToPort": 22}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -46,8 +38,8 @@ class TestSecurityGroupOpenToWorldRule:
         rule.invoke(resources, [])
 
         assert not result.valid
-        assert result.failed_rules[0]['reason'] == 'Port 22 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
+        assert result.failed_rules[0]["reason"] == 'Port 22 open to the world in security group "RootRole"'
+        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
 
     def test_valid_security_group_not_slash0(self):
         role_props = {
@@ -55,17 +47,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "10.0.0.0/8",
-                                'FromPort': 22,
-                                'ToPort': 22
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIp": "10.0.0.0/8", "FromPort": 22, "ToPort": 22}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -82,17 +66,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "0.0.0.0/0",
-                                'FromPort': 80,
-                                'ToPort': 80
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIp": "0.0.0.0/0", "FromPort": 80, "ToPort": 80}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -109,17 +85,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "0.0.0.0/0",
-                                'FromPort': 443,
-                                'ToPort': 443
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIp": "0.0.0.0/0", "FromPort": 443, "ToPort": 443}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -136,17 +104,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIpv6': "::/0",
-                                'FromPort': 22,
-                                'ToPort': 22
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIpv6": "::/0", "FromPort": 22, "ToPort": 22}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -154,8 +114,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]['reason'] == 'Port 22 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
+        assert result.failed_rules[0]["reason"] == 'Port 22 open to the world in security group "RootRole"'
+        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
 
     def test_invalid_security_group_range(self):
         role_props = {
@@ -163,17 +123,9 @@ class TestSecurityGroupOpenToWorldRule:
             "Resources": {
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "0.0.0.0/0",
-                                'FromPort': 0,
-                                'ToPort': 100
-                            }
-                        ]
-                    }
+                    "Properties": {"SecurityGroupIngress": [{"CidrIp": "0.0.0.0/0", "FromPort": 0, "ToPort": 100}]},
                 }
-            }
+            },
         }
 
         result = Result()
@@ -181,8 +133,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]['reason'] == 'Ports 0 - 100 open in Security Group RootRole'
-        assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
+        assert result.failed_rules[0]["reason"] == "Ports 0 - 100 open in Security Group RootRole"
+        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
 
     def test_invalid_security_group_multiple_statements(self):
         role_props = {
@@ -191,21 +143,13 @@ class TestSecurityGroupOpenToWorldRule:
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
                     "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': "10.0.0.0/8",
-                                'FromPort': 22,
-                                'ToPort': 22
-                            },
-                            {
-                                'CidrIp': "0.0.0.0/0",
-                                'FromPort': 9090,
-                                'ToPort': 9090
-                            },
+                        "SecurityGroupIngress": [
+                            {"CidrIp": "10.0.0.0/8", "FromPort": 22, "ToPort": 22},
+                            {"CidrIp": "0.0.0.0/0", "FromPort": 9090, "ToPort": 9090},
                         ]
-                    }
+                    },
                 }
-            }
+            },
         }
 
         result = Result()
@@ -213,8 +157,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]['reason'] == 'Port 9090 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]['rule'] == 'SecurityGroupOpenToWorldRule'
+        assert result.failed_rules[0]["reason"] == 'Port 9090 open to the world in security group "RootRole"'
+        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
 
     def test_security_group_rules_as_refs(self):
 
@@ -224,18 +168,10 @@ class TestSecurityGroupOpenToWorldRule:
                 "RootRole": {
                     "Type": "AWS::EC2::SecurityGroup",
                     "Properties": {
-                        'SecurityGroupIngress': [
-                            {
-                                'CidrIp': {
-                                    "Ref": "MyParam"
-                                },
-                                'FromPort': 22,
-                                'ToPort': 22
-                            }
-                        ]
-                    }
+                        "SecurityGroupIngress": [{"CidrIp": {"Ref": "MyParam"}, "FromPort": 22, "ToPort": 22}]
+                    },
                 }
-            }
+            },
         }
 
         result = Result()

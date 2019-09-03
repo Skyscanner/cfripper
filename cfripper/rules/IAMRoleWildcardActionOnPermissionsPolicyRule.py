@@ -26,10 +26,4 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
         for resource in resources.get("AWS::IAM::Role", []):
             for policy in resource.policies:
                 if policy.policy_document.wildcard_allowed_actions(pattern=REGEX_WILDCARD_POLICY_ACTION):
-                    self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(
-                            resource.logical_id,
-                            policy.policy_name,
-                        ),
-                    )
+                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id, policy.policy_name))

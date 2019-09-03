@@ -44,7 +44,4 @@ class CloudFormationAuthenticationRule(Rule):
         for name, resource_list in resources.items():
             for resource in resource_list:
                 if resource.has_hardcoded_credentials():
-                    self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(resource.logical_id),
-                    )
+                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

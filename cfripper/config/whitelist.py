@@ -12,8 +12,6 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import re
-from typing import List
 
 """
 A list of projects that are allowed to skip specific checks.
@@ -53,21 +51,3 @@ wildcard_principal_resource_whitelist = {
 """
 
 wildcard_principal_resource_whitelist = {}
-
-
-def get_stack_exemption_list(stack_name) -> List[str]:
-    for k, v in stack_whitelist.items():
-        if re.match(k, stack_name):
-            return v
-
-    return []
-
-
-def get_wildcard_principal_exemption_resource_list(stack_name) -> List[str]:
-
-    allowed_resources = []
-    for k, v in wildcard_principal_resource_whitelist.items():
-        if re.match(k, stack_name):
-            allowed_resources += v
-
-    return allowed_resources

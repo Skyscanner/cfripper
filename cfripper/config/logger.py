@@ -16,8 +16,8 @@ import logging
 import os
 
 
-def get_logger():
-    if not os.environ.get('AWS_ACCOUNT'):
+def setup_logging():
+    if not os.environ.get("AWS_ACCOUNT"):
         logging.basicConfig(level=logging.DEBUG)
         return logging
 

@@ -25,7 +25,4 @@ class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
             if resource.assume_role_policy_document.wildcard_allowed_actions(pattern=REGEX_WILDCARD_POLICY_ACTION):
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

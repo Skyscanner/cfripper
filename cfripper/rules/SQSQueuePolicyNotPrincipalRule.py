@@ -24,7 +24,4 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):
             if resource.policy_document.allows_not_principal():
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

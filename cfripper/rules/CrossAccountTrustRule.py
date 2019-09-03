@@ -12,14 +12,12 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
+import logging
 import re
-from cfripper.config.logger import get_logger
 from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from cfripper.model.rule_processor import Rule
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class CrossAccountTrustRule(Rule):
@@ -46,13 +44,7 @@ class CrossAccountTrustRule(Rule):
                 continue
 
             if self.ROOT_PATTERN.match(principal) or cross_account:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(
-                        logical_id,
-                        principal,
-                    ),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
 
     def get_aws_principals(self, statement):
         for principal in statement.principal:

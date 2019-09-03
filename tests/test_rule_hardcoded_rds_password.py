@@ -23,11 +23,10 @@ from cfripper.model.result import Result
 
 
 class TestHardcodedRDSPassword:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/rds_instance_plain_parameter.json') as cf_script:
+        with open(f"{dir_path}/test_templates/rds_instance_plain_parameter.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
@@ -38,7 +37,6 @@ class TestHardcodedRDSPassword:
         rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
-        print(result.failed_rules)
         assert len(result.failed_rules) == 2
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]['reason'] == 'Default RDS password parameter or missing NoEcho for BadDb3.'
+        assert result.failed_rules[0]["reason"] == "Default RDS password parameter or missing NoEcho for BadDb3."

@@ -26,8 +26,8 @@ from unittest.mock import Mock, patch
 
 
 logging.basicConfig(level=logging.INFO)
-sys.path.append('../')
-sys.path.append('../cfripper/')
+sys.path.append("../")
+sys.path.append("../cfripper/")
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -39,41 +39,35 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
     'project_name': 'example_project',
 }
 """
-scripts = [
-    {
-        'script_name': 'test.json',
-        'service_name': '',
-        'project_name': '',
-        'stack': {
-            'name': 'TSS_12124',
-        },
-    }
-]
+scripts = [{"script_name": "test.json", "service_name": "", "project_name": "", "stack": {"name": "TSS_12124"}}]
 
 
 def test_script(script_name, service_name, project_name, stack):
     event = {
-        'stack_template_url': 'https://fake/bucket/key',
-        'project': project_name,
-        'serviceName': service_name,
-        'stack': stack,
+        "stack_template_url": "https://fake/bucket/key",
+        "project": project_name,
+        "serviceName": service_name,
+        "stack": stack,
     }
     mock_created_s3_adapter_object = Mock()
-    with open(f'{dir_path}/test_cf_scripts/{script_name}') as cf_script:
-        mock_created_s3_adapter_object.download_template_to_dictionary.return_value = convert_json_or_yaml_to_dict(cf_script.read())
+    with open(f"{dir_path}/test_cf_scripts/{script_name}") as cf_script:
+        mock_created_s3_adapter_object.download_template_to_dictionary.return_value = convert_json_or_yaml_to_dict(
+            cf_script.read()
+        )
 
     mock_s3_adapter = Mock(return_value=mock_created_s3_adapter_object)
 
-    with patch('cfripper.main.S3Adapter', new=mock_s3_adapter):
+    with patch("cfripper.main.S3Adapter", new=mock_s3_adapter):
         from cfripper.main import handler
+
         event_result = handler(event, "None")
         print(f"{script_name} -- valid: {event_result['valid']}\n {event_result['reason']}")
 
 
 def test_scripts():
     for script in scripts:
-        test_script(script['script_name'], script['service_name'], script['project_name'], script['stack'])
+        test_script(script["script_name"], script["service_name"], script["project_name"], script["stack"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_scripts()

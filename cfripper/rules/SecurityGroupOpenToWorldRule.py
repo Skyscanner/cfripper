@@ -12,16 +12,14 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 
-
-from cfripper.config.logger import get_logger
 from cfripper.model.rule_processor import Rule
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class SecurityGroupOpenToWorldRule(Rule):
-
     def invoke(self, resources, parameters):
         rs = resources.get("AWS::EC2::SecurityGroup", [])
         for resource in rs:
@@ -46,19 +44,12 @@ class SecurityGroupOpenToWorldRule(Rule):
             self.check_port_range(logical_name, from_port, to_port)
 
     def check_single_port(self, logical_name, the_port):
-        if str(the_port) not in self._config.ALLOWED_WORLD_OPEN_PORTS:
-            reason = "Port {} open to the world in security group \"{}\"".format(
-                the_port,
-                logical_name,
-            )
+        if str(the_port) not in self._config.allowed_world_open_ports:
+            reason = 'Port {} open to the world in security group "{}"'.format(the_port, logical_name)
             self.add_failure(type(self).__name__, reason)
 
     def check_port_range(self, logical_name, from_port, to_port):
         for port in range(from_port, to_port + 1):
-            if str(port) not in self._config.ALLOWED_WORLD_OPEN_PORTS:
-                reason = "Ports {} - {} open in Security Group {}".format(
-                    from_port,
-                    to_port,
-                    logical_name,
-                )
+            if str(port) not in self._config.allowed_world_open_ports:
+                reason = "Ports {} - {} open in Security Group {}".format(from_port, to_port, logical_name)
                 self.add_failure(type(self).__name__, reason)

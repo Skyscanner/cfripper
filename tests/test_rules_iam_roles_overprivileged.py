@@ -34,20 +34,14 @@ def test_with_valid_role_inline_policy():
                             "PolicyDocument": {
                                 "Version": "2012-10-17",
                                 "Statement": [
-                                    {
-                                        "Effect": "Allow",
-                                        "Action": [
-                                            "ec2:DescribeInstances",
-                                        ],
-                                        "Resource": "*"
-                                    }
-                                ]
-                            }
+                                    {"Effect": "Allow", "Action": ["ec2:DescribeInstances"], "Resource": "*"}
+                                ],
+                            },
                         }
-                    ]
-                }
+                    ],
+                },
             }
-        }
+        },
     }
 
     resource = pycfmodel.parse(role_props).resources
@@ -78,20 +72,14 @@ def test_with_invalid_role_inline_policy():
                             "PolicyDocument": {
                                 "Version": "2012-10-17",
                                 "Statement": [
-                                    {
-                                        "Effect": "Allow",
-                                        "Action": [
-                                            "ec2:DeleteInternetGateway",
-                                        ],
-                                        "Resource": "*"
-                                    }
-                                ]
-                            }
+                                    {"Effect": "Allow", "Action": ["ec2:DeleteInternetGateway"], "Resource": "*"}
+                                ],
+                            },
                         }
-                    ]
-                }
+                    ],
+                },
             }
-        }
+        },
     }
 
     result = Result()
@@ -102,8 +90,11 @@ def test_with_invalid_role_inline_policy():
     rule.check_managed_policies.assert_called()
 
     assert not result.valid
-    assert result.failed_rules[0]['reason'] == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
-    assert result.failed_rules[0]['rule'] == 'IAMRolesOverprivilegedRule'
+    assert (
+        result.failed_rules[0]["reason"]
+        == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
+    )
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
 def test_with_invalid_role_inline_policy_resource_as_array():
@@ -120,22 +111,14 @@ def test_with_invalid_role_inline_policy_resource_as_array():
                             "PolicyDocument": {
                                 "Version": "2012-10-17",
                                 "Statement": [
-                                    {
-                                        "Effect": "Allow",
-                                        "Action": [
-                                            "ec2:DeleteInternetGateway",
-                                        ],
-                                        "Resource": [
-                                            "*"
-                                        ]
-                                    }
-                                ]
-                            }
+                                    {"Effect": "Allow", "Action": ["ec2:DeleteInternetGateway"], "Resource": ["*"]}
+                                ],
+                            },
                         }
-                    ]
-                }
+                    ],
+                },
             }
-        }
+        },
     }
 
     result = Result()
@@ -146,8 +129,11 @@ def test_with_invalid_role_inline_policy_resource_as_array():
     rule.check_managed_policies.assert_called()
 
     assert not result.valid
-    assert result.failed_rules[0]['reason'] == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
-    assert result.failed_rules[0]['rule'] == 'IAMRolesOverprivilegedRule'
+    assert (
+        result.failed_rules[0]["reason"]
+        == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
+    )
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
 def test_with_valid_role_managed_policy():
@@ -156,14 +142,9 @@ def test_with_valid_role_managed_policy():
         "Resources": {
             "RootRole": {
                 "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "ManagedPolicyArns": [
-                        "arn:aws:iam::aws:policy/YadaYadaYada"
-                    ]
-                }
+                "Properties": {"Path": "/", "ManagedPolicyArns": ["arn:aws:iam::aws:policy/YadaYadaYada"]},
             }
-        }
+        },
     }
 
     result = Result()
@@ -183,14 +164,9 @@ def test_with_invalid_role_managed_policy():
         "Resources": {
             "RootRole": {
                 "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "ManagedPolicyArns": [
-                        "arn:aws:iam::aws:policy/AdministratorAccess"
-                    ]
-                }
+                "Properties": {"Path": "/", "ManagedPolicyArns": ["arn:aws:iam::aws:policy/AdministratorAccess"]},
             }
-        }
+        },
     }
 
     result = Result()
@@ -199,8 +175,11 @@ def test_with_invalid_role_managed_policy():
     rule.invoke(resources, [])
 
     assert not result.valid
-    assert result.failed_rules[0]['reason'] == 'Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess'
-    assert result.failed_rules[0]['rule'] == 'IAMRolesOverprivilegedRule'
+    assert (
+        result.failed_rules[0]["reason"]
+        == "Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess"
+    )
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
 def test_with_invalid_role_inline_policy_fn_if():
@@ -213,42 +192,36 @@ def test_with_invalid_role_inline_policy_fn_if():
                     "Path": "/",
                     "Policies": [
                         {
-                            'Fn::If': [
-                                'IsSandbox',
+                            "Fn::If": [
+                                "IsSandbox",
                                 {
-                                    'PolicyDocument': {
-                                        'Statement': [
+                                    "PolicyDocument": {
+                                        "Statement": [
                                             {
-                                                'Action': 'sts:AssumeRole',
-                                                'Effect': 'Allow',
-                                                'Resource': 'arn:aws:iam::325714046698:role/sandbox-secrets-access'}
-                                        ],
-                                        'Version': '2012-10-17'
-                                    },
-                                    'PolicyName': 'SandboxSecretsAccessAssumerole'
-                                }, {
-                                    'PolicyDocument': {
-                                        'Statement': [
-                                            {
-                                                'Action': [
-                                                    'ec2:DeleteVpc'
-                                                ],
-                                                'Effect': 'Allow',
-                                                'Resource': [
-                                                    "*"
-                                                ]
+                                                "Action": "sts:AssumeRole",
+                                                "Effect": "Allow",
+                                                "Resource": "arn:aws:iam::325714046698:role/sandbox-secrets-access",
                                             }
                                         ],
-                                        'Version': '2012-10-17'
+                                        "Version": "2012-10-17",
                                     },
-                                    'PolicyName': 'ProdCredentialStoreAccessPolicy'
-                                }
+                                    "PolicyName": "SandboxSecretsAccessAssumerole",
+                                },
+                                {
+                                    "PolicyDocument": {
+                                        "Statement": [
+                                            {"Action": ["ec2:DeleteVpc"], "Effect": "Allow", "Resource": ["*"]}
+                                        ],
+                                        "Version": "2012-10-17",
+                                    },
+                                    "PolicyName": "ProdCredentialStoreAccessPolicy",
+                                },
                             ]
                         }
-                    ]
-                }
+                    ],
+                },
             }
-        }
+        },
     }
 
     result = Result()
@@ -259,5 +232,8 @@ def test_with_invalid_role_inline_policy_fn_if():
     rule.check_managed_policies.assert_called()
 
     assert not result.valid
-    assert result.failed_rules[0]['reason'] == 'Role "RootRole" contains an insecure permission "ec2:DeleteVpc" in policy "ProdCredentialStoreAccessPolicy"'
-    assert result.failed_rules[0]['rule'] == 'IAMRolesOverprivilegedRule'
+    assert (
+        result.failed_rules[0]["reason"]
+        == 'Role "RootRole" contains an insecure permission "ec2:DeleteVpc" in policy "ProdCredentialStoreAccessPolicy"'
+    )
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"

@@ -13,28 +13,25 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import json
+import logging
 
 from cfripper.config.config import Config
 from cfripper.boto3_client import Boto3Client
+from cfripper.config.logger import setup_logging
 from cfripper.model.rule_processor import RuleProcessor
-from cfripper.rules import ALL_RULES
+from cfripper.rules import DEFAULT_RULES
 from cfripper.model.result import Result
-from cfripper.config.logger import get_logger
 
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 def log_results(project_name, service_name, stack_name, rules, _type, warnings, template_url):
-    logger.info("{}: project - {}, service- {}, stack - {}. {} {} URL: {}".format(
-        _type,
-        project_name,
-        service_name,
-        stack_name,
-        json.dumps(rules),
-        str(warnings),
-        template_url,
-    ))
+    logger.info(
+        "{}: project - {}, service- {}, stack - {}. {} {} URL: {}".format(
+            _type, project_name, service_name, stack_name, json.dumps(rules), str(warnings), template_url
+        )
+    )
 
 
 def perform_logging(result, config, event):
@@ -48,17 +45,9 @@ def perform_logging(result, config, event):
             result.warnings,
             event.get("stack_template_url", "N/A"),
         )
-        logger.info("FAIL: {}; {}; {}".format(
-            config.project_name,
-            config.service_name,
-            config.stack_name,
-        ))
+        logger.info("FAIL: {}; {}; {}".format(config.project_name, config.service_name, config.stack_name))
     else:
-        logger.info("PASS: {}; {}; {}".format(
-            config.project_name,
-            config.service_name,
-            config.stack_name,
-        ))
+        logger.info("PASS: {}; {}; {}".format(config.project_name, config.service_name, config.stack_name))
     if len(result.failed_monitored_rules) > 0 or len(result.warnings) > 0:
         log_results(
             "Failed monitored rules",
@@ -92,6 +81,8 @@ def handler(event, context):
     :param context:
     :return:
     """
+
+    setup_logging()
     if not event.get("stack_template_url") and not event.get("stack", {}).get("name"):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
 
@@ -102,19 +93,14 @@ def handler(event, context):
         # In case of an invalid script log a warning and return early
         result.add_exception(TypeError(f"Malformed Event - could not parse!! Event: {str(event)}"))
         logger.exception(f"Malformed Event - could not parse!! Event: {str(event)}")
-        return {
-            "valid": True,
-            "reason": '',
-            "failed_rules": [],
-            "exceptions": [x.args[0] for x in result.exceptions],
-        }
+        return {"valid": True, "reason": "", "failed_rules": [], "exceptions": [x.args[0] for x in result.exceptions]}
 
     # Process Rules
     config = Config(
         project_name=event.get("project"),
         service_name=event.get("serviceName"),
         stack_name=event.get("stack", {}).get("name"),
-        rules=ALL_RULES.keys(),
+        rules=DEFAULT_RULES.keys(),
         event=event.get("event"),
         template_url=event.get("stack_template_url", "N/A"),
         aws_region=event.get("region", "N/A"),
@@ -123,13 +109,9 @@ def handler(event, context):
         aws_user_agent=event.get("user_agent", "N/A"),
     )
 
-    logger.info("Scan started for: {}; {}; {};".format(
-        config.project_name,
-        config.service_name,
-        config.stack_name,
-    ))
+    logger.info("Scan started for: {}; {}; {};".format(config.project_name, config.service_name, config.stack_name))
 
-    rules = [ALL_RULES.get(rule)(config, result) for rule in config.RULES]
+    rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
     processor = RuleProcessor(*rules)
 
     processor.process_cf_template(template, config, result)
@@ -163,7 +145,8 @@ def get_template(event):
                 logger.info(f"stack_template_url not available")
         except Exception:
             logger.exception(
-                f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}")
+                f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}"
+            )
 
         if not template:
             try:

@@ -26,11 +26,7 @@ class HardcodedRDSPasswordRule(Rule):
             if not hasattr(resource, "master_user_password"):
                 continue
             if resource.master_user_password:
-                self.check_password(
-                    resource.master_user_password,
-                    parameters,
-                    resource,
-                )
+                self.check_password(resource.master_user_password, parameters, resource)
 
     def check_password(self, pwd, parameters, resource):
         if isinstance(pwd, dict) and "Ref" in pwd:
@@ -44,10 +40,7 @@ class HardcodedRDSPasswordRule(Rule):
             if hasattr(p, "no_echo") and not hasattr(p, "default"):
                 return
 
-        self.add_failure(
-            type(self).__name__,
-            self.REASON.format(resource.logical_id),
-        )
+        self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
 
     def get_parameter(self, parameters, key):
         for parameter in parameters:
