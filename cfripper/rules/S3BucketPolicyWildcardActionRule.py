@@ -20,7 +20,6 @@ from cfripper.model.rule_processor import Rule
 class S3BucketPolicyWildcardActionRule(Rule):
 
     REASON = "S3 Bucket policy {} should not allow * action"
-    MONITOR_MODE = False
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):

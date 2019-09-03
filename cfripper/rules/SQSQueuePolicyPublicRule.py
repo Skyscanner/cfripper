@@ -20,7 +20,7 @@ from cfripper.model.rule_processor import Rule
 class SQSQueuePolicyPublicRule(Rule):
 
     REASON = "SQS Queue policy {} should not be public"
-    MONITOR_MODE = False
+    RISK_VALUE = Rule.HIGH
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):

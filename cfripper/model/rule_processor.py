@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
+from abc import ABC, abstractmethod
 
 import pycfmodel
 
@@ -23,21 +23,26 @@ from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
 logger = get_logger()
 
 
-class Rule:
-    MONITOR_MODE = False
+class Rule(ABC):
+    BLOCKING = "BLOCKING"
+    MONITOR = "MONITOR"
+    DEBUG = "DEBUG"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    RULE_MODE = BLOCKING
+    RISK_VALUE = MEDIUM
 
     def __init__(self, config, result):
         self._config = config if config else Config()
         self._result = result
 
+    @abstractmethod
     def invoke(self, resources, parameters):
-        raise NotImplementedError("Can't process the base Rule class.")
-
-    def process_resource(self, logical_name, properties):
-        raise NotImplementedError("Can't process the base Rule class.")
+        pass
 
     def add_failure(self, rule, reason):
-        self._result.add_failure(rule, reason, self.MONITOR_MODE)
+        self._result.add_failure(rule, reason, self.RULE_MODE, self.RISK_VALUE)
 
     def add_warning(self, warning):
         self._result.add_warning(warning)
@@ -62,13 +67,20 @@ class RuleProcessor:
             try:
                 rule.invoke(cf_model.resources, cf_model.parameters)
             except Exception as other_exception:
-                logger.error("{} crashed with {} for project - {}, service- {}, stack - {}".format(
+                result.add_exception(other_exception)
+                logger.exception("{} crashed with {} for project - {}, service - {}, stack - {}".format(
                     type(rule).__name__,
                     type(other_exception).__name__,
                     config.project_name,
                     config.service_name,
                     config.stack_name,
                 ))
-                result.add_exception(other_exception)
-                logger.exception(other_exception)
                 continue
+
+    @staticmethod
+    def remove_debug_rules(rules):
+        return [
+            rule
+            for rule in rules
+            if rule["rule_mode"] != Rule.DEBUG
+        ]

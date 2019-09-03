@@ -16,6 +16,7 @@ specific language governing permissions and limitations under the License.
 
 import re
 from cfripper.config.logger import get_logger
+from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from cfripper.model.rule_processor import Rule
 
 logger = get_logger()
@@ -24,8 +25,7 @@ logger = get_logger()
 class CrossAccountTrustRule(Rule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
-    MONITOR_MODE = False
-    ROOT_PATTERN = re.compile(r"arn:aws:iam::\d*:root")
+    ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::IAM::Role", []):
@@ -36,7 +36,7 @@ class CrossAccountTrustRule(Rule):
 
     def check_principals(self, principals, logical_id):
         for principal in principals:
-            cross_account = self._config.account_id and self._config.account_id not in principal
+            cross_account = self._config.aws_account_id and self._config.aws_account_id not in principal
 
             if not isinstance(principal, str):
                 logger.warn(

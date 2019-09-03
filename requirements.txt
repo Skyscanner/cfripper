@@ -4,14 +4,15 @@
 #
 #    pip-compile --output-file requirements.txt setup.py
 #
-boto3==1.4.7
-botocore==1.7.48          # via boto3, s3transfer
-cfn-flip==1.2.0
+boto3==1.9.220
+botocore==1.12.220        # via boto3, s3transfer
+cfn-flip==1.2.1
 click==7.0                # via cfn-flip
-docutils==0.14            # via botocore
-jmespath==0.9.3           # via boto3, botocore
+docutils==0.15.2          # via botocore
+jmespath==0.9.4           # via boto3, botocore
 pycfmodel==0.3.2
-python-dateutil==2.7.3    # via botocore
-pyyaml==4.2b4
-s3transfer==0.1.13        # via boto3
-six==1.11.0               # via cfn-flip, python-dateutil
+python-dateutil==2.8.0    # via botocore
+pyyaml==5.1.2
+s3transfer==0.2.1         # via boto3
+six==1.12.0               # via cfn-flip, python-dateutil
+urllib3==1.25.3           # via botocore

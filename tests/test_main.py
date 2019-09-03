@@ -20,7 +20,9 @@ from unittest.mock import Mock, patch
 from unittest.mock import ANY
 import glob
 import os
-from cfripper.s3_adapter import S3Adapter
+from moto import mock_s3
+
+from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
 from cfripper.rules import ALL_RULES
 from cfripper.config.config import Config
@@ -38,21 +40,32 @@ class TestMainHandler:
 
     def test_correct_event(self):
         event = {
-            'stack_template_url': 'https://asdfasdfasdf/bucket/key'
+            'stack_template_url': 'https://asdfasdfasdf/bucket/key',
+            'stack': {
+                'name': 'blooblah'
+            }
         }
 
         mock_created_s3_adapter_object = Mock()
         mock_created_s3_adapter_object.download_template_to_dictionary.return_value = {
             'Resources': {}
         }
-        mock_s3_adapter = Mock(return_value=mock_created_s3_adapter_object)
+        mock_boto3_adapter = Mock(return_value=mock_created_s3_adapter_object)
+
+        mock_created_boto3_client_object = Mock()
+        mock_created_boto3_client_object.get_template.return_value = {
+            'Resources': {}
+        }
+        mock_created_boto3_client_object.compare_outputs.return_value = {}
+        mock_boto3_client = Mock(return_value=mock_created_boto3_client_object)
 
         mock_created_rule_processor_object = Mock()
         mock_rule_processor = Mock(return_value=mock_created_rule_processor_object)
 
-        with patch('cfripper.main.S3Adapter', new=mock_s3_adapter):
+        with patch('cfripper.main.Boto3Client', new=mock_boto3_adapter):
             with patch('cfripper.main.RuleProcessor', new=mock_rule_processor):
-                from cfripper.main import handler
+                with patch('cfripper.main.Boto3Client', new=mock_boto3_client):
+                    from cfripper.main import handler
 
                 handler(event, None)
 
@@ -63,55 +76,14 @@ class TestMainHandler:
             ANY,
         )
 
-    def test_output_contract(self):
-        """
-        Test that the output complies to the established protocol
-        that is used by the IaC pipeline and cf-name-check.
-
-        Output should look like:
-            {
-                "valid": "true", #  NOTE: this is a string and NOT a boolean
-                "reason": ""
-                "failed_rules": [] #  Optional
-            }
-        """
-        event = {
-            'stack_template_url': 'https://fake/bucket/key',
-        }
-
-        mock_created_s3_adapter_object = Mock()
-        mock_created_s3_adapter_object.download_template_to_dictionary.return_value = {
-            'Resources': {
-                "sg": {
-                    "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        "GroupDescription": "some_group_desc",
-                        "SecurityGroupIngress": {
-                            "CidrIp": "10.1.2.3/32",
-                            "FromPort": 34,
-                            "ToPort": 36,
-                            "IpProtocol": "tcp"
-                        },
-                        "VpcId": "vpc-9f8e9dfa",
-                    }
-                }
-            }
-        }
-        mock_s3_adapter = Mock(return_value=mock_created_s3_adapter_object)
-        with patch('cfripper.main.S3Adapter', new=mock_s3_adapter):
-            from cfripper.main import handler
-            event_result = handler(event, None)
-
-        assert event_result['valid'] == 'true'
-        assert isinstance(event_result['reason'], str)
-        assert isinstance(event_result.get('failed_rules'), list)
-
+    @mock_s3
     def test_with_templates(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        test_templates = glob.glob('{}/test_templates/*.*'.format(dir_path))
+
+        test_templates = glob.glob(f'{dir_path}/test_templates/*.*')
         for template in test_templates:
-            cf_script = open(template)
-            cf_template = S3Adapter().convert_json_or_yaml_to_dict(cf_script.read())
+            with open(template) as cf_script:
+                cf_template = convert_json_or_yaml_to_dict(cf_script.read())
 
             config = Config(
                 project_name=template,
@@ -125,8 +97,8 @@ class TestMainHandler:
 
             rules = [ALL_RULES.get(rule)(config, result) for rule in config.RULES]
             processor = RuleProcessor(*rules)
-
             processor.process_cf_template(cf_template, config, result)
+
             # Use this to print the stack if there's an error
             if len(result.exceptions):
                 print(template)
@@ -136,8 +108,14 @@ class TestMainHandler:
                 'vulgar_bad_syntax.yml',
                 'rubbish.json',
             ]
+
             if template.split('/')[-1] in no_resource_templates:
                 assert len(result.exceptions) == 1
             else:
                 assert len(result.exceptions) == 0
 
+    def test_all_rules_valid(self):
+        for r in ALL_RULES.values():
+            if r.RULE_MODE not in ["BLOCKING", "MONITOR", "DEBUG"]:
+                assert False
+        assert True

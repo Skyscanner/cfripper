@@ -30,6 +30,9 @@ from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPub
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
 from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
+from cfripper.rules.KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
+from cfripper.rules.FullWildcardPrincipal import FullWildcardPrincipal
+from cfripper.rules.PartialWildcardPrincipal import PartialWildcardPrincipal
 
 ALL_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -48,4 +51,7 @@ ALL_RULES = {
     "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
     "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
+    "KMSKeyWildcardPrincipal": KMSKeyWildcardPrincipal,
+    "FullWildcardPrincipal": FullWildcardPrincipal,
+    "PartialWildcardPrincipal": PartialWildcardPrincipal,
 }

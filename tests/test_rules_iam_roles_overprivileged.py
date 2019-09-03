@@ -212,40 +212,40 @@ def test_with_invalid_role_inline_policy_fn_if():
                 "Properties": {
                     "Path": "/",
                     "Policies": [
-            {
-                'Fn::If': [
-                    'IsSandbox',
-                    {
-                        'PolicyDocument': {
-                            'Statement': [
+                        {
+                            'Fn::If': [
+                                'IsSandbox',
                                 {
-                                    'Action': 'sts:AssumeRole',
-                                    'Effect': 'Allow',
-                                    'Resource': 'arn:aws:iam::325714046698:role/sandbox-secrets-access'}
-                            ],
-                            'Version': '2012-10-17'
-                        },
-                        'PolicyName': 'SandboxSecretsAccessAssumerole'
-                    }, {
-                        'PolicyDocument': {
-                            'Statement': [
-                                {
-                                    'Action': [
-                                        'ec2:DeleteVpc'
-                                    ],
-                                    'Effect': 'Allow',
-                                    'Resource': [
-                                        "*"
-                                    ]
+                                    'PolicyDocument': {
+                                        'Statement': [
+                                            {
+                                                'Action': 'sts:AssumeRole',
+                                                'Effect': 'Allow',
+                                                'Resource': 'arn:aws:iam::325714046698:role/sandbox-secrets-access'}
+                                        ],
+                                        'Version': '2012-10-17'
+                                    },
+                                    'PolicyName': 'SandboxSecretsAccessAssumerole'
+                                }, {
+                                    'PolicyDocument': {
+                                        'Statement': [
+                                            {
+                                                'Action': [
+                                                    'ec2:DeleteVpc'
+                                                ],
+                                                'Effect': 'Allow',
+                                                'Resource': [
+                                                    "*"
+                                                ]
+                                            }
+                                        ],
+                                        'Version': '2012-10-17'
+                                    },
+                                    'PolicyName': 'ProdCredentialStoreAccessPolicy'
                                 }
-                            ],
-                            'Version': '2012-10-17'
-                        },
-                        'PolicyName': 'ProdCredentialStoreAccessPolicy'
-                    }
-                ]
-            }
-        ]
+                            ]
+                        }
+                    ]
                 }
             }
         }

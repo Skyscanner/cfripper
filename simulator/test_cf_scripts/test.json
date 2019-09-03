@@ -17,7 +17,87 @@
         "Encrypted": false,
         "Iops": "100",
         "AvailabilityZone": "us-east-1c"
+      },
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "plicy1234",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": [
+                    "logs:CreateLogStream"
+                  ],
+                  "Resource": []
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": []
+                }
+              ]
+            }
+          }
+        ]
       }
-    }
+    },
+    "resource1" : {
+      "Type" : "AWS::SQS::QueuePolicy",
+      "DependsOn" : [ "S3EventQueue" ],
+      "Properties" : {
+          "PolicyDocument" : {
+              "Id": "SQSPolicy",
+              "Statement": [
+                  {
+                      "Sid": "SQSEventPolicy",
+                      "Effect": "Allow",
+                      "Principal": "arn:aws:iam::12345678:root",
+                      "Action": "SQS:*",
+                      "Resource": "*",
+                  }
+              ]
+          },
+          "Queues" : [ { "Ref" : "S3EventQueue"} ]
+      }
+    },
+    "resource2" : {
+      "Type" : "AWS::SQS::QueuePolicy",
+      "DependsOn" : [ "S3EventQueue" ],
+      "Properties" : {
+          "PolicyDocument" : {
+              "Id": "SQSPolicy",
+              "Statement": [
+                  {
+                      "Sid": "SQSEventPolicy",
+                      "Effect": "Allow",
+                      "Principal": "arn:aws:iam::12345678:12345*",
+                      "Action": "SQS:*",
+                      "Resource": "*",
+                  }
+              ]
+          },
+          "Queues" : [ { "Ref" : "S3EventQueue"} ]
+      }
+    },
   }
 }

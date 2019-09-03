@@ -12,6 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from cfripper.model.rule_processor import Rule
 
 
 class Result(object):
@@ -24,17 +25,20 @@ class Result(object):
         self.failed_monitored_rules = []
         self.warnings = []
 
-    def add_failure(self, rule, reason, monitor_mode):
-        if monitor_mode:
-            self.add_failed_monitored_rule(rule, reason)
+    def add_failure(self, rule, reason, rule_mode, risk_value):
+        if rule_mode is not Rule.BLOCKING:
+            self.add_failed_monitored_rule(rule, reason, rule_mode, risk_value)
             return
 
         if self.valid:
             self.valid = False
+
         self.failed_rules.append(
             {
                 "rule": rule,
                 "reason": reason,
+                "rule_mode": rule_mode,
+                "risk_value": risk_value,
             }
         )
 
@@ -44,10 +48,12 @@ class Result(object):
     def add_warning(self, warning):
         self.warnings.append(warning)
 
-    def add_failed_monitored_rule(self, rule, reason):
+    def add_failed_monitored_rule(self, rule, reason, rule_mode, risk_value):
         self.failed_monitored_rules.append(
             {
                 "rule": rule,
                 "reason": reason,
+                "rule_mode": rule_mode,
+                "risk_value": risk_value,
             }
         )

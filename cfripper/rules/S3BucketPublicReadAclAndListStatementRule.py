@@ -23,25 +23,35 @@ logger = get_logger()
 class S3BucketPublicReadAclAndListStatementRule(Rule):
 
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
-    MONITOR_MODE = True
+    RULE_MODE = Rule.DEBUG
 
     def invoke(self, resources, parameters):
         # Get all bucket policies and filter to get the ones that allow list actions
         bucket_policies = []
         for policy in resources.get("AWS::S3::BucketPolicy", []):
             if any(policy.policy_document.wildcard_allowed_actions(pattern=r"^s3:L.*$")):
-                bucket_policies.append(policy.bucket["Ref"])
+                if isinstance(policy.bucket, str):
+                    bucket_policies.append(policy.bucket)
+                elif isinstance(policy.bucket, dict) and policy.bucket.get("Ref"):
+                    bucket_policies.append(policy.bucket["Ref"])
+                else:
+                    logger.error("Unknown bucket parameter in bucket policy")
 
         # Check if bucket policies exist
-        if bucket_policies:
-            # Get S3 buckets
-            buckets = resources.get("AWS::S3::Bucket", [])
-            for resource in buckets:
-                try:
-                    if resource.access_control == "PublicRead" and resource.logical_id in bucket_policies:
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(resource.logical_id),
-                        )
-                except AttributeError:
-                    logger.info("No access control on bucket")
+        self.check_bucket_policies(resources, bucket_policies)
+
+    def check_bucket_policies(self, resources, bucket_policies):
+        if not bucket_policies:
+            return
+
+        # Get S3 buckets
+        buckets = resources.get("AWS::S3::Bucket", [])
+        for resource in buckets:
+            try:
+                if resource.access_control == "PublicRead" and resource.logical_id in bucket_policies:
+                    self.add_failure(
+                        type(self).__name__,
+                        self.REASON.format(resource.logical_id),
+                    )
+            except AttributeError:
+                logger.info("No access control on bucket")

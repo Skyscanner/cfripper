@@ -19,7 +19,7 @@ from cfripper.model.rule_processor import Rule
 
 class SNSTopicPolicyNotPrincipalRule(Rule):
     REASON = "SNS Topic {} policy should not allow Allow+NotPrincipal"
-    MONITOR_MODE = True
+    RULE_MODE = Rule.MONITOR
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SNS::TopicPolicy", []):

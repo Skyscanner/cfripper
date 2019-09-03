@@ -17,6 +17,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 import pycfmodel
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
+from cfripper.config.config import Config
 from cfripper.model.result import Result
 
 
@@ -65,12 +66,15 @@ class TestCrossAccountTrustRule:
 
     def test_with_test_template_wildcards(self, template):
         result = Result()
-        rule = CrossAccountTrustRule(None, result)
+        rule = CrossAccountTrustRule(
+            Config(aws_account_id="123456789"),
+            result,
+        )
 
         rule.invoke(template.resources, template.parameters)
 
         assert not result.valid
         assert len(result.failed_rules) == 2
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root"
-        assert result.failed_rules[1]["reason"] == "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com"
+        assert result.failed_rules[0]['reason'] == 'RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root'
+        assert result.failed_rules[1]['reason'] == 'RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com'

@@ -16,7 +16,6 @@ specific language governing permissions and limitations under the License.
 
 import pytest
 import logging
-from unittest.mock import patch, Mock
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,10 +23,3 @@ def default_session_fixture(request):
     """Logging disabled when running tests."""
 
     logging.disable(logging.CRITICAL)
-
-
-@pytest.fixture(scope='session', autouse=True)
-def my_thing_mock():
-    m = Mock(return_value="123456789")
-    with patch('cfripper.config.config.Config.get_account_id', m) as _fixture:
-        yield _fixture

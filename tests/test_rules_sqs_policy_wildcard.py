@@ -19,7 +19,7 @@ import os
 import pycfmodel
 
 from cfripper.rules.SQSQueuePolicyWildcardActionRule import SQSQueuePolicyWildcardActionRule
-from cfripper.s3_adapter import S3Adapter
+from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
 
 
@@ -28,8 +28,8 @@ class TestSQSQueuePolicyWildcardActionRule:
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        cf_script = open('{}/test_templates/sqs_queue_with_wildcards.json'.format(dir_path))
-        cf_template = S3Adapter().convert_json_or_yaml_to_dict(cf_script.read())
+        with open(f'{dir_path}/test_templates/sqs_queue_with_wildcards.json') as cf_script:
+            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
     def test_with_test_template_wildcards(self, template):

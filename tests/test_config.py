@@ -28,7 +28,12 @@ class TestConfig:
             'IAMRolesOverprivilegedRule',
             'SecurityGroupOpenToWorldRule'
         ]
-        config = Config('MISSING', 'MISSING', 'MISSING', rules=default_rules)
+        config = Config(
+            project_name='MISSING',
+            service_name='MISSING',
+            stack_name='MISSING',
+            rules=default_rules,
+        )
 
         assert set(config.RULES) == set(default_rules)
 
@@ -38,13 +43,15 @@ class TestConfig:
             r'test_.*': ['IAMRolesOverprivilegedRule'],
         }
 
-        with patch('cfripper.config.whitelist.whitelist', new=whitelist):
-            from cfripper.config.config import Config
+        with patch('cfripper.config.whitelist.stack_whitelist', new=whitelist):
             default_rules = [
                 'IAMRolesOverprivilegedRule',
-                'SecurityGroupOpenToWorldRule'
+                'SecurityGroupOpenToWorldRule',
             ]
-            cfg = Config('test_project', 'test_service', 'test_stack', rules=default_rules)
+            cfg = Config(
+                stack_name='test_stack',
+                rules=default_rules,
+            )
 
             assert set(cfg.RULES) != set(default_rules)
 
@@ -57,12 +64,17 @@ class TestConfig:
             }
         }
 
-        with patch('cfripper.config.whitelist.whitelist', new=whitelist):
+        with patch('cfripper.config.whitelist.stack_whitelist', new=whitelist):
             from cfripper.config.config import Config
             default_rules = [
                 'IAMRolesOverprivilegedRule',
                 'SecurityGroupOpenToWorldRule'
             ]
-            cfg = Config('test_project', 'test_service', 'test_stack', rules=default_rules)
+            cfg = Config(
+                project_name='test_project',
+                service_name='test_service',
+                stack_name='test_stack',
+                rules=default_rules,
+            )
 
             assert set(cfg.RULES) == set(default_rules)

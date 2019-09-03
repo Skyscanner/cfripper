@@ -2,6 +2,15 @@
   "Parameters": {
     "Password": {
       "Type": "String"
+    },
+    "Password2": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "Password3": {
+      "Type": "String",
+      "NoEcho": "true",
+      "Default": "test"
     }
   },
   "Resources": {
@@ -11,6 +20,24 @@
         "SourceDBInstanceIdentifier": "sampleDbInstance",
         "MasterUserPassword": {
           "Ref": "Password"
+        }
+      }
+    },
+    "BadDb4": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "MasterUserPassword": {
+          "Ref": "Password2"
+        }
+      }
+    },
+    "BadDb5": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "MasterUserPassword": {
+          "Ref": "Password3"
         }
       }
     }
