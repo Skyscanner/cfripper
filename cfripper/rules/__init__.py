@@ -24,7 +24,6 @@ from cfripper.rules.SNSTopicPolicyNotPrincipalRule import SNSTopicPolicyNotPrinc
 from cfripper.rules.SQSQueuePolicyNotPrincipalRule import SQSQueuePolicyNotPrincipalRule
 from cfripper.rules.S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
-from cfripper.rules.SecretsRolesOverprivilegedRule import SecretsRolesOverprivilegedRule
 from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
@@ -46,7 +45,6 @@ ALL_RULES = {
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
     "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
     "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
-    "SecretsRolesOverprivilegedRule": SecretsRolesOverprivilegedRule,
     "PrivilegeEscalationRule": PrivilegeEscalationRule,
     "CrossAccountTrustRule": CrossAccountTrustRule,
     "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
