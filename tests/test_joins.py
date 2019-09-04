@@ -22,12 +22,7 @@ class ReplaceJoinTestCase(unittest.TestCase):
         As simple as it gets
         """
 
-        source = {
-            "Fn::Join": [
-                " ",
-                ["The", "cake", "is", "a", "lie"],
-            ],
-        }
+        source = {"Fn::Join": [" ", ["The", "cake", "is", "a", "lie"]]}
 
         expected = "The cake is a lie"
 
@@ -40,16 +35,9 @@ class ReplaceJoinTestCase(unittest.TestCase):
         Refs should be replaced by ${value}
         """
 
-        source = {
-            "Fn::Join": [
-                " ",
-                ["The", {"Ref": "Cake"}, "is", "a", "lie"],
-            ],
-        }
+        source = {"Fn::Join": [" ", ["The", {"Ref": "Cake"}, "is", "a", "lie"]]}
 
-        expected = {
-            "Fn::Sub": "The ${Cake} is a lie",
-        }
+        expected = {"Fn::Sub": "The ${Cake} is a lie"}
 
         actual = cfn_flip.clean(source)
 
@@ -60,16 +48,9 @@ class ReplaceJoinTestCase(unittest.TestCase):
         Base64 etc should be replaced by parameters to Sub
         """
 
-        source = {
-            "Fn::Join": [
-                " ",
-                ["The", {"Fn::GetAtt": ["Cake", "Hole"]}, "is", "a", "lie"],
-            ],
-        }
+        source = {"Fn::Join": [" ", ["The", {"Fn::GetAtt": ["Cake", "Hole"]}, "is", "a", "lie"]]}
 
-        expected = {
-            "Fn::Sub": "The ${Cake.Hole} is a lie",
-        }
+        expected = {"Fn::Sub": "The ${Cake.Hole} is a lie"}
 
         actual = cfn_flip.clean(source)
 
@@ -80,16 +61,9 @@ class ReplaceJoinTestCase(unittest.TestCase):
         Base64 etc should be replaced by parameters to Sub
         """
 
-        source = {
-            "Fn::Join": [
-                " ",
-                ["The", {"Fn::GetAtt": ["First", "Second", "Third"]}, "is", "a", "lie"],
-            ],
-        }
+        source = {"Fn::Join": [" ", ["The", {"Fn::GetAtt": ["First", "Second", "Third"]}, "is", "a", "lie"]]}
 
-        expected = {
-            "Fn::Sub": "The ${First.Second.Third} is a lie",
-        }
+        expected = {"Fn::Sub": "The ${First.Second.Third} is a lie"}
 
         actual = cfn_flip.clean(source)
 
@@ -100,23 +74,9 @@ class ReplaceJoinTestCase(unittest.TestCase):
         GetAtt should be replaced by ${Thing.Property}
         """
 
-        source = {
-            "Fn::Join": [
-                " ",
-                ["The", {"Fn::Base64": "Notreallybase64"}, "is", "a", "lie"],
-            ],
-        }
+        source = {"Fn::Join": [" ", ["The", {"Fn::Base64": "Notreallybase64"}, "is", "a", "lie"]]}
 
-        expected = {
-            "Fn::Sub": [
-                "The ${Param1} is a lie",
-                {
-                    "Param1": {
-                        "Fn::Base64": "Notreallybase64",
-                    },
-                },
-            ],
-        }
+        expected = {"Fn::Sub": ["The ${Param1} is a lie", {"Param1": {"Fn::Base64": "Notreallybase64"}}]}
 
         actual = cfn_flip.clean(source)
 
@@ -130,35 +90,17 @@ class ReplaceJoinTestCase(unittest.TestCase):
         source = {
             "things": [
                 "Just a string",
-                {
-                    "Fn::Join": [
-                        " ",
-                        ["The", {"Fn::Base64": "Notreallybase64"}, "is", "a", "lie"],
-                    ],
-                },
-                {
-                    "Another": "thing",
-                },
-            ],
+                {"Fn::Join": [" ", ["The", {"Fn::Base64": "Notreallybase64"}, "is", "a", "lie"]]},
+                {"Another": "thing"},
+            ]
         }
 
         expected = {
             "things": [
                 "Just a string",
-                {
-                    "Fn::Sub": [
-                        "The ${Param1} is a lie",
-                        {
-                            "Param1": {
-                                "Fn::Base64": "Notreallybase64",
-                            },
-                        },
-                    ],
-                },
-                {
-                    "Another": "thing",
-                },
-            ],
+                {"Fn::Sub": ["The ${Param1} is a lie", {"Param1": {"Fn::Base64": "Notreallybase64"}}]},
+                {"Another": "thing"},
+            ]
         }
 
         actual = cfn_flip.clean(source)

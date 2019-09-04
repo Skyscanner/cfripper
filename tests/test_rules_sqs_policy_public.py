@@ -25,11 +25,10 @@ from cfripper.model.rule_processor import Rule
 
 
 class TestSQSQueuePolicyPublicRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/sqs_policy_public.json') as cf_script:
+        with open(f"{dir_path}/test_templates/sqs_policy_public.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
@@ -41,9 +40,9 @@ class TestSQSQueuePolicyPublicRule:
 
         assert not result.valid
         assert len(result.failed_rules) == 4
-        assert result.failed_rules[0]['reason'] == 'SQS Queue policy QueuePolicyPublic1 should not be public'
-        assert result.failed_rules[1]['reason'] == 'SQS Queue policy QueuePolicyPublic2 should not be public'
-        assert result.failed_rules[2]['reason'] == 'SQS Queue policy QueuePolicyPublic3 should not be public'
-        assert result.failed_rules[3]['reason'] == 'SQS Queue policy QueuePolicyPublic4 should not be public'
+        assert result.failed_rules[0]["reason"] == "SQS Queue policy QueuePolicyPublic1 should not be public"
+        assert result.failed_rules[1]["reason"] == "SQS Queue policy QueuePolicyPublic2 should not be public"
+        assert result.failed_rules[2]["reason"] == "SQS Queue policy QueuePolicyPublic3 should not be public"
+        assert result.failed_rules[3]["reason"] == "SQS Queue policy QueuePolicyPublic4 should not be public"
 
-        assert result.failed_rules[0]['risk_value'] == Rule.HIGH
+        assert result.failed_rules[0]["risk_value"] == Rule.HIGH

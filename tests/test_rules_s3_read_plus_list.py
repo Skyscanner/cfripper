@@ -24,7 +24,6 @@ from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPub
 
 
 class TestS3BucketPublicReadAclAndListStatementRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -41,5 +40,8 @@ class TestS3BucketPublicReadAclAndListStatementRule:
         assert result.valid
         assert len(result.failed_rules) == 0
         assert len(result.failed_monitored_rules) == 2
-        assert result.failed_monitored_rules[0]["reason"] == "S3 Bucket S3Bucket should not have a public read acl and list bucket statement"
+        assert (
+            result.failed_monitored_rules[0]["reason"]
+            == "S3 Bucket S3Bucket should not have a public read acl and list bucket statement"
+        )
         assert result.failed_monitored_rules[0]["rule_mode"] == Rule.DEBUG

@@ -46,10 +46,4 @@ class PrivilegeEscalationRule(Rule):
 
             if len(intersection):
                 for violation in intersection:
-                    self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(
-                            resource.logical_id,
-                            violation,
-                        ),
-                    )
+                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id, violation))

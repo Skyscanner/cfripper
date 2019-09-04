@@ -26,7 +26,4 @@ class KMSKeyWildcardPrincipal(Rule):
             if resource.key_policy.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
                 for statement in resource.key_policy.statements:
                     if not statement.condition:
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(resource.logical_id),
-                        )
+                        self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

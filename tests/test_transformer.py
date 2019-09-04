@@ -24,12 +24,10 @@ test_cf = {
         "Test1": {
             "Type": "AWS::IAM::Role",
             "Properties": {
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/aws-service-role/AWSTrustedAdvisorServiceRolePolicy"
-                ],
+                "ManagedPolicyArns": ["arn:aws:iam::aws:policy/aws-service-role/AWSTrustedAdvisorServiceRolePolicy"],
                 "Policies": [],
-                "RoleName": "Test"
-            }
+                "RoleName": "Test",
+            },
         }
     }
 }
@@ -38,19 +36,11 @@ test_policy = {
     "PolicyVersion": {
         "Document": {
             "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Action": [
-                        "cloudtrail:GetTrailStatus"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                }
-            ]
+            "Statement": [{"Action": ["cloudtrail:GetTrailStatus"], "Effect": "Allow", "Resource": "*"}],
         },
         "VersionId": "v2",
         "IsDefaultVersion": True,
-        "CreateDate": "2018-08-21T22:29:41Z"
+        "CreateDate": "2018-08-21T22:29:41Z",
     }
 }
 
@@ -59,13 +49,7 @@ def test_flow():
     cf_model = pycfmodel.parse(test_cf)
     transformer = ManagedPolicyTransformer(cf_model)
     iam_client = Mock()
-    iam_client.get_policy = Mock(
-        return_value={
-            "Policy": {
-                "DefaultVersionId": "TestV",
-            },
-        },
-    )
+    iam_client.get_policy = Mock(return_value={"Policy": {"DefaultVersionId": "TestV"}})
     iam_client.get_policy_version = Mock(return_value=test_policy)
     transformer.iam_client = iam_client
 

@@ -23,18 +23,17 @@ from cfripper.model.result import Result
 
 
 class TestCloudFormationAuthenticationJson:
-
     @pytest.fixture(scope="class")
     def template_bad(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/cfn_authentication.json') as cf_script:
+        with open(f"{dir_path}/test_templates/cfn_authentication.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
     @pytest.fixture(scope="class")
     def template_good(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/cfn_authentication_good.json') as cf_script:
+        with open(f"{dir_path}/test_templates/cfn_authentication_good.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
@@ -47,7 +46,7 @@ class TestCloudFormationAuthenticationJson:
         assert not result.valid
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]['reason'] == 'Possible hardcoded credentials in EC2I4LBA1'
+        assert result.failed_rules[0]["reason"] == "Possible hardcoded credentials in EC2I4LBA1"
 
     # This should pass CFRipper, currently does not. Needs to be looked into.
     # Issue is pycfmodel is marking it as containing hardcoded credentials, but this is not true.
@@ -60,4 +59,4 @@ class TestCloudFormationAuthenticationJson:
         assert not result.valid
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]['reason'] == 'Possible hardcoded credentials in EC2I4LBA1'
+        assert result.failed_rules[0]["reason"] == "Possible hardcoded credentials in EC2I4LBA1"

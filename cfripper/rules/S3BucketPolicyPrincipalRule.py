@@ -12,12 +12,11 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
+import logging
 import re
 from cfripper.model.rule_processor import Rule
-from cfripper.config.logger import get_logger
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class S3BucketPolicyPrincipalRule(Rule):
@@ -47,8 +46,5 @@ class S3BucketPolicyPrincipalRule(Rule):
             if not account_id_match:
                 continue
             account_id = account_id_match.group(1)
-            if self._config.AWS_PRINCIPALS and account_id not in self._config.AWS_PRINCIPALS:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(logical_id, account_id),
-                )
+            if self._config.aws_principals and account_id not in self._config.aws_principals:
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))

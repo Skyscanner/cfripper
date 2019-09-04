@@ -12,12 +12,11 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 
-
-from cfripper.config.logger import get_logger
 from cfripper.model.rule_processor import Rule
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class S3CrossAccountTrustRule(Rule):
@@ -33,9 +32,7 @@ class S3CrossAccountTrustRule(Rule):
 
     def check_principals(self, principals, logical_id):
         for principal in principals:
-            cross_account = (
-                self._config.aws_account_id and self._config.aws_account_id not in principal
-            )
+            cross_account = self._config.aws_account_id and self._config.aws_account_id not in principal
 
             if not isinstance(principal, str):
                 logger.warn(

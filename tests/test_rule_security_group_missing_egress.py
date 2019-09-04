@@ -23,11 +23,10 @@ from cfripper.model.result import Result
 
 
 class TestSecurityGroupMissingEgressRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/single_security_group_one_cidr_ingress.json') as cf_script:
+        with open(f"{dir_path}/test_templates/single_security_group_one_cidr_ingress.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 
@@ -39,4 +38,7 @@ class TestSecurityGroupMissingEgressRule:
 
         assert result.valid
         assert len(result.failed_monitored_rules) == 1
-        assert result.failed_monitored_rules[0]['reason'] == 'Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration'
+        assert (
+            result.failed_monitored_rules[0]["reason"]
+            == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+        )

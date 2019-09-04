@@ -23,11 +23,10 @@ from cfripper.model.result import Result
 
 
 class TestIAMRoleWildcardActionOnPermissionsPolicyRule:
-
     @pytest.fixture(scope="class")
     def template(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f'{dir_path}/test_templates/iam_role_with_wildcard_action.json') as cf_script:
+        with open(f"{dir_path}/test_templates/iam_role_with_wildcard_action.json") as cf_script:
             cf_template = convert_json_or_yaml_to_dict(cf_script.read())
         return pycfmodel.parse(cf_template)
 

@@ -34,7 +34,7 @@ from cfripper.rules.KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
 from cfripper.rules.FullWildcardPrincipal import FullWildcardPrincipal
 from cfripper.rules.PartialWildcardPrincipal import PartialWildcardPrincipal
 
-ALL_RULES = {
+DEFAULT_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
     "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,
     "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,

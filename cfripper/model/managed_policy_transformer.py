@@ -30,27 +30,18 @@ class ManagedPolicyTransformer(object):
         self.iam_client = boto3.client("iam")
 
     def transform_managed_policies(self):
-        self.parse_fetch_update(
-            self.cf_model.resources.get("AWS::IAM::Role", []),
-        )
-        self.parse_fetch_update(
-            self.cf_model.resources.get("AWS::IAM::Group", []),
-        )
+        self.parse_fetch_update(self.cf_model.resources.get("AWS::IAM::Role", []))
+        self.parse_fetch_update(self.cf_model.resources.get("AWS::IAM::Group", []))
 
     def parse_fetch_update(self, resources):
         for resource in resources:
             for managed_policy_arn in resource.managed_policy_arns:
-                managed_policy = self.iam_client.get_policy(
-                    PolicyArn=managed_policy_arn,
-                )
+                managed_policy = self.iam_client.get_policy(PolicyArn=managed_policy_arn)
                 version_id = managed_policy.get("Policy", {}).get("DefaultVersionId")
                 if not version_id:
                     continue
 
-                policy_version = self.iam_client.get_policy_version(
-                    PolicyArn=managed_policy_arn,
-                    VersionId=version_id,
-                )
+                policy_version = self.iam_client.get_policy_version(PolicyArn=managed_policy_arn, VersionId=version_id)
                 policy_document_json = {
                     "PolicyDocument": policy_version["PolicyVersion"]["Document"],
                     "PolicyName": "AutoTransformedManagedPolicy{}".format(version_id),

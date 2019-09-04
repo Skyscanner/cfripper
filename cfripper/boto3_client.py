@@ -1,14 +1,15 @@
+import logging
+
 import boto3
 
 from datetime import datetime
 from time import sleep
 
 from botocore.exceptions import ClientError
-from cfripper.config.logger import get_logger
 from cfripper.model.utils import convert_json_or_yaml_to_dict, extract_bucket_name_and_path_from_url
 
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class Boto3Client:
@@ -41,18 +42,20 @@ class Boto3Client:
         while not stack_content and i < self.N_RETRIES:
             logger.info(f"Stack: {self.stack_id} on {self.account_id} - {self.region} get_template Attempt #{i}")
             try:
-                response = client.get_template(
-                    StackName=self.stack_id,
-                )
+                response = client.get_template(StackName=self.stack_id)
                 stack_content = response.get("TemplateBody")
                 if not stack_content:
-                    logger.warning(f"No template body found for stack: {self.stack_id} on {self.account_id} - {self.region}")
+                    logger.warning(
+                        f"No template body found for stack: {self.stack_id} on {self.account_id} - {self.region}"
+                    )
                     sleep(i)
             except ClientError as e:
                 if e.response["Error"]["Code"] == "ValidationError":
                     logger.exception(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
                 else:
-                    logger.exception(f"Unexpected error occured when getting stack template for: {self.stack_id} on {self.account_id} - {self.region}")
+                    logger.exception(
+                        f"Unexpected error occured when getting stack template for: {self.stack_id} on {self.account_id} - {self.region}"
+                    )
             i += 1
         return stack_content
 
@@ -66,10 +69,7 @@ class Boto3Client:
         bucket_name, file_path = extract_bucket_name_and_path_from_url(s3_url)
 
         client = self.session.client("s3", region_name=self.region)
-        response = client.get_object(
-            Bucket=bucket_name,
-            Key=file_path
-        )
+        response = client.get_object(Bucket=bucket_name, Key=file_path)
         file_contents = response["Body"].read().decode("utf-8")
 
         return convert_json_or_yaml_to_dict(file_contents)

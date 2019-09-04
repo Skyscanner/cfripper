@@ -13,6 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import json
+import logging
 import re
 from contextlib import suppress
 
@@ -20,9 +21,8 @@ import yaml
 
 from urllib.parse import unquote
 from cfn_flip import to_json
-from cfripper.config.logger import get_logger
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class InvalidURLException(Exception):

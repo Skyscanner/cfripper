@@ -25,7 +25,4 @@ class SecurityGroupMissingEgressRule(Rule):
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::EC2::SecurityGroup", []):
             if not resource.security_group_egress:
-                self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(resource.logical_id),
-                )
+                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))

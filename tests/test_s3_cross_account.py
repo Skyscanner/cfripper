@@ -34,10 +34,7 @@ class TestS3CrossAccountTrustRule:
 
     def test_with_cross_account_in_bucket_policy(self, template):
         result = Result()
-        rule = S3CrossAccountTrustRule(
-            Config(aws_account_id="123456789"),
-            result,
-        )
+        rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
 
         rule.invoke(template.resources, template.parameters)
 
@@ -45,7 +42,8 @@ class TestS3CrossAccountTrustRule:
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
         assert (
-            result.failed_rules[0]['reason'] == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
+            result.failed_rules[0]["reason"]
+            == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
         )
 
 
@@ -59,10 +57,7 @@ class TestS3CrossAccountTrustRuleWithNormalAccess:
 
     def test_with_cross_account_in_bucket_policy(self, template):
         result = Result()
-        rule = S3CrossAccountTrustRule(
-            Config(aws_account_id="123456789"),
-            result,
-        )
+        rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
 
         rule.invoke(template.resources, template.parameters)
 
@@ -70,5 +65,6 @@ class TestS3CrossAccountTrustRuleWithNormalAccess:
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
         assert (
-            result.failed_rules[0]['reason'] == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
+            result.failed_rules[0]["reason"]
+            == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
         )

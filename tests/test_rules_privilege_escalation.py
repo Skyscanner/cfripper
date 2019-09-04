@@ -32,19 +32,15 @@ def test_with_valid_role_inline_policy():
                         "Statement": [
                             {
                                 "Effect": "Allow",
-                                "Action": [
-                                    "IAM:CREATEPOLICY",
-                                ],
-                                "Resource": [
-                                    "arn:aws:glue:eu-west-1:12345678:catalog",
-                                ]
+                                "Action": ["IAM:CREATEPOLICY"],
+                                "Resource": ["arn:aws:glue:eu-west-1:12345678:catalog"],
                             }
-                        ]
+                        ],
                     },
                     "Roles": "some_role",
-                }
+                },
             }
-        }
+        },
     }
 
     resource = pycfmodel.parse(role_props).resources

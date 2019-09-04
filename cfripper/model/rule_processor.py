@@ -12,15 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 from abc import ABC, abstractmethod
 
 import pycfmodel
 
-from cfripper.config.logger import get_logger
 from cfripper.config.config import Config
 from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
 
-logger = get_logger()
+logger = logging.getLogger(__file__)
 
 
 class Rule(ABC):
@@ -68,19 +68,17 @@ class RuleProcessor:
                 rule.invoke(cf_model.resources, cf_model.parameters)
             except Exception as other_exception:
                 result.add_exception(other_exception)
-                logger.exception("{} crashed with {} for project - {}, service - {}, stack - {}".format(
-                    type(rule).__name__,
-                    type(other_exception).__name__,
-                    config.project_name,
-                    config.service_name,
-                    config.stack_name,
-                ))
+                logger.exception(
+                    "{} crashed with {} for project - {}, service - {}, stack - {}".format(
+                        type(rule).__name__,
+                        type(other_exception).__name__,
+                        config.project_name,
+                        config.service_name,
+                        config.stack_name,
+                    )
+                )
                 continue
 
     @staticmethod
     def remove_debug_rules(rules):
-        return [
-            rule
-            for rule in rules
-            if rule["rule_mode"] != Rule.DEBUG
-        ]
+        return [rule for rule in rules if rule["rule_mode"] != Rule.DEBUG]
