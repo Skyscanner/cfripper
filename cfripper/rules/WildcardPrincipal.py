@@ -55,20 +55,23 @@ class GenericWildcardPrincipal(Rule):
                     self.check_principals(principal_list, statement, resource_id)
 
     def resource_is_whitelisted(self, logical_id):
-        return logical_id in self._config.get_wildcard_principal_exemption_resource_list()
+        return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
 
     def validate_account_id(self, account_id, logical_id):
+        if self.should_add_failure(account_id=account_id, logical_id=logical_id):
 
-        if (
-            self._config.aws_principals
-            and account_id not in self._config.aws_principals
-            and not self.resource_is_whitelisted(logical_id)
-        ):
             self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
             logger.info(
                 f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
                 f"{self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id)}"
             )
+
+    def should_add_failure(self, account_id, logical_id):
+        if not self._config.aws_principals:
+            return False
+        if account_id in self._config.aws_principals:
+            return False
+        return self.resource_is_whitelisted(logical_id)
 
     def check_principals(self, principal_list, statement, logical_id):
 

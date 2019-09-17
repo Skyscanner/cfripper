@@ -15,6 +15,8 @@ specific language governing permissions and limitations under the License.
 
 
 from unittest.mock import patch
+
+import pytest
 from cfripper.config.config import Config
 
 
@@ -50,3 +52,150 @@ class TestConfig:
         )
 
         assert set(cfg.rules) == set(default_rules)
+
+    @pytest.fixture
+    def mock_rule_to_resource_whitelist(self):
+        return {
+            "RuleThatUsesResourceWhitelists": {
+                "test_*": [
+                    "resource_5",
+                ],
+                "test_stack": [
+                    "resource_1",
+                    "another_resource",
+                ],
+                "other_stack": [
+                    "resource_2",
+                    "another_resource",
+                ],
+                "stack_without_whitelisted_resources": []
+            },
+            "OtherRuleThatUsesResourceWhitelists": {
+                "test_stack": [
+                    "resource_3",
+                ],
+                "other_stack": [
+                    "resource_4",
+                ],
+            },
+        }
+
+    def test_stack_to_resource_whitelist_normal_behavior(self, mock_rule_to_resource_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="test_stack",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
+
+        )
+        assert config.get_whitelisted_resources("RuleThatUsesResourceWhitelists") == [
+            "resource_5",
+            "resource_1",
+            "another_resource",
+        ]
+
+    def test_stack_to_resource_whitelist_rule_not_in_whitelist(self, mock_rule_to_resource_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="test_stack",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
+
+        )
+        assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
+
+    def test_stack_to_resource_whitelist_stack_not_in_whitelist(self, mock_rule_to_resource_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="stack_without_whitelisted_resources",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
+
+        )
+        assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
+
+    def test_stack_to_resource_whitelist_stack_without_resources(self, mock_rule_to_resource_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="test_stack_not_whitelisted",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
+
+        )
+        assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
+
+    @pytest.fixture
+    def mock_rule_to_action_whitelist(self):
+        return {
+            "RuleThatUsesActionWhitelists": {
+                "stack_*": [
+                    "s3:GetItem",
+                ],
+                "stack_2": [
+                    "kms:*",
+                    "dynamodb:CreateTable",
+                ],
+                "other_stack": [
+                    "s3:GetItem",
+                ],
+                "stack_without_whitelisted_resources": []
+            },
+            "OtherRuleThatUsesResourceWhitelists": {
+                "test_stack": [],
+                "other_stack": [
+                    ".*",
+                ],
+            },
+        }
+
+    def test_stack_to_action_whitelist_normal_behavior(self, mock_rule_to_action_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="stack_2",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_action_whitelist=mock_rule_to_action_whitelist
+
+        )
+        assert config.get_whitelisted_actions("RuleThatUsesActionWhitelists") == [
+            "s3:GetItem",
+            "kms:*",
+            "dynamodb:CreateTable",
+        ]
+
+    def test_stack_to_action_whitelist_rule_not_in_whitelist(self, mock_rule_to_action_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="test_stack",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_action_whitelist=mock_rule_to_action_whitelist
+
+        )
+        assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
+
+    def test_stack_to_action_whitelist_stack_not_in_whitelist(self, mock_rule_to_action_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="test_stack_not_whitelisted",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_action_whitelist=mock_rule_to_action_whitelist
+
+        )
+        assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
+
+    def test_stack_to_action_whitelist_stack_without_resources(self, mock_rule_to_action_whitelist):
+        mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+        config = Config(
+            stack_name="stack_without_whitelisted_resources",
+            rules=mock_rules,
+            stack_whitelist={},
+            rule_to_action_whitelist=mock_rule_to_action_whitelist
+
+        )
+        assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
