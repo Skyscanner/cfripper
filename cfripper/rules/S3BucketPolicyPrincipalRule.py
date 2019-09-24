@@ -22,7 +22,7 @@ logger = logging.getLogger(__file__)
 class S3BucketPolicyPrincipalRule(Rule):
 
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
-    RULE_MODE = Rule.MONITOR
+    RULE_MODE = Rule.BLOCKING
     RISK_VALUE = Rule.HIGH
     PATTERN = r"arn:aws:iam::(\d*):.*"
 
