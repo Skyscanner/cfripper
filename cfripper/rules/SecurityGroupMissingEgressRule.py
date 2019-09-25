@@ -19,7 +19,10 @@ from cfripper.model.rule_processor import Rule
 
 class SecurityGroupMissingEgressRule(Rule):
 
-    REASON = "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    REASON = (
+        "Missing egress rule in {} means all traffic is allowed outbound. "
+        "Make this explicit if it is desired configuration"
+    )
     RULE_MODE = Rule.MONITOR
 
     def invoke(self, resources, parameters):
