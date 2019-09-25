@@ -48,6 +48,6 @@ class CrossAccountTrustRule(Rule):
 
     def get_aws_principals(self, statement):
         for principal in statement.principal:
-            if principal._type == "AWS":
+            if principal.principal_type == "AWS":
                 return principal.principals
         return None
