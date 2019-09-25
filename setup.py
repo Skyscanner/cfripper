@@ -9,7 +9,7 @@ dev_requires = ["flake8>=3.3.0", "pytest>=3.6", "pytest-cov>=2.5.1", "pip-tools=
 
 setup(
     name="cfripper",
-    version="0.6.1",
+    version="0.6.2",
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
     long_description=long_description,
