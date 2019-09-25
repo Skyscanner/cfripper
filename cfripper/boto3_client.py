@@ -54,7 +54,8 @@ class Boto3Client:
                     logger.exception(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
                 else:
                     logger.exception(
-                        f"Unexpected error occured when getting stack template for: {self.stack_id} on {self.account_id} - {self.region}"
+                        "Unexpected error occured when getting stack template for:"
+                        f" {self.stack_id} on {self.account_id} - {self.region}"
                     )
             i += 1
         return stack_content
