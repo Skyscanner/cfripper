@@ -110,10 +110,9 @@ class Config:
         self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
 
         if self.stack_name:
-            exemption_list = self.get_stack_exemption_list()
-
+            whitelisted_rules = self.get_whitelisted_rules()
             # set difference to get a list of allowed rules to be ran for this stack
-            self.rules = list(set(self.rules) - set(exemption_list))
+            self.rules = list(set(self.rules) - set(whitelisted_rules))
 
         self.allowed_world_open_ports = list(self.DEFAULT_ALLOWED_WORLD_OPEN_PORTS)
 
@@ -132,9 +131,10 @@ class Config:
 
         return allowed_resources
 
-    def get_stack_exemption_list(self) -> List[str]:
+    def get_whitelisted_rules(self) -> List[str]:
+        whitelisted_rules = []
         for k, v in self.stack_whitelist.items():
             if re.match(k, self.stack_name):
-                return v
+                whitelisted_rules += v
 
-        return []
+        return whitelisted_rules

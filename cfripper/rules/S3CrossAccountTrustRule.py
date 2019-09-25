@@ -46,6 +46,6 @@ class S3CrossAccountTrustRule(Rule):
 
     def get_aws_principals(self, statement):
         for principal in statement.principal:
-            if principal._type == "AWS" and not principal.has_wildcard_principals():
+            if principal.principal_type == "AWS" and not principal.has_wildcard_principals():
                 return principal.principals
         return None
