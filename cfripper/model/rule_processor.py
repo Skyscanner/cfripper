@@ -13,39 +13,13 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
-from abc import ABC, abstractmethod
 
 import pycfmodel
 
-from cfripper.config.config import Config
+from cfripper.model.enums import RuleMode
 from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
 
 logger = logging.getLogger(__file__)
-
-
-class Rule(ABC):
-    BLOCKING = "BLOCKING"
-    MONITOR = "MONITOR"
-    DEBUG = "DEBUG"
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
-    RULE_MODE = BLOCKING
-    RISK_VALUE = MEDIUM
-
-    def __init__(self, config, result):
-        self._config = config if config else Config()
-        self._result = result
-
-    @abstractmethod
-    def invoke(self, resources, parameters):
-        pass
-
-    def add_failure(self, rule, reason):
-        self._result.add_failure(rule, reason, self.RULE_MODE, self.RISK_VALUE)
-
-    def add_warning(self, warning):
-        self._result.add_warning(warning)
 
 
 class RuleProcessor:
@@ -81,4 +55,4 @@ class RuleProcessor:
 
     @staticmethod
     def remove_debug_rules(rules):
-        return [rule for rule in rules if rule["rule_mode"] != Rule.DEBUG]
+        return [rule for rule in rules if rule["rule_mode"] != RuleMode.DEBUG]

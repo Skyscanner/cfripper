@@ -14,7 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 
-from cfripper.model.rule_processor import Rule
+from cfripper.model.enums import RuleRisk
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__file__)
 class S3BucketPublicReadWriteAclRule(Rule):
 
     REASON = "S3 Bucket {} should not have a public read-write acl"
-    RISK_VALUE = Rule.HIGH
+    RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::Bucket", []):

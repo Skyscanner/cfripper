@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
-from cfripper.model.rule_processor import Rule
+from cfripper.model.enums import RuleMode, RuleRisk
 from cfripper.rules.WildcardPrincipal import GenericWildcardPrincipal
 
 
@@ -22,7 +22,7 @@ class FullWildcardPrincipal(GenericWildcardPrincipal):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 
-    RULE_MODE = Rule.BLOCKING
-    RISK_VALUE = Rule.HIGH
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.HIGH
 
     FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

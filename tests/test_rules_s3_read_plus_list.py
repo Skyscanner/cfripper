@@ -17,8 +17,9 @@ specific language governing permissions and limitations under the License.
 import pytest
 import os
 import pycfmodel
+
+from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
-from cfripper.model.rule_processor import Rule
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 
@@ -44,4 +45,4 @@ class TestS3BucketPublicReadAclAndListStatementRule:
             result.failed_monitored_rules[0]["reason"]
             == "S3 Bucket S3Bucket should not have a public read acl and list bucket statement"
         )
-        assert result.failed_monitored_rules[0]["rule_mode"] == Rule.DEBUG
+        assert result.failed_monitored_rules[0]["rule_mode"] == RuleMode.DEBUG

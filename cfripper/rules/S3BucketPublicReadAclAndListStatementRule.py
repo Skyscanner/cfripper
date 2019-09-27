@@ -14,7 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 
-from cfripper.model.rule_processor import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__file__)
 class S3BucketPublicReadAclAndListStatementRule(Rule):
 
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
-    RULE_MODE = Rule.DEBUG
+    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, resources, parameters):
         # Get all bucket policies and filter to get the ones that allow list actions

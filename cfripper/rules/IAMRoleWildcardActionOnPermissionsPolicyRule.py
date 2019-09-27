@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 
 
 from cfripper.config.regex import REGEX_WILDCARD_POLICY_ACTION
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):

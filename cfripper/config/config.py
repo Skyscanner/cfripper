@@ -46,7 +46,8 @@ class Config:
         "iam:Create",
         "iam:Delete",
         "iam:Put",
-        "iam:Update" "iam:Remove",
+        "iam:Update",
+        "iam:Remove",
         # pword / MFA STUFF
         "iam:ChangePassword",
         "iam:ResyncMFADevice",

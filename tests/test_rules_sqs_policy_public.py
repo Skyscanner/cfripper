@@ -18,10 +18,10 @@ import pytest
 import os
 import pycfmodel
 
+from cfripper.model.enums import RuleRisk
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
-from cfripper.model.rule_processor import Rule
 
 
 class TestSQSQueuePolicyPublicRule:
@@ -45,4 +45,4 @@ class TestSQSQueuePolicyPublicRule:
         assert result.failed_rules[2]["reason"] == "SQS Queue policy QueuePolicyPublic3 should not be public"
         assert result.failed_rules[3]["reason"] == "SQS Queue policy QueuePolicyPublic4 should not be public"
 
-        assert result.failed_rules[0]["risk_value"] == Rule.HIGH
+        assert result.failed_rules[0]["risk_value"] == RuleRisk.HIGH
