@@ -15,7 +15,11 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
-from cfripper.config.whitelist import stack_whitelist as default_stack_whitelist, wildcard_principal_resource_whitelist
+from cfripper.config.whitelist import (
+    stack_whitelist as default_stack_whitelist,
+    rule_to_action_whitelist as default_rule_to_action_whitelist,
+    rule_to_resource_whitelist as default_rule_to_resource_whitelist,
+)
 
 
 class Config:
@@ -92,7 +96,8 @@ class Config:
         aws_user_agent=None,
         aws_principals=None,
         stack_whitelist=None,
-        wildcard_whitelist=None,
+        rule_to_action_whitelist=None,
+        rule_to_resource_whitelist=None,
     ):
         self.project_name = project_name
         self.service_name = service_name
@@ -104,8 +109,15 @@ class Config:
         self.aws_account_name = aws_account_name
         self.aws_account_id = aws_account_id
         self.aws_user_agent = aws_user_agent
-        self.wildcard_whitelist = (
-            wildcard_whitelist if wildcard_whitelist is not None else wildcard_principal_resource_whitelist
+        self.rule_to_action_whitelist = (
+            rule_to_action_whitelist
+            if rule_to_action_whitelist is not None
+            else default_rule_to_action_whitelist
+        )
+        self.rule_to_resource_whitelist = (
+            rule_to_resource_whitelist
+            if rule_to_resource_whitelist is not None
+            else default_rule_to_resource_whitelist
         )
         self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
 
@@ -123,9 +135,17 @@ class Config:
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
 
-    def get_wildcard_principal_exemption_resource_list(self) -> List[str]:
+    def get_whitelisted_actions(self, rule_name: str) -> List[str]:
+        allowed_actions = []
+        for k, v in self.rule_to_action_whitelist.get(rule_name, {}).items():
+            if re.match(k, self.stack_name):
+                allowed_actions += v
+
+        return allowed_actions
+
+    def get_whitelisted_resources(self, rule_name: str) -> List[str]:
         allowed_resources = []
-        for k, v in self.wildcard_whitelist.items():
+        for k, v in self.rule_to_resource_whitelist.get(rule_name, {}).items():
             if re.match(k, self.stack_name):
                 allowed_resources += v
 

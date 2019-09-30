@@ -19,13 +19,13 @@ A list of projects that are allowed to skip specific checks.
 The format:
 
 whitelist = {
-    "stack_name1": [
-        "RULE2",
-        "RULE3",
+    "stack_name_1": [
+        "rule_name_1",
+        "rule_name_2",
     ],
-    "stack_name2": [
-        "RULE2",
-        "RULE3",
+    "stack_name_2": [
+        "rule_name_2",
+        "rule_name_3",
     ]
 }
 
@@ -51,3 +51,54 @@ wildcard_principal_resource_whitelist = {
 """
 
 wildcard_principal_resource_whitelist = {}
+
+"""
+A whitelist for all rules that can whitelist resources for certain stacks
+stack names and resource names accept regular expressions
+
+rule_to_resource_whitelist = {
+    "rule_name_1": {
+        "stack_name_1": {
+            "resource_name_1",
+        },
+        "stack_name_2": {
+            "resource_name_2",
+            "resource_name_3",
+        },
+    },
+    "rule_name_2": {
+        "stack_name_1": {
+            "resource_name_4",
+        },
+    },
+}
+
+
+"""
+rule_to_resource_whitelist = {}
+
+"""
+A whitelist for all rules that can whitelist actions for certain stacks
+stack names and actions accept regular expressions
+
+rule_to_action_whitelist = {
+    "rule_name_3": {
+        "stack_name_1": {
+            "aws_action:one",
+        },
+        "stack_name_2": {
+            "raws_action:one",
+            "aws_action:one",
+        },
+    },
+    "rule_name_4": {
+        "stack_name_1": {
+            "aws_action:*",
+        },
+    },
+}
+
+
+"""
+
+rule_to_action_whitelist = {}
