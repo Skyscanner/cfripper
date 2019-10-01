@@ -13,3 +13,10 @@ class RuleRisk(str, Enum):
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
+
+
+class RuleGranularity(str, Enum):
+    # Rule
+    ACTION = "ACTION"
+    RESOURCE = "RESOURCE"
+    STACK = "STACK"
