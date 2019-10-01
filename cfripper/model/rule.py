@@ -22,7 +22,7 @@ class Rule(ABC):
     def add_failure(self, rule: str, reason: str, granularity=None):
 
         if granularity is None:
-            granularity = self.GRANULATIRY
+            granularity = self.GRANULARITY
 
         self._result.add_failure(
             rule=rule,

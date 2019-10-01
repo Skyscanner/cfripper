@@ -81,12 +81,16 @@ EXAMPLE_CF_TEMPLATE = {
 }
 
 
-def test_with_no_rules():
+@patch.object(RuleProcessor, "remove_failures_of_whitelisted_resources")
+@patch.object(RuleProcessor, "remove_failures_of_whitelisted_actions")
+def test_with_no_rules(mock_remove_whitelisted_actions, mock_remove_whitelisted_resources):
     processor = RuleProcessor()
     config = Mock()
     result = Result()
 
     processor.process_cf_template(EXAMPLE_CF_TEMPLATE, config, result)
+    mock_remove_whitelisted_actions.assert_called()
+    mock_remove_whitelisted_resources.assert_called()
 
 
 def test_with_mock_rule():

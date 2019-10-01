@@ -88,7 +88,6 @@ class RuleProcessor:
                     for whitelisted_resource_regex in config.get_whitelisted_resources(failure["rule"])
                 ])
             }
-            print(f"XXXXXX {whitelisted_resources}")
             failure["resource_ids"] = failure["resource_ids"] - whitelisted_resources
             if failure["resource_ids"]:
                 clean_failures.append(failure)
