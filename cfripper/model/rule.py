@@ -9,7 +9,7 @@ from cfripper.model.result import Result
 class Rule(ABC):
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.MEDIUM
-    GRANULATIRY = RuleGranularity.STACK
+    GRANULARITY = RuleGranularity.STACK
 
     def __init__(self, config: Optional[Config], result: Result):
         self._config = config if config else Config()
