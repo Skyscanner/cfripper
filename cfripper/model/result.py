@@ -33,13 +33,25 @@ class Result:
         reason: str,
         rule_mode: str,
         risk_value: str,
+        granularity: str,
+        resource_ids=None,
+        actions=None,
     ):
+
+        if resource_ids is None:
+            resource_ids = set()
+
+        if actions is None:
+            actions = set()
 
         failure = {
             "rule": rule,
             "reason": reason,
             "rule_mode": rule_mode,
             "risk_value": risk_value,
+            "resource_ids": resource_ids,
+            "actions": actions,
+            "granularity": granularity,
         }
 
         if rule_mode is not RuleMode.BLOCKING:
