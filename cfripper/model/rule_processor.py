@@ -38,7 +38,7 @@ class Rule(ABC):
         self._result = result
 
     @abstractmethod
-    def invoke(self, resources, parameters):
+    def invoke(self, cfmodel):
         pass
 
     def add_failure(self, rule, reason):
@@ -65,7 +65,7 @@ class RuleProcessor:
 
         for rule in self.rules:
             try:
-                rule.invoke(cf_model.resources, cf_model.parameters)
+                rule.invoke(cf_model)
             except Exception as other_exception:
                 result.add_exception(other_exception)
                 logger.exception(
