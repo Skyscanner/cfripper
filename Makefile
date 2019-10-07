@@ -10,6 +10,9 @@ install:
 install-dev: install
 	pip install -e ".[dev]"
 
+format:
+	black .
+
 lint:
 	flake8 cfripper/ # tests/
 
