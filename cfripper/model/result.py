@@ -12,10 +12,12 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from cfripper.model.rule_processor import Rule
+from typing import Dict
+
+from cfripper.model.enums import RuleMode
 
 
-class Result(object):
+class Result:
     """An object to represent scan results."""
 
     def __init__(self):
@@ -25,15 +27,29 @@ class Result(object):
         self.failed_monitored_rules = []
         self.warnings = []
 
-    def add_failure(self, rule, reason, rule_mode, risk_value):
-        if rule_mode is not Rule.BLOCKING:
-            self.add_failed_monitored_rule(rule, reason, rule_mode, risk_value)
+    def add_failure(
+        self,
+        rule: str,
+        reason: str,
+        rule_mode: str,
+        risk_value: str,
+    ):
+
+        failure = {
+            "rule": rule,
+            "reason": reason,
+            "rule_mode": rule_mode,
+            "risk_value": risk_value,
+        }
+
+        if rule_mode is not RuleMode.BLOCKING:
+            self.add_failure_monitored_rule(failure=failure)
             return
 
         if self.valid:
             self.valid = False
 
-        self.failed_rules.append({"rule": rule, "reason": reason, "rule_mode": rule_mode, "risk_value": risk_value})
+        self.add_failure_blocking_rule(failure=failure)
 
     def add_exception(self, ex):
         self.exceptions.append(ex)
@@ -41,7 +57,8 @@ class Result(object):
     def add_warning(self, warning):
         self.warnings.append(warning)
 
-    def add_failed_monitored_rule(self, rule, reason, rule_mode, risk_value):
-        self.failed_monitored_rules.append(
-            {"rule": rule, "reason": reason, "rule_mode": rule_mode, "risk_value": risk_value}
-        )
+    def add_failure_monitored_rule(self, failure: Dict):
+        self.failed_monitored_rules.append(failure)
+
+    def add_failure_blocking_rule(self, failure: Dict):
+        self.failed_rules.append(failure)

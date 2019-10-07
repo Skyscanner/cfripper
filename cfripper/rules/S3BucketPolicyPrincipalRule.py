@@ -14,7 +14,9 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 import re
-from cfripper.model.rule_processor import Rule
+
+from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -22,8 +24,8 @@ logger = logging.getLogger(__file__)
 class S3BucketPolicyPrincipalRule(Rule):
 
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
-    RULE_MODE = Rule.BLOCKING
-    RISK_VALUE = Rule.HIGH
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.HIGH
     PATTERN = r"arn:aws:iam::(\d*):.*"
 
     def invoke(self, resources, parameters):

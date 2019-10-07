@@ -12,15 +12,14 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
-from cfripper.model.rule_processor import Rule
+from cfripper.model.enums import RuleRisk
+from cfripper.model.rule import Rule
 
 
 class SQSQueuePolicyPublicRule(Rule):
 
     REASON = "SQS Queue policy {} should not be public"
-    RISK_VALUE = Rule.HIGH
+    RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::SQS::QueuePolicy", []):

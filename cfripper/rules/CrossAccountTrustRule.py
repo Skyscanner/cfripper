@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 

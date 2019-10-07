@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 
 
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 
 
 class HardcodedRDSPasswordRule(Rule):
