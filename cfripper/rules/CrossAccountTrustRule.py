@@ -25,29 +25,16 @@ class CrossAccountTrustRule(Rule):
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::IAM::Role", []):
-            arpd = resource.assume_role_policy_document
-            for statement in arpd.statements:
-                aws_principals = self.get_aws_principals(statement) or []
-                self.check_principals(aws_principals, resource.logical_id)
+    def invoke(self, cfmodel):
+        not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::IAM::Role":
+                for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
+                    self.ROOT_PATTERN
+                ):
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
 
-    def check_principals(self, principals, logical_id):
-        for principal in principals:
-            cross_account = self._config.aws_account_id and self._config.aws_account_id not in principal
-
-            if not isinstance(principal, str):
-                logger.warn(
-                    f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name} \
-                    - Skipping validation: principal is possibly a function."
-                )
-                continue
-
-            if self.ROOT_PATTERN.match(principal) or cross_account:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
-
-    def get_aws_principals(self, statement):
-        for principal in statement.principal:
-            if principal.principal_type == "AWS":
-                return principal.principals
-        return None
+                for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
+                    not_has_account_id
+                ):
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
