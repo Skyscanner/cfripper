@@ -38,10 +38,9 @@ This rule will incorrectly block the following stack:
 
 class CloudFormationAuthenticationRule(Rule):
 
-    REASON = "Possible hardcoded credentials in {}"
+    REASON = "Hardcoded credentials in {}"
 
-    def invoke(self, resources, parameters):
-        for name, resource_list in resources.items():
-            for resource in resource_list:
-                if resource.has_hardcoded_credentials():
-                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.has_hardcoded_credentials():
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

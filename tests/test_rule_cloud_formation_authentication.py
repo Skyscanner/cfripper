@@ -22,41 +22,40 @@ from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
 
 
-class TestCloudFormationAuthenticationJson:
-    @pytest.fixture(scope="class")
-    def template_bad(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/test_templates/cfn_authentication.json") as cf_script:
-            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
-        return pycfmodel.parse(cf_template)
+@pytest.fixture()
+def template_bad():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open(f"{dir_path}/test_templates/cfn_authentication.json") as cf_script:
+        cf_template = convert_json_or_yaml_to_dict(cf_script.read())
+    return pycfmodel.parse(cf_template).resolve()
 
-    @pytest.fixture(scope="class")
-    def template_good(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/test_templates/cfn_authentication_good.json") as cf_script:
-            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
-        return pycfmodel.parse(cf_template)
 
-    def test_cfn_creds_found(self, template_bad):
-        result = Result()
-        rule = CloudFormationAuthenticationRule(None, result)
+@pytest.fixture()
+def template_good():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open(f"{dir_path}/test_templates/cfn_authentication_good.json") as cf_script:
+        cf_template = convert_json_or_yaml_to_dict(cf_script.read())
+    return pycfmodel.parse(cf_template).resolve()
 
-        rule.invoke(template_bad.resources, template_bad.parameters)
 
-        assert not result.valid
-        assert len(result.failed_rules) == 1
-        assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "Possible hardcoded credentials in EC2I4LBA1"
+def test_cfn_creds_found(template_bad):
+    result = Result()
+    rule = CloudFormationAuthenticationRule(None, result)
 
-    # This should pass CFRipper, currently does not. Needs to be looked into.
-    # Issue is pycfmodel is marking it as containing hardcoded credentials, but this is not true.
-    def test_cfn_valid(self, template_good):
-        result = Result()
-        rule = CloudFormationAuthenticationRule(None, result)
+    rule.invoke(template_bad)
 
-        rule.invoke(template_good.resources, template_good.parameters)
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0]["reason"] == "Hardcoded credentials in EC2I4LBA1"
 
-        assert not result.valid
-        assert len(result.failed_rules) == 1
-        assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "Possible hardcoded credentials in EC2I4LBA1"
+
+def test_cfn_valid(template_good):
+    result = Result()
+    rule = CloudFormationAuthenticationRule(None, result)
+
+    rule.invoke(template_good)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0

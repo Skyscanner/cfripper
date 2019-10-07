@@ -57,7 +57,7 @@ def template():
                 }
             },
         }
-    )
+    ).resolve()
 
 
 def test_with_test_template_wildcards(template):
