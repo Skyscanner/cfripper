@@ -14,36 +14,13 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 import pycfmodel
+
 from cfripper.rules.CloudFormationAuthenticationRule import CloudFormationAuthenticationRule
 from cfripper.model.result import Result
 
 
 @pytest.fixture()
-def template_bad():
-    template = {
-        "Parameters": {"subnetId": {"Type": "String", "Default": "subnet-4fd01116"}},
-        "Resources": {
-            "EC2I4LBA1": {
-                "Type": "AWS::EC2::Instance",
-                "Properties": {"ImageId": "ami-6df1e514", "InstanceType": "t2.micro", "SubnetId": {"Ref": "subnetId"}},
-                "Metadata": {
-                    "AWS::CloudFormation::Authentication": {
-                        "testBasic": {
-                            "type": "basic",
-                            "username": "biff",
-                            "password": "badpassword",
-                            "uris": ["http://www.example.com/test"],
-                        }
-                    }
-                },
-            }
-        },
-    }
-    return pycfmodel.parse(template).resolve()
-
-
-@pytest.fixture()
-def template_good():
+def good_template():
     template = {
         "Parameters": {
             "subnetId": {"Type": "String", "Default": "subnet-4fd01116"},
@@ -81,24 +58,48 @@ def template_good():
     return pycfmodel.parse(template).resolve()
 
 
-def test_cfn_creds_found(template_bad):
+@pytest.fixture()
+def bad_template():
+    template = {
+        "Parameters": {"subnetId": {"Type": "String", "Default": "subnet-4fd01116"}},
+        "Resources": {
+            "EC2I4LBA1": {
+                "Type": "AWS::EC2::Instance",
+                "Properties": {"ImageId": "ami-6df1e514", "InstanceType": "t2.micro", "SubnetId": {"Ref": "subnetId"}},
+                "Metadata": {
+                    "AWS::CloudFormation::Authentication": {
+                        "testBasic": {
+                            "type": "basic",
+                            "username": "biff",
+                            "password": "badpassword",
+                            "uris": ["http://www.example.com/test"],
+                        }
+                    }
+                },
+            }
+        },
+    }
+    return pycfmodel.parse(template).resolve()
+
+
+def test_no_failures_are_raised(good_template):
     result = Result()
     rule = CloudFormationAuthenticationRule(None, result)
 
-    rule.invoke(template_bad)
+    rule.invoke(good_template)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
+
+
+def test_failures_are_raised(bad_template):
+    result = Result()
+    rule = CloudFormationAuthenticationRule(None, result)
+
+    rule.invoke(bad_template)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0]["reason"] == "Hardcoded credentials in EC2I4LBA1"
-
-
-def test_cfn_valid(template_good):
-    result = Result()
-    rule = CloudFormationAuthenticationRule(None, result)
-
-    rule.invoke(template_good)
-
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0

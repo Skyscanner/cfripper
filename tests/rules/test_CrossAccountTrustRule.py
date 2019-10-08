@@ -14,6 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 import pycfmodel
+
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.config.config import Config
 from cfripper.model.result import Result
