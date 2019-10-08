@@ -35,6 +35,3 @@ def test_failures_are_raised(bad_template):
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0]["reason"] == "IAM managed policy CreateTestDBPolicy3 should not allow * action"
-
-
-test_failures_are_raised(bad_template())
