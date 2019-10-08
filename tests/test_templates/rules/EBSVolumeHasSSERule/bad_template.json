@@ -1,0 +1,24 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "TestVolume": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "Size": "100",
+        "AvailabilityZone": {
+          "Fn::GetAtt": [
+            "Ec2Instance",
+            "AvailabilityZone"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "MyTag",
+            "Value": "TagValue"
+          }
+        ]
+      },
+      "DeletionPolicy": "Snapshot"
+    }
+  }
+}

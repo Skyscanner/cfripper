@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -13,52 +13,16 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import pytest
-import pycfmodel
 
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.config.config import Config
 from cfripper.model.result import Result
+from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
 def template():
-    return pycfmodel.parse(
-        {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Resources": {
-                "RootRole": {
-                    "Type": "AWS::IAM::Role",
-                    "Properties": {
-                        "AssumeRolePolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Principal": {
-                                        "AWS": [
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:root",
-                                            "arn:aws:iam::999999999:role/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                            "arn:aws:iam::123456789:user/someuser@bla.com",
-                                        ]
-                                    },
-                                    "Action": "sts:AssumeRole",
-                                }
-                            ],
-                        },
-                        "Path": "/",
-                        "Policies": [],
-                    },
-                }
-            },
-        }
-    ).resolve()
+    return get_cfmodel_from("tests/test_templates/rules/CrossAccountTrustRule/template.json").resolve()
 
 
 def test_with_test_template_wildcards(template):

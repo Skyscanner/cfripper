@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -13,73 +13,20 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import pytest
-import pycfmodel
 
 from cfripper.rules.CloudFormationAuthenticationRule import CloudFormationAuthenticationRule
 from cfripper.model.result import Result
+from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
 def good_template():
-    template = {
-        "Parameters": {
-            "subnetId": {"Type": "String", "Default": "subnet-4fd01116"},
-            "MasterUsername": {
-                "NoEcho": True,
-                "Description": "The database admin account name",
-                "MinLength": 8,
-                "Type": "String",
-            },
-            "MasterUserPassword": {
-                "NoEcho": True,
-                "Description": "The database admin account password",
-                "MinLength": 8,
-                "Type": "String",
-            },
-        },
-        "Resources": {
-            "EC2I4LBA1": {
-                "Type": "AWS::EC2::Instance",
-                "Properties": {"ImageId": "ami-6df1e514", "InstanceType": "t2.micro", "SubnetId": {"Ref": "subnetId"}},
-                "Metadata": {
-                    "AWS::CloudFormation::Authentication": {
-                        "testBasic": {
-                            "type": "basic",
-                            "username": {"Ref": "MasterUsername"},
-                            "password": {"Ref": "MasterUserPassword"},
-                            "uris": ["http://www.example.com/test"],
-                        }
-                    }
-                },
-            }
-        },
-    }
-
-    return pycfmodel.parse(template).resolve()
+    return get_cfmodel_from("tests/test_templates/rules/CloudFormationAuthenticationRule/good_template.json").resolve()
 
 
 @pytest.fixture()
 def bad_template():
-    template = {
-        "Parameters": {"subnetId": {"Type": "String", "Default": "subnet-4fd01116"}},
-        "Resources": {
-            "EC2I4LBA1": {
-                "Type": "AWS::EC2::Instance",
-                "Properties": {"ImageId": "ami-6df1e514", "InstanceType": "t2.micro", "SubnetId": {"Ref": "subnetId"}},
-                "Metadata": {
-                    "AWS::CloudFormation::Authentication": {
-                        "testBasic": {
-                            "type": "basic",
-                            "username": "biff",
-                            "password": "badpassword",
-                            "uris": ["http://www.example.com/test"],
-                        }
-                    }
-                },
-            }
-        },
-    }
-    return pycfmodel.parse(template).resolve()
+    return get_cfmodel_from("tests/test_templates/rules/CloudFormationAuthenticationRule/bad_template.json").resolve()
 
 
 def test_no_failures_are_raised(good_template):

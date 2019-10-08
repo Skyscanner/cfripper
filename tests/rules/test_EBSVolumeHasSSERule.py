@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -13,52 +13,21 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import pytest
-import pycfmodel
 
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
 from cfripper.config.config import Config
 from cfripper.model.result import Result
+from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
 def good_template():
-    return pycfmodel.parse(
-        {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Resources": {
-                "TestVolume": {
-                    "Type": "AWS::EC2::Volume",
-                    "Properties": {
-                        "Size": "100",
-                        "Encrypted": "true",
-                        "AvailabilityZone": {"Fn::GetAtt": ["Ec2Instance", "AvailabilityZone"]},
-                        "Tags": [{"Key": "MyTag", "Value": "TagValue"}],
-                    },
-                    "DeletionPolicy": "Snapshot",
-                }
-            },
-        }
-    ).resolve()
+    return get_cfmodel_from("tests/test_templates/rules/EBSVolumeHasSSERule/good_template.json").resolve()
 
 
 @pytest.fixture()
 def bad_template():
-    return pycfmodel.parse(
-        {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Resources": {
-                "TestVolume": {
-                    "Type": "AWS::EC2::Volume",
-                    "Properties": {
-                        "Size": "100",
-                        "AvailabilityZone": {"Fn::GetAtt": ["Ec2Instance", "AvailabilityZone"]},
-                        "Tags": [{"Key": "MyTag", "Value": "TagValue"}],
-                    },
-                    "DeletionPolicy": "Snapshot",
-                }
-            },
-        }
-    ).resolve()
+    return get_cfmodel_from("tests/test_templates/rules/EBSVolumeHasSSERule/bad_template.json").resolve()
 
 
 def test_no_failures_are_raised(good_template):
