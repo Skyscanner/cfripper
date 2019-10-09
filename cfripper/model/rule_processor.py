@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -17,8 +17,8 @@ from abc import ABC, abstractmethod
 
 import pycfmodel
 
-from cfripper.config.config import Config
-from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
+from ..config.config import Config
+from .managed_policy_transformer import transform_managed_policies
 
 logger = logging.getLogger(__file__)
 
@@ -57,15 +57,14 @@ class RuleProcessor:
             result.add_exception(TypeError("CF template not converted to dict"))
             return
 
-        cf_model = pycfmodel.parse(cf_template_dict)
+        cfmodel = pycfmodel.parse(cf_template_dict).resolve()
 
         # Fetch referenced managed policies for validation
-        transformer = ManagedPolicyTransformer(cf_model)
-        transformer.transform_managed_policies()
+        cfmodel = transform_managed_policies(cfmodel)
 
         for rule in self.rules:
             try:
-                rule.invoke(cf_model)
+                rule.invoke(cfmodel)
             except Exception as other_exception:
                 result.add_exception(other_exception)
                 logger.exception(
