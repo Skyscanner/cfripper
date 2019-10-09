@@ -17,23 +17,25 @@ import pytest
 from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
 from cfripper.config.config import Config
 from cfripper.model.result import Result
+
 from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
 def good_template():
-    return get_cfmodel_from("tests/test_templates/rules/EBSVolumeHasSSERule/good_template.json").resolve()
+    return get_cfmodel_from("rules/EBSVolumeHasSSERule/good_template.json").resolve()
 
 
 @pytest.fixture()
 def bad_template():
-    return get_cfmodel_from("tests/test_templates/rules/EBSVolumeHasSSERule/bad_template.json").resolve()
+    return get_cfmodel_from("rules/EBSVolumeHasSSERule/bad_template.json").resolve()
 
 
 def test_no_failures_are_raised(good_template):
     result = Result()
     rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"), result)
     rule.invoke(good_template)
+
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 0
@@ -43,9 +45,11 @@ def test_failures_are_raised(bad_template):
     result = Result()
     rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"), result)
     rule.invoke(bad_template)
+
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 1
+    assert result.failed_monitored_rules[0]["rule"] == "EBSVolumeHasSSERule"
     assert (
         result.failed_monitored_rules[0]["reason"] == "EBS volume TestVolume should have server-side encryption enabled"
     )

@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -14,8 +14,11 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 import re
-from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from cfripper.model.rule_processor import Rule
+
+from pycfmodel.model.resources.iam_role import IAMRole
+
+from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
+from ..model.rule_processor import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -29,6 +32,7 @@ class CrossAccountTrustRule(Rule):
         not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::IAM::Role":
+                resource: IAMRole
                 for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                     self.ROOT_PATTERN
                 ):

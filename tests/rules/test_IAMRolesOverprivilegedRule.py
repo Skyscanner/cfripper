@@ -12,228 +12,115 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import pytest
 
-
-import pycfmodel
-from unittest.mock import Mock
+from pycfmodel.model.cf_model import CFModel
 from cfripper.rules.IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
 from cfripper.model.result import Result
+from cfripper.model.managed_policy_transformer import transform_managed_policies
+
+from tests.utils import get_cfmodel_from
 
 
-def test_with_valid_role_inline_policy():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "Policies": [
-                        {
-                            "PolicyName": "chill_policy",
-                            "PolicyDocument": {
-                                "Version": "2012-10-17",
-                                "Statement": [
-                                    {"Effect": "Allow", "Action": ["ec2:DescribeInstances"], "Resource": "*"}
-                                ],
-                            },
-                        }
-                    ],
-                },
-            }
-        },
-    }
+@pytest.fixture()
+def valid_role_inline_policy() -> CFModel:
+    return get_cfmodel_from("rules/IAMRolesOverprivilegedRule/valid_role_inline_policy.json").resolve()
 
-    resource = pycfmodel.parse(role_props).resources
 
+@pytest.fixture()
+def invalid_role_inline_policy() -> CFModel:
+    return get_cfmodel_from("rules/IAMRolesOverprivilegedRule/invalid_role_inline_policy.json").resolve()
+
+
+@pytest.fixture()
+def invalid_role_inline_policy_resource_as_array() -> CFModel:
+    return get_cfmodel_from(
+        "rules/IAMRolesOverprivilegedRule/invalid_role_inline_policy_resource_as_array.json"
+    ).resolve()
+
+
+@pytest.fixture()
+def valid_role_managed_policy() -> CFModel:
+    return get_cfmodel_from("rules/IAMRolesOverprivilegedRule/valid_role_managed_policy.json").resolve()
+
+
+@pytest.fixture()
+def invalid_role_managed_policy() -> CFModel:
+    return get_cfmodel_from("rules/IAMRolesOverprivilegedRule/invalid_role_managed_policy.json").resolve()
+
+
+@pytest.fixture()
+def invalid_role_inline_policy_fn_if() -> CFModel:
+    return get_cfmodel_from("rules/IAMRolesOverprivilegedRule/invalid_role_inline_policy_fn_if.json").resolve()
+
+
+def test_with_valid_role_inline_policy(valid_role_inline_policy):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-
-    rule.check_managed_policies = Mock()
-
-    rule.invoke(resource, [])
-    rule.check_managed_policies.assert_called()
+    rule.invoke(valid_role_inline_policy)
 
     assert result.valid
     assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
 
 
-def test_with_invalid_role_inline_policy():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "Policies": [
-                        {
-                            "PolicyName": "not_so_chill_policy",
-                            "PolicyDocument": {
-                                "Version": "2012-10-17",
-                                "Statement": [
-                                    {"Effect": "Allow", "Action": ["ec2:DeleteInternetGateway"], "Resource": "*"}
-                                ],
-                            },
-                        }
-                    ],
-                },
-            }
-        },
-    }
-
+def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-    rule.check_managed_policies = Mock()
-    resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources, [])
-    rule.check_managed_policies.assert_called()
+    rule.invoke(invalid_role_inline_policy)
 
     assert not result.valid
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
     assert (
         result.failed_rules[0]["reason"]
-        == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
+        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
     )
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
-def test_with_invalid_role_inline_policy_resource_as_array():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "Policies": [
-                        {
-                            "PolicyName": "not_so_chill_policy",
-                            "PolicyDocument": {
-                                "Version": "2012-10-17",
-                                "Statement": [
-                                    {"Effect": "Allow", "Action": ["ec2:DeleteInternetGateway"], "Resource": ["*"]}
-                                ],
-                            },
-                        }
-                    ],
-                },
-            }
-        },
-    }
-
+def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_policy_resource_as_array):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-    rule.check_managed_policies = Mock()
-    resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources, [])
-    rule.check_managed_policies.assert_called()
+    rule.invoke(invalid_role_inline_policy_resource_as_array)
 
     assert not result.valid
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
     assert (
         result.failed_rules[0]["reason"]
-        == 'Role "RootRole" contains an insecure permission "ec2:DeleteInternetGateway" in policy "not_so_chill_policy"'
+        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
     )
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
-def test_with_valid_role_managed_policy():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {"Path": "/", "ManagedPolicyArns": ["arn:aws:iam::aws:policy/YadaYadaYada"]},
-            }
-        },
-    }
-
+def test_with_valid_role_managed_policy(valid_role_managed_policy):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-    rule.check_inline_policies = Mock()
-    resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources, [])
-    rule.check_inline_policies.assert_called()
+    rule.invoke(valid_role_managed_policy)
 
     assert result.valid
     assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
 
 
-def test_with_invalid_role_managed_policy():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {"Path": "/", "ManagedPolicyArns": ["arn:aws:iam::aws:policy/AdministratorAccess"]},
-            }
-        },
-    }
-
+def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-    resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources, [])
+    rule.invoke(invalid_role_managed_policy)
 
     assert not result.valid
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
     assert (
         result.failed_rules[0]["reason"]
         == "Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess"
     )
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
 
 
-def test_with_invalid_role_inline_policy_fn_if():
-    role_props = {
-        "AWSTemplateFormatVersion": "2010-09-09",
-        "Resources": {
-            "RootRole": {
-                "Type": "AWS::IAM::Role",
-                "Properties": {
-                    "Path": "/",
-                    "Policies": [
-                        {
-                            "Fn::If": [
-                                "IsSandbox",
-                                {
-                                    "PolicyDocument": {
-                                        "Statement": [
-                                            {
-                                                "Action": "sts:AssumeRole",
-                                                "Effect": "Allow",
-                                                "Resource": "arn:aws:iam::325714046698:role/sandbox-secrets-access",
-                                            }
-                                        ],
-                                        "Version": "2012-10-17",
-                                    },
-                                    "PolicyName": "SandboxSecretsAccessAssumerole",
-                                },
-                                {
-                                    "PolicyDocument": {
-                                        "Statement": [
-                                            {"Action": ["ec2:DeleteVpc"], "Effect": "Allow", "Resource": ["*"]}
-                                        ],
-                                        "Version": "2012-10-17",
-                                    },
-                                    "PolicyName": "ProdCredentialStoreAccessPolicy",
-                                },
-                            ]
-                        }
-                    ],
-                },
-            }
-        },
-    }
-
+def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if):
     result = Result()
     rule = IAMRolesOverprivilegedRule(None, result)
-    rule.check_managed_policies = Mock()
-    resources = pycfmodel.parse(role_props).resources
-    rule.invoke(resources, [])
-    rule.check_managed_policies.assert_called()
+    rule.invoke(invalid_role_inline_policy_fn_if)
 
     assert not result.valid
+    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
     assert (
         result.failed_rules[0]["reason"]
-        == 'Role "RootRole" contains an insecure permission "ec2:DeleteVpc" in policy "ProdCredentialStoreAccessPolicy"'
+        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteVpc' in policy 'ProdCredentialStoreAccessPolicy'"
     )
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"

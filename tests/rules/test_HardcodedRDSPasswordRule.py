@@ -16,22 +16,24 @@ import pytest
 
 from cfripper.model.result import Result
 from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
+
 from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
 def bad_template():
-    return get_cfmodel_from("tests/test_templates/rules/HardcodedRDSPasswordRule/bad_template.json").resolve()
+    return get_cfmodel_from("rules/HardcodedRDSPasswordRule/bad_template.json").resolve()
 
 
 def test_failures_are_raised(bad_template):
     result = Result()
     rule = HardcodedRDSPasswordRule(None, result)
-
     rule.invoke(bad_template)
 
     assert not result.valid
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0]["rule"] == "HardcodedRDSPasswordRule"
     assert result.failed_rules[0]["reason"] == "Default RDS password parameter or missing NoEcho for BadDb3."
+    assert result.failed_rules[1]["rule"] == "HardcodedRDSPasswordRule"
     assert result.failed_rules[1]["reason"] == "Default RDS password parameter or missing NoEcho for BadDb5."

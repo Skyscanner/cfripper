@@ -3,8 +3,11 @@ from pathlib import Path
 from pycfmodel import parse
 
 
+FIXTURE_ROOT_PATH = Path(__file__).parent / "test_templates"
+
+
 def get_fixture_json(path: str):
-    with Path(path).open() as f:
+    with Path(FIXTURE_ROOT_PATH / path).open() as f:
         response = json.load(f)
     return response
 
