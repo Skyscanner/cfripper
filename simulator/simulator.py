@@ -18,17 +18,17 @@ Script to simulate lambda execution using local CF scripts.
 The S3 download is mocked and local scripts in the simulator/test_cf_scripts are used.
 Make sure to add the script info in the "scripts" dictionary below.
 """
-
 import os
 import sys
 import logging
+
 from unittest.mock import Mock, patch
 
+from cfripper.model.utils import convert_json_or_yaml_to_dict
 
 logging.basicConfig(level=logging.INFO)
 sys.path.append("../")
 sys.path.append("../cfripper/")
-from cfripper.model.utils import convert_json_or_yaml_to_dict
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 

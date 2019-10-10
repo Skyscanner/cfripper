@@ -26,13 +26,6 @@ class S3BucketPolicyPrincipalRule(Rule):
     RISK_VALUE = Rule.HIGH
     PATTERN = r"arn:aws:iam::(\d*):.*"
 
-    def invoke(self, cfmodel):
-        for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::S3::BucketPolicy":
-                policy_actions = set(resource.policy_document.get_iam_actions())
-                for violation in policy_actions.intersection(self.IAM_BLACKLIST):
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, violation))
-
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):
             for statement in resource.policy_document.statements:

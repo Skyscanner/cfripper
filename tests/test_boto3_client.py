@@ -20,11 +20,7 @@ from unittest.mock import patch
 from botocore.exceptions import ClientError
 from moto import mock_s3, mock_sts
 
-from cfripper.model.utils import (
-    convert_json_or_yaml_to_dict,
-    extract_bucket_name_and_path_from_url,
-    InvalidURLException,
-)
+from cfripper.model.utils import convert_json_or_yaml_to_dict, InvalidURLException
 from cfripper.boto3_client import Boto3Client
 
 DUMMY_CLIENT_ERROR = ClientError({"Error": {"Code": "Exception"}}, "get_template")
