@@ -23,8 +23,6 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::IAM::Role":
-                from pycfmodel.model.resources.iam_role import IAMRole
-                resource: IAMRole
                 for policy in resource.Properties.Policies:
                     if policy.PolicyDocument.allowed_actions_with(REGEX_CONTAINS_STAR):
                         self.add_failure(type(self).__name__, self.REASON.format(logical_id, policy.PolicyName))
