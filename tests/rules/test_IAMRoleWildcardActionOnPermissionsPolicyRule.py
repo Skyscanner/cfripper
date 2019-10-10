@@ -21,7 +21,9 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def iam_role_with_wildcard_action():
-    return get_cfmodel_from("rules/IAMRoleWildcardActionOnPermissionsPolicyRule/iam_role_with_wildcard_action.json").resolve()
+    return get_cfmodel_from(
+        "rules/IAMRoleWildcardActionOnPermissionsPolicyRule/iam_role_with_wildcard_action.json"
+    ).resolve()
 
 
 def test_valid_iam_policy(iam_role_with_wildcard_action):
@@ -33,4 +35,7 @@ def test_valid_iam_policy(iam_role_with_wildcard_action):
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0]["rule"] == "IAMRoleWildcardActionOnPermissionsPolicyRule"
-    assert result.failed_rules[0]["reason"] == "IAM role WildcardActionRole should not allow * action on its permissions policy root"
+    assert (
+        result.failed_rules[0]["reason"]
+        == "IAM role WildcardActionRole should not allow * action on its permissions policy root"
+    )

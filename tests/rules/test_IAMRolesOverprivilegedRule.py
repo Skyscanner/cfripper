@@ -17,7 +17,6 @@ import pytest
 from pycfmodel.model.cf_model import CFModel
 from cfripper.rules.IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
 from cfripper.model.result import Result
-from cfripper.model.managed_policy_transformer import transform_managed_policies
 
 from tests.utils import get_cfmodel_from
 
