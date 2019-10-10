@@ -18,7 +18,6 @@ from abc import ABC, abstractmethod
 import pycfmodel
 
 from ..config.config import Config
-from .managed_policy_transformer import transform_managed_policies
 
 logger = logging.getLogger(__file__)
 
@@ -58,9 +57,6 @@ class RuleProcessor:
             return
 
         cfmodel = pycfmodel.parse(cf_template_dict).resolve()
-
-        # Fetch referenced managed policies for validation
-        cfmodel = transform_managed_policies(cfmodel)
 
         for rule in self.rules:
             try:

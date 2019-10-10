@@ -15,12 +15,16 @@ specific language governing permissions and limitations under the License.
 import json
 import logging
 import re
-from contextlib import suppress
 
+import boto3
 import yaml
 
 from urllib.parse import unquote
+from contextlib import suppress
+from functools import lru_cache
+
 from cfn_flip import to_json
+from pycfmodel.model.resources.properties.policy import Policy
 
 logger = logging.getLogger(__file__)
 
@@ -82,4 +86,20 @@ def convert_json_or_yaml_to_dict(file_content):
     except ValueError:
         logger.exception("Could not parse JSON template")
 
+    return None
+
+
+@lru_cache(maxsize=None)
+def get_managed_policy(managed_policy_arn):
+    iam_client = boto3.client("iam")
+    managed_policy = iam_client.get_policy(PolicyArn=managed_policy_arn)
+    version_id = managed_policy.get("Policy", {}).get("DefaultVersionId")
+    if version_id:
+        policy_version = iam_client.get_policy_version(PolicyArn=managed_policy_arn, VersionId=version_id)
+        return Policy(
+            **{
+                "PolicyDocument": policy_version["PolicyVersion"]["Document"],
+                "PolicyName": f"AutoTransformedManagedPolicy{version_id}",
+            }
+        )
     return None
