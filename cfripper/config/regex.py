@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -12,6 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import re
 
 """
 Check for Principals where root is being used.
@@ -23,7 +24,7 @@ Invalid:
 - arn:aws:iam::437628376:not-root
 - potato
 """
-REGEX_CROSS_ACCOUNT_ROOT = r"arn:aws:iam::\d*:root"
+REGEX_CROSS_ACCOUNT_ROOT = re.compile(r"arn:aws:iam::\d*:root")
 
 """
 Check for use of wildcard in two bad cases: full wildcard, or wildcard in account ID.
@@ -35,7 +36,7 @@ Invalid:
 - potato
 - arn:aws:iam::12345:*
 """
-REGEX_FULL_WILDCARD_PRINCIPAL = r"^((\w*:){0,1}\*|arn:aws:iam::\*:.*)$"
+REGEX_FULL_WILDCARD_PRINCIPAL = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::\*:.*)$")
 
 """
 Check for use of wildcard, when applied to the specific elements of an Action.
@@ -48,4 +49,17 @@ Invalid:
 - sts:AssumeRole-Thing-This
 - *
 """
-REGEX_WILDCARD_POLICY_ACTION = r"^(\w*:)(\w*)\*(\w*)$"
+REGEX_WILDCARD_POLICY_ACTION = re.compile(r"^(\w*:)(\w*)\*(\w*)$")
+
+"""
+Check for Principals where root is being used.
+Valid:
+- *
+- abc*def
+- abcdef*
+- *abcdef
+Invalid:
+- arn:aws:iam::437628376:not-root
+- potato
+"""
+REGEX_CONTAINS_STAR = re.compile(r"^.*[*].*$")
