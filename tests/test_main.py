@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -12,8 +12,6 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
 import traceback
 import pytest
 from unittest.mock import Mock, patch
@@ -87,7 +85,7 @@ class TestMainHandler:
             processor = RuleProcessor(*rules)
             processor.process_cf_template(cf_template, config, result)
 
-            # Use this to print the stack if there's an error
+            # Use this to print the stack if there'IAMManagedPolicyWildcardActionRule an error
             if len(result.exceptions):
                 print(template)
                 traceback.print_tb(result.exceptions[0].__traceback__)
@@ -107,17 +105,9 @@ class TestMainHandler:
 
     def test_stack_whitelist_joins_all_whitelisted_matching_stack_names(self):
         mock_whitelist = {
-            "stackname": [
-                "S3CrossAccountTrustRule",
-            ],
-            "notstackname": [
-                "IAMRolesOverprivilegedRule",
-            ],
-            "stackname_withmorethings": [
-                "CrossAccountTrustRule",
-                "ManagedPolicyOnUserRule",
-            ]
-
+            "stackname": ["S3CrossAccountTrustRule"],
+            "notstackname": ["IAMRolesOverprivilegedRule"],
+            "stackname_withmorethings": ["CrossAccountTrustRule", "ManagedPolicyOnUserRule"],
         }
 
         config = Config(
@@ -130,8 +120,4 @@ class TestMainHandler:
 
         whitelisted_rules = config.get_whitelisted_rules()
 
-        assert set(whitelisted_rules) == {
-            "CrossAccountTrustRule",
-            "ManagedPolicyOnUserRule",
-            "S3CrossAccountTrustRule",
-        }
+        assert set(whitelisted_rules) == {"CrossAccountTrustRule", "ManagedPolicyOnUserRule", "S3CrossAccountTrustRule"}

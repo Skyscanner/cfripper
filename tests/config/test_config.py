@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -12,10 +12,6 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
-from unittest.mock import patch
-
 import pytest
 from cfripper.config.config import Config
 
@@ -57,27 +53,12 @@ class TestConfig:
     def mock_rule_to_resource_whitelist(self):
         return {
             "RuleThatUsesResourceWhitelists": {
-                "test_*": [
-                    "resource_5",
-                ],
-                "test_stack": [
-                    "resource_1",
-                    "another_resource",
-                ],
-                "other_stack": [
-                    "resource_2",
-                    "another_resource",
-                ],
-                "stack_without_whitelisted_resources": []
+                "test_*": ["resource_5"],
+                "test_stack": ["resource_1", "another_resource"],
+                "other_stack": ["resource_2", "another_resource"],
+                "stack_without_whitelisted_resources": [],
             },
-            "OtherRuleThatUsesResourceWhitelists": {
-                "test_stack": [
-                    "resource_3",
-                ],
-                "other_stack": [
-                    "resource_4",
-                ],
-            },
+            "OtherRuleThatUsesResourceWhitelists": {"test_stack": ["resource_3"], "other_stack": ["resource_4"]},
         }
 
     def test_stack_to_resource_whitelist_normal_behavior(self, mock_rule_to_resource_whitelist):
@@ -86,8 +67,7 @@ class TestConfig:
             stack_name="test_stack",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
-
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
         )
         assert config.get_whitelisted_resources("RuleThatUsesResourceWhitelists") == [
             "resource_5",
@@ -101,8 +81,7 @@ class TestConfig:
             stack_name="test_stack",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
-
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
         )
         assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
 
@@ -112,8 +91,7 @@ class TestConfig:
             stack_name="stack_without_whitelisted_resources",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
-
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
         )
         assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
 
@@ -123,8 +101,7 @@ class TestConfig:
             stack_name="test_stack_not_whitelisted",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_resource_whitelist=mock_rule_to_resource_whitelist
-
+            rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
         )
         assert config.get_whitelisted_resources("SecurityGroupOpenToWorldRule") == []
 
@@ -132,24 +109,12 @@ class TestConfig:
     def mock_rule_to_action_whitelist(self):
         return {
             "RuleThatUsesActionWhitelists": {
-                "stack_*": [
-                    "s3:GetItem",
-                ],
-                "stack_2": [
-                    "kms:*",
-                    "dynamodb:CreateTable",
-                ],
-                "other_stack": [
-                    "s3:GetItem",
-                ],
-                "stack_without_whitelisted_resources": []
+                "stack_*": ["s3:GetItem"],
+                "stack_2": ["kms:*", "dynamodb:CreateTable"],
+                "other_stack": ["s3:GetItem"],
+                "stack_without_whitelisted_resources": [],
             },
-            "OtherRuleThatUsesResourceWhitelists": {
-                "test_stack": [],
-                "other_stack": [
-                    ".*",
-                ],
-            },
+            "OtherRuleThatUsesResourceWhitelists": {"test_stack": [], "other_stack": [".*"]},
         }
 
     def test_stack_to_action_whitelist_normal_behavior(self, mock_rule_to_action_whitelist):
@@ -158,8 +123,7 @@ class TestConfig:
             stack_name="stack_2",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_action_whitelist=mock_rule_to_action_whitelist
-
+            rule_to_action_whitelist=mock_rule_to_action_whitelist,
         )
         assert config.get_whitelisted_actions("RuleThatUsesActionWhitelists") == [
             "s3:GetItem",
@@ -173,8 +137,7 @@ class TestConfig:
             stack_name="test_stack",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_action_whitelist=mock_rule_to_action_whitelist
-
+            rule_to_action_whitelist=mock_rule_to_action_whitelist,
         )
         assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
 
@@ -184,8 +147,7 @@ class TestConfig:
             stack_name="test_stack_not_whitelisted",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_action_whitelist=mock_rule_to_action_whitelist
-
+            rule_to_action_whitelist=mock_rule_to_action_whitelist,
         )
         assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
 
@@ -195,7 +157,6 @@ class TestConfig:
             stack_name="stack_without_whitelisted_resources",
             rules=mock_rules,
             stack_whitelist={},
-            rule_to_action_whitelist=mock_rule_to_action_whitelist
-
+            rule_to_action_whitelist=mock_rule_to_action_whitelist,
         )
         assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []

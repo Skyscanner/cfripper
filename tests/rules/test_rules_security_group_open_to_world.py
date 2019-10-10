@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 
 
-from pycfmodel.core import parse
+from pycfmodel import parse
 
 from cfripper.rules.SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
 from cfripper.model.result import Result

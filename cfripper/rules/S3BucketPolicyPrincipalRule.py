@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -25,6 +25,13 @@ class S3BucketPolicyPrincipalRule(Rule):
     RULE_MODE = Rule.BLOCKING
     RISK_VALUE = Rule.HIGH
     PATTERN = r"arn:aws:iam::(\d*):.*"
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::S3::BucketPolicy":
+                policy_actions = set(resource.policy_document.get_iam_actions())
+                for violation in policy_actions.intersection(self.IAM_BLACKLIST):
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, violation))
 
     def invoke(self, resources, parameters):
         for resource in resources.get("AWS::S3::BucketPolicy", []):

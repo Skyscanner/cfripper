@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -39,11 +39,9 @@ class PrivilegeEscalationRule(Rule):
         ]
     )
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::IAM::Policy", []):
-            actions = set(map(lambda x: x.lower(), resource.policy_document.get_iam_actions()))
-            intersection = actions.intersection(set(map(lambda x: x.lower(), self.IAM_BLACKLIST)))
-
-            if len(intersection):
-                for violation in intersection:
-                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id, violation))
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::IAM::Policy":
+                policy_actions = set(resource.policy_document.get_iam_actions())
+                for violation in policy_actions.intersection(self.IAM_BLACKLIST):
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, violation))
