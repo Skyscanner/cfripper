@@ -12,8 +12,6 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
 from cfripper.model.rule_processor import Rule
 
 
@@ -21,7 +19,9 @@ class SNSTopicPolicyNotPrincipalRule(Rule):
     REASON = "SNS Topic {} policy should not allow Allow+NotPrincipal"
     RULE_MODE = Rule.MONITOR
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::SNS::TopicPolicy", []):
-            if resource.policy_document.allows_not_principal():
-                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::SNS::TopicPolicy":
+                for statement in resource.Properties.PolicyDocument._statement_as_list():
+                    if statement.NotPrincipal:
+                        self.add_failure(type(self).__name__, self.REASON.format(logical_id))

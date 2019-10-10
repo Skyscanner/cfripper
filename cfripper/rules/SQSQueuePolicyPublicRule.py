@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
+import re
 
 from cfripper.model.rule_processor import Rule
 
@@ -22,8 +22,9 @@ class SQSQueuePolicyPublicRule(Rule):
     REASON = "SQS Queue policy {} should not be public"
     RISK_VALUE = Rule.HIGH
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::SQS::QueuePolicy", []):
-            for statement in resource.policy_document.wildcard_allowed_principals(pattern=r"^(\w*:){0,1}\*$"):
-                if not statement.condition:
-                    self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::SQS::QueuePolicy" and resource.Properties.PolicyDocument.allowed_principals_with(
+                re.compile(r"^(\w*:){0,1}\*$")
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

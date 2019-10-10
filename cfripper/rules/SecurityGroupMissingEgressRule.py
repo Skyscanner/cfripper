@@ -19,13 +19,10 @@ from cfripper.model.rule_processor import Rule
 
 class SecurityGroupMissingEgressRule(Rule):
 
-    REASON = (
-        "Missing egress rule in {} means all traffic is allowed outbound. "
-        "Make this explicit if it is desired configuration"
-    )
+    REASON = "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired configuration"
     RULE_MODE = Rule.MONITOR
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::EC2::SecurityGroup", []):
-            if not resource.security_group_egress:
-                self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::EC2::SecurityGroup" and not resource.Properties.SecurityGroupEgress:
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

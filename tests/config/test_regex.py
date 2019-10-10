@@ -1,7 +1,11 @@
 import pytest
-import re
 
-from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT, REGEX_FULL_WILDCARD_PRINCIPAL, REGEX_WILDCARD_POLICY_ACTION
+from cfripper.config.regex import (
+    REGEX_CROSS_ACCOUNT_ROOT,
+    REGEX_FULL_WILDCARD_PRINCIPAL,
+    REGEX_WILDCARD_POLICY_ACTION,
+    REGEX_CONTAINS_STAR,
+)
 
 
 @pytest.mark.parametrize(
@@ -22,7 +26,13 @@ from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT, REGEX_FULL_WILDCARD_
         (REGEX_WILDCARD_POLICY_ACTION, "sts:AssumeRole", False),
         (REGEX_WILDCARD_POLICY_ACTION, "sts:AssumeRole-Thing-This", False),
         (REGEX_WILDCARD_POLICY_ACTION, "*", False),
+        (REGEX_CONTAINS_STAR, "*", True),
+        (REGEX_CONTAINS_STAR, "abc*def", True),
+        (REGEX_CONTAINS_STAR, "abcdef*", True),
+        (REGEX_CONTAINS_STAR, "*abcdef", True),
+        (REGEX_CONTAINS_STAR, "arn:aws:iam::437628376:not-root", False),
+        (REGEX_CONTAINS_STAR, "potato", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):
-    assert (re.match(regex, data) is not None) == valid
+    assert (regex.match(data) is not None) == valid
