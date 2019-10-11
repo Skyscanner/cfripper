@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 from ..config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
 from ..model.enums import RuleMode, RuleRisk
-from .WildcardPrincipal import GenericWildcardPrincipal
+from .GenericWildcardPrincipal import GenericWildcardPrincipal
 
 
 class FullWildcardPrincipal(GenericWildcardPrincipal):

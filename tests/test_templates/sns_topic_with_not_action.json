@@ -5,7 +5,6 @@
       "Properties": {
       }
     },
-
     "mysnspolicyA": {
       "Type": "AWS::SNS::TopicPolicy",
       "Properties": {
@@ -16,7 +15,9 @@
             {
               "Sid": "My-statement-id",
               "Effect": "Allow",
-              "Principal": {"AWS":"arn:aws:iam::111111111111:user/dave.mustaine"},
+              "Principal": {
+                "AWS": "arn:aws:iam::111111111111:user/dave.mustaine"
+              },
               "NotAction": "sns:Publish",
               "Resource": "*"
             }
@@ -29,13 +30,11 @@
         ]
       }
     },
-
     "MySNSTopic2": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
       }
     },
-
     "mysnspolicyB": {
       "Type": "AWS::SNS::TopicPolicy",
       "Properties": {
@@ -46,8 +45,12 @@
             {
               "Sid": "My-statement-id",
               "Effect": "Allow",
-              "Principal": {"AWS":"arn:aws:iam::111111111111:user/dave.mustaine"},
-              "NotAction": ["sns:Publish"],
+              "Principal": {
+                "AWS": "arn:aws:iam::111111111111:user/dave.mustaine"
+              },
+              "NotAction": [
+                "sns:Publish"
+              ],
               "Resource": "*"
             }
           ]

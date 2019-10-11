@@ -64,7 +64,9 @@
           ]
         },
         "Groups": [
-          {"Ref":"TestDBGroup"}
+          {
+            "Ref": "TestDBGroup"
+          }
         ]
       }
     }

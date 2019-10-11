@@ -1,6 +1,6 @@
 import pytest
 from cfripper.config.config import Config
-from cfripper.rules.WildcardPrincipal import GenericWildcardPrincipal
+from cfripper.rules.GenericWildcardPrincipal import GenericWildcardPrincipal
 
 
 @pytest.fixture

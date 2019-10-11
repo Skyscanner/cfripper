@@ -1,69 +1,67 @@
 {
   "Resources": {
     "elb1": {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
-      "Properties" : {
-        "AvailabilityZones" : [
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "AvailabilityZones": [
           "eu-west-1a"
         ],
-        "Listeners" : [
+        "Listeners": [
           {
-            "LoadBalancerPort" : "80",
-            "InstancePort" : "80",
-            "Protocol" : "HTTP"
+            "LoadBalancerPort": "80",
+            "InstancePort": "80",
+            "Protocol": "HTTP"
           }
         ]
       }
     },
     "elb2": {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "DependsOn": "S3BucketPolicy",
-
-      "Properties" : {
+      "Properties": {
         "AccessLoggingPolicy": {
           "Enabled": false,
           "S3BucketName": "fakebucketfakebucket"
         },
-        "AvailabilityZones" : [
+        "AvailabilityZones": [
           "eu-west-1a"
         ],
-        "Listeners" : [
+        "Listeners": [
           {
-            "LoadBalancerPort" : "80",
-            "InstancePort" : "80",
-            "Protocol" : "HTTP"
+            "LoadBalancerPort": "80",
+            "InstancePort": "80",
+            "Protocol": "HTTP"
           }
         ]
       }
     },
     "elb3": {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "DependsOn": "S3BucketPolicy",
-      "Properties" : {
+      "Properties": {
         "AccessLoggingPolicy": {
           "Enabled": true,
           "S3BucketName": "fakebucketfakebucket",
           "S3BucketPrefix": "prefix"
         },
-        "AvailabilityZones" : [
+        "AvailabilityZones": [
           "eu-west-1a"
         ],
-        "Listeners" : [
+        "Listeners": [
           {
-            "LoadBalancerPort" : "80",
-            "InstancePort" : "80",
-            "Protocol" : "HTTP"
+            "LoadBalancerPort": "80",
+            "InstancePort": "80",
+            "Protocol": "HTTP"
           }
         ]
       }
     },
-    "S3Bucket" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket"
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket"
       }
     },
-
     "S3BucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {

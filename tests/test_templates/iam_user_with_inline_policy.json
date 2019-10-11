@@ -3,7 +3,9 @@
     "userWithInline": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Groups": ["group1"],
+        "Groups": [
+          "group1"
+        ],
         "Policies": [
           {
             "PolicyDocument": {
@@ -11,7 +13,7 @@
               "Resource": "arn:something",
               "Action": "s3:dosomething"
             },
-            "PolicyName" : "somePolicy"
+            "PolicyName": "somePolicy"
           }
         ]
       }

@@ -1,24 +1,33 @@
 {
-  "Resources" : {
+  "Resources": {
     "AppendItemToListFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "index.handler",
-        "Role": { "Fn::GetAtt" : ["LambdaExecutionRole", "Arn"] },
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaExecutionRole",
+            "Arn"
+          ]
+        },
         "Code": {
-          "ZipFile":  { "Fn::Join": ["", [
-            "var response = require('cfn-response');",
-            "exports.handler = function(event, context) {",
-            "   var responseData = {Value: event.ResourceProperties.List};",
-            "   responseData.Value.push(event.ResourceProperties.AppendedItem);",
-            "   response.send(event, context, response.SUCCESS, responseData);",
-            "};"
-          ]]}
+          "ZipFile": {
+            "Fn::Join": [
+              "",
+              [
+                "var response = require('cfn-response');",
+                "exports.handler = function(event, context) {",
+                "   var responseData = {Value: event.ResourceProperties.List};",
+                "   responseData.Value.push(event.ResourceProperties.AppendedItem);",
+                "   response.send(event, context, response.SUCCESS, responseData);",
+                "};"
+              ]
+            ]
+          }
         },
         "Runtime": "nodejs6.10"
       }
     },
-
     "lambdaPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -31,7 +40,6 @@
         "SourceArn": "arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged"
       }
     },
-
     "lambdaPermission2": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -44,22 +52,43 @@
         "SourceArn": "arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged"
       }
     },
-
     "LambdaExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
-          "Statement": [{ "Effect": "Allow", "Principal": {"Service": ["lambda.amazonaws.com"]}, "Action": ["sts:AssumeRole"] }]
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
         },
         "Path": "/",
-        "Policies": [{
-          "PolicyName": "root",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [{ "Effect": "Allow", "Action": ["logs:*"], "Resource": "arn:aws:logs:*:*:*" }]
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:*"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
           }
-        }]
+        ]
       }
     }
   }

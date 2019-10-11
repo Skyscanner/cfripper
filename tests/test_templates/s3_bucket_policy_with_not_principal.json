@@ -1,12 +1,11 @@
 {
   "Resources": {
-    "S3Bucket" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket"
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket"
       }
     },
-
     "S3BucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {

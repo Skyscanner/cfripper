@@ -6,17 +6,22 @@
         "QueueName": "queue1"
       }
     },
-
     "QueuePolicyWithNotPrincipal": {
-      "Type":"AWS::SQS::QueuePolicy",
+      "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
-        "Queues": [{"Ref":"queue1"}],
+        "Queues": [
+          {
+            "Ref": "queue1"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
               "Effect": "Allow",
               "Action": "sqs:SendMessage",
-              "NotPrincipal": {"AWS":"arn:aws:iam::111111111111:user/dave.mustaine"},
+              "NotPrincipal": {
+                "AWS": "arn:aws:iam::111111111111:user/dave.mustaine"
+              },
               "Resource": "*"
             }
           ]

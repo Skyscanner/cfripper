@@ -1,7 +1,7 @@
 {
   "Resources": {
     "sg": {
-      "Type" : "AWS::EC2::SecurityGroup"
+      "Type": "AWS::EC2::SecurityGroup"
     }
   }
 }

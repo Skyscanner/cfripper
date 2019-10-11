@@ -63,7 +63,9 @@
           ]
         },
         "Users": [
-          {"Ref":"TestUser"}
+          {
+            "Ref": "TestUser"
+          }
         ]
       }
     }

@@ -3,7 +3,6 @@
     "SomeGroup": {
       "Type": "AWS::IAM::Group"
     },
-
     "WildcardResourcePolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -41,7 +40,9 @@
           ]
         },
         "Groups": [
-          {"Ref":"SomeGroup"}
+          {
+            "Ref": "SomeGroup"
+          }
         ]
       }
     }

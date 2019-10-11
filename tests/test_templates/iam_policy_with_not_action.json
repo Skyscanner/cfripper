@@ -3,7 +3,6 @@
     "SomeGroup": {
       "Type": "AWS::IAM::Group"
     },
-
     "NotActionPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -39,7 +38,9 @@
           ]
         },
         "Groups": [
-          {"Ref":"SomeGroup"}
+          {
+            "Ref": "SomeGroup"
+          }
         ]
       }
     }

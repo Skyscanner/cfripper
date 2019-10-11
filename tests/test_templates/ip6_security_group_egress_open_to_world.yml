@@ -37,9 +37,9 @@ Resources:
     Properties:
       Ipv6CidrBlock:
         "Fn::Join":
-            - ""
-            - - !Select [0, !Split [ "::", !Select [0, !GetAtt VPC.Ipv6CidrBlocks] ]]
-              - "::dead:beef/64"
+          - ""
+          - - !Select [0, !Split [ "::", !Select [0, !GetAtt VPC.Ipv6CidrBlocks] ]]
+            - "::dead:beef/64"
       SubnetId: !Ref Subnet
 
   RouteSubnet:

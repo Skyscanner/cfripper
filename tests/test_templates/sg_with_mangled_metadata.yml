@@ -8,8 +8,7 @@ Resources:
     Metadata:
       cfn_nag:
         rules_to_suppress:
-          -
-            reason: This security group is attached to internet-facing ELB
+          - reason: This security group is attached to internet-facing ELB
           - id: W9
             reason: Trying to prove a point
             extra_junk: be tolerant

@@ -3,7 +3,6 @@
     "SomeGroup": {
       "Type": "AWS::IAM::Group"
     },
-
     "WildcardActionPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -18,7 +17,11 @@
                 {
                   "Fn::Join": [
                     "",
-                    ["rds:Describe", "*", "Groups"]
+                    [
+                      "rds:Describe",
+                      "*",
+                      "Groups"
+                    ]
                   ]
                 }
               ],
@@ -47,7 +50,9 @@
           ]
         },
         "Groups": [
-          {"Ref":"SomeGroup"}
+          {
+            "Ref": "SomeGroup"
+          }
         ]
       }
     }

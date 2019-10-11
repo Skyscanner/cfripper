@@ -15,33 +15,43 @@
               }
             }
           ],
-
           "Logging": {
-            "Bucket" : "fakebucketfakebucket.s3.amazonaws.com",
-            "IncludeCookies" : true,
-            "Prefix" : "cfdist"
+            "Bucket": "fakebucketfakebucket.s3.amazonaws.com",
+            "IncludeCookies": true,
+            "Prefix": "cfdist"
           },
-
           "Enabled": "false",
-
           "DefaultCacheBehavior": {
             "TargetOriginId": "favoriteColorOrigin",
-            "SmoothStreaming" : "false",
+            "SmoothStreaming": "false",
             "ForwardedValues": {
               "QueryString": "true",
-              "Cookies" : { "Forward" : "none" },
-              "Headers": ["*"]
+              "Cookies": {
+                "Forward": "none"
+              },
+              "Headers": [
+                "*"
+              ]
             },
             "ViewerProtocolPolicy": "allow-all",
-            "AllowedMethods": ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
-            "CachedMethods": ["HEAD", "GET"]
+            "AllowedMethods": [
+              "DELETE",
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PATCH",
+              "POST",
+              "PUT"
+            ],
+            "CachedMethods": [
+              "HEAD",
+              "GET"
+            ]
           },
-
-          "PriceClass" : "PriceClass_100"
+          "PriceClass": "PriceClass_100"
         }
       }
     },
-
     "rDistribution2": {
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
@@ -56,31 +66,42 @@
               }
             }
           ],
-
           "Enabled": "false",
-
           "DefaultCacheBehavior": {
             "TargetOriginId": "favoriteColorOrigin",
-            "SmoothStreaming" : "false",
+            "SmoothStreaming": "false",
             "ForwardedValues": {
               "QueryString": "true",
-              "Cookies" : { "Forward" : "none" },
-              "Headers": ["*"]
+              "Cookies": {
+                "Forward": "none"
+              },
+              "Headers": [
+                "*"
+              ]
             },
             "ViewerProtocolPolicy": "allow-all",
-            "AllowedMethods": ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
-            "CachedMethods": ["HEAD", "GET"]
+            "AllowedMethods": [
+              "DELETE",
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PATCH",
+              "POST",
+              "PUT"
+            ],
+            "CachedMethods": [
+              "HEAD",
+              "GET"
+            ]
           },
-
-          "PriceClass" : "PriceClass_100"
+          "PriceClass": "PriceClass_100"
         }
       }
     },
-
-    "S3Bucket" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket"
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket"
       }
     }
   }

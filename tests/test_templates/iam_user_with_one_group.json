@@ -3,7 +3,9 @@
     "myuser2": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Groups": ["group1"]
+        "Groups": [
+          "group1"
+        ]
       }
     }
   }

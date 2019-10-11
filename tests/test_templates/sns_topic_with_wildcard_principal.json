@@ -1,67 +1,73 @@
 {
-  "Resources" : {
-    "MySNSTopic" : {
-      "Type" : "AWS::SNS::Topic",
-      "Properties" : {
+  "Resources": {
+    "MySNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
       }
     },
-
-    "mysnspolicy0" : {
-      "Type" : "AWS::SNS::TopicPolicy",
-      "Properties" : {
-        "PolicyDocument" :  {
-          "Id" : "MyTopicPolicy",
-          "Version" : "2012-10-17",
-          "Statement" : [ {
-            "Sid" : "My-statement-id",
-            "Effect" : "Allow",
-            "Principal" : "*",
-            "Action" : "sns:Publish",
-            "Resource" : "*"
-          } ]
+    "mysnspolicy0": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyTopicPolicy",
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "My-statement-id",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "sns:Publish",
+              "Resource": "*"
+            }
+          ]
         },
-        "Topics" : [ { "Ref" : "MySNSTopic" } ]
+        "Topics": [
+          {
+            "Ref": "MySNSTopic"
+          }
+        ]
       }
     },
-
-    "mysnspolicy1" : {
-      "Type" : "AWS::SNS::TopicPolicy",
-      "Properties" : {
-        "PolicyDocument" :  {
-          "Id" : "MyTopicPolicy",
-          "Version" : "2012-10-17",
-          "Statement" : {
-            "Sid" : "My-statement-id",
-            "Effect" : "Allow",
-            "Principal" : "*",
-            "Action" : "sns:Publish",
-            "Resource" : "*"
+    "mysnspolicy1": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyTopicPolicy",
+          "Version": "2012-10-17",
+          "Statement": {
+            "Sid": "My-statement-id",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "sns:Publish",
+            "Resource": "*"
           }
         },
-        "Topics" : [ { "Ref" : "MySNSTopic" } ]
+        "Topics": [
+          {
+            "Ref": "MySNSTopic"
+          }
+        ]
       }
     },
-
-    "MySNSTopic2" : {
-      "Type" : "AWS::SNS::Topic",
-      "Properties" : {
+    "MySNSTopic2": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
         "TopicName": "fredfred"
       }
     },
-
-    "mysnspolicy2" : {
-      "Type" : "AWS::SNS::TopicPolicy",
-      "Properties" : {
-        "PolicyDocument" :  {
-          "Id" : "MyTopicPolicy2",
-          "Version" : "2012-10-17",
-          "Statement" : {
-            "Sid" : "My-statement-id2",
-            "Effect" : "Allow",
-            "Principal" : {
+    "mysnspolicy2": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyTopicPolicy2",
+          "Version": "2012-10-17",
+          "Statement": {
+            "Sid": "My-statement-id2",
+            "Effect": "Allow",
+            "Principal": {
               "AWS": "*"
             },
-            "Action" : [
+            "Action": [
               "SNS:GetTopicAttributes",
               "SNS:SetTopicAttributes",
               "SNS:AddPermission",
@@ -72,41 +78,50 @@
               "SNS:Publish",
               "SNS:Receive"
             ],
-            "Resource" : "arn:aws:sns:eu-west-1:111111111111:fredfred"
+            "Resource": "arn:aws:sns:eu-west-1:111111111111:fredfred"
           }
         },
-        "Topics" : [ { "Ref" : "MySNSTopic2" } ]
+        "Topics": [
+          {
+            "Ref": "MySNSTopic2"
+          }
+        ]
       }
     },
-
-    "mysnspolicy3" : {
-      "Type" : "AWS::SNS::TopicPolicy",
-      "Properties" : {
-        "PolicyDocument" :  {
-          "Id" : "MyTopicPolicy2",
-          "Version" : "2012-10-17",
-          "Statement" : [ {
-            "Sid" : "My-statement-id2",
-            "Effect" : "Allow",
-            "Principal" : {
-              "AWS": "*",
-              "CanonicalUser": "235425235252435252352"
-            },
-            "Action" : [
-              "SNS:GetTopicAttributes",
-              "SNS:SetTopicAttributes",
-              "SNS:AddPermission",
-              "SNS:RemovePermission",
-              "SNS:DeleteTopic",
-              "SNS:Subscribe",
-              "SNS:ListSubscriptionsByTopic",
-              "SNS:Publish",
-              "SNS:Receive"
-            ],
-            "Resource" : "arn:aws:sns:eu-west-1:111111111111:fredfred"
-          } ]
+    "mysnspolicy3": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyTopicPolicy2",
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "My-statement-id2",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*",
+                "CanonicalUser": "235425235252435252352"
+              },
+              "Action": [
+                "SNS:GetTopicAttributes",
+                "SNS:SetTopicAttributes",
+                "SNS:AddPermission",
+                "SNS:RemovePermission",
+                "SNS:DeleteTopic",
+                "SNS:Subscribe",
+                "SNS:ListSubscriptionsByTopic",
+                "SNS:Publish",
+                "SNS:Receive"
+              ],
+              "Resource": "arn:aws:sns:eu-west-1:111111111111:fredfred"
+            }
+          ]
         },
-        "Topics" : [ { "Ref" : "MySNSTopic2" } ]
+        "Topics": [
+          {
+            "Ref": "MySNSTopic2"
+          }
+        ]
       }
     }
   }
