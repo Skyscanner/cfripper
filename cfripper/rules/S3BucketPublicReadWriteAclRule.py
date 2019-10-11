@@ -12,12 +12,13 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from ..model.rule_processor import Rule
+from ..model.enums import RuleRisk
+from ..model.rule import Rule
 
 
 class S3BucketPublicReadWriteAclRule(Rule):
     REASON = "S3 Bucket {} should not have a public read-write acl"
-    RISK_VALUE = Rule.HIGH
+    RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():

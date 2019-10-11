@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
-from ..model.rule_processor import Rule
+from ..model.rule import Rule
 
 
 class SQSQueuePolicyWildcardActionRule(Rule):

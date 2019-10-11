@@ -15,12 +15,12 @@ specific language governing permissions and limitations under the License.
 import json
 import logging
 
-from cfripper.config.config import Config
-from cfripper.boto3_client import Boto3Client
-from cfripper.config.logger import setup_logging
-from cfripper.model.rule_processor import RuleProcessor
-from cfripper.rules import DEFAULT_RULES
-from cfripper.model.result import Result
+from .config.config import Config
+from .boto3_client import Boto3Client
+from .config.logger import setup_logging
+from .model.rule_processor import RuleProcessor
+from .rules import DEFAULT_RULES
+from .model.result import Result
 
 
 logger = logging.getLogger(__file__)

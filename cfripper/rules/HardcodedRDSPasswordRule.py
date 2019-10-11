@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.parameter import Parameter
 
-from ..model.rule_processor import Rule
+from ..model.rule import Rule
 
 
 class HardcodedRDSPasswordRule(Rule):

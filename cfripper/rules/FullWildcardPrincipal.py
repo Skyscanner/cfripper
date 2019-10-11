@@ -13,7 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 from ..config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
-from ..model.rule_processor import Rule
+from ..model.enums import RuleMode, RuleRisk
 from .WildcardPrincipal import GenericWildcardPrincipal
 
 
@@ -21,7 +21,7 @@ class FullWildcardPrincipal(GenericWildcardPrincipal):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 
-    RULE_MODE = Rule.BLOCKING
-    RISK_VALUE = Rule.HIGH
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.HIGH
 
     FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

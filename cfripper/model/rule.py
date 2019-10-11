@@ -1,0 +1,46 @@
+"""
+Copyright 2018-2019 Skyscanner Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+"""
+from abc import ABC, abstractmethod
+from typing import Optional
+
+from ..config.config import Config
+from .enums import RuleMode, RuleRisk, RuleGranularity
+from .result import Result
+
+
+class Rule(ABC):
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.MEDIUM
+    GRANULARITY = RuleGranularity.STACK
+
+    def __init__(self, config: Optional[Config], result: Result):
+        self._config = config if config else Config()
+        self._result = result
+
+    @abstractmethod
+    def invoke(self, resources, parameters):
+        pass
+
+    def add_failure(self, rule: str, reason: str, granularity=None):
+
+        if granularity is None:
+            granularity = self.GRANULARITY
+
+        self._result.add_failure(
+            rule=rule, reason=reason, rule_mode=self.RULE_MODE, risk_value=self.RISK_VALUE, granularity=granularity
+        )
+
+    def add_warning(self, warning):
+        self._result.add_warning(warning)

@@ -15,7 +15,8 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
-from ..model.rule_processor import Rule
+from ..model.enums import RuleMode
+from ..model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -26,7 +27,7 @@ class GenericWildcardPrincipal(Rule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
-    RULE_MODE = Rule.MONITOR
+    RULE_MODE = RuleMode.MONITOR
     IAM_PATTERN = r"arn:aws:iam::(\d*|\*):.*"
 
     FULL_REGEX = r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$"

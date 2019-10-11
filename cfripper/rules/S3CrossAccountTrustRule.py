@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 
-from ..model.rule_processor import Rule
+from ..model.rule import Rule
 
 logger = logging.getLogger(__file__)
 

@@ -14,13 +14,14 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
-from ..model.rule_processor import Rule
+from ..model.enums import RuleRisk
+from ..model.rule import Rule
 
 
 class SQSQueuePolicyPublicRule(Rule):
 
     REASON = "SQS Queue policy {} should not be public"
-    RISK_VALUE = Rule.HIGH
+    RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():

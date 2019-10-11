@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from ..model.rule_processor import Rule
+from ..model.enums import RuleMode, RuleRisk
 from .WildcardPrincipal import GenericWildcardPrincipal
 
 
@@ -20,8 +20,8 @@ class PartialWildcardPrincipal(GenericWildcardPrincipal):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 
-    RULE_MODE = Rule.MONITOR
-    RISK_VALUE = Rule.MEDIUM
+    RULE_MODE = RuleMode.MONITOR
+    RISK_VALUE = RuleRisk.MEDIUM
     """
     Will catch:
 

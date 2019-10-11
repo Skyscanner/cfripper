@@ -12,17 +12,25 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from enum import Enum
 
 
-class EBSVolumeHasSSERule(Rule):
+class RuleMode(str, Enum):
+    # Rule modes
+    BLOCKING = "BLOCKING"
+    MONITOR = "MONITOR"
+    DEBUG = "DEBUG"
 
-    REASON = "EBS volume {} should have server-side encryption enabled"
-    RULE_MODE = RuleMode.MONITOR
 
-    def invoke(self, cfmodel):
-        for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::EC2::Volume":
-                if resource.Properties.get("Encrypted") != "true":
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+class RuleRisk(str, Enum):
+    # Rule risk severity
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class RuleGranularity(str, Enum):
+    # Rule
+    ACTION = "ACTION"
+    RESOURCE = "RESOURCE"
+    STACK = "STACK"

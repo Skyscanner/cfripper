@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import re
 
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from ..model.rule_processor import Rule
+from ..model.rule import Rule
 
 
 class CrossAccountTrustRule(Rule):

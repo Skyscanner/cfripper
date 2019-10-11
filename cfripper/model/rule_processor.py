@@ -13,38 +13,15 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
-from abc import ABC, abstractmethod
+import re
 
 import pycfmodel
 
 from ..config.config import Config
+from .enums import RuleMode, RuleGranularity
+from .result import Result
 
 logger = logging.getLogger(__file__)
-
-
-class Rule(ABC):
-    BLOCKING = "BLOCKING"
-    MONITOR = "MONITOR"
-    DEBUG = "DEBUG"
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
-    RULE_MODE = BLOCKING
-    RISK_VALUE = MEDIUM
-
-    def __init__(self, config, result):
-        self._config = config if config else Config()
-        self._result = result
-
-    @abstractmethod
-    def invoke(self, cfmodel):
-        pass
-
-    def add_failure(self, rule, reason):
-        self._result.add_failure(rule, reason, self.RULE_MODE, self.RISK_VALUE)
-
-    def add_warning(self, warning):
-        self._result.add_warning(warning)
 
 
 class RuleProcessor:
@@ -74,6 +51,75 @@ class RuleProcessor:
                 )
                 continue
 
+        self.remove_failures_of_whitelisted_actions(config=config, result=result)
+        self.remove_failures_of_whitelisted_resources(config=config, result=result)
+
     @staticmethod
     def remove_debug_rules(rules):
-        return [rule for rule in rules if rule["rule_mode"] != Rule.DEBUG]
+        return [rule for rule in rules if rule["rule_mode"] != RuleMode.DEBUG]
+
+    @staticmethod
+    def remove_failures_of_whitelisted_resources(config: Config, result: Result):
+
+        if not result.failed_rules:
+            return
+
+        clean_failures = []
+
+        for failure in result.failed_rules:
+            if failure["granularity"] != RuleGranularity.RESOURCE:
+                clean_failures.append(failure)
+                continue
+
+            if not failure.get("resource_ids"):
+                logger.warning(f"Failure with resource granularity doesn't have resources: {failure}")
+                continue
+
+            whitelisted_resources = {
+                resource
+                for resource in failure["resource_ids"]
+                if any(
+                    [
+                        re.match(whitelisted_resource_regex, resource)
+                        for whitelisted_resource_regex in config.get_whitelisted_resources(failure["rule"])
+                    ]
+                )
+            }
+            failure["resource_ids"] = failure["resource_ids"] - whitelisted_resources
+            if failure["resource_ids"]:
+                clean_failures.append(failure)
+
+        result.failed_rules = clean_failures
+
+    @staticmethod
+    def remove_failures_of_whitelisted_actions(config: Config, result: Result):
+
+        if not result.failed_rules:
+            return
+
+        clean_failures = []
+
+        for failure in result.failed_rules:
+            if failure["granularity"] != RuleGranularity.ACTION:
+                clean_failures.append(failure)
+                continue
+
+            if not failure.get("actions"):
+                logger.warning(f"Failure with action granularity doesn't have actions: {failure}")
+                continue
+
+            whitelisted_actions = {
+                action
+                for action in failure["actions"]
+                if any(
+                    [
+                        re.match(whitelisted_action_regex, action)
+                        for whitelisted_action_regex in config.get_whitelisted_actions(failure["rule"])
+                    ]
+                )
+            }
+            failure["actions"] = failure["actions"] - whitelisted_actions
+            if failure["actions"]:
+                clean_failures.append(failure)
+
+        result.failed_rules = clean_failures
