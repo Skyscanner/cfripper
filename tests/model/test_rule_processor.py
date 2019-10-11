@@ -16,7 +16,7 @@ import pytest
 
 from unittest.mock import Mock
 
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 from cfripper.model.rule_processor import RuleProcessor
 from tests.utils import get_fixture_json
 

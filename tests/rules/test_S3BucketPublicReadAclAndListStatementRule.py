@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 from cfripper.model.result import Result
 from tests.utils import get_cfmodel_from

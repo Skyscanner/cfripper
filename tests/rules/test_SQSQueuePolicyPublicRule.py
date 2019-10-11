@@ -16,7 +16,7 @@ import pytest
 
 from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from cfripper.model.result import Result
-from cfripper.model.rule_processor import Rule
+from cfripper.model.rule import Rule
 from tests.utils import get_cfmodel_from
 
 
