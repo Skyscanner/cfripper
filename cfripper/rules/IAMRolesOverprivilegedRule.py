@@ -12,12 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import logging
-
-from cfripper.config.regex import REGEX_CONTAINS_STAR
-from cfripper.model.rule_processor import Rule
-
-logger = logging.getLogger(__file__)
+from ..config.regex import REGEX_CONTAINS_STAR
+from ..model.rule_processor import Rule
 
 
 class IAMRolesOverprivilegedRule(Rule):

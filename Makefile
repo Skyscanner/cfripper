@@ -29,6 +29,9 @@ test: lint component
 freeze:
 	pip-compile --output-file requirements.txt setup.py
 
+freeze-upgrade:
+	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-index --upgrade --output-file requirements.txt setup.py
+
 lambda.zip: $(SOURCES) Makefile requirements.txt
 	if [ -f lambda.zip ]; then rm lambda.zip; fi
 	if [ -d "./package" ]; then rm -rf package/; fi

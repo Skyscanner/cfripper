@@ -1,29 +1,26 @@
 {
   "Resources": {
-    "S3Bucket" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket",
-        "AccessControl" : "PublicRead"
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket",
+        "AccessControl": "PublicRead"
       }
     },
-
-    "S3Bucket2" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket2",
-        "AccessControl" : "PublicRead"
+    "S3Bucket2": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket2",
+        "AccessControl": "PublicRead"
       }
     },
-
-    "S3Bucket3" : {
-      "Type" : "AWS::S3::Bucket",
-      "Properties" : {
-        "BucketName" : "fakebucketfakebucket3",
-        "AccessControl" : "PublicRead"
+    "S3Bucket3": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "fakebucketfakebucket3",
+        "AccessControl": "PublicRead"
       }
     },
-
     "S3BucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -48,7 +45,6 @@
         }
       }
     },
-
     "S3BucketPolicy2": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -62,13 +58,12 @@
                 "s3:ListBucket"
               ],
               "Effect": "Allow",
-              "Resource": "arn:aws:s3:::fakebucketfakebucket2/*",
+              "Resource": "arn:aws:s3:::fakebucketfakebucket2/*"
             }
           ]
         }
       }
     },
-
     "S3BucketPolicy3": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -83,7 +78,7 @@
               ],
               "Effect": "Deny",
               "Resource": "arn:aws:s3:::fakebucketfakebucket3/*",
-              "Principal": "*",
+              "Principal": "*"
             }
           ]
         }

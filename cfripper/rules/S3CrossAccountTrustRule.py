@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 
-from cfripper.model.rule_processor import Rule
+from ..model.rule_processor import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -35,7 +35,7 @@ class S3CrossAccountTrustRule(Rule):
             cross_account = self._config.aws_account_id and self._config.aws_account_id not in principal
 
             if not isinstance(principal, str):
-                logger.warn(
+                logger.warning(
                     f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
                     " - Skipping validation: principal is possibly a function."
                 )

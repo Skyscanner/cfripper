@@ -14,7 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 import re
-from cfripper.model.rule_processor import Rule
+
+from ..model.rule_processor import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -37,7 +38,7 @@ class S3BucketPolicyPrincipalRule(Rule):
     def check_account_number(self, p, logical_id):
         for principal in p.principals:
             if not isinstance(principal, str):
-                logger.warn(
+                logger.warning(
                     f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
                     " - Skipping validation: principal is possibly a function."
                 )

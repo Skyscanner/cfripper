@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
-from cfripper.model.rule_processor import Rule
+from ..model.rule_processor import Rule
 
 logger = logging.getLogger(__file__)
 

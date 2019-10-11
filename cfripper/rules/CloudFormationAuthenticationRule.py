@@ -15,25 +15,6 @@ specific language governing permissions and limitations under the License.
 from ..model.rule_processor import Rule
 
 
-"""
-This rule will incorrectly block the following stack:
-"Metadata": {
-        "AWS::CloudFormation::Authentication": {
-          "testBasic": {
-            "type": "basic",
-            "username": {
-              "Ref": "MasterUsername"
-            },
-            "password": {
-              "Ref": "MasterUserPassword"
-            },
-            "uris": ["http://www.example.com/test"]
-          }
-        }
-      }
-"""
-
-
 class CloudFormationAuthenticationRule(Rule):
 
     REASON = "Hardcoded credentials in {}"

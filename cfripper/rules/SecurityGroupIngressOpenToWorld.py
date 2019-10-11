@@ -18,8 +18,9 @@ from cfripper.rules.SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorld
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::EC2::SecurityGroupIngress" and (resource.ipv4_slash_zero() or resource.ipv6_slash_zero()):
+            if resource.Type == "AWS::EC2::SecurityGroupIngress" and (
+                resource.ipv4_slash_zero() or resource.ipv6_slash_zero()
+            ):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
                         self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))
-

@@ -6,37 +6,43 @@
         "QueueName": "queue1"
       }
     },
-
     "QueuePolicyPublic1": {
-      "Type":"AWS::SQS::QueuePolicy",
+      "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
-        "Queues": [{"Ref":"queue1"}],
+        "Queues": [
+          {
+            "Ref": "queue1"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
               "Effect": "Allow",
               "Principal": {
-                  "AWS": "*"
+                "AWS": "*"
               },
               "Action": "sqs:*",
               "Resource": "*",
-              "Condition": {} 
+              "Condition": {}
             }
           ]
         }
       }
     },
-
     "QueuePolicyPublic2": {
-      "Type":"AWS::SQS::QueuePolicy",
+      "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
-        "Queues": [{"Ref":"queue1"}],
+        "Queues": [
+          {
+            "Ref": "queue1"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
               "Effect": "Allow",
               "Principal": {
-                  "AWS": "*"
+                "AWS": "*"
               },
               "Action": "sqs:*",
               "Resource": "*"
@@ -45,11 +51,14 @@
         }
       }
     },
-
     "QueuePolicyPublic3": {
-      "Type":"AWS::SQS::QueuePolicy",
+      "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
-        "Queues": [{"Ref":"queue1"}],
+        "Queues": [
+          {
+            "Ref": "queue1"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
@@ -62,11 +71,14 @@
         }
       }
     },
-
     "QueuePolicyPublic4": {
-      "Type":"AWS::SQS::QueuePolicy",
+      "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
-        "Queues": [{"Ref":"queue1"}],
+        "Queues": [
+          {
+            "Ref": "queue1"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
