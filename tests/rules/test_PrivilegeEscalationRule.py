@@ -18,6 +18,7 @@ from cfripper.rules.PrivilegeEscalationRule import PrivilegeEscalationRule
 from cfripper.model.result import Result
 from tests.utils import get_cfmodel_from
 
+
 @pytest.fixture()
 def valid_role_inline_policy():
     return get_cfmodel_from("rules/PrivilegeEscalationRule/valid_role_inline_policy.json").resolve()

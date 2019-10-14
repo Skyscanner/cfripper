@@ -12,40 +12,18 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import logging
-
 from ..model.rule import Rule
-
-logger = logging.getLogger(__file__)
 
 
 class S3CrossAccountTrustRule(Rule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
 
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::S3::BucketPolicy", []):
-            for statement in resource.policy_document.statements:
-                if statement.effect == "Allow":
-                    aws_principals = self.get_aws_principals(statement) or []
-                    self.check_principals(aws_principals, resource.logical_id)
-
-    def check_principals(self, principals, logical_id):
-        for principal in principals:
-            cross_account = self._config.aws_account_id and self._config.aws_account_id not in principal
-
-            if not isinstance(principal, str):
-                logger.warning(
-                    f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
-                    " - Skipping validation: principal is possibly a function."
-                )
-                continue
-
-            if cross_account:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
-
-    def get_aws_principals(self, statement):
-        for principal in statement.principal:
-            if principal.principal_type == "AWS" and not principal.has_wildcard_principals():
-                return principal.principals
-        return None
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::S3::BucketPolicy":
+                for statement in resource.Properties.PolicyDocument._statement_as_list():
+                    if statement.Effect == "Allow":
+                        for principal in statement.get_principal_list():
+                            if self._config.aws_account_id and self._config.aws_account_id not in principal:
+                                self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))

@@ -12,57 +12,49 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import os
 import pytest
-import pycfmodel
 
 from cfripper.config.config import Config
 from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
 from cfripper.model.result import Result
-from cfripper.model.utils import convert_json_or_yaml_to_dict
+from tests.utils import get_cfmodel_from
 
 
-class TestS3CrossAccountTrustRule:
-    @pytest.fixture(scope="class")
-    def template(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/test_templates/s3_bucket_cross_account.json") as cf_script:
-            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
-        return pycfmodel.parse(cf_template)
-
-    def test_with_cross_account_in_bucket_policy(self, template):
-        result = Result()
-        rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
-
-        rule.invoke(template.resources, template.parameters)
-
-        assert not result.valid
-        assert len(result.failed_rules) == 1
-        assert len(result.failed_monitored_rules) == 0
-        assert (
-            result.failed_rules[0]["reason"]
-            == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
-        )
+@pytest.fixture()
+def s3_bucket_cross_account():
+    return get_cfmodel_from("rules/S3CrossAccountTrustRule/s3_bucket_cross_account.json").resolve()
 
 
-class TestS3CrossAccountTrustRuleWithNormalAccess:
-    @pytest.fixture(scope="class")
-    def template(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/test_templates/s3_bucket_cross_account_and_normal.json") as cf_script:
-            cf_template = convert_json_or_yaml_to_dict(cf_script.read())
-        return pycfmodel.parse(cf_template)
+@pytest.fixture()
+def s3_bucket_cross_account_and_normal():
+    return get_cfmodel_from("rules/S3CrossAccountTrustRule/s3_bucket_cross_account_and_normal.json").resolve()
 
-    def test_with_cross_account_in_bucket_policy(self, template):
-        result = Result()
-        rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
 
-        rule.invoke(template.resources, template.parameters)
+def test_s3_bucket_cross_account(s3_bucket_cross_account):
+    result = Result()
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
+    rule.invoke(s3_bucket_cross_account)
 
-        assert not result.valid
-        assert len(result.failed_rules) == 1
-        assert len(result.failed_monitored_rules) == 0
-        assert (
-            result.failed_rules[0]["reason"]
-            == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
-        )
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0]["rule"] == "S3CrossAccountTrustRule"
+    assert (
+        result.failed_rules[0]["reason"]
+        == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
+    )
+
+
+def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
+    result = Result()
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
+    rule.invoke(s3_bucket_cross_account_and_normal)
+
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0]["rule"] == "S3CrossAccountTrustRule"
+    assert (
+        result.failed_rules[0]["reason"]
+        == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
+    )

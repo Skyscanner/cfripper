@@ -21,7 +21,9 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def single_security_group_one_cidr_ingress():
-    return get_cfmodel_from("rules/SecurityGroupMissingEgressRule/single_security_group_one_cidr_ingress.json").resolve()
+    return get_cfmodel_from(
+        "rules/SecurityGroupMissingEgressRule/single_security_group_one_cidr_ingress.json"
+    ).resolve()
 
 
 def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_ingress):
@@ -33,4 +35,7 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 1
     assert result.failed_monitored_rules[0]["rule"] == "SecurityGroupMissingEgressRule"
-    assert result.failed_monitored_rules[0]["reason"] == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    assert (
+        result.failed_monitored_rules[0]["reason"]
+        == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    )
