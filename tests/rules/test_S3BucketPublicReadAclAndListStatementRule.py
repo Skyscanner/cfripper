@@ -22,7 +22,7 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def s3_read_plus_list():
-    return get_cfmodel_from("rules/S3BucketPublicReadAclAndListStatementRule/s3_read_plus_list.json")
+    return get_cfmodel_from("rules/S3BucketPublicReadAclAndListStatementRule/s3_read_plus_list.json").resolve()
 
 
 def test_s3_read_plus_list(s3_read_plus_list):
@@ -39,5 +39,3 @@ def test_s3_read_plus_list(s3_read_plus_list):
         == "S3 Bucket S3BucketPolicy should not have a public read acl and list bucket statement"
     )
     assert result.failed_monitored_rules[0]["rule_mode"] == RuleMode.DEBUG
-
-test_s3_read_plus_list(s3_read_plus_list())
