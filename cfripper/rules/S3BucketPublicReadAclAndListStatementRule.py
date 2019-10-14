@@ -13,6 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
+import re
 
 from ..model.enums import RuleMode
 from ..model.rule import Rule
@@ -25,38 +26,15 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
     RULE_MODE = RuleMode.DEBUG
 
-    # def invoke(self, cfmodel):
-    #     buckets_with_policies = []
-    #     for logical_id, resource in cfmodel.Resources.items():
-    #         if resource.Type == "AWS::S3::BucketPolicy" and resource.Properties.PolicyDocument.allowed_actions_with(
-    #             re.compile(r"^s3:L.*$")
-    #         ):
-    #             buckets_with_policies.append()
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::S3::BucketPolicy" and resource.Properties.PolicyDocument.allowed_actions_with(
+                re.compile(r"^s3:L.*$")
+            ):
+                if isinstance(resource.Properties.Bucket, str):
+                    bucket = cfmodel.Resources.get(resource.Properties.Bucket)
+                elif isinstance(resource.Properties.Bucket, dict) and resource.Properties.Bucket.get("Ref"):
+                    bucket = cfmodel.Resources.get(resource.Properties.Bucket.get("Ref"))
 
-    # def invoke(self, resources, parameters):
-    #     # Get all bucket policies and filter to get the ones that allow list actions
-    #     bucket_policies = []
-    #     for policy in resources.get("AWS::S3::BucketPolicy", []):
-    #         if any():
-    #             if isinstance(policy.bucket, str):
-    #                 bucket_policies.append(policy.bucket)
-    #             elif isinstance(policy.bucket, dict) and policy.bucket.get("Ref"):
-    #                 bucket_policies.append(policy.bucket["Ref"])
-    #             else:
-    #                 logger.error("Unknown bucket parameter in bucket policy")
-    #
-    #     # Check if bucket policies exist
-    #     self.check_bucket_policies(resources, bucket_policies)
-    #
-    # def check_bucket_policies(self, resources, bucket_policies):
-    #     if not bucket_policies:
-    #         return
-    #
-    #     # Get S3 buckets
-    #     buckets = resources.get("AWS::S3::Bucket", [])
-    #     for resource in buckets:
-    #         try:
-    #             if resource.access_control == "PublicRead" and resource.logical_id in bucket_policies:
-    #                 self.add_failure(type(self).__name__, self.REASON.format(resource.logical_id))
-    #         except AttributeError:
-    #             logger.info("No access control on bucket")
+                if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
