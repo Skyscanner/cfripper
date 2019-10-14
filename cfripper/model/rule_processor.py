@@ -15,8 +15,6 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
-import pycfmodel
-
 from ..config.config import Config
 from .enums import RuleMode, RuleGranularity
 from .result import Result
@@ -28,13 +26,7 @@ class RuleProcessor:
     def __init__(self, *args):
         self.rules = args
 
-    def process_cf_template(self, cf_template_dict, config, result):
-        if not cf_template_dict or not isinstance(cf_template_dict, dict):
-            result.add_exception(TypeError("CF template not converted to dict"))
-            return
-
-        cfmodel = pycfmodel.parse(cf_template_dict).resolve()
-
+    def process_cf_template(self, cfmodel, config, result):
         for rule in self.rules:
             try:
                 rule.invoke(cfmodel)

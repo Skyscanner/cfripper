@@ -16,6 +16,7 @@ import pytest
 
 from unittest.mock import Mock
 
+import pycfmodel
 from cfripper.model.rule import Rule
 from cfripper.model.rule_processor import RuleProcessor
 from tests.utils import get_fixture_json
@@ -31,7 +32,8 @@ def test_with_no_rules(template):
     config = Mock()
     result = Mock()
 
-    processor.process_cf_template(template, config, result)
+    cfmodel = pycfmodel.parse(template).resolve()
+    processor.process_cf_template(cfmodel, config, result)
 
 
 def test_with_mock_rule(template):
@@ -41,7 +43,8 @@ def test_with_mock_rule(template):
 
     config = Mock()
     result = Mock()
-    processor.process_cf_template(template, config, result)
+    cfmodel = pycfmodel.parse(template).resolve()
+    processor.process_cf_template(cfmodel, config, result)
 
     rule.invoke.assert_called()
 

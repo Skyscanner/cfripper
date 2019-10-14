@@ -15,6 +15,8 @@ specific language governing permissions and limitations under the License.
 import json
 import logging
 
+import pycfmodel
+
 from .config.config import Config
 from .boto3_client import Boto3Client
 from .config.logger import setup_logging
@@ -114,7 +116,9 @@ def handler(event, context):
     rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
     processor = RuleProcessor(*rules)
 
-    processor.process_cf_template(template, config, result)
+    cfmodel = pycfmodel.parse(template).resolve()
+
+    processor.process_cf_template(cfmodel, config, result)
 
     perform_logging(result, config, event)
 

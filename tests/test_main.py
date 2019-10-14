@@ -19,6 +19,7 @@ from unittest.mock import Mock, patch
 from unittest.mock import ANY
 from moto import mock_s3
 
+import pycfmodel
 from cfripper.main import handler
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.model.result import Result
@@ -56,12 +57,11 @@ def test_correct_event():
 
             handler(event, None)
 
+    cfmodel = pycfmodel.parse({"Resources": {}}).resolve()
     mock_created_s3_adapter_object.download_template_to_dictionary.assert_called_once_with(
         "https://asdfasdfasdf/bucket/key"
     )
-    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(
-        mock_created_s3_adapter_object.download_template_to_dictionary.return_value, ANY, ANY
-    )
+    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(cfmodel, ANY, ANY)
 
 
 @mock_s3
@@ -75,9 +75,11 @@ def test_with_templates(cf_path):
     # Scan result
     result = Result()
 
+    cfmodel = pycfmodel.parse(cf_template).resolve()
+
     rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
     processor = RuleProcessor(*rules)
-    processor.process_cf_template(cf_template, config, result)
+    processor.process_cf_template(cfmodel, config, result)
 
     # Use this to print the stack if there'IAMManagedPolicyWildcardActionRule an error
     if len(result.exceptions):
