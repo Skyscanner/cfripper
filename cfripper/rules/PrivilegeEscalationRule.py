@@ -19,6 +19,8 @@ class PrivilegeEscalationRule(Rule):
 
     REASON = "{} has blacklisted IAM action {}"
     IAM_BLACKLIST = set(
+        action.lower()
+        for action in
         [
             "iam:CreateAccessKey",
             "iam:CreateLoginProfile",
@@ -40,6 +42,6 @@ class PrivilegeEscalationRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::IAM::Policy":
-                policy_actions = set(resource.policy_document.get_iam_actions())
+                policy_actions = set(action.lower() for action in resource.Properties.PolicyDocument.get_iam_actions())
                 for violation in policy_actions.intersection(self.IAM_BLACKLIST):
                     self.add_failure(type(self).__name__, self.REASON.format(logical_id, violation))

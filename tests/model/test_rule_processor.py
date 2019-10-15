@@ -17,7 +17,9 @@ import pytest
 from unittest.mock import Mock
 
 import pycfmodel
-from cfripper.model.rule import Rule
+from cfripper.config.config import Config
+from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.result import Result
 from cfripper.model.rule_processor import RuleProcessor
 from tests.utils import get_fixture_json
 
@@ -29,8 +31,8 @@ def template():
 
 def test_with_no_rules(template):
     processor = RuleProcessor()
-    config = Mock()
-    result = Mock()
+    config = Config()
+    result = Result()
 
     cfmodel = pycfmodel.parse(template).resolve()
     processor.process_cf_template(cfmodel, config, result)
@@ -41,8 +43,8 @@ def test_with_mock_rule(template):
 
     processor = RuleProcessor(rule)
 
-    config = Mock()
-    result = Mock()
+    config = Config()
+    result = Result()
     cfmodel = pycfmodel.parse(template).resolve()
     processor.process_cf_template(cfmodel, config, result)
 
@@ -51,14 +53,14 @@ def test_with_mock_rule(template):
 
 def test_remove_debug_rules():
     original_failed_monitored_rules = [
-        {"rule": "a", "reason": "something", "rule_mode": Rule.MONITOR, "risk_value": Rule.HIGH},
-        {"rule": "b", "reason": "something", "rule_mode": Rule.DEBUG, "risk_value": Rule.MEDIUM},
-        {"rule": "c", "reason": "something", "rule_mode": Rule.MONITOR, "risk_value": Rule.LOW},
+        {"rule": "a", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.HIGH},
+        {"rule": "b", "reason": "something", "rule_mode": RuleMode.DEBUG, "risk_value": RuleRisk.MEDIUM},
+        {"rule": "c", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.LOW},
     ]
 
     list_with_no_debug_rules = [
-        {"rule": "a", "reason": "something", "rule_mode": Rule.MONITOR, "risk_value": Rule.HIGH},
-        {"rule": "c", "reason": "something", "rule_mode": Rule.MONITOR, "risk_value": Rule.LOW},
+        {"rule": "a", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.HIGH},
+        {"rule": "c", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.LOW},
     ]
 
     processed_list = RuleProcessor.remove_debug_rules(rules=original_failed_monitored_rules)

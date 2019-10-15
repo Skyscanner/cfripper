@@ -39,3 +39,4 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
         result.failed_monitored_rules[0]["reason"]
         == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
     )
+test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_ingress())
