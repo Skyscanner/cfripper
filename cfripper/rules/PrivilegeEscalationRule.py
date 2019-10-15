@@ -20,8 +20,7 @@ class PrivilegeEscalationRule(Rule):
     REASON = "{} has blacklisted IAM action {}"
     IAM_BLACKLIST = set(
         action.lower()
-        for action in
-        [
+        for action in [
             "iam:CreateAccessKey",
             "iam:CreateLoginProfile",
             "iam:UpdateLoginProfile",

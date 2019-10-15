@@ -85,12 +85,7 @@
       "Properties": {
         "GroupDescription": "some_group_desc2",
         "SecurityGroupIngress": {
-          "CidrIp": [
-            {
-              "Ref": "somethingSpecial"
-            },
-            "1.2.3.4/32"
-          ],
+          "CidrIp": "1.2.3.4/32",
           "FromPort": 33,
           "ToPort": 33,
           "IpProtocol": "tcp"

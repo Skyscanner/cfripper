@@ -36,10 +36,7 @@
         "GroupId": {
           "Ref": "sg"
         },
-        "CidrIp": [
-          "1.2.3.4/32",
-          "3.4.5.6/24"
-        ],
+        "CidrIp": "3.4.5.6/24",
         "FromPort": 36,
         "ToPort": 36,
         "IpProtocol": "tcp"
@@ -77,12 +74,9 @@
         "GroupId": {
           "Ref": "sg"
         },
-        "CidrIp": [
-          "1.2.3.4/32",
-          {
-            "Ref": "somethingSpecial"
-          }
-        ],
+        "CidrIp": {
+          "Ref": "somethingSpecial"
+        },
         "FromPort": 46,
         "ToPort": 46,
         "IpProtocol": "tcp"

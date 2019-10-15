@@ -21,7 +21,10 @@ class SecurityGroupOpenToWorldRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::EC2::SecurityGroup" and resource.Properties.SecurityGroupIngress:
-                for ingress in resource.Properties.SecurityGroupIngress:
+                list_security_group_ingress = resource.Properties.SecurityGroupIngress
+                if not isinstance(list_security_group_ingress, list):
+                    list_security_group_ingress = [list_security_group_ingress]
+                for ingress in list_security_group_ingress:
                     if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:

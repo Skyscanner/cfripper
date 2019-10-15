@@ -86,13 +86,7 @@ def test_with_templates(cf_path):
         print(cf_path)
         traceback.print_tb(result.exceptions[0].__traceback__)
 
-    no_resource_templates = ["vulgar_bad_syntax.yml", "rubbish.json"]
-
-    if cf_path.split("/")[-1] in no_resource_templates:
-        assert len(result.exceptions) == 1
-    else:
-        print(result.exceptions)
-        assert len(result.exceptions) == 0
+    assert len(result.exceptions) == 0
 
 
 def test_all_rules_valid():

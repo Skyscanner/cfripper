@@ -47,8 +47,8 @@ class GenericWildcardPrincipal(Rule):
                 self.check_for_wildcards(logical_id, resource.Properties.PolicyDocument)
             elif resource.Type in ["AWS::IAM::Role", "AWS::IAM::User"]:
                 if resource.Type == "AWS::IAM::Role":
-                    self.check_for_wildcards(logical_id, resource.Properties.PolicyDocument)
-                if resource.Properties.Policies:
+                    self.check_for_wildcards(logical_id, resource.Properties.AssumeRolePolicyDocument)
+                if resource.Properties and resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
                         self.check_for_wildcards(logical_id, policy.PolicyDocument)
 

@@ -35,4 +35,5 @@ def test_valid_role_inline_policy(valid_role_inline_policy):
     assert result.failed_rules[0]["rule"] == "PrivilegeEscalationRule"
     assert result.failed_rules[0]["reason"] == "PolicyA has blacklisted IAM action iam:createpolicy"
 
+
 test_valid_role_inline_policy(valid_role_inline_policy())

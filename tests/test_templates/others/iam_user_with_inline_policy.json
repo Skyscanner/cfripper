@@ -9,9 +9,12 @@
         "Policies": [
           {
             "PolicyDocument": {
-              "Effect": "Allow",
-              "Resource": "arn:something",
-              "Action": "s3:dosomething"
+              "Version": "2012-10-17",
+              "Statement": {
+                "Effect": "Allow",
+                "Resource": "arn:something",
+                "Action": "s3:dosomething"
+              }
             },
             "PolicyName": "somePolicy"
           }

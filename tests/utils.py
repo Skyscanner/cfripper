@@ -14,8 +14,10 @@ FIXTURE_ROOT_PATH = Path(__file__).parent / "test_templates"
 def get_templates() -> List[str]:
     for r, d, f in os.walk(FIXTURE_ROOT_PATH):
         for file in f:
-            _, file_extension = os.path.splitext(file)
-            if file_extension in [".json", ".yml", ".yaml"]:
+            filename, file_extension = os.path.splitext(file)
+            if file_extension in [".json", ".yml", ".yaml"] and filename not in [
+                "wildcard_principal_rule_is_whitelisted_retrieved_correctly"
+            ]:
                 yield os.path.join(r, file)
 
 
