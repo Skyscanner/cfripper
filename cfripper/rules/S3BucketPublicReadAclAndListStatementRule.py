@@ -33,7 +33,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
             ):
                 bucket_name = resource.Properties.Bucket
                 if "UNDEFINED_PARAM_" in bucket_name:
-                    bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
+                    bucket_name = bucket_name[len("UNDEFINED_PARAM_"):]
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
                     self.add_failure(type(self).__name__, self.REASON.format(logical_id))
