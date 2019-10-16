@@ -26,9 +26,7 @@ from cfripper.model.result import Result
 @pytest.fixture()
 def template_one_role():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(
-        f"{dir_path}/test_templates/iam_root_role_cross_account.json"
-    ) as cf_script:
+    with open(f"{dir_path}/test_templates/iam_root_role_cross_account.json") as cf_script:
         cf_template = convert_json_or_yaml_to_dict(cf_script.read())
     return pycfmodel.parse(cf_template)
 
@@ -36,16 +34,14 @@ def template_one_role():
 @pytest.fixture()
 def template_two_roles_dict():
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(
-            f"{dir_path}/test_templates/iam_root_role_cross_account_two_roles.json"
-    ) as cf_script:
+    with open(f"{dir_path}/test_templates/iam_root_role_cross_account_two_roles.json") as cf_script:
         cf_template = convert_json_or_yaml_to_dict(cf_script.read())
     return cf_template
 
 
 @pytest.fixture()
 def expected_result_two_roles():
-    yield [
+    return [
         {
             "rule": "CrossAccountTrustRule",
             "reason": "RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
@@ -103,7 +99,10 @@ def test_report_format_is_the_one_expected(template_one_role):
         },
         {
             "rule": "CrossAccountTrustRule",
-            "reason": "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",  # noqa
+            "reason": (
+                "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/"
+                "someuser@bla.com"
+            ),
             "rule_mode": RuleMode.BLOCKING,
             "risk_value": RuleRisk.MEDIUM,
             "resource_ids": {"RootRole"},

@@ -40,7 +40,7 @@ class CrossAccountTrustRule(Rule):
 
             if not isinstance(principal, str):
                 logger.warning(
-                    f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name} \
+                    f"{type.__class__.__name__}/{self._config.stack_name}/{self._config.service_name} \
                     - Skipping validation: principal is possibly a function."
                 )
                 continue

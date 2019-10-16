@@ -13,13 +13,8 @@
                                 "AWS": [
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:root",
                                     "arn:aws:iam::999999999:role/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                 ]
                             },
@@ -43,13 +38,8 @@
                                 "AWS": [
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:root",
                                     "arn:aws:iam::999999999:role/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
-                                    "arn:aws:iam::123456789:user/someuser@bla.com",
                                     "arn:aws:iam::123456789:user/someuser@bla.com",
                                 ]
                             },
