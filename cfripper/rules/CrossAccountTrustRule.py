@@ -40,14 +40,14 @@ class CrossAccountTrustRule(Rule):
 
             if not isinstance(principal, str):
                 logger.warning(
-                    f"{type.__class__.__name__}/{self._config.stack_name}/{self._config.service_name} \
+                    f"{self.__class__.__name__}/{self._config.stack_name}/{self._config.service_name} \
                     - Skipping validation: principal is possibly a function."
                 )
                 continue
 
             if self.ROOT_PATTERN.match(principal) or cross_account:
                 self.add_failure(
-                    rule=type(self).__name__,
+                    rule=self.__class__.__name__,
                     reason=self.REASON.format(logical_id, principal),
                     resource_ids={logical_id},
                 )
