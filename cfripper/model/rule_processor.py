@@ -55,7 +55,6 @@ class RuleProcessor:
                     )
                 )
                 continue
-
         self.remove_failures_of_whitelisted_actions(config=config, result=result)
         self.remove_failures_of_whitelisted_resources(config=config, result=result)
 
