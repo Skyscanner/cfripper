@@ -15,10 +15,10 @@ specific language governing permissions and limitations under the License.
 import re
 
 from ..model.enums import RuleMode, RuleRisk
-from .GenericWildcardPrincipal import GenericWildcardPrincipal
+from .GenericWildcardPrincipalRule import GenericWildcardPrincipalRule
 
 
-class PartialWildcardPrincipal(GenericWildcardPrincipal):
+class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 

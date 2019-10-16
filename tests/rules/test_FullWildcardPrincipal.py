@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.rules import FullWildcardPrincipal
+from cfripper.rules import FullWildcardPrincipalRule
 from cfripper.model.result import Result
 from tests.utils import get_cfmodel_from
 
@@ -31,7 +31,7 @@ def bad_template():
 
 def test_no_failures_are_raised(good_template):
     result = Result()
-    rule = FullWildcardPrincipal(None, result)
+    rule = FullWildcardPrincipalRule(None, result)
     rule.invoke(good_template)
 
     assert result.valid
@@ -41,7 +41,7 @@ def test_no_failures_are_raised(good_template):
 
 def test_failures_are_raised(bad_template):
     result = Result()
-    rule = FullWildcardPrincipal(None, result)
+    rule = FullWildcardPrincipalRule(None, result)
     rule.invoke(bad_template)
 
     assert not result.valid

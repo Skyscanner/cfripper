@@ -12,20 +12,21 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from typing import Dict
+from dataclasses import dataclass, field
+from typing import Dict, List
 
 from .enums import RuleMode
 
 
+@dataclass
 class Result:
     """An object to represent scan results."""
 
-    def __init__(self):
-        self.valid = True
-        self.failed_rules = []
-        self.exceptions = []
-        self.failed_monitored_rules = []
-        self.warnings = []
+    valid: bool = True
+    failed_rules: List = field(default_factory=list)
+    exceptions: List = field(default_factory=list)
+    failed_monitored_rules: List = field(default_factory=list)
+    warnings: List = field(default_factory=list)
 
     def add_failure(
         self, rule: str, reason: str, rule_mode: str, risk_value: str, granularity: str, resource_ids=None, actions=None

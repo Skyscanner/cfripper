@@ -29,8 +29,8 @@ from .SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
 from .S3CrossAccountTrustRule import S3CrossAccountTrustRule
 from .HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
 from .KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
-from .FullWildcardPrincipal import FullWildcardPrincipal
-from .PartialWildcardPrincipal import PartialWildcardPrincipal
+from .FullWildcardPrincipalRule import FullWildcardPrincipalRule
+from .PartialWildcardPrincipal import PartialWildcardPrincipalRule
 
 DEFAULT_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
@@ -50,6 +50,6 @@ DEFAULT_RULES = {
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
     "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
     "KMSKeyWildcardPrincipal": KMSKeyWildcardPrincipal,
-    "FullWildcardPrincipal": FullWildcardPrincipal,
-    "PartialWildcardPrincipal": PartialWildcardPrincipal,
+    "FullWildcardPrincipal": FullWildcardPrincipalRule,
+    "PartialWildcardPrincipal": PartialWildcardPrincipalRule,
 }

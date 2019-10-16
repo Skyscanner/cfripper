@@ -24,7 +24,7 @@ logger = logging.getLogger(__file__)
 POLICY_DOCUMENT_TYPES = ("policy_document", "key_policy", "assume_role_policy_document")
 
 
-class GenericWildcardPrincipal(Rule):
+class GenericWildcardPrincipalRule(Rule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"

@@ -14,10 +14,10 @@ specific language governing permissions and limitations under the License.
 """
 from ..config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
 from ..model.enums import RuleMode, RuleRisk
-from .GenericWildcardPrincipal import GenericWildcardPrincipal
+from .GenericWildcardPrincipalRule import GenericWildcardPrincipalRule
 
 
-class FullWildcardPrincipal(GenericWildcardPrincipal):
+class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 
