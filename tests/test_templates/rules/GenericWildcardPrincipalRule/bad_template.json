@@ -14,7 +14,8 @@
                 "IAM:CREATEPOLICY"
               ],
               "Principal": [
-                "somewhatrestricted:*"
+                "somewhatrestricted:*",
+                "arn:aws:iam::123445:*"
               ],
               "Resource": [
                 "arn:aws:glue:eu-west-1:12345678:catalog"

@@ -77,9 +77,9 @@ class GenericWildcardPrincipalRule(Rule):
                 f"{self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id)}"
             )
 
-    def should_add_failure(self, logical_id, account_id):
+    def should_add_failure(self, logical_id, account_id) -> bool:
         if not self._config.aws_principals:
             return False
         elif account_id in self._config.aws_principals:
             return False
-        return self.resource_is_whitelisted(logical_id)
+        return not self.resource_is_whitelisted(logical_id)
