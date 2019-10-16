@@ -12,25 +12,50 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-# import pytest
-#
-# from cfripper.rules.PartialWildcardPrincipal import PartialWildcardPrincipal
-# from cfripper.model.result import Result
-# from tests.utils import get_cfmodel_from
+from pytest import fixture
 
-# TODO Implement test
-# @pytest.fixture()
-# def abcdef():
-#     return get_cfmodel_from("rules/PartialWildcardPrincipal/abcdef.json").resolve()
-#
-#
-# def test_abcdef(abcdef):
-#     result = Result()
-#     rule = PartialWildcardPrincipal(None, result)
-#     rule.invoke(abcdef)
-#
-#     assert not result.valid
-#     assert len(result.failed_rules) == 1
-#     assert len(result.failed_monitored_rules) == 0
-#     assert result.failed_rules[0]["rule"] == "PartialWildcardPrincipal"
-#     assert result.failed_rules[0]["reason"] == "KMS Key policy {} should not allow wildcard principals"
+from cfripper.model.result import Result
+from cfripper.rules import PartialWildcardPrincipalRule
+from tests.utils import get_cfmodel_from
+
+
+@fixture()
+def good_template():
+    return get_cfmodel_from("rules/PartialWildcardPrincipalRule/good_template.json").resolve()
+
+
+@fixture()
+def bad_template():
+    return get_cfmodel_from("rules/PartialWildcardPrincipalRule/bad_template.json").resolve()
+
+
+def test_no_failures_are_raised(good_template):
+    result = Result()
+    rule = PartialWildcardPrincipalRule(None, result)
+    rule.invoke(good_template)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
+
+
+def test_failures_are_raised(bad_template):
+    result = Result()
+    rule = PartialWildcardPrincipalRule(None, result)
+    rule.invoke(bad_template)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 2
+    assert result.failed_monitored_rules[0]["rule"] == "PartialWildcardPrincipalRule"
+    assert (
+        result.failed_monitored_rules[0]["reason"]
+        == "PolicyA should not allow wildcard in principals or account-wide principals "
+        "(principal: 'arn:aws:iam::123445:12345*')"
+    )
+    assert result.failed_monitored_rules[1]["rule"] == "PartialWildcardPrincipalRule"
+    assert (
+        result.failed_monitored_rules[1]["reason"]
+        == "PolicyA should not allow wildcard in principals or account-wide principals "
+        "(principal: 'arn:aws:iam::123445:root')"
+    )
