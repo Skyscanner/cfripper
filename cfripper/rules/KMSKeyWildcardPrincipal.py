@@ -14,6 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
+from pycfmodel.model.cf_model import CFModel
+
 from ..model.rule import Rule
 
 
@@ -21,7 +23,7 @@ class KMSKeyWildcardPrincipal(Rule):
 
     REASON = "KMS Key policy {} should not allow wildcard principals"
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
             if (
                 resource.Type == "AWS::KMS::Key"

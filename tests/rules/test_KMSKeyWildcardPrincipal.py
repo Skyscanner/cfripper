@@ -18,7 +18,7 @@ specific language governing permissions and limitations under the License.
 # from cfripper.model.result import Result
 # from tests.utils import get_cfmodel_from
 
-# TODO Implement test
+# TODO Implement check if this is needed as GenericWildcardPrincipal rule seems to include this one
 # @pytest.fixture()
 # def abcdef():
 #     return get_cfmodel_from("rules/KMSKeyWildcardPrincipal/abcdef.json").resolve()

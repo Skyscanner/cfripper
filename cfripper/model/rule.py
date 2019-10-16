@@ -15,6 +15,8 @@ specific language governing permissions and limitations under the License.
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from pycfmodel.model.cf_model import CFModel
+
 from ..config.config import Config
 from .enums import RuleMode, RuleRisk, RuleGranularity
 from .result import Result
@@ -30,7 +32,7 @@ class Rule(ABC):
         self._result = result
 
     @abstractmethod
-    def invoke(self, resources, parameters):
+    def invoke(self, cfmodel: CFModel):
         pass
 
     def add_failure(self, rule: str, reason: str, granularity=None):
