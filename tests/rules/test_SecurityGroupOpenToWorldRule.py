@@ -66,9 +66,6 @@ def test_security_group_type_slash0(security_group_type_slash0):
     assert result.failed_rules[0]["reason"] == "Port 22 open to the world in security group 'SecurityGroup'"
 
 
-test_security_group_type_slash0(security_group_type_slash0())
-
-
 def test_valid_security_group_not_slash0(valid_security_group_not_slash0):
     result = Result()
     rule = SecurityGroupOpenToWorldRule(None, result)
