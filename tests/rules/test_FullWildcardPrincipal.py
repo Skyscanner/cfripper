@@ -47,5 +47,5 @@ def test_failures_are_raised(bad_template):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "FullWildcardPrincipal"
+    assert result.failed_rules[0]["rule"] == "FullWildcardPrincipalRule"
     assert result.failed_rules[0]["reason"] == "PolicyA should not allow wildcards in principals (principal: '*')"
