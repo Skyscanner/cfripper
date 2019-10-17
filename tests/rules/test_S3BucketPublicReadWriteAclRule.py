@@ -27,7 +27,7 @@ def bad_template():
 
 def test_failures_are_raised(bad_template):
     result = Result()
-    rule = S3BucketPublicReadWriteAclRule(Config(aws_principals=["12345"]), result)
+    rule = S3BucketPublicReadWriteAclRule(Config(), result)
     rule.invoke(bad_template)
 
     assert not result.valid

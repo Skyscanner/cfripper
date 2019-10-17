@@ -12,25 +12,28 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-# import pytest
-#
-# from cfripper.rules.SecurityGroupIngressOpenToWorld import SecurityGroupIngressOpenToWorld
-# from cfripper.model.result import Result
-# from tests.utils import get_cfmodel_from
+from pytest import fixture
 
-# TODO Implement test
-# @pytest.fixture()
-# def abcdef():
-#     return get_cfmodel_from("rules/SecurityGroupIngressOpenToWorld/abcdef.json").resolve()
-#
-#
-# def test_abcdef(abcdef):
-#     result = Result()
-#     rule = SecurityGroupIngressOpenToWorld(None, result)
-#     rule.invoke(abcdef)
-#
-#     assert not result.valid
-#     assert len(result.failed_rules) == 1
-#     assert len(result.failed_monitored_rules) == 0
-#     assert result.failed_rules[0]["rule"] == "SecurityGroupIngressOpenToWorld"
-#     assert result.failed_rules[0]["reason"] == "KMS Key policy {} should not allow wildcard principals"
+from cfripper.config.config import Config
+from cfripper.model.result import Result
+from cfripper.rules import SecurityGroupIngressOpenToWorld
+from tests.utils import get_cfmodel_from
+
+
+@fixture()
+def bad_template():
+    return get_cfmodel_from("rules/SecurityGroupIngressOpenToWorld/bad_template.json").resolve()
+
+
+def test_failures_are_raised(bad_template):
+    result = Result()
+    rule = SecurityGroupIngressOpenToWorld(Config(), result)
+    rule.invoke(bad_template)
+
+    assert not result.valid
+    assert len(result.failed_rules) == 2
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0]["rule"] == "SecurityGroupIngressOpenToWorld"
+    assert result.failed_rules[0]["reason"] == "Port 46 open to the world in security group 'securityGroupIngress1'"
+    assert result.failed_rules[1]["rule"] == "SecurityGroupIngressOpenToWorld"
+    assert result.failed_rules[1]["reason"] == "Port 46 open to the world in security group 'securityGroupIngress2'"
