@@ -17,7 +17,7 @@ from ..model.rule import Rule
 
 
 class SNSTopicPolicyNotPrincipalRule(Rule):
-    REASON = "SNS Topic {} policy should not allow Allow NotPrincipal"
+    REASON = "SNS Topic {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel):

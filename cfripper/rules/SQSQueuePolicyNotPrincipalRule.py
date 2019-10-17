@@ -17,7 +17,7 @@ from ..model.rule import Rule
 
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
-    REASON = "SQS Queue {} policy should not allow Allow+NotPrincipal"
+    REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel):

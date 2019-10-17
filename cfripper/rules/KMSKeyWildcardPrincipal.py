@@ -22,11 +22,12 @@ from ..model.rule import Rule
 class KMSKeyWildcardPrincipal(Rule):
 
     REASON = "KMS Key policy {} should not allow wildcard principals"
+    PATTERN = re.compile(r"^(\w*:)?\*$")
 
     def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
             if (
                 resource.Type == "AWS::KMS::Key"
-                and resource.Properties.KeyPolicy.PolicyDocument.allowed_principals_with(re.compile(r"^(\w*:){0,1}\*$"))
+                and resource.Properties.KeyPolicy.PolicyDocument.allowed_principals_with(self.PATTERN)
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

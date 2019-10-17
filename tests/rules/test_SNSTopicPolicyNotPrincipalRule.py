@@ -35,5 +35,5 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
     assert result.failed_monitored_rules[0]["rule"] == "SNSTopicPolicyNotPrincipalRule"
     assert (
         result.failed_monitored_rules[0]["reason"]
-        == "SNS Topic mysnspolicyA policy should not allow Allow NotPrincipal"
+        == "SNS Topic mysnspolicyA policy should not allow Allow and NotPrincipal at the same time"
     )
