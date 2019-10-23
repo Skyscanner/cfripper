@@ -36,7 +36,7 @@ class GenericWildcardPrincipalRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::KMS::Key":
-                self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy.PolicyDocument)
+                self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy)
             elif resource.Type in [
                 "AWS::IAM::ManagedPolicy",
                 "AWS::IAM::Policy",

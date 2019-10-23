@@ -22,8 +22,7 @@
                 "AWS": "*"
               },
               "Action": "sqs:*",
-              "Resource": "*",
-              "Condition": {}
+              "Resource": "*"
             }
           ]
         }
@@ -85,8 +84,7 @@
               "Effect": "Allow",
               "Principal": "*",
               "Action": "sqs:*",
-              "Resource": "*",
-              "Condition": {}
+              "Resource": "*"
             }
           ]
         }
