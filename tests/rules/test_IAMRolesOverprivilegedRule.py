@@ -71,9 +71,9 @@ def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
+    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
     )
 
@@ -86,9 +86,9 @@ def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_p
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
+    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
     )
 
@@ -111,9 +111,9 @@ def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
+    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess"
     )
 
@@ -126,8 +126,8 @@ def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if)
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "IAMRolesOverprivilegedRule"
+    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "Role 'RootRole' contains an insecure permission 'ec2:DeleteVpc' in policy 'ProdCredentialStoreAccessPolicy'"
     )

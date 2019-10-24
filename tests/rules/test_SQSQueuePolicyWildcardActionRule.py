@@ -32,11 +32,11 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
     assert not result.valid
     assert len(result.failed_rules) == 4
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[0]["reason"] == "SQS Queue policy mysqspolicy1 should not allow * action"
-    assert result.failed_rules[1]["rule"] == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[1]["reason"] == "SQS Queue policy mysqspolicy1b should not allow * action"
-    assert result.failed_rules[2]["rule"] == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[2]["reason"] == "SQS Queue policy mysqspolicy1c should not allow * action"
-    assert result.failed_rules[3]["rule"] == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[3]["reason"] == "SQS Queue policy mysqspolicy1d should not allow * action"
+    assert result.failed_rules[0].rule == "SQSQueuePolicyWildcardActionRule"
+    assert result.failed_rules[0].reason == "SQS Queue policy mysqspolicy1 should not allow * action"
+    assert result.failed_rules[1].rule == "SQSQueuePolicyWildcardActionRule"
+    assert result.failed_rules[1].reason == "SQS Queue policy mysqspolicy1b should not allow * action"
+    assert result.failed_rules[2].rule == "SQSQueuePolicyWildcardActionRule"
+    assert result.failed_rules[2].reason == "SQS Queue policy mysqspolicy1c should not allow * action"
+    assert result.failed_rules[3].rule == "SQSQueuePolicyWildcardActionRule"
+    assert result.failed_rules[3].reason == "SQS Queue policy mysqspolicy1d should not allow * action"

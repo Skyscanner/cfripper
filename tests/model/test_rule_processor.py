@@ -28,7 +28,7 @@ from tests.utils import get_fixture_json
 
 @pytest.fixture()
 def template():
-    return get_fixture_json("rules/CloudFormationAuthenticationRule/good_template.json")
+    return get_fixture_json("rules/CloudFormationAuthenticationRule/cfn_authentication_good.json")
 
 
 @patch.object(RuleProcessor, "remove_failures_of_whitelisted_resources")

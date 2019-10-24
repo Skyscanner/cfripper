@@ -33,12 +33,12 @@ def test_sqs_policy_public(sqs_policy_public):
     assert not result.valid
     assert len(result.failed_rules) == 4
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["risk_value"] == RuleRisk.HIGH
-    assert result.failed_rules[0]["rule"] == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[0]["reason"] == "SQS Queue policy QueuePolicyPublic1 should not be public"
-    assert result.failed_rules[1]["rule"] == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[1]["reason"] == "SQS Queue policy QueuePolicyPublic2 should not be public"
-    assert result.failed_rules[2]["rule"] == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[2]["reason"] == "SQS Queue policy QueuePolicyPublic3 should not be public"
-    assert result.failed_rules[3]["rule"] == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[3]["reason"] == "SQS Queue policy QueuePolicyPublic4 should not be public"
+    assert result.failed_rules[0].risk_value == RuleRisk.HIGH
+    assert result.failed_rules[0].rule == "SQSQueuePolicyPublicRule"
+    assert result.failed_rules[0].reason == "SQS Queue policy QueuePolicyPublic1 should not be public"
+    assert result.failed_rules[1].rule == "SQSQueuePolicyPublicRule"
+    assert result.failed_rules[1].reason == "SQS Queue policy QueuePolicyPublic2 should not be public"
+    assert result.failed_rules[2].rule == "SQSQueuePolicyPublicRule"
+    assert result.failed_rules[2].reason == "SQS Queue policy QueuePolicyPublic3 should not be public"
+    assert result.failed_rules[3].rule == "SQSQueuePolicyPublicRule"
+    assert result.failed_rules[3].reason == "SQS Queue policy QueuePolicyPublic4 should not be public"

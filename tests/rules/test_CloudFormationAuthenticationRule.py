@@ -21,7 +21,7 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def good_template():
-    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/ .json").resolve()
+    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/cfn_authentication_good.json").resolve()
 
 
 @pytest.fixture()
@@ -47,5 +47,5 @@ def test_failures_are_raised(bad_template):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "CloudFormationAuthenticationRule"
-    assert result.failed_rules[0]["reason"] == "Hardcoded credentials in EC2I4LBA1"
+    assert result.failed_rules[0].rule == "CloudFormationAuthenticationRule"
+    assert result.failed_rules[0].reason == "Hardcoded credentials in EC2I4LBA1"

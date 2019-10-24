@@ -33,5 +33,5 @@ def test_failures_are_raised(bad_template):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "S3BucketPublicReadWriteAclRule"
-    assert result.failed_rules[0]["reason"] == "S3 Bucket S3Bucket should not have a public read-write acl"
+    assert result.failed_rules[0].rule == "S3BucketPublicReadWriteAclRule"
+    assert result.failed_rules[0].reason == "S3 Bucket S3Bucket should not have a public read-write acl"

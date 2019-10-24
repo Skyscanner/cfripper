@@ -34,8 +34,8 @@ def test_valid_iam_policy(iam_role_with_wildcard_action):
     assert not result.valid
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "IAMRoleWildcardActionOnPermissionsPolicyRule"
+    assert result.failed_rules[0].rule == "IAMRoleWildcardActionOnPermissionsPolicyRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "IAM role WildcardActionRole should not allow * action on its permissions policy root"
     )

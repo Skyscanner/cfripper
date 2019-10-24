@@ -32,5 +32,5 @@ specific language governing permissions and limitations under the License.
 #     assert not result.valid
 #     assert len(result.failed_rules) == 1
 #     assert len(result.failed_monitored_rules) == 0
-#     assert result.failed_rules[0]["rule"] == "KMSKeyWildcardPrincipal"
-#     assert result.failed_rules[0]["reason"] == "KMS Key policy {} should not allow wildcard principals"
+#     assert result.failed_rules[0].rule == "KMSKeyWildcardPrincipal"
+#     assert result.failed_rules[0].reason == "KMS Key policy {} should not allow wildcard principals"

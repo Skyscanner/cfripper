@@ -62,8 +62,8 @@ def test_security_group_type_slash0(security_group_type_slash0):
     rule.invoke(security_group_type_slash0)
 
     assert not result.valid
-    assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
-    assert result.failed_rules[0]["reason"] == "Port 22 open to the world in security group 'SecurityGroup'"
+    assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
+    assert result.failed_rules[0].reason == "Port 22 open to the world in security group 'SecurityGroup'"
 
 
 def test_valid_security_group_not_slash0(valid_security_group_not_slash0):
@@ -102,8 +102,8 @@ def test_invalid_security_group_cidripv6(invalid_security_group_cidripv6):
     rule.invoke(invalid_security_group_cidripv6)
 
     assert not result.valid
-    assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
-    assert result.failed_rules[0]["reason"] == "Port 22 open to the world in security group 'SecurityGroup'"
+    assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
+    assert result.failed_rules[0].reason == "Port 22 open to the world in security group 'SecurityGroup'"
 
 
 def test_invalid_security_group_range(invalid_security_group_range):
@@ -112,8 +112,8 @@ def test_invalid_security_group_range(invalid_security_group_range):
     rule.invoke(invalid_security_group_range)
 
     assert not result.valid
-    assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
-    assert result.failed_rules[0]["reason"] == "Port 0 open to the world in security group 'SecurityGroup'"
+    assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
+    assert result.failed_rules[0].reason == "Port 0 open to the world in security group 'SecurityGroup'"
 
 
 def test_invalid_security_group_multiple_statements(invalid_security_group_multiple_statements):
@@ -122,5 +122,5 @@ def test_invalid_security_group_multiple_statements(invalid_security_group_multi
     rule.invoke(invalid_security_group_multiple_statements)
 
     assert not result.valid
-    assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
-    assert result.failed_rules[0]["reason"] == "Port 9090 open to the world in security group 'SecurityGroup'"
+    assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
+    assert result.failed_rules[0].reason == "Port 9090 open to the world in security group 'SecurityGroup'"

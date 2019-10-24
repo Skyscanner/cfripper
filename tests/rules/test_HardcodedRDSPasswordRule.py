@@ -33,7 +33,7 @@ def test_failures_are_raised(bad_template):
     assert not result.valid
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0]["reason"] == "Default RDS password parameter or missing NoEcho for BadDb3."
-    assert result.failed_rules[1]["rule"] == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[1]["reason"] == "Default RDS password parameter or missing NoEcho for BadDb5."
+    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
+    assert result.failed_rules[0].reason == "Default RDS password parameter or missing NoEcho for BadDb3."
+    assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
+    assert result.failed_rules[1].reason == "Default RDS password parameter or missing NoEcho for BadDb5."

@@ -32,5 +32,5 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
     assert not result.valid
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0]["rule"] == "S3BucketPolicyWildcardActionRule"
-    assert result.failed_rules[0]["reason"] == "S3 Bucket policy S3BucketPolicy should not allow * action"
+    assert result.failed_rules[0].rule == "S3BucketPolicyWildcardActionRule"
+    assert result.failed_rules[0].reason == "S3 Bucket policy S3BucketPolicy should not allow * action"

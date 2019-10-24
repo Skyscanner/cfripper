@@ -32,8 +32,8 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0]["rule"] == "SQSQueuePolicyNotPrincipalRule"
+    assert result.failed_monitored_rules[0].rule == "SQSQueuePolicyNotPrincipalRule"
     assert (
-        result.failed_monitored_rules[0]["reason"]
+        result.failed_monitored_rules[0].reason
         == "SQS Queue QueuePolicyWithNotPrincipal policy should not allow Allow and NotPrincipal at the same time"
     )

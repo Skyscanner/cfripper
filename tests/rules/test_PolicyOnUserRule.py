@@ -48,8 +48,8 @@ def test_failures_are_raised(bad_template: CFModel):
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0]["rule"] == "PolicyOnUserRule"
+    assert result.failed_monitored_rules[0].rule == "PolicyOnUserRule"
     assert (
-        result.failed_monitored_rules[0]["reason"]
+        result.failed_monitored_rules[0].reason
         == "IAM policy Policy should not apply directly to users. Should be on group"
     )
