@@ -38,8 +38,8 @@ class TestSecurityGroupOpenToWorldRule:
         rule.invoke(resources, [])
 
         assert not result.valid
-        assert result.failed_rules[0]["reason"] == 'Port 22 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
+        assert result.failed_rules[0].reason == 'Port 22 open to the world in security group "RootRole"'
+        assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
 
     def test_valid_security_group_not_slash0(self):
         role_props = {
@@ -114,8 +114,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]["reason"] == 'Port 22 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
+        assert result.failed_rules[0].reason == 'Port 22 open to the world in security group "RootRole"'
+        assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
 
     def test_invalid_security_group_range(self):
         role_props = {
@@ -133,8 +133,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]["reason"] == "Ports 0 - 100 open in Security Group RootRole"
-        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
+        assert result.failed_rules[0].reason == "Ports 0 - 100 open in Security Group RootRole"
+        assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
 
     def test_invalid_security_group_multiple_statements(self):
         role_props = {
@@ -157,8 +157,8 @@ class TestSecurityGroupOpenToWorldRule:
         resources = parse(role_props).resources
         rule.invoke(resources, [])
 
-        assert result.failed_rules[0]["reason"] == 'Port 9090 open to the world in security group "RootRole"'
-        assert result.failed_rules[0]["rule"] == "SecurityGroupOpenToWorldRule"
+        assert result.failed_rules[0].reason == 'Port 9090 open to the world in security group "RootRole"'
+        assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
 
     def test_security_group_rules_as_refs(self):
 

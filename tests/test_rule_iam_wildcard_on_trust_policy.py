@@ -40,6 +40,6 @@ class TestIAMRoleWildcardActionOnTrustPolicyRule:
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
         assert (
-            result.failed_rules[0]["reason"]
+            result.failed_rules[0].reason
             == "IAM role WildcardActionRole should not allow * action on its trust policy"
         )

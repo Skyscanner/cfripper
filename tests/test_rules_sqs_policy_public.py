@@ -40,9 +40,9 @@ class TestSQSQueuePolicyPublicRule:
 
         assert not result.valid
         assert len(result.failed_rules) == 4
-        assert result.failed_rules[0]["reason"] == "SQS Queue policy QueuePolicyPublic1 should not be public"
-        assert result.failed_rules[1]["reason"] == "SQS Queue policy QueuePolicyPublic2 should not be public"
-        assert result.failed_rules[2]["reason"] == "SQS Queue policy QueuePolicyPublic3 should not be public"
-        assert result.failed_rules[3]["reason"] == "SQS Queue policy QueuePolicyPublic4 should not be public"
+        assert result.failed_rules[0].reason == "SQS Queue policy QueuePolicyPublic1 should not be public"
+        assert result.failed_rules[1].reason == "SQS Queue policy QueuePolicyPublic2 should not be public"
+        assert result.failed_rules[2].reason == "SQS Queue policy QueuePolicyPublic3 should not be public"
+        assert result.failed_rules[3].reason == "SQS Queue policy QueuePolicyPublic4 should not be public"
 
-        assert result.failed_rules[0]["risk_value"] == RuleRisk.HIGH
+        assert result.failed_rules[0].risk_value == RuleRisk.HIGH

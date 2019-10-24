@@ -19,7 +19,7 @@ from unittest.mock import Mock, patch
 
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleMode, RuleRisk, RuleGranularity
-from cfripper.model.result import Result
+from cfripper.model.result import Result, Failure
 from cfripper.model.rule_processor import RuleProcessor
 from pytest import fixture
 
@@ -107,15 +107,30 @@ def test_with_mock_rule():
 
 def test_remove_debug_rules():
     original_failed_monitored_rules = [
-        {"rule": "a", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.HIGH},
-        {"rule": "b", "reason": "something", "rule_mode": RuleMode.DEBUG, "risk_value": RuleRisk.MEDIUM},
-        {"rule": "c", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.LOW},
+        Failure(
+            rule="a",
+            reason="something",
+            rule_mode=RuleMode.MONITOR,
+            granularity=RuleGranularity.STACK,
+            risk_value=RuleRisk.HIGH,
+        ),
+        Failure(
+            rule="b",
+            reason="something",
+            rule_mode=RuleMode.DEBUG,
+            granularity=RuleGranularity.STACK,
+            risk_value=RuleRisk.MEDIUM,
+        ),
+        Failure(
+            rule="c",
+            reason="something",
+            rule_mode=RuleMode.MONITOR,
+            granularity=RuleGranularity.STACK,
+            risk_value=RuleRisk.LOW,
+        ),
     ]
 
-    list_with_no_debug_rules = [
-        {"rule": "a", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.HIGH},
-        {"rule": "c", "reason": "something", "rule_mode": RuleMode.MONITOR, "risk_value": RuleRisk.LOW},
-    ]
+    list_with_no_debug_rules = [original_failed_monitored_rules[0], original_failed_monitored_rules[2]]
 
     processed_list = RuleProcessor.remove_debug_rules(rules=original_failed_monitored_rules)
     assert list_with_no_debug_rules == processed_list
@@ -128,16 +143,7 @@ def test_remove_debug_rules_no_rules():
 
 @fixture()
 def mock_rule_to_resource_whitelist():
-    yield {
-        "S3CrossAccountTrustRule": {
-            "teststack": {
-                ".*",
-            },
-            "otherstack": {
-                "rolething",
-            }
-        }
-    }
+    yield {"S3CrossAccountTrustRule": {"teststack": {".*"}, "otherstack": {"rolething"}}}
 
 
 def test_remove_failures_from_whitelisted_resources_uses_whitelist(mock_rule_to_resource_whitelist):
@@ -150,40 +156,44 @@ def test_remove_failures_from_whitelisted_resources_uses_whitelist(mock_rule_to_
 
     result = Result()
     result.failed_rules = [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"rolething"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"anotherthing"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        }
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"rolething"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"anotherthing"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
     ]
 
     RuleProcessor.remove_failures_of_whitelisted_resources(config=config, result=result)
-    assert result.failed_rules == [{
-        "rule": "S3CrossAccountTrustRule",
-        "reason": "anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "resource_ids": {"anotherthing"},
-        "actions": None,
-        "granularity": RuleGranularity.RESOURCE,
-    }]
+    assert result.failed_rules == [
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"anotherthing"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        )
+    ]
 
 
 @patch("cfripper.model.rule_processor.logger.warning")
-def test_remove_failures_from_whitelisted_resources_failure_no_resources_is_removed(mock_logger, mock_rule_to_resource_whitelist):
+def test_remove_failures_from_whitelisted_resources_failure_no_resources_is_removed(
+    mock_logger, mock_rule_to_resource_whitelist
+):
     config = Config(
         stack_name="otherstack",
         rules=["S3CrossAccountTrustRule"],
@@ -191,14 +201,14 @@ def test_remove_failures_from_whitelisted_resources_failure_no_resources_is_remo
     )
 
     result = Result()
-    failure = {
-        "rule": "S3CrossAccountTrustRule",
-        "reason": "rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "actions": None,
-        "granularity": RuleGranularity.RESOURCE,
-    }
+    failure = Failure(
+        rule="S3CrossAccountTrustRule",
+        reason="rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+        rule_mode=RuleMode.BLOCKING,
+        risk_value=RuleRisk.HIGH,
+        actions=None,
+        granularity=RuleGranularity.RESOURCE,
+    )
     result.failed_rules = [failure]
 
     RuleProcessor.remove_failures_of_whitelisted_resources(config=config, result=result)
@@ -215,24 +225,24 @@ def test_remove_failures_from_whitelisted_resources_only_removes_resource_granul
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"rolething"},
-            "actions": None,
-            "granularity": RuleGranularity.ACTION,
-        },
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"anotherthing"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        }
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"rolething"},
+            actions=None,
+            granularity=RuleGranularity.ACTION,
+        ),
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="anotherthing has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"anotherthing"},
+            actions=None,
+            granularity=RuleGranularity.RESOURCE,
+        ),
     ]
     result.failed_rules = failed_rules
 
@@ -243,54 +253,47 @@ def test_remove_failures_from_whitelisted_resources_only_removes_resource_granul
 def test_can_whitelist_resource_from_any_stack_if_granularity_is_resource():
 
     whitelist_for_all_stacks = {
-        "S3CrossAccountTrustRule": {
-            ".*": {
-                "ProductionAccessTest",
-            },
-            "otherstack": {
-                "rolething",
-            }
-        },
+        "S3CrossAccountTrustRule": {".*": {"ProductionAccessTest"}, "otherstack": {"rolething"}}
     }
     config = Config(
-        stack_name="abcd",
-        rules=["S3CrossAccountTrustRule"],
-        rule_to_resource_whitelist=whitelist_for_all_stacks,
+        stack_name="abcd", rules=["S3CrossAccountTrustRule"], rule_to_resource_whitelist=whitelist_for_all_stacks
     )
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "ProductionAccessTest has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"ProductionAccessTest"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "This one isn't whitelisted because granularity is ACTION and not RESOURCE",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"ProductionAccessTest"},
-            "actions": None,
-            "granularity": RuleGranularity.ACTION,
-        },
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="ProductionAccessTest has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"ProductionAccessTest"},
+            actions=None,
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="This one isn't whitelisted because granularity is ACTION and not RESOURCE",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"ProductionAccessTest"},
+            actions=None,
+            granularity=RuleGranularity.ACTION,
+        ),
     ]
     result.failed_rules = failed_rules
 
     RuleProcessor.remove_failures_of_whitelisted_resources(config=config, result=result)
-    assert result.failed_rules == [{
-        "rule": "S3CrossAccountTrustRule",
-        "reason": "This one isn't whitelisted because granularity is ACTION and not RESOURCE",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "resource_ids": {"ProductionAccessTest"},
-        "actions": None,
-        "granularity": RuleGranularity.ACTION,
-    }]
+    assert result.failed_rules == [
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="This one isn't whitelisted because granularity is ACTION and not RESOURCE",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"ProductionAccessTest"},
+            actions=None,
+            granularity=RuleGranularity.ACTION,
+        )
+    ]
 
 
 def test_only_whitelisted_resources_are_removed(mock_rule_to_resource_whitelist):
@@ -302,90 +305,83 @@ def test_only_whitelisted_resources_are_removed(mock_rule_to_resource_whitelist)
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "Forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"rolething", "thenotwhitelistedthing", "anotherone"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        },
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="Forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"rolething", "thenotwhitelistedthing", "anotherone"},
+            actions=None,
+            granularity=RuleGranularity.RESOURCE,
+        )
     ]
     result.failed_rules = failed_rules
 
     RuleProcessor.remove_failures_of_whitelisted_resources(config=config, result=result)
     assert result.failed_rules == [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "Forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"thenotwhitelistedthing", "anotherone"},
-            "actions": None,
-            "granularity": RuleGranularity.RESOURCE,
-        },
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="Forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"thenotwhitelistedthing", "anotherone"},
+            actions=None,
+            granularity=RuleGranularity.RESOURCE,
+        )
     ]
 
 
 @fixture()
 def mock_rule_to_action_whitelist():
-    yield {
-        "WildcardResourceRule": {
-            "teststack": {
-                "s3:*",
-            },
-            "otherstack": {
-                "dynamodb:*",
-            }
-        }
-    }
+    yield {"WildcardResourceRule": {"teststack": {"s3:*"}, "otherstack": {"dynamodb:*"}}}
 
 
 def test_remove_failures_from_whitelisted_actions_uses_whitelist(mock_rule_to_action_whitelist):
 
     config = Config(
-        stack_name="teststack",
-        rules=["WildcardResourceRule"],
-        rule_to_action_whitelist=mock_rule_to_action_whitelist,
+        stack_name="teststack", rules=["WildcardResourceRule"], rule_to_action_whitelist=mock_rule_to_action_whitelist
     )
 
     result = Result()
     result.failed_rules = [
-        {
-            "rule": "WildcardResourceRule",
-            "reason": "rolething is using a wildcard resource in BucketAccessPolicy",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"BucketAccessPolicy"},
-            "actions": {"s3:Get*"},
-            "granularity": RuleGranularity.ACTION,
-        },
-        {
-            "rule": "WildcardResourceRule",
-            "reason": "rolething is using a wildcard resource in DynamoAccessPolicy",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"DynamoAccessPolicy"},
-            "actions": {"dynamodb:Get"},
-            "granularity": RuleGranularity.ACTION,
-        }
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in BucketAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"BucketAccessPolicy"},
+            actions={"s3:Get*"},
+            granularity=RuleGranularity.ACTION,
+        ),
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in DynamoAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"DynamoAccessPolicy"},
+            actions={"dynamodb:Get"},
+            granularity=RuleGranularity.ACTION,
+        ),
     ]
 
     RuleProcessor.remove_failures_of_whitelisted_actions(config=config, result=result)
-    assert result.failed_rules == [{
-        "rule": "WildcardResourceRule",
-        "reason": "rolething is using a wildcard resource in DynamoAccessPolicy",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "resource_ids": {"DynamoAccessPolicy"},
-        "actions": {"dynamodb:Get"},
-        "granularity": RuleGranularity.ACTION,
-    }]
+    assert result.failed_rules == [
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in DynamoAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"DynamoAccessPolicy"},
+            actions={"dynamodb:Get"},
+            granularity=RuleGranularity.ACTION,
+        )
+    ]
 
 
 @patch("cfripper.model.rule_processor.logger.warning")
-def test_remove_failures_from_whitelisted_actions_failure_no_actions_is_removed(mock_logger, mock_rule_to_action_whitelist):
+def test_remove_failures_from_whitelisted_actions_failure_no_actions_is_removed(
+    mock_logger, mock_rule_to_action_whitelist
+):
     config = Config(
         stack_name="teststack",
         rules=["S3CrossAccountTrustRule"],
@@ -393,14 +389,14 @@ def test_remove_failures_from_whitelisted_actions_failure_no_actions_is_removed(
     )
 
     result = Result()
-    failure = {
-        "rule": "S3CrossAccountTrustRule",
-        "reason": "rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "actions": set(),
-        "granularity": RuleGranularity.ACTION,
-    }
+    failure = Failure(
+        rule="S3CrossAccountTrustRule",
+        reason="rolething has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+        rule_mode=RuleMode.BLOCKING,
+        risk_value=RuleRisk.HIGH,
+        actions=set(),
+        granularity=RuleGranularity.ACTION,
+    )
     result.failed_rules = [failure]
 
     RuleProcessor.remove_failures_of_whitelisted_actions(config=config, result=result)
@@ -417,121 +413,107 @@ def test_remove_failures_from_whitelisted_actions_only_removes_action_granularit
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "WildcardResourceRule",
-            "reason": "rolething is using a wildcard resource in BucketAccessPolicy",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": {"BucketAccessPolicy"},
-            "actions": {"s3:Get*"},
-            "granularity": RuleGranularity.ACTION,
-        },
-        {
-            "rule": "WildcardResourceRule",
-            "reason": "rolething is using a wildcard resource in BucketAccessPolicy",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": set(),
-            "actions": set(),
-            "granularity": RuleGranularity.STACK,
-        },
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in BucketAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids={"BucketAccessPolicy"},
+            actions={"s3:Get*"},
+            granularity=RuleGranularity.ACTION,
+        ),
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in BucketAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids=set(),
+            actions=set(),
+            granularity=RuleGranularity.STACK,
+        ),
     ]
     result.failed_rules = failed_rules
 
     RuleProcessor.remove_failures_of_whitelisted_actions(config=config, result=result)
     assert result.failed_rules == [
-        {
-            "rule": "WildcardResourceRule",
-            "reason": "rolething is using a wildcard resource in BucketAccessPolicy",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "resource_ids": set(),
-            "actions": set(),
-            "granularity": RuleGranularity.STACK,
-        },
+        Failure(
+            rule="WildcardResourceRule",
+            reason="rolething is using a wildcard resource in BucketAccessPolicy",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            resource_ids=set(),
+            actions=set(),
+            granularity=RuleGranularity.STACK,
+        )
     ]
 
 
 def test_can_whitelist_action_from_any_stack_if_granularity_is_action():
 
-    whitelist_for_all_stacks = {
-        "S3CrossAccountTrustRule": {
-            ".*": {
-                "s3:ListBucket",
-            },
-        },
-    }
+    whitelist_for_all_stacks = {"S3CrossAccountTrustRule": {".*": {"s3:ListBucket"}}}
     config = Config(
-        stack_name="abcd",
-        rules=["S3CrossAccountTrustRule"],
-        rule_to_action_whitelist=whitelist_for_all_stacks,
+        stack_name="abcd", rules=["S3CrossAccountTrustRule"], rule_to_action_whitelist=whitelist_for_all_stacks
     )
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "ProductionAccessTest has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "actions": {"s3:ListBucket"},
-            "granularity": RuleGranularity.ACTION,
-        },
-        {
-            "rule": "S3CrossAccountTrustRule",
-            "reason": "This one isn't whitelisted because granularity is STACK and not ACTION",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "actions": None,
-            "granularity": RuleGranularity.STACK,
-        },
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="ProductionAccessTest has forbidden cross-account policy allow with 123456789 for an S3 bucket.",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            actions={"s3:ListBucket"},
+            granularity=RuleGranularity.ACTION,
+        ),
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="This one isn't whitelisted because granularity is STACK and not ACTION",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            actions=set(),
+            granularity=RuleGranularity.STACK,
+        ),
     ]
     result.failed_rules = failed_rules
 
     RuleProcessor.remove_failures_of_whitelisted_actions(config=config, result=result)
-    assert result.failed_rules == [{
-        "rule": "S3CrossAccountTrustRule",
-        "reason": "This one isn't whitelisted because granularity is STACK and not ACTION",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "actions": None,
-        "granularity": RuleGranularity.STACK,
-    }]
+    assert result.failed_rules == [
+        Failure(
+            rule="S3CrossAccountTrustRule",
+            reason="This one isn't whitelisted because granularity is STACK and not ACTION",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            actions=set(),
+            granularity=RuleGranularity.STACK,
+        )
+    ]
 
 
 def test_action_whitelist_keeps_non_whitelisted_actions():
-    whitelist_for_all_stacks = {
-        "MockRule": {
-            ".*": {
-                "s3:List",
-            },
-        },
-    }
-    config = Config(
-        stack_name="abcd",
-        rules=["MockRule"],
-        rule_to_action_whitelist=whitelist_for_all_stacks,
-    )
+    whitelist_for_all_stacks = {"MockRule": {".*": {"s3:List"}}}
+    config = Config(stack_name="abcd", rules=["MockRule"], rule_to_action_whitelist=whitelist_for_all_stacks)
 
     result = Result()
     failed_rules = [
-        {
-            "rule": "MockRule",
-            "reason": "MockRule is invalid for some actions",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.HIGH,
-            "actions": {"s3:ListBucket", "s3:GetBucket"},
-            "granularity": RuleGranularity.ACTION,
-        },
+        Failure(
+            rule="MockRule",
+            reason="MockRule is invalid for some actions",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            actions={"s3:ListBucket", "s3:GetBucket"},
+            granularity=RuleGranularity.ACTION,
+        )
     ]
     result.failed_rules = failed_rules
 
     RuleProcessor.remove_failures_of_whitelisted_actions(config=config, result=result)
-    assert result.failed_rules == [{
-        "rule": "MockRule",
-        "reason": "MockRule is invalid for some actions",
-        "rule_mode": RuleMode.BLOCKING,
-        "risk_value": RuleRisk.HIGH,
-        "actions": {"s3:GetBucket"},
-        "granularity": RuleGranularity.ACTION,
-    }]
+    assert result.failed_rules == [
+        Failure(
+            rule="MockRule",
+            reason="MockRule is invalid for some actions",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.HIGH,
+            actions={"s3:GetBucket"},
+            granularity=RuleGranularity.ACTION,
+        )
+    ]

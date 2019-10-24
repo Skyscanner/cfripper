@@ -39,6 +39,7 @@ class TestSecurityGroupMissingEgressRule:
         assert result.valid
         assert len(result.failed_monitored_rules) == 1
         assert (
-            result.failed_monitored_rules[0]["reason"]
-            == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+            result.failed_monitored_rules[0].reason
+            == "Missing egress rule in sg means all traffic is allowed outbound."
+               " Make this explicit if it is desired configuration"
         )
