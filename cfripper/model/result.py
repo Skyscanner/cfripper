@@ -36,7 +36,7 @@ class Failure:
             "risk_value": self.risk_value,
             "resource_ids": sorted(self.resource_ids or []),
             "actions": sorted(self.actions or []),
-            "granularity": self.granularity
+            "granularity": self.granularity,
         }
 
 
