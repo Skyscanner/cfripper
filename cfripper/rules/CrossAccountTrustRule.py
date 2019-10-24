@@ -16,12 +16,14 @@ import re
 
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from ..model.rule import Rule
+from ..model.enums import RuleGranularity
 
 
 class CrossAccountTrustRule(Rule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
+    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
@@ -30,9 +32,13 @@ class CrossAccountTrustRule(Rule):
                 for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                     self.ROOT_PATTERN
                 ):
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
+                    self.add_failure(
+                        type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
+                    )
 
                 for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                     not_has_account_id
                 ):
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
+                    self.add_failure(
+                        type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
+                    )

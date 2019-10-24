@@ -13,7 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
 
@@ -35,13 +35,26 @@ class Rule(ABC):
     def invoke(self, cfmodel: CFModel):
         pass
 
-    def add_failure(self, rule: str, reason: str, granularity=None):
+    def add_failure(
+        self,
+        rule: str,
+        reason: str,
+        granularity: Optional[RuleGranularity] = None,
+        resource_ids: Optional[Set] = None,
+        actions: Optional[Set] = None,
+    ):
 
         if granularity is None:
             granularity = self.GRANULARITY
 
         self._result.add_failure(
-            rule=rule, reason=reason, rule_mode=self.RULE_MODE, risk_value=self.RISK_VALUE, granularity=granularity
+            rule=rule,
+            reason=reason,
+            rule_mode=self.RULE_MODE,
+            risk_value=self.RISK_VALUE,
+            resource_ids=resource_ids,
+            actions=actions,
+            granularity=granularity,
         )
 
     def add_warning(self, warning):
