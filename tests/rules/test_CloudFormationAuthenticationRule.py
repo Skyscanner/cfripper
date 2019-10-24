@@ -21,12 +21,12 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def good_template():
-    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/good_template.json").resolve()
+    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/ .json").resolve()
 
 
 @pytest.fixture()
 def bad_template():
-    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/bad_template.json").resolve()
+    return get_cfmodel_from("rules/CloudFormationAuthenticationRule/cfn_authentication_bad.json").resolve()
 
 
 def test_no_failures_are_raised(good_template):

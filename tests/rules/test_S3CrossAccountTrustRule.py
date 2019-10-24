@@ -40,7 +40,7 @@ def test_s3_bucket_cross_account(s3_bucket_cross_account):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0]["rule"] == "S3CrossAccountTrustRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket."
     )
 
@@ -55,6 +55,6 @@ def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0]["rule"] == "S3CrossAccountTrustRule"
     assert (
-        result.failed_rules[0]["reason"]
+        result.failed_rules[0].reason
         == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket."
     )

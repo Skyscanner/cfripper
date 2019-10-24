@@ -23,7 +23,9 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def bad_template():
-    return get_cfmodel_from("rules/IAMManagedPolicyWildcardActionRule/bad_template.json").resolve()
+    return get_cfmodel_from(
+        "rules/IAMManagedPolicyWildcardActionRule/iam_managed_policy_with_wildcard_action.json"
+    ).resolve()
 
 
 def test_failures_are_raised(bad_template):

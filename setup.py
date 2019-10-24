@@ -16,7 +16,7 @@ dev_requires = [
 
 setup(
     name="cfripper",
-    version="0.7.2",
+    version="0.8.0",
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
     long_description=long_description,
@@ -25,6 +25,7 @@ setup(
     description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
     packages=find_packages(),
     platforms="any",
+    python_requires=">=3.7",
     install_requires=install_requires,
     tests_require=dev_requires,
     extras_require={"dev": dev_requires},

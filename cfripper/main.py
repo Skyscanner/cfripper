@@ -124,10 +124,14 @@ def handler(event, context):
 
     return {
         "valid": result.valid,
-        "reason": ",".join(["{}-{}".format(r["rule"], r["reason"]) for r in result.failed_rules]),
-        "failed_rules": RuleProcessor.remove_debug_rules(rules=result.failed_rules),
+        "reason": ",".join(["{}-{}".format(r.rule, r.reason) for r in result.failed_rules]),
+        "failed_rules": [
+            failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)
+        ],
         "exceptions": [x.args[0] for x in result.exceptions],
-        "warnings": RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules),
+        "warnings": [
+            failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
+        ],
     }
 
 
