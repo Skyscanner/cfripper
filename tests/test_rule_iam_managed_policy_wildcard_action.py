@@ -39,4 +39,4 @@ class TestIAMManagedPolicyWildcardActionRule:
         assert not result.valid
         assert len(result.failed_rules) == 1
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "IAM managed policy CreateTestDBPolicy3 should not allow * action"
+        assert result.failed_rules[0].reason == "IAM managed policy CreateTestDBPolicy3 should not allow * action"

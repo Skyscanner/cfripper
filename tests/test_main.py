@@ -52,6 +52,7 @@ class TestMainHandler:
 
         mock_created_rule_processor_object = Mock()
         mock_rule_processor = Mock(return_value=mock_created_rule_processor_object)
+        mock_rule_processor.remove_debug_rules.return_value = []
 
         with patch("cfripper.main.Boto3Client", new=mock_boto3_adapter):
             with patch("cfripper.main.RuleProcessor", new=mock_rule_processor):

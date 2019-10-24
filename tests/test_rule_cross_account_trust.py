@@ -20,7 +20,7 @@ from cfripper.rules import DEFAULT_RULES
 
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from cfripper.config.config import Config
-from cfripper.model.result import Result
+from cfripper.model.result import Result, Failure
 
 
 @pytest.fixture()
@@ -42,42 +42,42 @@ def template_two_roles_dict():
 @pytest.fixture()
 def expected_result_two_roles():
     return [
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": "RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRoleOne"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": "RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRoleOne"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": "RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRoleTwo"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": "RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRoleTwo"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason="RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRoleOne"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason="RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRoleOne"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRoleTwo"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRoleTwo"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
     ]
 
 
@@ -88,27 +88,27 @@ def test_report_format_is_the_one_expected(template_one_role):
 
     assert not result.valid
     assert result.failed_rules == [
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": "RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRole"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
-        {
-            "rule": "CrossAccountTrustRule",
-            "reason": (
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason="RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRole"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        ),
+        Failure(
+            rule="CrossAccountTrustRule",
+            reason=(
                 "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/"
                 "someuser@bla.com"
             ),
-            "rule_mode": RuleMode.BLOCKING,
-            "risk_value": RuleRisk.MEDIUM,
-            "resource_ids": {"RootRole"},
-            "actions": set(),
-            "granularity": RuleGranularity.RESOURCE,
-        },
+            rule_mode=RuleMode.BLOCKING,
+            risk_value=RuleRisk.MEDIUM,
+            resource_ids={"RootRole"},
+            actions=set(),
+            granularity=RuleGranularity.RESOURCE,
+        )
     ]
 
 

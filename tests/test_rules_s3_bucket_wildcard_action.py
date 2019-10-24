@@ -39,4 +39,4 @@ class TestS3BucketPolicyWildcardActionRule:
         assert not result.valid
         assert len(result.failed_rules) == 2
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "S3 Bucket policy S3BucketPolicy should not allow * action"
+        assert result.failed_rules[0].reason == "S3 Bucket policy S3BucketPolicy should not allow * action"

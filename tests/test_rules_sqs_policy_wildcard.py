@@ -40,4 +40,4 @@ class TestSQSQueuePolicyWildcardActionRule:
         assert not result.valid
         assert len(result.failed_rules) == 4
         assert len(result.failed_monitored_rules) == 0
-        assert result.failed_rules[0]["reason"] == "SQS Queue policy mysqspolicy1 should not allow * action"
+        assert result.failed_rules[0].reason == "SQS Queue policy mysqspolicy1 should not allow * action"
