@@ -34,9 +34,9 @@ class Failure:
             "reason": self.reason,
             "rule_mode": self.rule_mode,
             "risk_value": self.risk_value,
-            "resource_ids": sorted(list(self.resource_ids or [])),
-            "actions": sorted(list(self.actions or [])),
-            "granularity": self.granularity,
+            "resource_ids": sorted(self.resource_ids or []),
+            "actions": sorted(self.actions or []),
+            "granularity": self.granularity
         }
 
 

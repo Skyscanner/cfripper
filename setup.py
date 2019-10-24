@@ -16,7 +16,7 @@ dev_requires = [
 
 setup(
     name="cfripper",
-    version="0.8.0",
+    version="0.8.1",
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
     long_description=long_description,
