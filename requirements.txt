@@ -11,7 +11,7 @@ click==7.0                # via cfn-flip
 docutils==0.15.2          # via botocore
 jmespath==0.9.4           # via boto3, botocore
 pycfmodel==0.5.0
-pydantic==1.0b1           # via pycfmodel
+pydantic==1.0             # via pycfmodel
 python-dateutil==2.8.0    # via botocore
 pyyaml==5.1.2
 s3transfer==0.2.1         # via boto3
