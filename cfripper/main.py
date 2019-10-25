@@ -116,6 +116,7 @@ def handler(event, context):
     rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
     processor = RuleProcessor(*rules)
 
+    # TODO get AWS variables/parameters and pass them to resolve
     cfmodel = pycfmodel.parse(template).resolve()
 
     processor.process_cf_template(cfmodel, config, result)
