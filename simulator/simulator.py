@@ -49,15 +49,15 @@ def test_script(script_name, service_name, project_name, stack):
         "serviceName": service_name,
         "stack": stack,
     }
-    mock_created_s3_adapter_object = Mock()
+    mock_boto3_client_object = Mock()
     with open(f"{dir_path}/test_cf_scripts/{script_name}") as cf_script:
-        mock_created_s3_adapter_object.download_template_to_dictionary.return_value = convert_json_or_yaml_to_dict(
+        mock_boto3_client_object.download_template_to_dictionary.return_value = convert_json_or_yaml_to_dict(
             cf_script.read()
         )
 
-    mock_s3_adapter = Mock(return_value=mock_created_s3_adapter_object)
+    mock_boto3_client = Mock(return_value=mock_boto3_client_object)
 
-    with patch("cfripper.main.S3Adapter", new=mock_s3_adapter):
+    with patch("cfripper.main.Boto3Client", new=mock_boto3_client):
         from cfripper.main import handler
 
         event_result = handler(event, "None")

@@ -35,6 +35,5 @@ def test_failures_are_raised(bad_template):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "S3BucketPolicyPrincipalRule"
     assert (
-        result.failed_rules[0].reason
-        == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 156460612806"
+        result.failed_rules[0].reason == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 156460612806"
     )

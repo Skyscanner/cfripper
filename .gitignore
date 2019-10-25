@@ -1,6 +1,5 @@
 .idea/
 .vscode/
-cfripper/cfn_flip/
 
 # Python
 *.pyc
