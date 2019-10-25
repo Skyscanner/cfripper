@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from cfripper.model.enums import RuleMode
+from .enums import RuleMode
 
 
 @dataclass
@@ -36,7 +36,7 @@ class Failure:
             "risk_value": self.risk_value,
             "resource_ids": sorted(self.resource_ids or []),
             "actions": sorted(self.actions or []),
-            "granularity": self.granularity
+            "granularity": self.granularity,
         }
 
 

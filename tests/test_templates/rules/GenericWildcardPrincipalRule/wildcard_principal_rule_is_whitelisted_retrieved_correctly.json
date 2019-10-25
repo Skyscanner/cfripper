@@ -1,0 +1,24 @@
+{
+  "GenericWildcardPrincipal": {
+    "test_*": [
+      "resource_5"
+    ],
+    "test_stack": [
+      "resource_1",
+      "another_resource"
+    ],
+    "other_stack": [
+      "resource_2",
+      "another_resource"
+    ],
+    "stack_without_whitelisted_resources": []
+  },
+  "OtherRuleThatUsesResourceWhitelists": {
+    "test_stack": [
+      "resource_3"
+    ],
+    "other_stack": [
+      "resource_4"
+    ]
+  }
+}

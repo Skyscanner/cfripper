@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "PolicyA": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "root",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "IAM:CREATEPOLICY"
+              ],
+              "Principal": [
+                "somewhatrestricted:*",
+                "arn:aws:iam::123445:*"
+              ],
+              "Resource": [
+                "arn:aws:glue:eu-west-1:12345678:catalog"
+              ]
+            }
+          ]
+        },
+        "Roles": "some_role"
+      }
+    }
+  }
+}

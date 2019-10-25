@@ -1,0 +1,25 @@
+{
+  "Resources": {
+    "userWithInline": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Groups": [
+          "group1"
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": {
+                "Effect": "Allow",
+                "Resource": "arn:something",
+                "Action": "s3:dosomething"
+              }
+            },
+            "PolicyName": "somePolicy"
+          }
+        ]
+      }
+    }
+  }
+}

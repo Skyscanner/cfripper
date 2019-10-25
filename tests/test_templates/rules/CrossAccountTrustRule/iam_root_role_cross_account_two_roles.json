@@ -1,0 +1,55 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "RootRoleOne": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [
+                  "arn:aws:iam::123456789:user/someuser@bla.com",
+                  "arn:aws:iam::123456789:user/someuser@bla.com",
+                  "arn:aws:iam::123456789:root",
+                  "arn:aws:iam::999999999:role/someuser@bla.com",
+                  "arn:aws:iam::123456789:user/someuser@bla.com"
+                ]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": []
+      }
+    },
+    "RootRoleTwo": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [
+                  "arn:aws:iam::123456789:user/someuser@bla.com",
+                  "arn:aws:iam::123456789:user/someuser@bla.com",
+                  "arn:aws:iam::123456789:root",
+                  "arn:aws:iam::999999999:role/someuser@bla.com",
+                  "arn:aws:iam::123456789:user/someuser@bla.com"
+                ]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": []
+      }
+    }
+  }
+}

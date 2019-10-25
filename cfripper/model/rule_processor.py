@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -16,12 +16,9 @@ import logging
 import re
 from typing import List
 
-import pycfmodel
-
-from cfripper.config.config import Config
-from cfripper.model.enums import RuleMode, RuleGranularity
-from cfripper.model.managed_policy_transformer import ManagedPolicyTransformer
-from cfripper.model.result import Result, Failure
+from ..config.config import Config
+from .enums import RuleMode, RuleGranularity
+from .result import Result, Failure
 
 logger = logging.getLogger(__file__)
 
@@ -30,20 +27,10 @@ class RuleProcessor:
     def __init__(self, *args):
         self.rules = args
 
-    def process_cf_template(self, cf_template_dict, config, result):
-        if not cf_template_dict or not isinstance(cf_template_dict, dict):
-            result.add_exception(TypeError("CF template not converted to dict"))
-            return
-
-        cf_model = pycfmodel.parse(cf_template_dict)
-
-        # Fetch referenced managed policies for validation
-        transformer = ManagedPolicyTransformer(cf_model)
-        transformer.transform_managed_policies()
-
+    def process_cf_template(self, cfmodel, config, result):
         for rule in self.rules:
             try:
-                rule.invoke(cf_model.resources, cf_model.parameters)
+                rule.invoke(cfmodel)
             except Exception as other_exception:
                 result.add_exception(other_exception)
                 logger.exception(
@@ -83,10 +70,12 @@ class RuleProcessor:
             whitelisted_resources = {
                 resource
                 for resource in failure.resource_ids
-                if any([
-                    re.match(whitelisted_resource_regex, resource)
-                    for whitelisted_resource_regex in config.get_whitelisted_resources(failure.rule)
-                ])
+                if any(
+                    [
+                        re.match(whitelisted_resource_regex, resource)
+                        for whitelisted_resource_regex in config.get_whitelisted_resources(failure.rule)
+                    ]
+                )
             }
             failure.resource_ids = failure.resource_ids - whitelisted_resources
             if failure.resource_ids:
@@ -114,10 +103,12 @@ class RuleProcessor:
             whitelisted_actions = {
                 action
                 for action in failure.actions
-                if any([
-                    re.match(whitelisted_action_regex, action)
-                    for whitelisted_action_regex in config.get_whitelisted_actions(failure.rule)
-                ])
+                if any(
+                    [
+                        re.match(whitelisted_action_regex, action)
+                        for whitelisted_action_regex in config.get_whitelisted_actions(failure.rule)
+                    ]
+                )
             }
             failure.actions = failure.actions - whitelisted_actions
             if failure.actions:

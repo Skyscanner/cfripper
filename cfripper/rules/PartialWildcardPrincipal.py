@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -12,11 +12,13 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from cfripper.model.enums import RuleMode, RuleRisk
-from cfripper.rules.WildcardPrincipal import GenericWildcardPrincipal
+import re
+
+from ..model.enums import RuleMode, RuleRisk
+from .GenericWildcardPrincipalRule import GenericWildcardPrincipalRule
 
 
-class PartialWildcardPrincipal(GenericWildcardPrincipal):
+class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 
@@ -28,4 +30,4 @@ class PartialWildcardPrincipal(GenericWildcardPrincipal):
     - Principal: arn:aws:iam:12345:12345*
 
     """
-    FULL_REGEX = r"^arn:aws:iam::.*:(.*\*|root)$"
+    FULL_REGEX = re.compile(r"^arn:aws:iam::.*:(.*\*|root)$")

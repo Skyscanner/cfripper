@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -12,19 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-
-
-from cfripper.rules.SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
+from .SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
 
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
-    def invoke(self, resources, parameters):
-        for resource in resources.get("AWS::EC2::SecurityGroupIngress", []):
-            self.process_resource(resource.logical_id, resource)
-
-    def process_resource(self, logical_name, ingress):
-        if not ingress:
-            return
-
-        if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
-            self.check_ports(logical_name, ingress)
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if resource.Type == "AWS::EC2::SecurityGroupIngress" and (
+                resource.ipv4_slash_zero() or resource.ipv6_slash_zero()
+            ):
+                for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
+                    if str(port) not in self._config.allowed_world_open_ports:
+                        self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))

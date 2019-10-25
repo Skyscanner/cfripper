@@ -1,9 +1,25 @@
+"""
+Copyright 2018-2019 Skyscanner Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+"""
 from abc import ABC, abstractmethod
 from typing import Optional, Set
 
-from cfripper.config.config import Config
-from cfripper.model.enums import RuleMode, RuleRisk, RuleGranularity
-from cfripper.model.result import Result
+from pycfmodel.model.cf_model import CFModel
+
+from ..config.config import Config
+from .enums import RuleMode, RuleRisk, RuleGranularity
+from .result import Result
 
 
 class Rule(ABC):
@@ -16,7 +32,7 @@ class Rule(ABC):
         self._result = result
 
     @abstractmethod
-    def invoke(self, resources, parameters):
+    def invoke(self, cfmodel: CFModel):
         pass
 
     def add_failure(

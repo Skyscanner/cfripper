@@ -1,0 +1,68 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Conditions": {
+    "IsSandbox": {
+      "Fn::Equals": [
+        "production",
+        "sandbox"
+      ]
+    }
+  },
+  "Resources": {
+    "RootRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "Fn::If": [
+              "IsSandbox",
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": "sts:AssumeRole",
+                      "Effect": "Allow",
+                      "Resource": "arn:aws:iam::325714046698:role/sandbox-secrets-access"
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "SandboxSecretsAccessAssumerole"
+              },
+              {
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Action": [
+                        "ec2:DeleteVpc"
+                      ],
+                      "Effect": "Allow",
+                      "Resource": [
+                        "*"
+                      ]
+                    }
+                  ],
+                  "Version": "2012-10-17"
+                },
+                "PolicyName": "ProdCredentialStoreAccessPolicy"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

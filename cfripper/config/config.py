@@ -1,5 +1,5 @@
 """
-Copyright 2018 Skyscanner Ltd
+Copyright 2018-2019 Skyscanner Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.
@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
-from cfripper.config.whitelist import (
+from .whitelist import (
     stack_whitelist as default_stack_whitelist,
     rule_to_action_whitelist as default_rule_to_action_whitelist,
     rule_to_resource_whitelist as default_rule_to_resource_whitelist,
@@ -111,14 +111,10 @@ class Config:
         self.aws_account_id = aws_account_id
         self.aws_user_agent = aws_user_agent
         self.rule_to_action_whitelist = (
-            rule_to_action_whitelist
-            if rule_to_action_whitelist is not None
-            else default_rule_to_action_whitelist
+            rule_to_action_whitelist if rule_to_action_whitelist is not None else default_rule_to_action_whitelist
         )
         self.rule_to_resource_whitelist = (
-            rule_to_resource_whitelist
-            if rule_to_resource_whitelist is not None
-            else default_rule_to_resource_whitelist
+            rule_to_resource_whitelist if rule_to_resource_whitelist is not None else default_rule_to_resource_whitelist
         )
         self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
 

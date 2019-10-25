@@ -1,0 +1,113 @@
+{
+  "Description": "Example S3 Bucket with put object permissions from sandbox (Designed to be ran in prod or tooling etc.)",
+  "Parameters": {
+    "AWSAccount": {
+      "Default": "sandbox",
+      "Description": "Which AWS Account?",
+      "AllowedValues": [
+        "sandbox",
+        "prod"
+      ],
+      "Type": "String"
+    },
+    "ProjectName": {
+      "Description": "Project Name",
+      "Type": "String"
+    },
+    "ContactEmail": {
+      "Default": "awsome@awesome.net",
+      "Description": "Contact Email",
+      "Type": "String"
+    },
+    "BucketPostFix": {
+      "Default": "test-x-account-write",
+      "Description": "Appended to company-<AWSAccount>- to create the bucket name",
+      "Type": "String"
+    }
+  },
+  "Outputs": {
+    "Bucket": {
+      "Value": "S3Bucket",
+      "Description": "Example S3 Bucket"
+    },
+    "BucketURN": {
+      "Value": "S3Bucket.DomainName",
+      "Description": "Example S3 Bucket URN"
+    }
+  },
+  "Resources": {
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicRead",
+        "BucketName": [
+          "-",
+          [
+            "company",
+            "AWSAccount",
+            "BucketPostFix"
+          ]
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": [
+              "-",
+              [
+                "company",
+                "AWSAccount",
+                "BucketPostFix"
+              ]
+            ]
+          },
+          {
+            "Key": "Project",
+            "Value": "ProjectName"
+          },
+          {
+            "Key": "Contact",
+            "Value": "ContactEmail"
+          },
+          {
+            "Key": "StackName",
+            "Value": "AWS::StackName"
+          }
+        ]
+      }
+    },
+    "S3BucketPolicyAccountAccess": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowAccessFromSandbox",
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "",
+                [
+                  "arn:aws:s3:::",
+                  "S3Bucket",
+                  "/*"
+                ]
+              ],
+              "Principal": {
+                "AWS": [
+                  "arn:aws:iam::987654321:root"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "AWSTemplateFormatVersion": "2010-09-09"
+}
