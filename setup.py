@@ -10,7 +10,7 @@ dev_requires = [
     "flake8>=3.3.0",
     "pytest>=3.6",
     "pytest-cov>=2.5.1",
-    "pip-tools==2.0.2",
+    "pip-tools==4.2.0",
     "moto==1.3.13",
 ]
 
