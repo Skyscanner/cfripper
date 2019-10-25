@@ -12,19 +12,21 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import re
+
 from pycfmodel.model.cf_model import CFModel
 
-from ..config.regex import REGEX_CONTAINS_STAR
 from ..model.rule import Rule
 
 
 class KMSKeyWildcardPrincipal(Rule):
 
     REASON = "KMS Key policy {} should not allow wildcard principals"
+    CONTAINS_WILDCARD_PATTERN = re.compile(r"^(\w*:)?\*$")
 
     def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::KMS::Key" and resource.Properties.KeyPolicy.allowed_principals_with(
-                REGEX_CONTAINS_STAR
+                self.CONTAINS_WILDCARD_PATTERN
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))
