@@ -36,6 +36,10 @@ def template_two_roles_dict():
 
 
 @pytest.fixture()
+def template_valid_with_service():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_service.json").resolve()
+
+@pytest.fixture()
 def expected_result_two_roles():
     return [
         Failure(
@@ -156,3 +160,13 @@ def test_non_whitelisted_stacks_are_reported_normally(template_two_roles_dict, e
     processor.process_cf_template(template_two_roles_dict, mock_config, result)
     assert not result.valid
     assert result.failed_rules == expected_result_two_roles
+
+
+def test_service_is_not_blocked(template_valid_with_service):
+    result = Result()
+    rule = CrossAccountTrustRule(Config(), result)
+    rule.invoke(template_valid_with_service)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
