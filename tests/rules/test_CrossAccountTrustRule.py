@@ -39,6 +39,7 @@ def template_two_roles_dict():
 def template_valid_with_service():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_service.json").resolve()
 
+
 @pytest.fixture()
 def expected_result_two_roles():
     return [
