@@ -39,6 +39,7 @@ class CrossAccountTrustRule(Rule):
                 for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                     not_has_account_id
                 ):
-                    self.add_failure(
-                        type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
-                    )
+                    if not principal.endswith(".amazonaws.com"):  # Checks if principal is an AWS service
+                        self.add_failure(
+                            type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
+                        )
