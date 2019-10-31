@@ -11,4 +11,4 @@ All notable changes to this project will be documented in this file.
 - `GenericWildcardPrincipalRule` now trust the condition to reduce false positives.
 
 ### Fixed
-- `IAMRolesOverprivilegedRule` now uses `REGEX_IS_STAR` for finding statements instead of `REGEX_CONTAINS_STAR`  .
+- `IAMRolesOverprivilegedRule` now uses `REGEX_IS_STAR` for finding statements instead of `REGEX_CONTAINS_STAR`.
