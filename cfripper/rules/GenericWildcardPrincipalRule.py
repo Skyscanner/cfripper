@@ -54,7 +54,7 @@ class GenericWildcardPrincipalRule(Rule):
 
     def check_for_wildcards(self, logical_id: str, resource: PolicyDocument):
         for statement in resource._statement_as_list():
-            if statement.principals_with(self.FULL_REGEX) and statement.Effect == "Allow":
+            if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
                     # Check if account ID is allowed
                     account_id_match = self.IAM_PATTERN.match(principal)
@@ -62,7 +62,7 @@ class GenericWildcardPrincipalRule(Rule):
                         self.validate_account_id(logical_id, account_id_match.group(1))
 
                     if statement.Condition is not None:
-                        logger.warning(f"NOT Checking condition: {statement.Condition}")
+                        logger.warning(f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}")
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(
                             type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)
