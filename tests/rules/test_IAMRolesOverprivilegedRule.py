@@ -13,11 +13,10 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import pytest
-
 from pycfmodel.model.cf_model import CFModel
-from cfripper.rules.IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
-from cfripper.model.result import Result
 
+from cfripper.model.result import Result
+from cfripper.rules.IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
 from tests.utils import get_cfmodel_from
 
 

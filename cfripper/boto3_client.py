@@ -13,16 +13,13 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
-
 from datetime import datetime
 from time import sleep
 
 import boto3
-
 from botocore.exceptions import ClientError
 
 from .model.utils import convert_json_or_yaml_to_dict, extract_bucket_name_and_path_from_url
-
 
 logger = logging.getLogger(__file__)
 

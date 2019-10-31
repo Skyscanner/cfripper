@@ -18,7 +18,7 @@ from typing import Optional, Set
 from pycfmodel.model.cf_model import CFModel
 
 from ..config.config import Config
-from .enums import RuleMode, RuleRisk, RuleGranularity
+from .enums import RuleGranularity, RuleMode, RuleRisk
 from .result import Result
 
 

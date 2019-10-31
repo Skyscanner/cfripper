@@ -15,14 +15,12 @@ specific language governing permissions and limitations under the License.
 import json
 import logging
 import re
+from contextlib import suppress
+from functools import lru_cache
+from urllib.parse import unquote
 
 import boto3
 import yaml
-
-from urllib.parse import unquote
-from contextlib import suppress
-from functools import lru_cache
-
 from cfn_flip import to_json
 from pycfmodel.model.resources.properties.policy import Policy
 

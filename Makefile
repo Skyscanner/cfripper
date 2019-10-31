@@ -11,23 +11,33 @@ install-dev: install
 	pip install -e ".[dev]"
 
 format:
+	isort --recursive .
 	black .
 
-lint:
-	flake8 cfripper/ # tests/
+lint: isort-lint black-lint flake8-lint
 
-component:
-	pytest -sv tests
+isort-lint:
+	isort --check-only --recursive .
+
+black-lint:
+	black --check .
+
+flake8-lint:
+	flake8 cfripper/ tests/
+
+unit:
+	pytest -svvv tests
 
 coverage:
 	coverage run --source=cfripper --branch -m pytest tests/ --junitxml=build/test.xml -v
 	coverage report
 	coverage xml -i -o build/coverage.xml
+	coverage html
 
-test: lint component
+test: lint unit
 
 freeze:
-	pip-compile --output-file requirements.txt setup.py
+	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-index --output-file requirements.txt setup.py
 
 freeze-upgrade:
 	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-index --upgrade --output-file requirements.txt setup.py
@@ -40,4 +50,4 @@ lambda.zip: $(SOURCES) Makefile requirements.txt
 	cd ./package && zip -rq ../lambda.zip .
 	rm -rf ./package
 
-.PHONY: install install-dev lint component coverage test freeze
+.PHONY: clean install install-dev format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade

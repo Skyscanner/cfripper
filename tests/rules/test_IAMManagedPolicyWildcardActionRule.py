@@ -17,7 +17,6 @@ import pytest
 from cfripper.config.config import Config
 from cfripper.model.result import Result
 from cfripper.rules.IAMManagedPolicyWildcardActionRule import IAMManagedPolicyWildcardActionRule
-
 from tests.utils import get_cfmodel_from
 
 

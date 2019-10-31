@@ -17,13 +17,12 @@ import logging
 
 import pycfmodel
 
-from .config.config import Config
 from .boto3_client import Boto3Client
+from .config.config import Config
 from .config.logger import setup_logging
+from .model.result import Result
 from .model.rule_processor import RuleProcessor
 from .rules import DEFAULT_RULES
-from .model.result import Result
-
 
 logger = logging.getLogger(__file__)
 

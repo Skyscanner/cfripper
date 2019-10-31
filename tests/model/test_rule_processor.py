@@ -12,16 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import pytest
-
 from unittest.mock import Mock, patch
 
 import pycfmodel
+import pytest
 from pytest import fixture
 
 from cfripper.config.config import Config
-from cfripper.model.enums import RuleMode, RuleRisk, RuleGranularity
-from cfripper.model.result import Result, Failure
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure, Result
 from cfripper.model.rule_processor import RuleProcessor
 from tests.utils import get_fixture_json
 
