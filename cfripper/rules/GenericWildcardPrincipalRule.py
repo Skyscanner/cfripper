@@ -59,7 +59,7 @@ class GenericWildcardPrincipalRule(Rule):
             if account_id_match:
                 self.validate_account_id(logical_id, account_id_match.group(1))
 
-            if not self.resource_is_whitelisted(logical_id):
+            if not resource.Condition and not self.resource_is_whitelisted(logical_id):
                 self.add_failure(type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal))
                 logger.info(
                     f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
