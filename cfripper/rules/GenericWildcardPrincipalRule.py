@@ -16,6 +16,7 @@ import logging
 import re
 
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
+
 from ..model.enums import RuleMode
 from ..model.rule import Rule
 
@@ -62,7 +63,9 @@ class GenericWildcardPrincipalRule(Rule):
                         self.validate_account_id(logical_id, account_id_match.group(1))
 
                     if statement.Condition is not None:
-                        logger.warning(f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}")
+                        logger.warning(
+                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                        )
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(
                             type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)

@@ -14,10 +14,9 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
 from cfripper.config.config import Config
 from cfripper.model.result import Result
-
+from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
 from tests.utils import get_cfmodel_from
 
 

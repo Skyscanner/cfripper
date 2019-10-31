@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
-
 from ..model.enums import RuleMode, RuleRisk
 from ..model.rule import Rule
 

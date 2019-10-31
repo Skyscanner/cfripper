@@ -12,25 +12,25 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from .CrossAccountTrustRule import CrossAccountTrustRule
+from .EBSVolumeHasSSERule import EBSVolumeHasSSERule
+from .FullWildcardPrincipalRule import FullWildcardPrincipalRule
+from .HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
 from .IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
-from .SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
-from .SecurityGroupIngressOpenToWorld import SecurityGroupIngressOpenToWorld
-from .S3BucketPublicReadWriteAclRule import S3BucketPublicReadWriteAclRule
+from .KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
 from .ManagedPolicyOnUserRule import ManagedPolicyOnUserRule
+from .PartialWildcardPrincipal import PartialWildcardPrincipalRule
 from .PolicyOnUserRule import PolicyOnUserRule
+from .PrivilegeEscalationRule import PrivilegeEscalationRule
+from .S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
+from .S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
+from .S3BucketPublicReadWriteAclRule import S3BucketPublicReadWriteAclRule
+from .S3CrossAccountTrustRule import S3CrossAccountTrustRule
+from .SecurityGroupIngressOpenToWorld import SecurityGroupIngressOpenToWorld
+from .SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
 from .SNSTopicPolicyNotPrincipalRule import SNSTopicPolicyNotPrincipalRule
 from .SQSQueuePolicyNotPrincipalRule import SQSQueuePolicyNotPrincipalRule
-from .S3BucketPolicyPrincipalRule import S3BucketPolicyPrincipalRule
-from .EBSVolumeHasSSERule import EBSVolumeHasSSERule
-from .PrivilegeEscalationRule import PrivilegeEscalationRule
-from .CrossAccountTrustRule import CrossAccountTrustRule
-from .S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
 from .SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
-from .S3CrossAccountTrustRule import S3CrossAccountTrustRule
-from .HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
-from .KMSKeyWildcardPrincipal import KMSKeyWildcardPrincipal
-from .FullWildcardPrincipalRule import FullWildcardPrincipalRule
-from .PartialWildcardPrincipal import PartialWildcardPrincipalRule
 
 DEFAULT_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,

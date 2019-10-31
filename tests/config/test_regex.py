@@ -15,11 +15,11 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.config.regex import (
+    REGEX_CONTAINS_STAR,
     REGEX_CROSS_ACCOUNT_ROOT,
     REGEX_FULL_WILDCARD_PRINCIPAL,
-    REGEX_WILDCARD_POLICY_ACTION,
-    REGEX_CONTAINS_STAR,
     REGEX_IS_STAR,
+    REGEX_WILDCARD_POLICY_ACTION,
 )
 
 
