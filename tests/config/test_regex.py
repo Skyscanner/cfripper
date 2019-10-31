@@ -18,6 +18,7 @@ from cfripper.config.regex import (
     REGEX_CONTAINS_STAR,
     REGEX_CROSS_ACCOUNT_ROOT,
     REGEX_FULL_WILDCARD_PRINCIPAL,
+    REGEX_IS_STAR,
     REGEX_WILDCARD_POLICY_ACTION,
 )
 
@@ -46,6 +47,12 @@ from cfripper.config.regex import (
         (REGEX_CONTAINS_STAR, "*abcdef", True),
         (REGEX_CONTAINS_STAR, "arn:aws:iam::437628376:not-root", False),
         (REGEX_CONTAINS_STAR, "potato", False),
+        (REGEX_IS_STAR, "*", True),
+        (REGEX_IS_STAR, "abc*def", False),
+        (REGEX_IS_STAR, "abcdef*", False),
+        (REGEX_IS_STAR, "*abcdef", False),
+        (REGEX_IS_STAR, "arn:aws:iam::437628376:not-root", False),
+        (REGEX_IS_STAR, "potato", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):

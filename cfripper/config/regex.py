@@ -63,3 +63,17 @@ Invalid:
 - potato
 """
 REGEX_CONTAINS_STAR = re.compile(r"^.*[*].*$")
+
+
+"""
+Check for root wildcard
+Valid:
+- *
+Invalid:
+- abc*def
+- abcdef*
+- *abcdef
+- arn:aws:iam::437628376:not-root
+- potato
+"""
+REGEX_IS_STAR = re.compile(r"^\*$")

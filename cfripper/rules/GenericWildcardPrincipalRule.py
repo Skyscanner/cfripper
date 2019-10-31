@@ -54,18 +54,22 @@ class GenericWildcardPrincipalRule(Rule):
                         self.check_for_wildcards(logical_id, policy.PolicyDocument)
 
     def check_for_wildcards(self, logical_id: str, resource: PolicyDocument):
-        for principal in resource.allowed_principals_with(self.FULL_REGEX):
-            # Check if account ID is allowed
-            account_id_match = self.IAM_PATTERN.match(principal)
-            if account_id_match:
-                self.validate_account_id(logical_id, account_id_match.group(1))
+        for statement in resource._statement_as_list():
+            if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
+                for principal in statement.get_principal_list():
+                    # Check if account ID is allowed
+                    account_id_match = self.IAM_PATTERN.match(principal)
+                    if account_id_match:
+                        self.validate_account_id(logical_id, account_id_match.group(1))
 
-            if not self.resource_is_whitelisted(logical_id):
-                self.add_failure(type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal))
-                logger.info(
-                    f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
-                    f"{self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)}"
-                )
+                    if statement.Condition is not None:
+                        logger.warning(
+                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                        )
+                    elif not self.resource_is_whitelisted(logical_id):
+                        self.add_failure(
+                            type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)
+                        )
 
     def resource_is_whitelisted(self, logical_id):
         return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
@@ -73,10 +77,6 @@ class GenericWildcardPrincipalRule(Rule):
     def validate_account_id(self, logical_id, account_id):
         if self.should_add_failure(logical_id, account_id):
             self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
-            logger.info(
-                f"{type(self).__name__}/{self._config.stack_name}/{self._config.service_name}"
-                f"{self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id)}"
-            )
 
     def should_add_failure(self, logical_id, account_id) -> bool:
         if not self._config.aws_principals:
