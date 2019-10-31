@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from ..config.regex import REGEX_CONTAINS_STAR
+from ..config.regex import REGEX_IS_STAR
 from ..model.rule import Rule
 
 
@@ -40,7 +40,7 @@ class IAMRolesOverprivilegedRule(Rule):
             return
 
         for policy in role.Properties.Policies:
-            for statement in policy.PolicyDocument.statements_with(REGEX_CONTAINS_STAR):
+            for statement in policy.PolicyDocument.statements_with(REGEX_IS_STAR):
                 if statement.Effect and statement.Effect == "Allow":
                     for action in statement.get_action_list():
                         for prefix in self._config.forbidden_resource_star_action_prefixes:

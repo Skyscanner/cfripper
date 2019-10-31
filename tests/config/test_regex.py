@@ -1,3 +1,17 @@
+"""
+Copyright 2018-2019 Skyscanner Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+"""
 import pytest
 
 from cfripper.config.regex import (
@@ -5,6 +19,7 @@ from cfripper.config.regex import (
     REGEX_FULL_WILDCARD_PRINCIPAL,
     REGEX_WILDCARD_POLICY_ACTION,
     REGEX_CONTAINS_STAR,
+    REGEX_IS_STAR,
 )
 
 
@@ -32,6 +47,12 @@ from cfripper.config.regex import (
         (REGEX_CONTAINS_STAR, "*abcdef", True),
         (REGEX_CONTAINS_STAR, "arn:aws:iam::437628376:not-root", False),
         (REGEX_CONTAINS_STAR, "potato", False),
+        (REGEX_IS_STAR, "*", True),
+        (REGEX_IS_STAR, "abc*def", False),
+        (REGEX_IS_STAR, "abcdef*", False),
+        (REGEX_IS_STAR, "*abcdef", False),
+        (REGEX_IS_STAR, "arn:aws:iam::437628376:not-root", False),
+        (REGEX_IS_STAR, "potato", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):
