@@ -14,8 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.rules import SQSQueuePolicyNotPrincipalRule
 from cfripper.model.result import Result
+from cfripper.rules import SQSQueuePolicyNotPrincipalRule
 from tests.utils import get_cfmodel_from
 
 

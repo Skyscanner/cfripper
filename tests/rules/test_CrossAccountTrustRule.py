@@ -14,14 +14,12 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
+from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure, Result
 from cfripper.model.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
-
-from cfripper.model.enums import RuleMode, RuleRisk, RuleGranularity
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
-from cfripper.config.config import Config
-from cfripper.model.result import Result, Failure
-
 from tests.utils import get_cfmodel_from
 
 

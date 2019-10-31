@@ -16,7 +16,6 @@ import pytest
 
 from cfripper.model.result import Result
 from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
-
 from tests.utils import get_cfmodel_from
 
 

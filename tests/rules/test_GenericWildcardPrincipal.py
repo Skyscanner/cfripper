@@ -14,10 +14,10 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
-from tests.utils import get_cfmodel_from
 from cfripper.config.config import Config
+from cfripper.model.result import Result
 from cfripper.rules.GenericWildcardPrincipalRule import GenericWildcardPrincipalRule
+from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()

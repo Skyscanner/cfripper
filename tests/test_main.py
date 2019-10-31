@@ -13,19 +13,18 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import traceback
-import pytest
-
-from unittest.mock import Mock, patch
-from unittest.mock import ANY
-from moto import mock_s3
+from unittest.mock import ANY, Mock, patch
 
 import pycfmodel
-from cfripper.main import handler
-from cfripper.model.utils import convert_json_or_yaml_to_dict
-from cfripper.model.result import Result
-from cfripper.rules import DEFAULT_RULES
+import pytest
+from moto import mock_s3
+
 from cfripper.config.config import Config
+from cfripper.main import handler
+from cfripper.model.result import Result
 from cfripper.model.rule_processor import RuleProcessor
+from cfripper.model.utils import convert_json_or_yaml_to_dict
+from cfripper.rules import DEFAULT_RULES
 from tests.utils import get_templates
 
 

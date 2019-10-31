@@ -16,6 +16,7 @@ import logging
 import re
 
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
+
 from ..model.enums import RuleMode
 from ..model.rule import Rule
 

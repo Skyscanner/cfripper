@@ -15,11 +15,9 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
-from .whitelist import (
-    stack_whitelist as default_stack_whitelist,
-    rule_to_action_whitelist as default_rule_to_action_whitelist,
-    rule_to_resource_whitelist as default_rule_to_resource_whitelist,
-)
+from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
+from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
+from .whitelist import stack_whitelist as default_stack_whitelist
 
 
 class Config:

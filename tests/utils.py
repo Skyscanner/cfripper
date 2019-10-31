@@ -1,12 +1,10 @@
 import json
 import os
-
 from pathlib import Path
 from typing import Dict, List
 
 from pycfmodel import parse
 from pycfmodel.model.cf_model import CFModel
-
 
 FIXTURE_ROOT_PATH = Path(__file__).parent / "test_templates"
 

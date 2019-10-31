@@ -12,15 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-import pytest
-import boto3
-
 from unittest.mock import patch
+
+import boto3
+import pytest
 from botocore.exceptions import ClientError
 from moto import mock_s3, mock_sts
 
-from cfripper.model.utils import convert_json_or_yaml_to_dict, InvalidURLException
 from cfripper.boto3_client import Boto3Client
+from cfripper.model.utils import InvalidURLException, convert_json_or_yaml_to_dict
 
 DUMMY_CLIENT_ERROR = ClientError({"Error": {"Code": "Exception"}}, "get_template")
 

@@ -17,8 +17,8 @@ import re
 from typing import List
 
 from ..config.config import Config
-from .enums import RuleMode, RuleGranularity
-from .result import Result, Failure
+from .enums import RuleGranularity, RuleMode
+from .result import Failure, Result
 
 logger = logging.getLogger(__file__)
 
