@@ -29,6 +29,13 @@
                     "ec2:DescribeInstances"
                   ],
                   "Resource": "*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:DeleteObject"
+                  ],
+                  "Resource": "arn:aws:s3:::random-bucket-name/*"
                 }
               ]
             }
