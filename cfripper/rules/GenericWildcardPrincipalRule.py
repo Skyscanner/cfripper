@@ -15,7 +15,15 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
+from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
+from pycfmodel.model.resources.iam_policy import IAMPolicy
+from pycfmodel.model.resources.iam_role import IAMRole
+from pycfmodel.model.resources.iam_user import IAMUser
+from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
+from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from ..model.enums import RuleMode
 from ..model.rule import Rule
@@ -36,18 +44,12 @@ class GenericWildcardPrincipalRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::KMS::Key":
+            if isinstance(resource, KMSKey):
                 self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy)
-            elif resource.Type in [
-                "AWS::IAM::ManagedPolicy",
-                "AWS::IAM::Policy",
-                "AWS::S3::BucketPolicy",
-                "AWS::SNS::TopicPolicy",
-                "AWS::SQS::QueuePolicy",
-            ]:
+            elif isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
                 self.check_for_wildcards(logical_id, resource.Properties.PolicyDocument)
-            elif resource.Type in ["AWS::IAM::Role", "AWS::IAM::User"]:
-                if resource.Type == "AWS::IAM::Role":
+            elif isinstance(resource, (IAMRole, IAMUser)):
+                if isinstance(resource, IAMRole):
                     self.check_for_wildcards(logical_id, resource.Properties.AssumeRolePolicyDocument)
                 if resource.Properties and resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
@@ -64,7 +66,8 @@ class GenericWildcardPrincipalRule(Rule):
 
                     if statement.Condition is not None:
                         logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                            f"Not adding {type(self).__name__} failure in {logical_id} because "
+                            f"there are conditions: {statement.Condition}"
                         )
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(

@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from pycfmodel.model.resources.security_group import SecurityGroup
+
 from ..model.rule import Rule
 
 
@@ -20,7 +22,7 @@ class SecurityGroupOpenToWorldRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::EC2::SecurityGroup" and resource.Properties.SecurityGroupIngress:
+            if isinstance(resource, SecurityGroup) and resource.Properties.SecurityGroupIngress:
                 list_security_group_ingress = resource.Properties.SecurityGroupIngress
                 if not isinstance(list_security_group_ingress, list):
                     list_security_group_ingress = [list_security_group_ingress]

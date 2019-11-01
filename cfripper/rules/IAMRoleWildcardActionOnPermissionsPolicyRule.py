@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from pycfmodel.model.resources.iam_role import IAMRole
+
 from ..config.regex import REGEX_CONTAINS_STAR
 from ..model.rule import Rule
 
@@ -22,7 +24,7 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::IAM::Role":
+            if isinstance(resource, IAMRole):
                 for policy in resource.Properties.Policies:
                     if policy.PolicyDocument.allowed_actions_with(REGEX_CONTAINS_STAR):
                         self.add_failure(type(self).__name__, self.REASON.format(logical_id, policy.PolicyName))

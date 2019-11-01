@@ -14,6 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+
 from ..model.rule import Rule
 
 
@@ -22,7 +24,7 @@ class S3BucketPolicyWildcardActionRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::S3::BucketPolicy" and resource.Properties.PolicyDocument.allowed_actions_with(
+            if isinstance(resource, S3BucketPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 re.compile(r"^(\w*:){0,1}\*$")
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

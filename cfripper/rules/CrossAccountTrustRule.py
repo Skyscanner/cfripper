@@ -14,6 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
+from pycfmodel.model.resources.iam_role import IAMRole
+
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from ..model.enums import RuleGranularity
 from ..model.rule import Rule
@@ -28,7 +30,7 @@ class CrossAccountTrustRule(Rule):
     def invoke(self, cfmodel):
         not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::IAM::Role":
+            if isinstance(resource, IAMRole):
                 for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                     self.ROOT_PATTERN
                 ):

@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+
 from ..model.rule import Rule
 
 
@@ -21,7 +23,7 @@ class S3CrossAccountTrustRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::S3::BucketPolicy":
+            if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.Effect == "Allow":
                         for principal in statement.get_principal_list():
