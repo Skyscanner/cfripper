@@ -66,8 +66,7 @@ class GenericWildcardPrincipalRule(Rule):
 
                     if statement.Condition is not None:
                         logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} because "
-                            f"there are conditions: {statement.Condition}"
+                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                         )
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(
