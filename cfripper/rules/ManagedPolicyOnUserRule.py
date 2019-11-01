@@ -13,6 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 
 from ..model.enums import RuleMode
 from ..model.rule import Rule
@@ -25,5 +26,5 @@ class ManagedPolicyOnUserRule(Rule):
 
     def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::IAM::ManagedPolicy" and resource.Properties.Users:
+            if isinstance(resource, IAMManagedPolicy) and resource.Properties.Users:
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

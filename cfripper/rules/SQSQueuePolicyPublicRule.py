@@ -14,6 +14,8 @@ specific language governing permissions and limitations under the License.
 """
 import re
 
+from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
+
 from ..model.enums import RuleRisk
 from ..model.rule import Rule
 
@@ -25,7 +27,7 @@ class SQSQueuePolicyPublicRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::SQS::QueuePolicy" and resource.Properties.PolicyDocument.allowed_principals_with(
+            if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
                 re.compile(r"^(\w*:){0,1}\*$")
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from pycfmodel.model.resources.security_group import SecurityGroup
+
 from ..model.enums import RuleMode
 from ..model.rule import Rule
 
@@ -26,5 +28,5 @@ class SecurityGroupMissingEgressRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::EC2::SecurityGroup" and not resource.Properties.SecurityGroupEgress:
+            if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

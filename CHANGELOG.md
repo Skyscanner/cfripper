@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `GenericWildcardPrincipalRule` now trust the condition to reduce false positives.
+- Rules check the resource type using `isinstance` instead of comparing type to a string if pycfmodel implements the resource. 
 
 ### Fixed
 - `IAMRolesOverprivilegedRule` now uses `REGEX_IS_STAR` for finding statements instead of `REGEX_CONTAINS_STAR`.

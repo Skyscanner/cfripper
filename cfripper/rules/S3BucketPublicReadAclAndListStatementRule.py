@@ -15,6 +15,8 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+
 from ..model.enums import RuleMode
 from ..model.rule import Rule
 
@@ -28,7 +30,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::S3::BucketPolicy" and resource.Properties.PolicyDocument.allowed_actions_with(
+            if isinstance(resource, S3BucketPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 re.compile(r"^s3:L.*$")
             ):
                 bucket_name = resource.Properties.Bucket

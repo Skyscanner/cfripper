@@ -15,6 +15,8 @@ specific language governing permissions and limitations under the License.
 import logging
 import re
 
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+
 from ..model.enums import RuleMode, RuleRisk
 from ..model.rule import Rule
 
@@ -30,7 +32,7 @@ class S3BucketPolicyPrincipalRule(Rule):
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::S3::BucketPolicy":
+            if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     for principal in statement.get_principal_list():
                         self.check_account_number(logical_id, principal)
