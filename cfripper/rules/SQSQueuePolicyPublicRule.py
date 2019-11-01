@@ -12,12 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 import re
 
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from ..model.enums import RuleRisk
 from ..model.rule import Rule
+
+logger = logging.getLogger(__file__)
 
 
 class SQSQueuePolicyPublicRule(Rule):
@@ -30,4 +33,11 @@ class SQSQueuePolicyPublicRule(Rule):
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
                 re.compile(r"^(\w*:){0,1}\*$")
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                for statement in resource.Properties.PolicyDocument._statement_as_list():
+                    if statement.Effect == "Allow" and statement.principals_with(re.compile(r"^(\w*:){0,1}\*$")):
+                        if statement.Condition is not None:
+                            logger.warning(
+                                f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                            )
+                        elif not self.resource_is_whitelisted(logical_id):
+                            self.add_failure(type(self).__name__, self.REASON.format(logical_id))

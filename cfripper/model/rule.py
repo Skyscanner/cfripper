@@ -59,3 +59,6 @@ class Rule(ABC):
 
     def add_warning(self, warning):
         self._result.add_warning(warning)
+
+    def resource_is_whitelisted(self, logical_id):
+        return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
