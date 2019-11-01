@@ -23,7 +23,7 @@ black-lint:
 	black --check .
 
 flake8-lint:
-	flake8 cfripper/ # tests/
+	flake8 cfripper/ tests/
 
 unit:
 	pytest -svvv tests
