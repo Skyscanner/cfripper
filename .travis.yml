@@ -4,7 +4,7 @@ python:
 install:
 - make install-dev
 script:
-- make coverage
+- make lint coverage
 deploy:
   provider: pypi
   user: ocrawford555
