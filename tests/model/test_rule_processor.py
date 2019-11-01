@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 from unittest.mock import Mock, patch
 
-import pycfmodel
 import pytest
 from pytest import fixture
 
