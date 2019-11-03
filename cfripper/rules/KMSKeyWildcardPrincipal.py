@@ -12,12 +12,15 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 import re
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.kms_key import KMSKey
 
 from ..model.rule import Rule
+
+logger = logging.getLogger(__file__)
 
 
 class KMSKeyWildcardPrincipal(Rule):
@@ -27,7 +30,14 @@ class KMSKeyWildcardPrincipal(Rule):
 
     def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, KMSKey) and resource.Properties.KeyPolicy.allowed_principals_with(
-                self.CONTAINS_WILDCARD_PATTERN
-            ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+            if isinstance(resource, KMSKey):
+                for statement in resource.Properties.KeyPolicy._statement_as_list():
+                    if statement.Effect == "Allow" and statement.principals_with(self.CONTAINS_WILDCARD_PATTERN):
+                        for principal in statement.get_principal_list():
+                            if self.CONTAINS_WILDCARD_PATTERN.match(principal):
+                                if statement.Condition is not None:
+                                    logger.warning(
+                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                    )
+                                else:
+                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
