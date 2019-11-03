@@ -40,5 +40,5 @@ class SQSQueuePolicyPublicRule(Rule):
                             logger.warning(
                                 f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                             )
-                        elif not self.resource_is_whitelisted(logical_id):
+                        else:
                             self.add_failure(type(self).__name__, self.REASON.format(logical_id))
