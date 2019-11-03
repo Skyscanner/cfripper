@@ -27,14 +27,15 @@ class SQSQueuePolicyPublicRule(Rule):
 
     REASON = "SQS Queue policy {} should not be public"
     RISK_VALUE = RuleRisk.HIGH
+    REGEX_HAS_STAR_AFTER_COLON = re.compile(r"^(\w*:){0,1}\*$")
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
-                re.compile(r"^(\w*:){0,1}\*$")
+                self.REGEX_HAS_STAR_AFTER_COLON
             ):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
-                    if statement.Effect == "Allow" and statement.principals_with(re.compile(r"^(\w*:){0,1}\*$")):
+                    if statement.Effect == "Allow" and statement.principals_with(self.REGEX_HAS_STAR_AFTER_COLON):
                         if statement.Condition is not None:
                             logger.warning(
                                 f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
