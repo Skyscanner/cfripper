@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.resources.iam_role import IAMRole
 
-from ..config.regex import REGEX_CONTAINS_STAR
+from ..config.regex import REGEX_WILDCARD_POLICY_ACTION
 from ..model.rule import Rule
 
 
@@ -26,5 +26,5 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
                 for policy in resource.Properties.Policies:
-                    if policy.PolicyDocument.allowed_actions_with(REGEX_CONTAINS_STAR):
+                    if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                         self.add_failure(type(self).__name__, self.REASON.format(logical_id, policy.PolicyName))

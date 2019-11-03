@@ -27,7 +27,7 @@
               "Statement": [
                 {
                   "Effect": "Allow",
-                  "Action": "*",
+                  "Action": "sts:*",
                   "NotResource": "*"
                 }
               ]
