@@ -71,6 +71,9 @@ class GenericWildcardPrincipalRule(Rule):
                             type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)
                         )
 
+    def resource_is_whitelisted(self, logical_id):
+        return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
+
     def validate_account_id(self, logical_id, account_id):
         if self.should_add_failure(logical_id, account_id):
             self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
