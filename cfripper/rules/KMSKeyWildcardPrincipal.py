@@ -35,7 +35,7 @@ class KMSKeyWildcardPrincipal(Rule):
                     if statement.Effect == "Allow" and statement.principals_with(self.CONTAINS_WILDCARD_PATTERN):
                         for principal in statement.get_principal_list():
                             if self.CONTAINS_WILDCARD_PATTERN.match(principal):
-                                if statement.Condition:
+                                if statement.Condition.dict():
                                     logger.warning(
                                         f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                                     )

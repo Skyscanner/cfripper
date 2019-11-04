@@ -39,7 +39,7 @@ class S3BucketPolicyPrincipalRule(Rule):
                         if account_id_match:
                             account_id = account_id_match.group(1)
                             if self._config.aws_principals and account_id not in self._config.aws_principals:
-                                if statement.Condition:
+                                if statement.Condition.dict():
                                     logger.warning(
                                         f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                                     )
