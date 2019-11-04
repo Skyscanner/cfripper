@@ -36,7 +36,7 @@ class SQSQueuePolicyPublicRule(Rule):
             ):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.Effect == "Allow" and statement.principals_with(self.REGEX_HAS_STAR_AFTER_COLON):
-                        if statement.Condition is not None:
+                        if statement.Condition:
                             logger.warning(
                                 f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                             )

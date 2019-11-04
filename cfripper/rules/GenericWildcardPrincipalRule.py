@@ -62,7 +62,7 @@ class GenericWildcardPrincipalRule(Rule):
                     if account_id_match:
                         self.validate_account_id(logical_id, account_id_match.group(1))
 
-                    if statement.Condition is not None:
+                    if statement.Condition:
                         logger.warning(
                             f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                         )
