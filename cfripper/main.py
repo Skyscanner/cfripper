@@ -101,6 +101,7 @@ def handler(event, context):
         project_name=event.get("project"),
         service_name=event.get("serviceName"),
         stack_name=event.get("stack", {}).get("name"),
+        stack_parameters=event.get("stack", {}).get("parameters", {}),
         rules=DEFAULT_RULES.keys(),
         event=event.get("event"),
         template_url=event.get("stack_template_url", "N/A"),
