@@ -86,7 +86,6 @@ class Config:
         project_name=None,
         service_name=None,
         stack_name=None,
-        stack_parameters={},
         rules=None,
         event=None,
         template_url=None,
@@ -102,7 +101,6 @@ class Config:
         self.project_name = project_name
         self.service_name = service_name
         self.stack_name = stack_name
-        self.stack_parameters = stack_parameters
         self.event = event
         self.rules = rules
         self.template_url = template_url
