@@ -25,6 +25,7 @@ class HardcodedRDSPasswordRule(Rule):
         for logical_id, resource in cfmodel.Resources.items():
             if (
                 resource.Type == "AWS::RDS::DBInstance"
-                and resource.Properties.get("MasterUserPassword") != Parameter.NO_ECHO_NO_DEFAULT
+                and resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
+                != Parameter.NO_ECHO_NO_DEFAULT
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

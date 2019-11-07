@@ -17,6 +17,7 @@ import logging
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleMode
+
 from ..model.rule import Rule
 
 logger = logging.getLogger(__file__)
@@ -39,6 +40,10 @@ class S3CrossAccountTrustRule(Rule):
                                     )
                                 else:
                                     if "GETATT" in principal:
-                                        self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal), rule_mode=RuleMode.DEBUG)
+                                        self.add_failure(
+                                            type(self).__name__,
+                                            self.REASON.format(logical_id, principal),
+                                            rule_mode=RuleMode.DEBUG,
+                                        )
                                     else:
                                         self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
