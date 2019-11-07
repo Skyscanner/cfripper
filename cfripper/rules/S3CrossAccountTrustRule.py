@@ -12,9 +12,13 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
+
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from ..model.rule import Rule
+
+logger = logging.getLogger(__file__)
 
 
 class S3CrossAccountTrustRule(Rule):
@@ -28,4 +32,9 @@ class S3CrossAccountTrustRule(Rule):
                     if statement.Effect == "Allow":
                         for principal in statement.get_principal_list():
                             if self._config.aws_account_id and self._config.aws_account_id not in principal:
-                                self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
+                                if statement.Condition and statement.Condition.dict():
+                                    logger.warning(
+                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                    )
+                                else:
+                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
