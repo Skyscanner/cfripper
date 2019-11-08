@@ -39,7 +39,7 @@ class S3CrossAccountTrustRule(Rule):
                                         f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                                     )
                                 else:
-                                    if "GETATT" in principal:
+                                    if "GETATT" in principal or "UNDEFINED_" in principal:
                                         self.add_failure(
                                             type(self).__name__,
                                             self.REASON.format(logical_id, principal),
