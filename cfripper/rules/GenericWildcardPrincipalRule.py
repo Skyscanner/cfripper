@@ -30,8 +30,6 @@ from ..model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
-POLICY_DOCUMENT_TYPES = ("policy_document", "key_policy", "assume_role_policy_document")
-
 
 class GenericWildcardPrincipalRule(Rule):
 
@@ -64,7 +62,7 @@ class GenericWildcardPrincipalRule(Rule):
                     if account_id_match:
                         self.validate_account_id(logical_id, account_id_match.group(1))
 
-                    if statement.Condition is not None:
+                    if statement.Condition and statement.Condition.dict():
                         logger.warning(
                             f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
                         )

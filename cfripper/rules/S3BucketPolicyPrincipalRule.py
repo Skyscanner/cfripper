@@ -35,11 +35,13 @@ class S3BucketPolicyPrincipalRule(Rule):
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     for principal in statement.get_principal_list():
-                        self.check_account_number(logical_id, principal)
-
-    def check_account_number(self, logical_id, principal):
-        account_id_match = re.match(self.PATTERN, principal)
-        if account_id_match:
-            account_id = account_id_match.group(1)
-            if self._config.aws_principals and account_id not in self._config.aws_principals:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))
+                        account_id_match = re.match(self.PATTERN, principal)
+                        if account_id_match:
+                            account_id = account_id_match.group(1)
+                            if self._config.aws_principals and account_id not in self._config.aws_principals:
+                                if statement.Condition and statement.Condition.dict():
+                                    logger.warning(
+                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                    )
+                                else:
+                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))

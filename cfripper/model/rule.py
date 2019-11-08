@@ -42,19 +42,17 @@ class Rule(ABC):
         granularity: Optional[RuleGranularity] = None,
         resource_ids: Optional[Set] = None,
         actions: Optional[Set] = None,
+        risk_value: Optional[RuleRisk] = None,
+        rule_mode: Optional[RuleMode] = None,
     ):
-
-        if granularity is None:
-            granularity = self.GRANULARITY
-
         self._result.add_failure(
             rule=rule,
             reason=reason,
-            rule_mode=self.RULE_MODE,
-            risk_value=self.RISK_VALUE,
+            rule_mode=rule_mode or self.RULE_MODE,
+            risk_value=risk_value or self.RISK_VALUE,
             resource_ids=resource_ids,
             actions=actions,
-            granularity=granularity,
+            granularity=granularity or self.GRANULARITY,
         )
 
     def add_warning(self, warning):
