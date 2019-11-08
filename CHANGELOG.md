@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.10.0] - 2019-11-XX
+## [0.10.0] - 2019-11-08
 ### Added
 - New regex `REGEX_IS_STAR`, matches only a `*` character.
 
