@@ -44,7 +44,6 @@ class Failure:
 class Result:
     """An object to represent scan results."""
 
-    valid: bool = True
     failed_rules: List[Failure] = field(default_factory=list)
     exceptions: List = field(default_factory=list)
     failed_monitored_rules: List[Failure] = field(default_factory=list)
@@ -74,9 +73,6 @@ class Result:
             self.add_failure_monitored_rule(failure=failure)
             return
 
-        if self.valid:
-            self.valid = False
-
         self.add_failure_blocking_rule(failure=failure)
 
     def add_exception(self, ex):
@@ -90,3 +86,7 @@ class Result:
 
     def add_failure_blocking_rule(self, failure: Failure):
         self.failed_rules.append(failure)
+
+    @property
+    def valid(self) -> bool:
+        return not bool([rule for rule in self.failed_rules if rule.rule_mode == RuleMode.BLOCKING])
