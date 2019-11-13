@@ -15,5 +15,5 @@ def test_result_valid_after_removing_failures():
     assert result.valid is False
 
     result.failed_rules = []
-    # Result has no failures, so it should be invalid
+    # Result has no failures, so it should be valid
     assert result.valid is True
