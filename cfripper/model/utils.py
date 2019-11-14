@@ -17,12 +17,15 @@ import logging
 import re
 from contextlib import suppress
 from functools import lru_cache
+from typing import Optional
 from urllib.parse import unquote
 
 import boto3
 import yaml
 from cfn_flip import to_json
 from pycfmodel.model.resources.properties.policy import Policy
+
+from cfripper.config.regex import REGEX_ARN, REGEX_IAM_ARN
 
 logger = logging.getLogger(__file__)
 
@@ -101,3 +104,21 @@ def get_managed_policy(managed_policy_arn):
             }
         )
     return None
+
+
+def get_account_id_from_arn(arn: str) -> Optional[str]:
+    match = REGEX_ARN.match(arn)
+    if match:
+        return match.group(3)
+
+
+def get_account_id_from_iam_arn(arn: str) -> Optional[str]:
+    match = REGEX_IAM_ARN.match(arn)
+    if match:
+        return match.group(1)
+
+
+def get_account_id_from_principal(principal: str) -> Optional[str]:
+    if principal.isnumeric():
+        return principal
+    return get_account_id_from_iam_arn(principal)
