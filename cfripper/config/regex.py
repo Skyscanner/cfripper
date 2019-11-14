@@ -77,3 +77,27 @@ Invalid:
 - potato
 """
 REGEX_IS_STAR = re.compile(r"^\*$")
+
+"""
+Check for arns
+It has 4 groups. The first one for service name, the second one for region, the third, for account id, the last one
+for resource id
+Valid:
+- arn:aws:iam::437628376:not-root
+- arn:aws:iam::437628376:root
+- arn:aws:s3:::my_corporate_bucket
+Invalid:
+- potato
+"""
+REGEX_ARN = re.compile(r"^arn:aws:(\w+):(\w*):(\d*):(.+)$")
+
+"""
+Check for iam arns
+It has 2 groups. The first one for account id, the last one  for resource id
+Valid:
+- arn:aws:iam::437628376:not-root
+Invalid:
+- arn:aws:s3:::my_corporate_bucket
+- potato
+"""
+REGEX_IAM_ARN = re.compile(r"^arn:aws:iam::(\d*):(.*)$")
