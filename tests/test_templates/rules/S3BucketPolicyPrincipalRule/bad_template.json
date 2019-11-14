@@ -34,7 +34,7 @@
               "Resource": "arn:aws:s3:::fakebucketfakebucket/*",
               "Principal": {
                 "AWS": [
-                  "arn:aws:iam::156460612806:root"
+                  "arn:aws:iam::1234556:root"
                 ]
               }
             }

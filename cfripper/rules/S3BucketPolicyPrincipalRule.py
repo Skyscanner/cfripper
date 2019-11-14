@@ -13,9 +13,10 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
-import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+
+from cfripper.model.utils import get_account_id_from_iam_arn
 
 from ..model.enums import RuleMode, RuleRisk
 from ..model.rule import Rule
@@ -28,20 +29,21 @@ class S3BucketPolicyPrincipalRule(Rule):
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
-    PATTERN = r"arn:aws:iam::(\d*):.*"
 
     def invoke(self, cfmodel):
+        valid_principals = {*self._config.aws_service_accounts, *self._config.aws_principals}
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     for principal in statement.get_principal_list():
-                        account_id_match = re.match(self.PATTERN, principal)
-                        if account_id_match:
-                            account_id = account_id_match.group(1)
-                            if self._config.aws_principals and account_id not in self._config.aws_principals:
-                                if statement.Condition and statement.Condition.dict():
-                                    logger.warning(
-                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
-                                    )
-                                else:
-                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))
+                        account_id = get_account_id_from_iam_arn(principal)
+                        if not account_id:
+                            continue
+                        if account_id not in valid_principals:
+                            if statement.Condition and statement.Condition.dict():
+                                logger.warning(
+                                    f"Not adding {type(self).__name__} failure in {logical_id} "
+                                    f"because there are conditions: {statement.Condition}"
+                                )
+                            else:
+                                self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))

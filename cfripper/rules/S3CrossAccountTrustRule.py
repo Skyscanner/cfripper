@@ -17,6 +17,7 @@ import logging
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleMode
+from cfripper.model.utils import get_account_id_from_iam_arn
 
 from ..model.rule import Rule
 
@@ -33,17 +34,21 @@ class S3CrossAccountTrustRule(Rule):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.Effect == "Allow":
                         for principal in statement.get_principal_list():
-                            if self._config.aws_account_id and self._config.aws_account_id not in principal:
+                            account_id = get_account_id_from_iam_arn(principal)
+                            if account_id in self._config.aws_service_accounts:
+                                # It's ok to allow access to AWS service accounts
+                                continue
+                            if self._config.aws_account_id != account_id:
                                 if statement.Condition and statement.Condition.dict():
                                     logger.warning(
-                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                        f"Not adding {type(self).__name__} failure in {logical_id} "
+                                        f"because there are conditions: {statement.Condition}"
+                                    )
+                                elif "GETATT" in principal or "UNDEFINED_" in principal:
+                                    self.add_failure(
+                                        type(self).__name__,
+                                        self.REASON.format(logical_id, principal),
+                                        rule_mode=RuleMode.DEBUG,
                                     )
                                 else:
-                                    if "GETATT" in principal or "UNDEFINED_" in principal:
-                                        self.add_failure(
-                                            type(self).__name__,
-                                            self.REASON.format(logical_id, principal),
-                                            rule_mode=RuleMode.DEBUG,
-                                        )
-                                    else:
-                                        self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
+                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, principal))
