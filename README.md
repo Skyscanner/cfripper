@@ -15,6 +15,11 @@ CFripper is a Python tool that aims to prevent vulnerabilities from getting to p
 Another approach that we use at Skyscanner is the Infrastructure as Code pipeline. Code is built and tested using drone and then our internal CD tool deals with calling CFripper to validate the script and then trigger the deployment of the infrastructure provided that the CloudFormation script is valid:
 ![CFripperPipeline](docs/images/cfripper2.png)
 
+## Lambda Installation
+
+To install the lambda first generate the zip package using `make lambda.zip`.
+The runtime of the environment should be `Python 3.7` and the handler `cfripper.main.handler`.
+
 ## Developing
 
 The project comes with a set of commands you can use to run common operations:
