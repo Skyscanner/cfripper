@@ -17,7 +17,7 @@ import logging
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleMode
-from cfripper.model.utils import get_account_id_from_iam_arn
+from cfripper.model.utils import get_account_id_from_principal
 
 from ..model.rule import Rule
 
@@ -34,7 +34,7 @@ class S3CrossAccountTrustRule(Rule):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.Effect == "Allow":
                         for principal in statement.get_principal_list():
-                            account_id = get_account_id_from_iam_arn(principal)
+                            account_id = get_account_id_from_principal(principal)
                             if account_id in self._config.aws_service_accounts:
                                 # It's ok to allow access to AWS service accounts
                                 continue

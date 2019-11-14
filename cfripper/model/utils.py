@@ -116,3 +116,9 @@ def get_account_id_from_iam_arn(arn) -> Optional[str]:
     match = REGEX_IAM_ARN.match(arn)
     if match:
         return match.group(1)
+
+
+def get_account_id_from_principal(principal: str) -> Optional[str]:
+    if principal.isnumeric():
+        return principal
+    return get_account_id_from_arn(principal)

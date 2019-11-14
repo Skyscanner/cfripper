@@ -16,7 +16,7 @@ import logging
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.utils import get_account_id_from_iam_arn
+from cfripper.model.utils import get_account_id_from_principal
 
 from ..model.enums import RuleMode, RuleRisk
 from ..model.rule import Rule
@@ -36,7 +36,7 @@ class S3BucketPolicyPrincipalRule(Rule):
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     for principal in statement.get_principal_list():
-                        account_id = get_account_id_from_iam_arn(principal)
+                        account_id = get_account_id_from_principal(principal)
                         if not account_id:
                             continue
                         if account_id not in valid_principals:
