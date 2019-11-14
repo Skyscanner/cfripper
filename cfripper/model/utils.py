@@ -106,13 +106,13 @@ def get_managed_policy(managed_policy_arn):
     return None
 
 
-def get_account_id_from_arn(arn) -> Optional[str]:
+def get_account_id_from_arn(arn: str) -> Optional[str]:
     match = REGEX_ARN.match(arn)
     if match:
         return match.group(3)
 
 
-def get_account_id_from_iam_arn(arn) -> Optional[str]:
+def get_account_id_from_iam_arn(arn: str) -> Optional[str]:
     match = REGEX_IAM_ARN.match(arn)
     if match:
         return match.group(1)
@@ -121,4 +121,4 @@ def get_account_id_from_iam_arn(arn) -> Optional[str]:
 def get_account_id_from_principal(principal: str) -> Optional[str]:
     if principal.isnumeric():
         return principal
-    return get_account_id_from_arn(principal)
+    return get_account_id_from_iam_arn(principal)
