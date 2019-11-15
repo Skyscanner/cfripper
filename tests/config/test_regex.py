@@ -15,9 +15,11 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.config.regex import (
+    REGEX_ARN,
     REGEX_CONTAINS_STAR,
     REGEX_CROSS_ACCOUNT_ROOT,
     REGEX_FULL_WILDCARD_PRINCIPAL,
+    REGEX_IAM_ARN,
     REGEX_IS_STAR,
     REGEX_WILDCARD_POLICY_ACTION,
 )
@@ -53,6 +55,14 @@ from cfripper.config.regex import (
         (REGEX_IS_STAR, "*abcdef", False),
         (REGEX_IS_STAR, "arn:aws:iam::437628376:not-root", False),
         (REGEX_IS_STAR, "potato", False),
+        (REGEX_ARN, "arn:aws:iam::437628376:not-root", True),
+        (REGEX_ARN, "arn:aws:iam::437628376:root", True),
+        (REGEX_ARN, "arn:aws:s3:::my_corporate_bucket", True),
+        (REGEX_ARN, "potato", False),
+        (REGEX_IAM_ARN, "arn:aws:iam::437628376:not-root", True),
+        (REGEX_IAM_ARN, "arn:aws:iam::437628376:root", True),
+        (REGEX_IAM_ARN, "arn:aws:s3:::my_corporate_bucket", False),
+        (REGEX_IAM_ARN, "potato", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):

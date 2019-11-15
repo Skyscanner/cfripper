@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
+from .whitelist import AWS_ELB_ACCOUNT_IDS
 from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
 from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
 from .whitelist import stack_whitelist as default_stack_whitelist
@@ -94,6 +95,7 @@ class Config:
         aws_account_id=None,
         aws_user_agent=None,
         aws_principals=None,
+        aws_service_accounts=None,
         stack_whitelist=None,
         rule_to_action_whitelist=None,
         rule_to_resource_whitelist=None,
@@ -115,6 +117,7 @@ class Config:
             rule_to_resource_whitelist if rule_to_resource_whitelist is not None else default_rule_to_resource_whitelist
         )
         self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
+        self.aws_service_accounts = aws_service_accounts if aws_service_accounts is not None else AWS_ELB_ACCOUNT_IDS
 
         if self.stack_name:
             whitelisted_rules = self.get_whitelisted_rules()
