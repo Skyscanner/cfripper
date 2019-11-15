@@ -70,7 +70,7 @@ class Boto3Client:
                         f" {self.stack_id} on {self.account_id} - {self.region}"
                     )
             i += 1
-        return stack_content
+        return convert_json_or_yaml_to_dict(stack_content)
 
     def download_template_to_dictionary(self, s3_url):
         """
