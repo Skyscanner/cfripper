@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.2] - 2019-11-19
+### Changed
+- `HardcodedRDSPasswordRule` updated to check for both RDS Clusters and RDS Instances, and reduce false positives on valid instances.
+
 ## [0.10.1] - 2019-11-14
 ## Added
 - New regexes and utility methods to get parts of arns
