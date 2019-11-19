@@ -26,7 +26,7 @@ from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from ..model.enums import RuleMode
-from ..model.principals_checking_rule import PrincipalCheckingRule
+from ..model.principal_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
