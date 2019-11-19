@@ -43,7 +43,9 @@ class CrossAccountTrustRule(Rule):
                     for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                         not_has_account_id
                     ):
-                        if principal not in valid_principals and not principal.endswith(".amazonaws.com"):  # Checks if principal is an AWS service
+                        if principal not in valid_principals and not principal.endswith(
+                            ".amazonaws.com"
+                        ):  # Checks if principal is an AWS service
                             if "GETATT" in principal or "UNDEFINED_" in principal:
                                 self.add_failure(
                                     type(self).__name__,
