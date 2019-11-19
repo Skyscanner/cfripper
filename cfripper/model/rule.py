@@ -13,7 +13,6 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 from abc import ABC, abstractmethod
-from functools import lru_cache
 from typing import Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
@@ -58,11 +57,3 @@ class Rule(ABC):
 
     def add_warning(self, warning):
         self._result.add_warning(warning)
-
-    @lru_cache()
-    def get_valid_principals(self):
-        return {
-            *self._config.aws_service_accounts,
-            *self._config.aws_principals,
-            self._config.aws_account_id,
-        }

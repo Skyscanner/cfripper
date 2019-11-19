@@ -26,12 +26,12 @@ from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from ..model.enums import RuleMode
-from ..model.rule import Rule
+from ..model.principals_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
 
-class GenericWildcardPrincipalRule(Rule):
+class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
@@ -79,6 +79,6 @@ class GenericWildcardPrincipalRule(Rule):
             self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
 
     def should_add_failure(self, logical_id, account_id) -> bool:
-        if account_id in self.get_valid_principals():
+        if account_id in self.valid_principals:
             return False
         return not self.resource_is_whitelisted(logical_id)

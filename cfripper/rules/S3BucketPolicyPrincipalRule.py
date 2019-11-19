@@ -19,12 +19,12 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from cfripper.model.utils import get_account_id_from_principal
 
 from ..model.enums import RuleMode, RuleRisk
-from ..model.rule import Rule
+from ..model.principals_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
 
-class S3BucketPolicyPrincipalRule(Rule):
+class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
     RULE_MODE = RuleMode.BLOCKING
@@ -38,7 +38,7 @@ class S3BucketPolicyPrincipalRule(Rule):
                         account_id = get_account_id_from_principal(principal)
                         if not account_id:
                             continue
-                        if account_id not in self.get_valid_principals():
+                        if account_id not in self.valid_principals:
                             if statement.Condition and statement.Condition.dict():
                                 logger.warning(
                                     f"Not adding {type(self).__name__} failure in {logical_id} "
