@@ -31,11 +31,6 @@ class CrossAccountTrustRule(Rule):
     GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
-        valid_principals = {
-            *self._config.aws_service_accounts,
-            *self._config.aws_principals,
-            self._config.aws_account_id,
-        }
         not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
@@ -50,7 +45,7 @@ class CrossAccountTrustRule(Rule):
                     for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                         not_has_account_id
                     ):
-                        if principal not in valid_principals and not principal.endswith(
+                        if principal not in self.get_valid_principals() and not principal.endswith(
                             ".amazonaws.com"
                         ):  # Checks if principal is an AWS service
                             if "GETATT" in principal or "UNDEFINED_" in principal:

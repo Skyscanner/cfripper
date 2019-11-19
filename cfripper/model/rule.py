@@ -57,3 +57,10 @@ class Rule(ABC):
 
     def add_warning(self, warning):
         self._result.add_warning(warning)
+
+    def get_valid_principals(self):
+        return {
+            *self._config.aws_service_accounts,
+            *self._config.aws_principals,
+            self._config.aws_account_id,
+        }

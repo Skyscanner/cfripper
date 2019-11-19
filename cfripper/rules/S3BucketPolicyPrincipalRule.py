@@ -31,11 +31,6 @@ class S3BucketPolicyPrincipalRule(Rule):
     RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, cfmodel):
-        valid_principals = {
-            *self._config.aws_service_accounts,
-            *self._config.aws_principals,
-            self._config.aws_account_id,
-        }
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
@@ -43,7 +38,7 @@ class S3BucketPolicyPrincipalRule(Rule):
                         account_id = get_account_id_from_principal(principal)
                         if not account_id:
                             continue
-                        if account_id not in valid_principals:
+                        if account_id not in self.get_valid_principals():
                             if statement.Condition and statement.Condition.dict():
                                 logger.warning(
                                     f"Not adding {type(self).__name__} failure in {logical_id} "
