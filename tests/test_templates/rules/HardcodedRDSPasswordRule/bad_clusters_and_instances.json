@@ -1,0 +1,46 @@
+{
+  "Parameters": {
+    "Password": {
+      "Type": "String"
+    },
+    "Password2": {
+      "Type": "String",
+      "NoEcho": "true"
+    },
+    "Password3": {
+      "Type": "String",
+      "NoEcho": "true",
+      "Default": "test"
+    }
+  },
+  "Resources": {
+    "BadDb33": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "MasterUserPassword": {
+          "Ref": "Password"
+        }
+      }
+    },
+    "UnknownDB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "MasterUserPassword": {
+          "Ref": "Password2"
+        }
+      }
+    },
+    "BadCluster99": {
+      "Type": "AWS::RDS::DBCluster",
+      "DeletionPolicy": "Snapshot",
+      "Properties": {
+        "Engine": "aurora-postgresql",
+        "MasterUserPassword": {
+          "Ref": "Password3"
+        }
+      }
+    }
+  }
+}

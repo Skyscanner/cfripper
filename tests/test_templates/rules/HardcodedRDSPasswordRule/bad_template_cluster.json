@@ -1,0 +1,32 @@
+{
+  "Parameters": {
+    "ClusterPW": {
+      "Type": "String"
+    },
+    "Password2": {
+      "Type": "String",
+      "NoEcho": "true"
+    }
+  },
+  "Resources": {
+    "BadCluster1": {
+      "Type": "AWS::RDS::DBCluster",
+      "DeletionPolicy": "Snapshot",
+      "Properties": {
+        "Engine": "aurora-postgresql",
+        "MasterUserPassword": {
+          "Ref": "ClusterPW"
+        }
+      }
+    },
+    "BadDb4": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "MasterUserPassword": {
+          "Ref": "Password2"
+        }
+      }
+    }
+  }
+}

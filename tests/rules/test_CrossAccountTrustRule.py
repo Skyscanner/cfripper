@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from unittest.mock import patch
+
 import pytest
 
 from cfripper.config.config import Config
@@ -161,7 +163,8 @@ def test_non_whitelisted_stacks_are_reported_normally(template_two_roles_dict, e
     assert result.failed_rules == expected_result_two_roles
 
 
-def test_service_is_not_blocked(template_valid_with_service):
+@patch("logging.Logger.warning")
+def test_service_is_not_blocked(mock_logger, template_valid_with_service):
     result = Result()
     rule = CrossAccountTrustRule(Config(), result)
     rule.invoke(template_valid_with_service)
@@ -169,3 +172,7 @@ def test_service_is_not_blocked(template_valid_with_service):
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 0
+
+    mock_logger.assert_called_with(
+        "Not adding CrossAccountTrustRule failure in LambdaRole because no AWS Account ID was found in the config."
+    )
