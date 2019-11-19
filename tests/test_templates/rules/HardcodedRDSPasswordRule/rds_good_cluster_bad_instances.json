@@ -21,6 +21,15 @@
         }
       }
     },
+    "GoodDb77": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "DBClusterIdentifier": {
+          "Ref": "GoodCluster1"
+        }
+      }
+    },
     "BadDb5": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {

@@ -41,7 +41,7 @@ def bad_template_good_clusters_with_bad_instances():
 
 @pytest.fixture()
 def bad_template_clusters_with_bad_instances():
-    return get_cfmodel_from("rules/HardcodedRDSPasswordRule/rds_good_cluster_bad_instances.json").resolve()
+    return get_cfmodel_from("rules/HardcodedRDSPasswordRule/bad_clusters_and_instances.json").resolve()
 
 
 def test_failures_are_raised_for_instances(bad_template_instances):
@@ -99,6 +99,6 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb33."
+    assert result.failed_rules[0].reason == "Default RDS Cluster password parameter or missing NoEcho for BadCluster99."
     assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[1].reason == "Default RDS Cluster password parameter or missing NoEcho for BadCluster99."
+    assert result.failed_rules[1].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb33."
