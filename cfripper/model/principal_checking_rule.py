@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from typing import Set
+
 from cfripper.model.rule import Rule
 
 
@@ -21,7 +23,7 @@ class PrincipalCheckingRule(Rule):
         self._valid_principals = None
 
     @property
-    def valid_principals(self):
+    def valid_principals(self) -> Set[str]:
         if self._valid_principals is None:
             self._valid_principals = {
                 *self._config.aws_service_accounts,
