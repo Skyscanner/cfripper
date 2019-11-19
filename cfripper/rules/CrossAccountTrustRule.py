@@ -12,6 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+import logging
 import re
 
 from pycfmodel.model.resources.iam_role import IAMRole
@@ -19,6 +20,8 @@ from pycfmodel.model.resources.iam_role import IAMRole
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from ..model.enums import RuleGranularity, RuleMode
 from ..model.rule import Rule
+
+logger = logging.getLogger(__file__)
 
 
 class CrossAccountTrustRule(Rule):
@@ -56,3 +59,8 @@ class CrossAccountTrustRule(Rule):
                                     self.REASON.format(logical_id, principal),
                                     resource_ids={logical_id},
                                 )
+                else:
+                    logger.warning(
+                        f"Not adding {type(self).__name__} failure in {logical_id} "
+                        f"because no AWS Account ID was found in the config."
+                    )

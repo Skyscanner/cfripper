@@ -3,10 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [0.10.2] - 2019-11-19
 ### Changed
+- `CrossAccountTrustRule` outputs warning log message if the AWS Account ID is not present in the config.
 - `HardcodedRDSPasswordRule` updated to check for both RDS Clusters and RDS Instances, and reduce false positives on valid instances.
 
 ## [0.10.1] - 2019-11-14
-## Added
+### Added
 - New regexes and utility methods to get parts of arns
 ### Changed
 - `S3CrossAccountTrustRule` and `S3BucketPolicyPrincipalRule` won't trigger if the principal comes from one of the AWS ELB service account ids
