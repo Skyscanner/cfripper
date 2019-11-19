@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [0.10.2] - 2019-11-19
 ### Changed
 - `CrossAccountTrustRule` outputs warning log message if the AWS Account ID is not present in the config.
+- `HardcodedRDSPasswordRule` updated to check for both RDS Clusters and RDS Instances, and reduce false positives on valid instances.
 
 ## [0.10.1] - 2019-11-14
 ### Added
