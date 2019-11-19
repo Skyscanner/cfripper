@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
-from .whitelist import AWS_ELB_ACCOUNT_IDS, AWS_ELASTICACHE_CANONICAL_IDS
+from .whitelist import AWS_ELASTICACHE_CANONICAL_IDS, AWS_ELB_ACCOUNT_IDS
 from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
 from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
 from .whitelist import stack_whitelist as default_stack_whitelist
@@ -117,7 +117,7 @@ class Config:
             rule_to_resource_whitelist if rule_to_resource_whitelist is not None else default_rule_to_resource_whitelist
         )
         self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
-        if aws_service_accounts is not None:
+        if aws_service_accounts is None:
             self.aws_service_accounts = {
                 "elb": AWS_ELB_ACCOUNT_IDS,
                 "elasticache": AWS_ELASTICACHE_CANONICAL_IDS,
