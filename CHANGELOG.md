@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.2] - 2019-11-XX
+### Changed
+- `CrossAccountTrustRule`, `GenericWildcardPrincipalRule`, `S3BucketPolicyPrincipalRule`, `S3BucketPolicyPrincipalRule` and `S3CrossAccountTrustRule` now check the account against a list.
+  The list is composed of AWS service accounts, configured AWS principals and the account id where the event came from.
+
 ## [0.10.1] - 2019-11-14
 ## Added
 - New regexes and utility methods to get parts of arns
