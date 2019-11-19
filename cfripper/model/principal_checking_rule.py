@@ -20,12 +20,21 @@ class PrincipalCheckingRule(Rule):
         super().__init__(*args, **kwargs)
         self._valid_principals = None
 
+    def get_whitelist_from_config(self, services=None):
+        if services is None:
+            services = self._config.aws_service_accounts.keys()
+
+        unique_list = set()
+        for service in services:
+            unique_list.add(self._config.aws_service_accounts[service])
+        return unique_list
+
     @property
     def valid_principals(self):
         if self._valid_principals is None:
             self._valid_principals = {
-                *self._config.aws_service_accounts,
                 *self._config.aws_principals,
-                self._config.aws_account_id,
+                self._config.aws_account_id,cfripper/model/principal_checking_rule.py
+                *self.get_whitelist_from_config()
             }
         return self._valid_principals

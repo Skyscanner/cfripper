@@ -130,3 +130,11 @@ AWS_ELB_ACCOUNT_IDS = [
     "897822967062",  # Elastic Load Balancing Account ID - eu-north-1
     "985666609251",  # Elastic Load Balancing Account ID - ca-central-1
 ]
+
+
+AWS_ELASTICACHE_CANONICAL_IDS = [
+    # From https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html
+    "b14d6a125bdf69854ed8ef2e71d8a20b7c490f252229b806e514966e490b8d83",  # China (Beijing) and China (Ningxia) Regions
+    "40fa568277ad703bd160f66ae4f83fc9dfdfd06c2f1b5060ca22442ac3ef8be6",  # AWS GovCloud (US-West) Region
+    "540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353",  # All other AWS Regions
+]
