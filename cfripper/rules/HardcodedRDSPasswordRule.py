@@ -19,13 +19,41 @@ from ..model.rule import Rule
 
 class HardcodedRDSPasswordRule(Rule):
 
-    REASON = "Default RDS password parameter or missing NoEcho for {}."
+    REASON = "Default RDS {} password parameter or missing NoEcho for {}."
 
     def invoke(self, cfmodel):
+        password_protected_cluster_ids = []
+        instances_to_check = []
+
         for logical_id, resource in cfmodel.Resources.items():
+            # flag insecure RDS Clusters.
             if (
-                resource.Type == "AWS::RDS::DBInstance"
+                resource.Type == "AWS::RDS::DBCluster"
                 and resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
                 != Parameter.NO_ECHO_NO_DEFAULT
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format("Cluster", logical_id))
+                continue
+
+            # keep track of secure RDS Clusters.
+            if resource.Type == "AWS::RDS::DBCluster":
+                password_protected_cluster_ids.append(logical_id)
+                continue
+
+            # keep track of RDS instances so they can be examined in the code below.
+            if resource.Type == "AWS::RDS::DBInstance":
+                instances_to_check.append((logical_id, resource))
+
+        # check each instance with the context of clusters.
+        for logical_id, resource in instances_to_check:
+            if resource.Properties.get("DBClusterIdentifier") and any(
+                clutser_id in resource.Properties.get("DBClusterIdentifier")
+                for clutser_id in password_protected_cluster_ids
+            ):
+                continue
+
+            if (
+                resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
+                != Parameter.NO_ECHO_NO_DEFAULT
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format("Instance", logical_id))

@@ -1,0 +1,29 @@
+{
+  "Parameters": {
+    "GoodClusterPW": {
+      "Type": "String",
+      "NoEcho": "true"
+    }
+  },
+  "Resources": {
+    "GoodCluster1": {
+      "Type": "AWS::RDS::DBCluster",
+      "DeletionPolicy": "Snapshot",
+      "Properties": {
+        "Engine": "aurora-postgresql",
+        "MasterUserPassword": {
+          "Ref": "GoodClusterPW"
+        }
+      }
+    },
+    "DontCareDB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "SourceDBInstanceIdentifier": "sampleDbInstance",
+        "DBClusterIdentifier": {
+          "Ref": "GoodCluster1"
+        }
+      }
+    }
+  }
+}
