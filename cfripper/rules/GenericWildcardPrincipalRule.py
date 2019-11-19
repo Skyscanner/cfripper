@@ -41,6 +41,7 @@ class GenericWildcardPrincipalRule(Rule):
     FULL_REGEX = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$")
 
     def invoke(self, cfmodel):
+        self.valid_principals = {*self._config.aws_service_accounts, *self._config.aws_principals}
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, KMSKey):
                 self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy)
@@ -79,8 +80,6 @@ class GenericWildcardPrincipalRule(Rule):
             self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
 
     def should_add_failure(self, logical_id, account_id) -> bool:
-        if not self._config.aws_principals:
-            return False
-        elif account_id in self._config.aws_principals:
+        if account_id in self.valid_principals:
             return False
         return not self.resource_is_whitelisted(logical_id)
