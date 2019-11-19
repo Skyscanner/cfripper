@@ -28,7 +28,11 @@ class CrossAccountTrustRule(Rule):
     GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
-        valid_principals = {*self._config.aws_service_accounts, *self._config.aws_principals}
+        valid_principals = {
+            *self._config.aws_service_accounts,
+            *self._config.aws_principals,
+            self._config.aws_account_id,
+        }
         not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):

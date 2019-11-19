@@ -29,7 +29,11 @@ class S3CrossAccountTrustRule(Rule):
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
 
     def invoke(self, cfmodel):
-        valid_principals = {*self._config.aws_service_accounts, *self._config.aws_principals}
+        valid_principals = {
+            *self._config.aws_service_accounts,
+            *self._config.aws_principals,
+            self._config.aws_account_id,
+        }
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():

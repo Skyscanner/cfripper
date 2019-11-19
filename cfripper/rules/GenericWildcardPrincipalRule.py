@@ -41,7 +41,11 @@ class GenericWildcardPrincipalRule(Rule):
     FULL_REGEX = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$")
 
     def invoke(self, cfmodel):
-        self.valid_principals = {*self._config.aws_service_accounts, *self._config.aws_principals}
+        self.valid_principals = {
+            *self._config.aws_service_accounts,
+            *self._config.aws_principals,
+            self._config.aws_account_id,
+        }
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, KMSKey):
                 self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy)
