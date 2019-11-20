@@ -32,47 +32,6 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
     GRANULARITY = RuleGranularity.RESOURCE
 
-    def invoke_old(self, cfmodel):
-        not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, IAMRole):
-
-                self._detect_cross_account_root_principals(logical_id, resource)
-
-                if self._config.aws_account_id:
-                    for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
-                        not_has_account_id
-                    ):
-                        if principal not in self.valid_principals and not principal.endswith(
-                            ".amazonaws.com"
-                        ):  # Checks if principal is an AWS service
-                            if "GETATT" in principal or "UNDEFINED_" in principal:
-                                self.add_failure(
-                                    type(self).__name__,
-                                    self.REASON.format(logical_id, principal),
-                                    resource_ids={logical_id},
-                                    rule_mode=RuleMode.DEBUG,
-                                )
-                            else:
-                                self.add_failure(
-                                    type(self).__name__,
-                                    self.REASON.format(logical_id, principal),
-                                    resource_ids={logical_id},
-                                )
-                else:
-                    logger.warning(
-                        f"Not adding {type(self).__name__} failure in {logical_id} "
-                        f"because no AWS Account ID was found in the config."
-                    )
-
-    def _detect_cross_account_root_principals(self, logical_id, resource):
-        for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(self.ROOT_PATTERN):
-            account_id = get_account_id_from_principal(principal)
-            if account_id not in self.valid_principals:
-                self.add_failure(
-                    type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
-                )
-
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
