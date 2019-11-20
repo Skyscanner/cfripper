@@ -26,9 +26,8 @@ from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
+from cfripper.model.enums import RuleMode, RuleRisk
 from cfripper.rules.base_rules import PrincipalCheckingRule
-
-from ..model.enums import RuleMode, RuleRisk
 
 logger = logging.getLogger(__file__)
 
