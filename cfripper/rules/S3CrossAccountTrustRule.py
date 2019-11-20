@@ -19,12 +19,12 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from cfripper.model.enums import RuleMode
 from cfripper.model.utils import get_account_id_from_principal
 
-from ..model.rule import Rule
+from ..model.principal_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
 
-class S3CrossAccountTrustRule(Rule):
+class S3CrossAccountTrustRule(PrincipalCheckingRule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
 
@@ -38,7 +38,7 @@ class S3CrossAccountTrustRule(Rule):
                             if account_id in self._config.aws_service_accounts:
                                 # It's ok to allow access to AWS service accounts
                                 continue
-                            if self._config.aws_account_id != account_id:
+                            if account_id not in self.valid_principals:
                                 if statement.Condition and statement.Condition.dict():
                                     logger.warning(
                                         f"Not adding {type(self).__name__} failure in {logical_id} "

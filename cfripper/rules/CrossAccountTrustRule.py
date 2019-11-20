@@ -19,12 +19,12 @@ from pycfmodel.model.resources.iam_role import IAMRole
 
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from ..model.enums import RuleGranularity, RuleMode
-from ..model.rule import Rule
+from ..model.principal_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
 
-class CrossAccountTrustRule(Rule):
+class CrossAccountTrustRule(PrincipalCheckingRule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
@@ -45,7 +45,9 @@ class CrossAccountTrustRule(Rule):
                     for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
                         not_has_account_id
                     ):
-                        if not principal.endswith(".amazonaws.com"):  # Checks if principal is an AWS service
+                        if principal not in self.valid_principals and not principal.endswith(
+                            ".amazonaws.com"
+                        ):  # Checks if principal is an AWS service
                             if "GETATT" in principal or "UNDEFINED_" in principal:
                                 self.add_failure(
                                     type(self).__name__,
