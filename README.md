@@ -40,7 +40,7 @@ Be sure to also add them in the `scripts` dictionary with their name, service na
 
 ## Custom Rules
 
-To add custom rules first extend the [Rule](cfripper/model/rule_processor.py) class. Then implement the `invoke` method by adding your logic.
+To add custom rules first extend the [Rule](cfripper/rule_processor.py) class. Then implement the `invoke` method by adding your logic.
 
 CFripper uses [pycfmodel](https://github.com/Skyscanner/pycfmodel) to create a Python model of the CloudFormation script. This model is passed to the `invoke` function as the `resources` parameter. You can use the model's iterate through the resources and other objects of the model and use the helper functions to perform various checks. Look at the [current rules](cfripper/rules) for examples.
 

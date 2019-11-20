@@ -16,8 +16,8 @@ import pytest
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper.config.config import Config
-from cfripper.model.principal_checking_rule import PrincipalCheckingRule
 from cfripper.model.result import Result
+from cfripper.rules.base_rules import PrincipalCheckingRule
 
 
 class FakePrincipalCheckingRule(PrincipalCheckingRule):

@@ -17,52 +17,22 @@ import re
 
 from pycfmodel.model.resources.iam_role import IAMRole
 
+from cfripper.rules.base_rules import CrossAccountCheckingRule
+
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from ..model.enums import RuleGranularity, RuleMode
-from ..model.principal_checking_rule import PrincipalCheckingRule
+from ..model.enums import RuleGranularity
 
 logger = logging.getLogger(__file__)
 
 
-class CrossAccountTrustRule(PrincipalCheckingRule):
+class CrossAccountTrustRule(CrossAccountCheckingRule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
     GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
-        not_has_account_id = re.compile(rf"^((?!{self._config.aws_account_id}).)*$")
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
-                for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
-                    self.ROOT_PATTERN
-                ):
-                    self.add_failure(
-                        type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
-                    )
-
-                if self._config.aws_account_id:
-                    for principal in resource.Properties.AssumeRolePolicyDocument.allowed_principals_with(
-                        not_has_account_id
-                    ):
-                        if principal not in self.valid_principals and not principal.endswith(
-                            ".amazonaws.com"
-                        ):  # Checks if principal is an AWS service
-                            if "GETATT" in principal or "UNDEFINED_" in principal:
-                                self.add_failure(
-                                    type(self).__name__,
-                                    self.REASON.format(logical_id, principal),
-                                    resource_ids={logical_id},
-                                    rule_mode=RuleMode.DEBUG,
-                                )
-                            else:
-                                self.add_failure(
-                                    type(self).__name__,
-                                    self.REASON.format(logical_id, principal),
-                                    resource_ids={logical_id},
-                                )
-                else:
-                    logger.warning(
-                        f"Not adding {type(self).__name__} failure in {logical_id} "
-                        f"because no AWS Account ID was found in the config."
-                    )
+                for statement in resource.Properties.AssumeRolePolicyDocument._statement_as_list():
+                    self._do_statement_check(logical_id, statement)

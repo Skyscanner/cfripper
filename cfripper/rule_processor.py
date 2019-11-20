@@ -16,9 +16,9 @@ import logging
 import re
 from typing import List
 
-from ..config.config import Config
-from .enums import RuleGranularity, RuleMode
-from .result import Failure, Result
+from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.result import Failure, Result
 
 logger = logging.getLogger(__file__)
 

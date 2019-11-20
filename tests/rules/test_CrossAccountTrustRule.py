@@ -19,7 +19,7 @@ import pytest
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
-from cfripper.model.rule_processor import RuleProcessor
+from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
 from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
@@ -45,7 +45,10 @@ def expected_result_two_roles():
     return [
         Failure(
             rule="CrossAccountTrustRule",
-            reason="RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
+            reason=(
+                "RootRoleOne has forbidden cross-account trust relationship with "
+                "arn:aws:iam::999999999:role/someuser@bla.com"
+            ),
             rule_mode=RuleMode.BLOCKING,
             risk_value=RuleRisk.MEDIUM,
             resource_ids={"RootRoleOne"},
@@ -54,25 +57,10 @@ def expected_result_two_roles():
         ),
         Failure(
             rule="CrossAccountTrustRule",
-            reason="RootRoleOne has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
-            rule_mode=RuleMode.BLOCKING,
-            risk_value=RuleRisk.MEDIUM,
-            resource_ids={"RootRoleOne"},
-            actions=set(),
-            granularity=RuleGranularity.RESOURCE,
-        ),
-        Failure(
-            rule="CrossAccountTrustRule",
-            reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
-            rule_mode=RuleMode.BLOCKING,
-            risk_value=RuleRisk.MEDIUM,
-            resource_ids={"RootRoleTwo"},
-            actions=set(),
-            granularity=RuleGranularity.RESOURCE,
-        ),
-        Failure(
-            rule="CrossAccountTrustRule",
-            reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+            reason=(
+                "RootRoleTwo has forbidden cross-account trust relationship with "
+                "arn:aws:iam::999999999:role/someuser@bla.com"
+            ),
             rule_mode=RuleMode.BLOCKING,
             risk_value=RuleRisk.MEDIUM,
             resource_ids={"RootRoleTwo"},
@@ -89,15 +77,6 @@ def test_report_format_is_the_one_expected(template_one_role):
 
     assert not result.valid
     assert result.failed_rules == [
-        Failure(
-            rule="CrossAccountTrustRule",
-            reason="RootRole has forbidden cross-account trust relationship with arn:aws:iam::123456789:root",
-            rule_mode=RuleMode.BLOCKING,
-            risk_value=RuleRisk.MEDIUM,
-            resource_ids={"RootRole"},
-            actions=set(),
-            granularity=RuleGranularity.RESOURCE,
-        ),
         Failure(
             rule="CrossAccountTrustRule",
             reason=(
@@ -128,7 +107,7 @@ def test_resource_whitelisting_works_as_expected(template_two_roles_dict, expect
     processor.process_cf_template(template_two_roles_dict, mock_config, result)
 
     assert not result.valid
-    assert result.failed_rules == expected_result_two_roles[-2:]
+    assert result.failed_rules[0] == expected_result_two_roles[-1]
 
 
 def test_whitelisted_stacks_do_not_report_anything(template_two_roles_dict):
@@ -175,4 +154,18 @@ def test_service_is_not_blocked(mock_logger, template_valid_with_service):
 
     mock_logger.assert_called_with(
         "Not adding CrossAccountTrustRule failure in LambdaRole because no AWS Account ID was found in the config."
+    )
+
+
+def test_org_accounts_cause_cross_account_issues(template_one_role):
+    result = Result()
+    rule = CrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    rule.invoke(template_one_role)
+
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    failed_rule = result.failed_rules[0]
+    assert failed_rule.reason == (
+        "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com"
     )
