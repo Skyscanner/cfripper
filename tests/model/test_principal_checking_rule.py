@@ -65,7 +65,7 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
         ),
         (
             FakePrincipalCheckingRule(config=Config(aws_service_accounts=None), result=Result()),
-            ["elasticache", "elb"],
+            ["elb_logs_account_ids", "elasticache_backup_canonical_ids"],
             {
                 "009996457667",
                 "027434742980",
