@@ -13,13 +13,13 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
+from typing import Set
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleMode
 from cfripper.model.utils import get_account_id_from_principal
-
-from ..model.principal_checking_rule import PrincipalCheckingRule
+from cfripper.rules.base_rules import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 
@@ -27,6 +27,15 @@ logger = logging.getLogger(__file__)
 class S3CrossAccountTrustRule(PrincipalCheckingRule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
+
+    @property
+    def valid_principals(self) -> Set[str]:
+        if self._valid_principals is None:
+            self._valid_principals = {
+                self._config.aws_account_id,
+                *self._get_whitelist_from_config(),
+            }
+        return self._valid_principals
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():

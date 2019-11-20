@@ -17,9 +17,9 @@ import logging
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.utils import get_account_id_from_principal
+from cfripper.rules.base_rules import PrincipalCheckingRule
 
 from ..model.enums import RuleMode, RuleRisk
-from ..model.principal_checking_rule import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
 

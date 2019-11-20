@@ -18,9 +18,7 @@ from cfripper.model.rule import Rule
 
 
 class PrincipalCheckingRule(Rule):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._valid_principals = None
+    _valid_principals = None
 
     def _get_whitelist_from_config(self, services: List[str] = None) -> Set[str]:
         if services is None:
