@@ -17,11 +17,10 @@ import re
 
 from pycfmodel.model.resources.iam_role import IAMRole
 
-from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import CrossAccountCheckingRule
 
 from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from ..model.enums import RuleGranularity, RuleMode
+from ..model.enums import RuleGranularity
 
 logger = logging.getLogger(__file__)
 
