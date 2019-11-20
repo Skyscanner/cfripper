@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.10.2] - 2019-11-20
 ### Added
-- Added `PrincipalCheckingRule`, it has a property called `valid_principals`. It's a list with all allowed principals. 
+- Added `PrincipalCheckingRule`, it has a property called `valid_principals`. It's a list with all allowed principals. This list can be customized using `_get_whitelist_from_config()`.
 ### Changed
 - `CrossAccountTrustRule` outputs warning log message if the AWS Account ID is not present in the config.
 - `HardcodedRDSPasswordRule` updated to check for both RDS Clusters and RDS Instances, and reduce false positives on valid instances.
