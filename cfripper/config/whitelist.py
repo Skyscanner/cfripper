@@ -104,7 +104,7 @@ rule_to_action_whitelist = {
 rule_to_action_whitelist = {}
 
 
-AWS_ELB_ACCOUNT_IDS = [
+AWS_ELB_LOGS_ACCOUNT_IDS = [
     # From https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html
     "009996457667",  # Elastic Load Balancing Account ID - eu-west-3
     "027434742980",  # Elastic Load Balancing Account ID - us-west-1
@@ -132,7 +132,7 @@ AWS_ELB_ACCOUNT_IDS = [
 ]
 
 
-AWS_ELASTICACHE_CANONICAL_IDS = [
+AWS_ELASTICACHE_BACKUP_CANONICAL_IDS = [
     # From https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html
     "b14d6a125bdf69854ed8ef2e71d8a20b7c490f252229b806e514966e490b8d83",  # China (Beijing) and China (Ningxia) Regions
     "40fa568277ad703bd160f66ae4f83fc9dfdfd06c2f1b5060ca22442ac3ef8be6",  # AWS GovCloud (US-West) Region
