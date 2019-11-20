@@ -97,7 +97,7 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
         ),
         (
             FakePrincipalCheckingRule(config=Config(aws_service_accounts=None), result=Result()),
-            ["elasticache"],
+            ["elasticache_backup_canonical_ids"],
             {
                 "40fa568277ad703bd160f66ae4f83fc9dfdfd06c2f1b5060ca22442ac3ef8be6",
                 "540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353",
