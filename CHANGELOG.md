@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [0.10.2] - 2019-11-20
 ### Added
 - Added `PrincipalCheckingRule`, it has a property called `valid_principals`. It's a list with all allowed principals. This list can be customized using `_get_whitelist_from_config()`.
+- Added `AWS_ELASTICACHE_BACKUP_CANONICAL_IDS` which contains the aws canonical ids used for backups.
 ### Changed
 - `CrossAccountTrustRule` outputs warning log message if the AWS Account ID is not present in the config.
 - `HardcodedRDSPasswordRule` updated to check for both RDS Clusters and RDS Instances, and reduce false positives on valid instances.
 - `CrossAccountTrustRule`, `GenericWildcardPrincipalRule`, `S3BucketPolicyPrincipalRule`, `S3BucketPolicyPrincipalRule` and `S3CrossAccountTrustRule` now check the account against a list.
   The list is composed of AWS service accounts, configured AWS principals and the account id where the event came from.
+- Rename `AWS_ELB_ACCOUNT_IDS` to `AWS_ELB_LOGS_ACCOUNT_IDS`
 
 ## [0.10.1] - 2019-11-14
 ### Added
