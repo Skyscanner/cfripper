@@ -35,9 +35,6 @@ class S3CrossAccountTrustRule(PrincipalCheckingRule):
                     if statement.Effect == "Allow":
                         for principal in statement.get_principal_list():
                             account_id = get_account_id_from_principal(principal)
-                            if account_id in self._config.aws_service_accounts:
-                                # It's ok to allow access to AWS service accounts
-                                continue
                             if account_id not in self.valid_principals:
                                 if statement.Condition and statement.Condition.dict():
                                     logger.warning(
