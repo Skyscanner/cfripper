@@ -20,7 +20,7 @@ from pytest import fixture
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
-from cfripper.model.rule_processor import RuleProcessor
+from cfripper.rule_processor import RuleProcessor
 from tests.utils import get_fixture_json
 
 
@@ -138,7 +138,7 @@ def test_remove_failures_from_whitelisted_resources_uses_whitelist(mock_rule_to_
     ]
 
 
-@patch("cfripper.model.rule_processor.logger.warning")
+@patch("cfripper.rule_processor.logger.warning")
 def test_remove_failures_from_whitelisted_resources_failure_no_resources_is_removed(
     mock_logger, mock_rule_to_resource_whitelist
 ):
@@ -326,7 +326,7 @@ def test_remove_failures_from_whitelisted_actions_uses_whitelist(mock_rule_to_ac
     ]
 
 
-@patch("cfripper.model.rule_processor.logger.warning")
+@patch("cfripper.rule_processor.logger.warning")
 def test_remove_failures_from_whitelisted_actions_failure_no_actions_is_removed(
     mock_logger, mock_rule_to_action_whitelist
 ):
