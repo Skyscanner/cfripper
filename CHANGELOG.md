@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.10.2] - 2019-11-19
+## [0.10.2] - 2019-11-20
 ### Added
 - Added `PrincipalCheckingRule`, it has a property called `valid_principals`. It's a list with all allowed principals. 
 ### Changed
