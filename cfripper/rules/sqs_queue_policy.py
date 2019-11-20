@@ -17,10 +17,24 @@ import re
 
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-from ..model.enums import RuleRisk
+from cfripper.model.enums import RuleRisk
+
+from ..model.enums import RuleMode
 from ..model.rule import Rule
 
 logger = logging.getLogger(__file__)
+
+
+class SQSQueuePolicyNotPrincipalRule(Rule):
+    REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
+    RULE_MODE = RuleMode.MONITOR
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, SQSQueuePolicy):
+                for statement in resource.Properties.PolicyDocument._statement_as_list():
+                    if statement.NotPrincipal:
+                        self.add_failure(type(self).__name__, self.REASON.format(logical_id))
 
 
 class SQSQueuePolicyPublicRule(Rule):
@@ -42,3 +56,15 @@ class SQSQueuePolicyPublicRule(Rule):
                             )
                         else:
                             self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+
+
+class SQSQueuePolicyWildcardActionRule(Rule):
+
+    REASON = "SQS Queue policy {} should not allow * action"
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
+                re.compile(r"^(\w*:){0,1}\*$")
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

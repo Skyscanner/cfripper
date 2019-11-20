@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.SQSQueuePolicyWildcardActionRule import SQSQueuePolicyWildcardActionRule
+from cfripper.rules.sqs_queue_policy import SQSQueuePolicyWildcardActionRule
 from tests.utils import get_cfmodel_from
 
 

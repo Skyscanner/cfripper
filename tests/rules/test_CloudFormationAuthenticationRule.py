@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.CloudFormationAuthenticationRule import CloudFormationAuthenticationRule
+from cfripper.rules.cloudformation_authentication import CloudFormationAuthenticationRule
 from tests.utils import get_cfmodel_from
 
 

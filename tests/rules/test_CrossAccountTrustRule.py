@@ -21,7 +21,7 @@ from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
-from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
+from cfripper.rules.cross_account_trust import CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
 
 

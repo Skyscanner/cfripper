@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.SecurityGroupOpenToWorldRule import SecurityGroupOpenToWorldRule
+from cfripper.rules import SecurityGroupOpenToWorldRule
 from tests.utils import get_cfmodel_from
 
 

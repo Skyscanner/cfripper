@@ -16,7 +16,7 @@ import pytest
 
 from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
-from cfripper.rules.S3BucketPublicReadAclAndListStatementRule import S3BucketPublicReadAclAndListStatementRule
+from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule
 from tests.utils import get_cfmodel_from
 
 

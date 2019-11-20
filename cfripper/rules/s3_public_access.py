@@ -17,6 +17,8 @@ import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
+from cfripper.model.enums import RuleRisk
+
 from ..model.enums import RuleMode
 from ..model.rule import Rule
 
@@ -39,3 +41,17 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
                     self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+
+
+class S3BucketPublicReadWriteAclRule(Rule):
+    REASON = "S3 Bucket {} should not have a public read-write acl"
+    RISK_VALUE = RuleRisk.HIGH
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if (
+                resource.Type == "AWS::S3::Bucket"
+                and hasattr(resource, "Properties")
+                and resource.Properties.get("AccessControl") == "PublicReadWrite"
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

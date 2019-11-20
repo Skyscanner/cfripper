@@ -16,7 +16,7 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.model.result import Result
-from cfripper.rules.GenericWildcardPrincipalRule import GenericWildcardPrincipalRule
+from cfripper.rules.wildcard_principals import GenericWildcardPrincipalRule
 from tests.utils import get_cfmodel_from
 
 

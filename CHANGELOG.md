@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.11.0] - 2019-11-20
 ### Breaking changes
-- Moved some files from model to rules, renamed rules to match pythonic style
+- Moved some files from model to rules, renamed rules to match pythonic style. Moved tons of classes around
 ### Fixes
 - Fix a regression that caused `S3CrossAccountTrustRule` and `CrossAccountTrustRule` not to alert whenever 
 cross-account permissions are found within the allowed list of aws accounts.
