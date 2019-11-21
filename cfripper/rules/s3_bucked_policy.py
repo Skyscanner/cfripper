@@ -13,13 +13,14 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
+import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
+from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.rule import Rule
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
-
-from ..model.enums import RuleMode, RuleRisk
 
 logger = logging.getLogger(__file__)
 
@@ -46,3 +47,15 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
                                 )
                             else:
                                 self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))
+
+
+class S3BucketPolicyWildcardActionRule(Rule):
+    REASON = "S3 Bucket policy {} should not allow * action"
+    REGEX = re.compile(r"^(\w*:){0,1}\*$")
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, S3BucketPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
+                self.REGEX
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

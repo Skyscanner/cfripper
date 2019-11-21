@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.resources.iam_role import IAMRole
 
-from ..config.regex import REGEX_IS_STAR
+from ..config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
 from ..model.rule import Rule
 
 
@@ -52,3 +52,27 @@ class IAMRolesOverprivilegedRule(Rule):
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
                                 )
+
+
+class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
+
+    REASON = "IAM role {} should not allow * action on its permissions policy {}"
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, IAMRole):
+                for policy in resource.Properties.Policies:
+                    if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
+                        self.add_failure(type(self).__name__, self.REASON.format(logical_id, policy.PolicyName))
+
+
+class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
+
+    REASON = "IAM role {} should not allow * action on its trust policy"
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, IAMRole) and resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(
+                REGEX_WILDCARD_POLICY_ACTION
+            ):
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

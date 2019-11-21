@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.HardcodedRDSPasswordRule import HardcodedRDSPasswordRule
+from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from tests.utils import get_cfmodel_from
 
 

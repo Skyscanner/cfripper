@@ -13,8 +13,10 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.resources.security_group import SecurityGroup
+from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
 
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 
 class SecurityGroupOpenToWorldRule(Rule):
@@ -31,3 +33,28 @@ class SecurityGroupOpenToWorldRule(Rule):
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
                                 self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))
+
+
+class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, SecurityGroupIngress) and (
+                resource.ipv4_slash_zero() or resource.ipv6_slash_zero()
+            ):
+                for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
+                    if str(port) not in self._config.allowed_world_open_ports:
+                        self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))
+
+
+class SecurityGroupMissingEgressRule(Rule):
+
+    REASON = (
+        "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "
+        "configuration"
+    )
+    RULE_MODE = RuleMode.MONITOR
+
+    def invoke(self, cfmodel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id))

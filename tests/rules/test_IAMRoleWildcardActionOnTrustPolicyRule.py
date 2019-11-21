@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.IAMRoleWildcardActionOnTrustPolicyRule import IAMRoleWildcardActionOnTrustPolicyRule
+from cfripper.rules.iam_roles import IAMRoleWildcardActionOnTrustPolicyRule
 from tests.utils import get_cfmodel_from
 
 

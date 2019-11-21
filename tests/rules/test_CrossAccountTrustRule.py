@@ -12,8 +12,6 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from unittest.mock import patch
-
 import pytest
 
 from cfripper.config.config import Config
@@ -21,7 +19,7 @@ from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
-from cfripper.rules.CrossAccountTrustRule import CrossAccountTrustRule
+from cfripper.rules.cross_account_trust import CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
 
 
@@ -38,6 +36,11 @@ def template_two_roles_dict():
 @pytest.fixture()
 def template_valid_with_service():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_service.json").resolve()
+
+
+@pytest.fixture()
+def template_valid_with_canonical_id():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_canonical_id.json").resolve()
 
 
 @pytest.fixture()
@@ -142,8 +145,7 @@ def test_non_whitelisted_stacks_are_reported_normally(template_two_roles_dict, e
     assert result.failed_rules == expected_result_two_roles
 
 
-@patch("logging.Logger.warning")
-def test_service_is_not_blocked(mock_logger, template_valid_with_service):
+def test_service_is_not_blocked(template_valid_with_service):
     result = Result()
     rule = CrossAccountTrustRule(Config(), result)
     rule.invoke(template_valid_with_service)
@@ -152,9 +154,15 @@ def test_service_is_not_blocked(mock_logger, template_valid_with_service):
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 0
 
-    mock_logger.assert_called_with(
-        "Not adding CrossAccountTrustRule failure in LambdaRole because no AWS Account ID was found in the config."
-    )
+
+def test_canonical_id_is_not_blocked(template_valid_with_canonical_id):
+    result = Result()
+    rule = CrossAccountTrustRule(Config(), result)
+    rule.invoke(template_valid_with_canonical_id)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
 
 
 def test_org_accounts_cause_cross_account_issues(template_one_role):

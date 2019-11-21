@@ -15,9 +15,7 @@ specific language governing permissions and limitations under the License.
 import logging
 from typing import List, Set
 
-from cfripper.model.enums import RuleMode
 from cfripper.model.rule import Rule
-from cfripper.model.utils import get_account_id_from_principal
 
 logger = logging.getLogger(__file__)
 
@@ -44,41 +42,3 @@ class PrincipalCheckingRule(Rule):
             if self._config.aws_account_id:
                 self._valid_principals.add(self._config.aws_account_id)
         return self._valid_principals
-
-
-class CrossAccountCheckingRule(PrincipalCheckingRule):
-    @property
-    def valid_principals(self) -> Set[str]:
-        if self._valid_principals is None:
-            self._valid_principals = self._get_whitelist_from_config()
-            if self._config.aws_account_id:
-                self._valid_principals.add(self._config.aws_account_id)
-        return self._valid_principals
-
-    def _do_statement_check(self, logical_id, statement):
-
-        if statement.Effect == "Allow":
-            for principal in statement.get_principal_list():
-                account_id = get_account_id_from_principal(principal)
-                if account_id not in self.valid_principals:
-                    if statement.Condition and statement.Condition.dict():
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} "
-                            f"because there are conditions: {statement.Condition}"
-                        )
-                    elif not self._config.aws_account_id:
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} "
-                            f"because no AWS Account ID was found in the config."
-                        )
-                    elif "GETATT" in principal or "UNDEFINED_" in principal:
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(logical_id, principal),
-                            rule_mode=RuleMode.DEBUG,
-                            resource_ids={logical_id},
-                        )
-                    else:
-                        self.add_failure(
-                            type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
-                        )

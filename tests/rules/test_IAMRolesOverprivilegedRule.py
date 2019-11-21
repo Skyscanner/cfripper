@@ -16,7 +16,7 @@ import pytest
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper.model.result import Result
-from cfripper.rules.IAMRolesOverprivilegedRule import IAMRolesOverprivilegedRule
+from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule
 from tests.utils import get_cfmodel_from
 
 

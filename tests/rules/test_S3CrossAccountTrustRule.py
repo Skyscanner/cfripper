@@ -16,7 +16,7 @@ from pytest import fixture
 
 from cfripper.config.config import Config
 from cfripper.model.result import Result
-from cfripper.rules.S3CrossAccountTrustRule import S3CrossAccountTrustRule
+from cfripper.rules import S3CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
 
 

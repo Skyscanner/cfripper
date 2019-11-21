@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.result import Result
-from cfripper.rules.S3BucketPolicyWildcardActionRule import S3BucketPolicyWildcardActionRule
+from cfripper.rules.s3_bucked_policy import S3BucketPolicyWildcardActionRule
 from tests.utils import get_cfmodel_from
 
 

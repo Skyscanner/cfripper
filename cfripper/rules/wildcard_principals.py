@@ -25,9 +25,9 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
+from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
+from cfripper.model.enums import RuleMode, RuleRisk
 from cfripper.rules.base_rules import PrincipalCheckingRule
-
-from ..model.enums import RuleMode
 
 logger = logging.getLogger(__file__)
 
@@ -83,3 +83,28 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         if account_id in self.valid_principals:
             return False
         return not self.resource_is_whitelisted(logical_id)
+
+
+class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
+
+    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
+
+    RULE_MODE = RuleMode.MONITOR
+    RISK_VALUE = RuleRisk.MEDIUM
+    """
+    Will catch:
+
+    - Principal: arn:aws:iam:12345:12345*
+
+    """
+    FULL_REGEX = re.compile(r"^arn:aws:iam::.*:(.*\*|root)$")
+
+
+class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
+
+    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
+
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.HIGH
+
+    FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

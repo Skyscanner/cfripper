@@ -16,7 +16,7 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.model.result import Result
-from cfripper.rules.EBSVolumeHasSSERule import EBSVolumeHasSSERule
+from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
 from tests.utils import get_cfmodel_from
 
 

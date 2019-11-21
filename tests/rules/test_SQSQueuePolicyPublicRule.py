@@ -16,7 +16,7 @@ import pytest
 
 from cfripper.model.enums import RuleRisk
 from cfripper.model.result import Result
-from cfripper.rules.SQSQueuePolicyPublicRule import SQSQueuePolicyPublicRule
+from cfripper.rules import SQSQueuePolicyPublicRule
 from tests.utils import get_cfmodel_from
 
 
