@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 - Fix a regression that caused `S3CrossAccountTrustRule` and `CrossAccountTrustRule` not to alert whenever 
 cross-account permissions are found within the allowed list of aws accounts.
+- `CrossAccountTrustRule` wrongly say that AWS canonical ids and services were a cross-account relationship.
 
 ## [0.10.2] - 2019-11-20
 ### Added

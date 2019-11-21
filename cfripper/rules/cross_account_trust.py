@@ -42,7 +42,14 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
         if statement.Effect == "Allow":
             for principal in statement.get_principal_list():
                 account_id = get_account_id_from_principal(principal)
-                if account_id not in self.valid_principals:
+                if (
+                    # checks if principal is a canonical id and is whitelisted
+                    principal not in self.valid_principals
+                    # if it wasn't a canonical id and contains a valid account id
+                    and account_id not in self.valid_principals
+                    # if principal is an AWS service
+                    and not principal.endswith(".amazonaws.com")
+                ):
                     if statement.Condition and statement.Condition.dict():
                         logger.warning(
                             f"Not adding {type(self).__name__} failure in {logical_id} "
