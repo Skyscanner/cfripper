@@ -19,7 +19,8 @@ from ..model.rule import Rule
 
 class HardcodedRDSPasswordRule(Rule):
 
-    REASON = "Default RDS {} password parameter or missing NoEcho for {}."
+    REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) {}."
+    REASON_MISSING_NOECHO = "RDS {} password parameter missing NoEcho for {}."
 
     def invoke(self, cfmodel):
         password_protected_cluster_ids = []
@@ -27,21 +28,13 @@ class HardcodedRDSPasswordRule(Rule):
 
         for logical_id, resource in cfmodel.Resources.items():
             # flag insecure RDS Clusters.
-            if (
-                resource.Type == "AWS::RDS::DBCluster"
-                and resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
-                != Parameter.NO_ECHO_NO_DEFAULT
-            ):
-                self.add_failure(type(self).__name__, self.REASON.format("Cluster", logical_id))
-                continue
-
-            # keep track of secure RDS Clusters.
             if resource.Type == "AWS::RDS::DBCluster":
-                password_protected_cluster_ids.append(logical_id)
-                continue
+                failure_added = self._failure_added(logical_id, resource)
+                if not failure_added:
+                    password_protected_cluster_ids.append(logical_id)
 
             # keep track of RDS instances so they can be examined in the code below.
-            if resource.Type == "AWS::RDS::DBInstance":
+            elif resource.Type == "AWS::RDS::DBInstance":
                 instances_to_check.append((logical_id, resource))
 
         # check each instance with the context of clusters.
@@ -52,8 +45,16 @@ class HardcodedRDSPasswordRule(Rule):
             ):
                 continue
 
-            if (
-                resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
-                != Parameter.NO_ECHO_NO_DEFAULT
-            ):
-                self.add_failure(type(self).__name__, self.REASON.format("Instance", logical_id))
+            self._failure_added(logical_id, resource)
+
+    def _failure_added(self, logical_id, resource) -> bool:
+        master_user_password = resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
+        resource_type = resource.Type.replace("AWS::RDS::DB", "")
+        if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
+            self.add_failure(type(self).__name__, self.REASON_DEFAULT.format(resource_type, logical_id))
+            return True
+        elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE,):
+            self.add_failure(type(self).__name__, self.REASON_MISSING_NOECHO.format(resource_type, logical_id))
+            return True
+
+        return False
