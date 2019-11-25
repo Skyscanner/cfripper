@@ -1,17 +1,17 @@
 import argparse
+import json
 import logging
 import os
+
 import pycfmodel
-import json
 
-from cfripper.config.logger import setup_logging
-from cfripper.model.utils import convert_json_or_yaml_to_dict
-from cfripper.model.result import Result
 from cfripper.config.config import Config
-from cfripper.rules import DEFAULT_RULES
-from cfripper.model.rule_processor import RuleProcessor
+from cfripper.config.logger import setup_logging
 from cfripper.main import perform_logging
-
+from cfripper.model.result import Result
+from cfripper.model.rule_processor import RuleProcessor
+from cfripper.model.utils import convert_json_or_yaml_to_dict
+from cfripper.rules import DEFAULT_RULES
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--template", help="The cloudformation template in JSON or YAML format")
