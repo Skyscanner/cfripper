@@ -55,10 +55,13 @@ def run():
 
     valid_info = result.valid
     reasons_info = ",\n".join(["{}-{}".format(r.rule, r.reason) for r in result.failed_rules])
-    failed_rules_info = [f"{failure.serializable()}\n" for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)]
+    failed_rules_info = [
+        f"{failure.serializable()}\n" for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)
+    ]
     exceptions_info = [f"{x.args[0]}\n" for x in result.exceptions]
     warnings_info = [
-        f"{failure.serializable()}\n" for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
+        f"{failure.serializable()}\n"
+        for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
     ]
     logger.info(
         (
