@@ -19,7 +19,7 @@ from ..model.rule import Rule
 
 class HardcodedRDSPasswordRule(Rule):
 
-    REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) {}."
+    REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) for {}."
     REASON_MISSING_NOECHO = "RDS {} password parameter missing NoEcho for {}."
 
     def invoke(self, cfmodel):
@@ -53,7 +53,7 @@ class HardcodedRDSPasswordRule(Rule):
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
             self.add_failure(type(self).__name__, self.REASON_DEFAULT.format(resource_type, logical_id))
             return True
-        elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE,):
+        elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
             self.add_failure(type(self).__name__, self.REASON_MISSING_NOECHO.format(resource_type, logical_id))
             return True
 
