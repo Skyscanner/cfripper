@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 import os
 
@@ -38,12 +37,12 @@ region = os.environ["AWS_REGION"]
 
 #  Process Rules
 config = Config(
-        project_name=repo_name,
-        service_name=service_name,
-        stack_name=f"{service_type}-{service_name}-service",
-        rules=DEFAULT_RULES.keys(),
-        aws_region=region,
-    )
+    project_name=repo_name,
+    service_name=service_name,
+    stack_name=f"{service_type}-{service_name}-service",
+    rules=DEFAULT_RULES.keys(),
+    aws_region=region,
+)
 logger.info("Scan started for: {}; {}; {};".format(config.project_name, config.service_name, config.stack_name))
 
 rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
@@ -58,13 +57,15 @@ reasons_info = ",".join(["{}-{}".format(r.rule, r.reason) for r in result.failed
 failed_rules_info = [failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)]
 exceptions_info = [x.args[0] for x in result.exceptions]
 warnings_info = [
-            failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
-        ]
-logger.info((
-            f"\nTemplate Scan Results:\n"
-            f"Valid: {valid_info}\n"
-            f"Reasons: {reasons_info}\n"
-            f"Failed Rules: {failed_rules_info}\n"
-            f"Exceptions: {exceptions_info}\n"
-            f"Warnings: {warnings_info}"
-            ))
+    failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
+]
+logger.info(
+    (
+        f"\nTemplate Scan Results:\n"
+        f"Valid: {valid_info}\n"
+        f"Reasons: {reasons_info}\n"
+        f"Failed Rules: {failed_rules_info}\n"
+        f"Exceptions: {exceptions_info}\n"
+        f"Warnings: {warnings_info}"
+    )
+)
