@@ -1,0 +1,23 @@
+name: Linting and Testing
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7"
+          architecture: "x64"
+      - name: Installing dependencies
+        run: make install-dev
+      - name: Static Code Analysis
+        run: make lint coverage
+      - name: Running test
+        run: make test

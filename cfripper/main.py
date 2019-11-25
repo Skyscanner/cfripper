@@ -36,7 +36,7 @@ def log_results(project_name, service_name, stack_name, rules, _type, warnings, 
     )
 
 
-def perform_logging(result, config, event):
+def perform_logging(result, config, event={}):
     if not result.valid:
         log_results(
             "Failed rules",

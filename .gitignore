@@ -10,6 +10,7 @@ venv
 .DS_Store
 .project
 .pydevproject
+.history
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -5,10 +5,10 @@ clean:
 	rm -rf package
 
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 install-dev: install
-	pip install -e ".[dev]"
+	pip3 install -e ".[dev]"
 
 format:
 	isort --recursive .
