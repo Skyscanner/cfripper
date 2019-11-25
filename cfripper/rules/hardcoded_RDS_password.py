@@ -14,12 +14,14 @@ specific language governing permissions and limitations under the License.
 """
 from pycfmodel.model.parameter import Parameter
 
+from ..model.enums import RuleMode
 from ..model.rule import Rule
 
 
 class HardcodedRDSPasswordRule(Rule):
 
     REASON = "Default RDS {} password parameter or missing NoEcho for {}."
+    RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel):
         password_protected_cluster_ids = []

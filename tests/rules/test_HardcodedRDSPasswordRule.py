@@ -49,13 +49,19 @@ def test_failures_are_raised_for_instances(bad_template_instances):
     rule = HardcodedRDSPasswordRule(None, result)
     rule.invoke(bad_template_instances)
 
-    assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb3."
-    assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[1].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb5."
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 2
+    assert result.failed_monitored_rules[0].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[0].reason
+        == "Default RDS Instance password parameter or missing NoEcho for BadDb3."
+    )
+    assert result.failed_monitored_rules[1].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[1].reason
+        == "Default RDS Instance password parameter or missing NoEcho for BadDb5."
+    )
 
 
 def test_failures_are_raised_for_clusters(bad_template_clusters):
@@ -63,11 +69,14 @@ def test_failures_are_raised_for_clusters(bad_template_clusters):
     rule = HardcodedRDSPasswordRule(None, result)
     rule.invoke(bad_template_clusters)
 
-    assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "Default RDS Cluster password parameter or missing NoEcho for BadCluster1."
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 1
+    assert result.failed_monitored_rules[0].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[0].reason
+        == "Default RDS Cluster password parameter or missing NoEcho for BadCluster1."
+    )
 
 
 def test_passed_cluster_pw_protected(good_template_clusters_and_instances):
@@ -83,11 +92,14 @@ def test_failures_are_raised_for_instances_without_protected_clusters(bad_templa
     rule = HardcodedRDSPasswordRule(None, result)
     rule.invoke(bad_template_good_clusters_with_bad_instances)
 
-    assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb5."
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 1
+    assert result.failed_monitored_rules[0].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[0].reason
+        == "Default RDS Instance password parameter or missing NoEcho for BadDb5."
+    )
 
 
 def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clusters_with_bad_instances):
@@ -95,10 +107,16 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
     rule = HardcodedRDSPasswordRule(None, result)
     rule.invoke(bad_template_clusters_with_bad_instances)
 
-    assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "Default RDS Cluster password parameter or missing NoEcho for BadCluster99."
-    assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[1].reason == "Default RDS Instance password parameter or missing NoEcho for BadDb33."
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 2
+    assert result.failed_monitored_rules[0].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[0].reason
+        == "Default RDS Cluster password parameter or missing NoEcho for BadCluster99."
+    )
+    assert result.failed_monitored_rules[1].rule == "HardcodedRDSPasswordRule"
+    assert (
+        result.failed_monitored_rules[1].reason
+        == "Default RDS Instance password parameter or missing NoEcho for BadDb33."
+    )
