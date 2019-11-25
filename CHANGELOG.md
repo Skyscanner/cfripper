@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.11.1] - 2019-11-25
+### Changed
+- `HardcodedRDSPasswordRule` now reports two different messages when there is a missing echo or a readable password.
+### Fixes
+- `HardcodedRDSPasswordRule` was wrongly adding an error when a value is provided.
+
 ## [0.11.0] - 2019-11-20
 ### Breaking changes
 - Moved some files from model to rules, renamed rules to match pythonic style. Moved tons of classes around
