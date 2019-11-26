@@ -4,13 +4,13 @@ import os
 
 import pycfmodel
 
-from cfripper.config.config import Config
-from cfripper.config.logger import setup_logging
-from cfripper.main import perform_logging
-from cfripper.model.result import Result
-from cfripper.model.rule_processor import RuleProcessor
-from cfripper.model.utils import convert_json_or_yaml_to_dict
-from cfripper.rules import DEFAULT_RULES
+from .config.config import Config
+from .config.logger import setup_logging
+from .main import perform_logging
+from .model.result import Result
+from .model.rule_processor import RuleProcessor
+from .model.utils import convert_json_or_yaml_to_dict
+from .rules import DEFAULT_RULES
 
 
 def run():
@@ -29,7 +29,7 @@ def run():
         # In case of an invalid template
         result.add_exception(TypeError(f"Malformed Template - could not parse!! Template: {str(templateInput)}"))
         logger.exception(f"Malformed Template - could not parse!! Template: {str(templateInput)}")
-        quit()
+        exit(1)
 
     repo_name = os.environ["REPO_NAME"]
     service_name = os.environ["SERVICE_NAME"]
@@ -53,7 +53,6 @@ def run():
     processor.process_cf_template(cfmodel, config, result)
     perform_logging(result, config)
 
-    valid_info = result.valid
     reasons_info = ",\n".join(["{}-{}".format(r.rule, r.reason) for r in result.failed_rules])
     failed_rules_info = [
         f"{failure.serializable()}\n" for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)
@@ -66,10 +65,14 @@ def run():
     logger.info(
         (
             f"\nTemplate Scan Results:\n"
-            f"Valid: {valid_info}\n"
+            f"Valid: {result.valid}\n"
             f"Reasons: {reasons_info}\n"
             f"Failed Rules: {failed_rules_info}\n"
             f"Exceptions: {exceptions_info}\n"
             f"Warnings: {warnings_info}"
         )
     )
+    if not result.valid:
+        exit(1)
+    else:
+        exit(0)
