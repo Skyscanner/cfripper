@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.11.2] - 2019-11-26
+### Fixes
+- Fix `get_template` when AWS doesn't return a dict.
+
 ## [0.11.1] - 2019-11-25
 ### Changed
 - `HardcodedRDSPasswordRule` now reports two different messages when there is a missing echo or a readable password.
