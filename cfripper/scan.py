@@ -15,7 +15,7 @@ from .rules import DEFAULT_RULES
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--template", help="The cloudformation template in JSON or YAML format")
+    parser.add_argument("--template", help="The cloudformation template in JSON or YAML format", required=True)
     arguments = parser.parse_args()
 
     templateInput = arguments.template
@@ -31,14 +31,13 @@ def run():
         logger.exception(f"Malformed Template - could not parse!! Template: {str(templateInput)}")
         exit(1)
 
-    repo_name = os.environ["REPO_NAME"]
     service_name = os.environ["SERVICE_NAME"]
     service_type = os.environ["SERVICE_TYPE"]
     region = os.environ["AWS_REGION"]
 
     #  Process Rules
     config = Config(
-        project_name=repo_name,
+        project_name=service_name,
         service_name=service_name,
         stack_name=f"{service_type}-{service_name}-service",
         rules=DEFAULT_RULES.keys(),
