@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 import logging
 from datetime import datetime
 from time import sleep
+from typing import Dict, Optional
 
 import boto3
 from botocore.exceptions import ClientError
@@ -47,7 +48,7 @@ class Boto3Client:
         self.region = region
         self.stack_id = stack_id
 
-    def get_template(self):
+    def get_template(self) -> Optional[Dict]:
         client = self.session.client("cloudformation", region_name=self.region)
         stack_content = None
         i = 0
@@ -70,7 +71,7 @@ class Boto3Client:
                         f" {self.stack_id} on {self.account_id} - {self.region}"
                     )
             i += 1
-        return stack_content
+        return convert_json_or_yaml_to_dict(stack_content) if isinstance(stack_content, str) else stack_content
 
     def download_template_to_dictionary(self, s3_url):
         """

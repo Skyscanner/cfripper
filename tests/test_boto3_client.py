@@ -43,9 +43,11 @@ def boto3_client():
 @pytest.mark.parametrize(
     "aws_responses, expected_template",
     [
-        (["nice template"], "nice template"),
+        ([{"A": "a"}], {"A": "a"}),
         ([DUMMY_CLIENT_ERROR] * 10, None),
-        ([DUMMY_CLIENT_ERROR, "nice template"], "nice template"),
+        ([DUMMY_CLIENT_ERROR, {"A": "a"}], {"A": "a"}),
+        (["{\"A\": \"a\"}"], {"A": "a"}),
+        (["A: a"], {"A": "a"}),
     ],
 )
 def test_get_template(aws_responses, expected_template, boto3_client):
