@@ -46,7 +46,7 @@ def boto3_client():
         ([{"A": "a"}], {"A": "a"}),
         ([DUMMY_CLIENT_ERROR] * 10, None),
         ([DUMMY_CLIENT_ERROR, {"A": "a"}], {"A": "a"}),
-        (["{\"A\": \"a\"}"], {"A": "a"}),
+        (['{"A": "a"}'], {"A": "a"}),
         (["A: a"], {"A": "a"}),
     ],
 )
