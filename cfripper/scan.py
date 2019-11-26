@@ -72,7 +72,7 @@ def run():
             f"Warnings: {warnings_info}"
         )
     )
-    if(not result.valid):
+    if not result.valid:
         exit(1)
     else:
         exit(0)
