@@ -8,8 +8,8 @@ from .config.config import Config
 from .config.logger import setup_logging
 from .main import perform_logging
 from .model.result import Result
-from .model.rule_processor import RuleProcessor
 from .model.utils import convert_json_or_yaml_to_dict
+from .rule_processor import RuleProcessor
 from .rules import DEFAULT_RULES
 
 
