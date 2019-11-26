@@ -71,6 +71,9 @@ class Boto3Client:
                         f" {self.stack_id} on {self.account_id} - {self.region}"
                     )
             i += 1
+        # Fix when AWS doesn't return a dict
+        # https://github.com/boto/botocore/issues/1058
+        # https://github.com/boto/boto3/issues/1468
         return convert_json_or_yaml_to_dict(stack_content) if isinstance(stack_content, str) else stack_content
 
     def download_template_to_dictionary(self, s3_url):
