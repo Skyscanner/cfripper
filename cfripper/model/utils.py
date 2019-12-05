@@ -74,7 +74,24 @@ def extract_bucket_name_and_path_from_url(url):
     return bucket_name, path
 
 
+def replace_tabs(content: str, new_chars: str = "  ") -> str:
+    """
+    Substitute tabs of content variable for new_chars value
+    :param content: string to clean of tabs `\t`
+    :param new_chars: value to put in place of a tab. Default: two spaces
+    :return: the clean string
+    """
+    return content.replace("\t", new_chars)
+
+
 def convert_json_or_yaml_to_dict(file_content):
+    # BEGIN OF FIX
+    # Details at: https://github.com/awslabs/aws-cfn-template-flip/issues/87
+    if isinstance(file_content, bytes):
+        file_content = file_content.decode("utf-8")
+    file_content = replace_tabs(file_content)
+    # END OF FIX
+
     with suppress(ValueError):
         return json.loads(file_content)
 

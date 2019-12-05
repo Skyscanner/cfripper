@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  TestParam:
+    Description: Test param
+    AllowedValues:
+      - a	
+      - b	
+    Default: a
+    Type: "String"
+Resources:
+  EC2Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: describe-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - ec2:Describe*
+              Resource: "*"
