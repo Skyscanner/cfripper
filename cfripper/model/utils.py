@@ -86,7 +86,10 @@ def replace_tabs(content: str, new_chars: str = "  ") -> str:
 
 def convert_json_or_yaml_to_dict(file_content):
     # BEGIN OF FIX
-    # Details at: https://github.com/awslabs/aws-cfn-template-flip/issues/87
+    # AWS Cloudformation service accepts YML templates that contain tab characters. This is not compliant.
+    # But CFRipper is going to accept those templates because are also accepted by Cloudformation service.
+    # Solution: Substitute tabs for spaces till is not considered a valid template by Cloudformation service.
+    # More details at: https://github.com/awslabs/aws-cfn-template-flip/issues/87
     if isinstance(file_content, bytes):
         file_content = file_content.decode("utf-8")
     file_content = replace_tabs(file_content)
