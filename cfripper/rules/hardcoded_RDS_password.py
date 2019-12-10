@@ -40,8 +40,8 @@ class HardcodedRDSPasswordRule(Rule):
         # check each instance with the context of clusters.
         for logical_id, resource in instances_to_check:
             if resource.Properties.get("DBClusterIdentifier") and any(
-                clutser_id in resource.Properties.get("DBClusterIdentifier")
-                for clutser_id in password_protected_cluster_ids
+                cluster_id in resource.Properties.get("DBClusterIdentifier")
+                for cluster_id in password_protected_cluster_ids
             ):
                 continue
 
