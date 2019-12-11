@@ -15,6 +15,15 @@ dev_requires = [
     "moto==1.3.13",
 ]
 
+docs_requires = [
+    "ansi2html==1.5.2",
+    "mkdocs==1.0.4",
+    "pygments==2.5.2",
+    "mkdocs-exclude==1.0.2",
+    "mkdocs-material==4.5.1",
+    "markdown-include==0.5.1",
+]
+
 setup(
     name="cfripper",
     version="0.11.1",
@@ -29,5 +38,8 @@ setup(
     python_requires=">=3.7",
     install_requires=install_requires,
     tests_require=dev_requires,
-    extras_require={"dev": dev_requires},
+    extras_require={
+        "dev": dev_requires,
+        "docs": docs_requires,
+    },
 )
