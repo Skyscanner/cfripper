@@ -34,13 +34,10 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
     description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
-    packages=find_packages(exclude=('docs', 'tests')),
+    packages=find_packages(exclude=("docs", "tests")),
     platforms="any",
     python_requires=">=3.7",
     install_requires=install_requires,
     tests_require=dev_requires,
-    extras_require={
-        "dev": dev_requires,
-        "docs": docs_requires,
-    },
+    extras_require={"dev": dev_requires, "docs": docs_requires,},
 )

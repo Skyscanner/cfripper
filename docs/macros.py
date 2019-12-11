@@ -1,4 +1,5 @@
 import inspect
+
 from cfripper import rules
 
 
@@ -10,7 +11,7 @@ def define_env(env):
         for _, klass in rules_inspection:
             doc = inspect.getdoc(klass)
             # Remove ABCMeta default docstring
-            if not doc.startswith('Helper class that'):
+            if not doc.startswith("Helper class that"):
                 results.append((klass.__name__, doc))
             else:
                 results.append((klass.__name__, None))
