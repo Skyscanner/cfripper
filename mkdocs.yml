@@ -1,7 +1,7 @@
 site_name: CFRipper
 site_description: "Lambda function to \"rip apart\" a CloudFormation template and check it for security compliance."
 strict: true
-site_url: https://readthedocs.org/projects/cfripper/
+site_url: https://cfripper.readthedocs.io
 
 theme:
   name: 'material'
