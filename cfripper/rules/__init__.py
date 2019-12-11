@@ -12,41 +12,41 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from cfripper.rules.cloudformation_authentication import *  # noqa
-from cfripper.rules.cross_account_trust import *  # noqa
-from cfripper.rules.ebs_volume_has_sse import *  # noqa
-from cfripper.rules.hardcoded_RDS_password import *  # noqa
-from cfripper.rules.iam_managed_policy_wildcard_action import *  # noqa
-from cfripper.rules.iam_roles import *  # noqa
-from cfripper.rules.kms_key_wildcard_principal import *  # noqa
-from cfripper.rules.managed_policy_on_user import *  # noqa
-from cfripper.rules.policy_on_user import *  # noqa
-from cfripper.rules.privilege_escalation import *  # noqa
-from cfripper.rules.s3_bucked_policy import *  # noqa
-from cfripper.rules.s3_public_access import *  # noqa
-from cfripper.rules.security_group import *  # noqa
-from cfripper.rules.sns_topic_policy_not_principal import *  # noqa
-from cfripper.rules.sqs_queue_policy import *  # noqa
-from cfripper.rules.wildcard_principals import *  # noqa
+from cfripper.rules.cloudformation_authentication import *  # noqa: F403
+from cfripper.rules.cross_account_trust import *  # noqa: F403
+from cfripper.rules.ebs_volume_has_sse import *  # noqa: F403
+from cfripper.rules.hardcoded_RDS_password import *  # noqa: F403
+from cfripper.rules.iam_managed_policy_wildcard_action import *  # noqa: F403
+from cfripper.rules.iam_roles import *  # noqa: F403
+from cfripper.rules.kms_key_wildcard_principal import *  # noqa: F403
+from cfripper.rules.managed_policy_on_user import *  # noqa: F403
+from cfripper.rules.policy_on_user import *  # noqa: F403
+from cfripper.rules.privilege_escalation import *  # noqa: F403
+from cfripper.rules.s3_bucked_policy import *  # noqa: F403
+from cfripper.rules.s3_public_access import *  # noqa: F403
+from cfripper.rules.security_group import *  # noqa: F403
+from cfripper.rules.sns_topic_policy_not_principal import *  # noqa: F403
+from cfripper.rules.sqs_queue_policy import *  # noqa: F403
+from cfripper.rules.wildcard_principals import *  # noqa: F403
 
 DEFAULT_RULES = {
-    "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
-    "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,
-    "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,
-    "SecurityGroupIngressOpenToWorld": SecurityGroupIngressOpenToWorld,
-    "ManagedPolicyOnUserRule": ManagedPolicyOnUserRule,
-    "PolicyOnUserRule": PolicyOnUserRule,
-    "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,
-    "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
-    "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
-    "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
-    "PrivilegeEscalationRule": PrivilegeEscalationRule,
-    "CrossAccountTrustRule": CrossAccountTrustRule,
-    "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
-    "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
-    "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
-    "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
-    "KMSKeyWildcardPrincipal": KMSKeyWildcardPrincipal,
-    "FullWildcardPrincipal": FullWildcardPrincipalRule,
-    "PartialWildcardPrincipal": PartialWildcardPrincipalRule,
+    "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,  # noqa: F405
+    "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,  # noqa: F405
+    "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,  # noqa: F405
+    "SecurityGroupIngressOpenToWorld": SecurityGroupIngressOpenToWorld,  # noqa: F405
+    "ManagedPolicyOnUserRule": ManagedPolicyOnUserRule,  # noqa: F405
+    "PolicyOnUserRule": PolicyOnUserRule,  # noqa: F405
+    "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,  # noqa: F405
+    "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,  # noqa: F405
+    "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,  # noqa: F405
+    "EBSVolumeHasSSERule": EBSVolumeHasSSERule,  # noqa: F405
+    "PrivilegeEscalationRule": PrivilegeEscalationRule,  # noqa: F405
+    "CrossAccountTrustRule": CrossAccountTrustRule,  # noqa: F405
+    "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,  # noqa: F405
+    "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,  # noqa: F405
+    "S3CrossAccountTrustRule": S3CrossAccountTrustRule,  # noqa: F405
+    "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,  # noqa: F405
+    "KMSKeyWildcardPrincipal": KMSKeyWildcardPrincipal,  # noqa: F405
+    "FullWildcardPrincipal": FullWildcardPrincipalRule,  # noqa: F405
+    "PartialWildcardPrincipal": PartialWildcardPrincipalRule,  # noqa: F405
 }
