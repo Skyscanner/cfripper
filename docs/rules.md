@@ -1,9 +1,10 @@
 ## Available Rules
 {% for rule in cfripper_rules()-%}
 {% if rule.1 -%}
-* {{ rule.0 }}: {{ rule.1 }}
+#### {{ rule.0 }}
+{{ rule.1 }}
 {% else -%}
-* {{ rule.0 }}
+#### {{ rule.0 }}
 {% endif -%}
 {% endfor %}
 
