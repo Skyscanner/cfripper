@@ -12,25 +12,22 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from cfripper.rules.cross_account_trust import S3CrossAccountTrustRule
-from cfripper.rules.s3_public_access import S3BucketPublicReadWriteAclRule
-from cfripper.rules.security_group import SecurityGroupOpenToWorldRule
-from cfripper.rules.sqs_queue_policy import SQSQueuePolicyPublicRule
-
-from .cross_account_trust import CrossAccountTrustRule
-from .ebs_volume_has_sse import EBSVolumeHasSSERule
-from .hardcoded_RDS_password import HardcodedRDSPasswordRule
-from .iam_roles import IAMRolesOverprivilegedRule
-from .kms_key_wildcard_principal import KMSKeyWildcardPrincipal
-from .managed_policy_on_user import ManagedPolicyOnUserRule
-from .policy_on_user import PolicyOnUserRule
-from .privilege_escalation import PrivilegeEscalationRule
-from .s3_bucked_policy import S3BucketPolicyPrincipalRule
-from .s3_public_access import S3BucketPublicReadAclAndListStatementRule
-from .security_group import SecurityGroupIngressOpenToWorld
-from .sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
-from .sqs_queue_policy import SQSQueuePolicyNotPrincipalRule
-from .wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
+from cfripper.rules.cloudformation_authentication import *
+from cfripper.rules.cross_account_trust import *
+from cfripper.rules.ebs_volume_has_sse import *
+from cfripper.rules.hardcoded_RDS_password import *
+from cfripper.rules.iam_managed_policy_wildcard_action import *
+from cfripper.rules.iam_roles import *
+from cfripper.rules.kms_key_wildcard_principal import *
+from cfripper.rules.managed_policy_on_user import *
+from cfripper.rules.policy_on_user import *
+from cfripper.rules.privilege_escalation import *
+from cfripper.rules.s3_bucked_policy import *
+from cfripper.rules.s3_public_access import *
+from cfripper.rules.security_group import *
+from cfripper.rules.sns_topic_policy_not_principal import *
+from cfripper.rules.sqs_queue_policy import *
+from cfripper.rules.wildcard_principals import *
 
 DEFAULT_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,

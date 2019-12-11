@@ -17,11 +17,12 @@ dev_requires = [
 
 docs_requires = [
     "ansi2html==1.5.2",
+    "markdown-include==0.5.1",
+    "mkdocs-exclude==1.0.2",
+    "mkdocs-macros-plugin",
+    "mkdocs-material==4.5.1",
     "mkdocs==1.0.4",
     "pygments==2.5.2",
-    "mkdocs-exclude==1.0.2",
-    "mkdocs-material==4.5.1",
-    "markdown-include==0.5.1",
 ]
 
 setup(
@@ -33,7 +34,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
     description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
-    packages=find_packages(),
+    packages=find_packages(exclude=('docs', 'tests')),
     platforms="any",
     python_requires=">=3.7",
     install_requires=install_requires,

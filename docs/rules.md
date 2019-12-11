@@ -1,33 +1,11 @@
 ## Available Rules
-
-* CloudFormationAuthenticationRule
-* CrossAccountCheckingRule
-* CrossAccountTrustRule
-* EBSVolumeHasSSERule
-* FullWildcardPrincipalRule
-* GenericWildcardPrincipalRule
-* HardcodedRDSPasswordRule
-* IAMManagedPolicyWildcardActionRule
-* IAMRolesOverprivilegedRule
-* IAMRoleWildcardActionOnPermissionsPolicyRule
-* IAMRoleWildcardActionOnTrustPolicyRule
-* KMSKeyWildcardPrincipal
-* ManagedPolicyOnUserRule
-* PartialWildcardPrincipalRule
-* PolicyOnUserRule
-* PrivilegeEscalationRule
-* S3BucketPolicyPrincipalRule
-* S3BucketPolicyWildcardActionRule
-* S3BucketPublicReadAclAndListStatementRule
-* S3BucketPublicReadWriteAclRule
-* S3CrossAccountTrustRule
-* SecurityGroupIngressOpenToWorld
-* SecurityGroupMissingEgressRule
-* SecurityGroupOpenToWorldRule
-* SNSTopicPolicyNotPrincipalRule
-* SQSQueuePolicyNotPrincipalRule
-* SQSQueuePolicyPublicRule
-* SQSQueuePolicyWildcardActionRule
+{% for rule in cfripper_rules()-%}
+{% if rule.1 -%}
+* {{ rule.0 }}: {{ rule.1 }}
+{% else -%}
+* {{ rule.0 }}
+{% endif -%}
+{% endfor %}
 
 
 ## Custom Rules
