@@ -12,22 +12,22 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from cfripper.rules.cloudformation_authentication import *          # noqa
-from cfripper.rules.cross_account_trust import *            # noqa
-from cfripper.rules.ebs_volume_has_sse import *         # noqa
-from cfripper.rules.hardcoded_RDS_password import *         # noqa
-from cfripper.rules.iam_managed_policy_wildcard_action import *         # noqa
-from cfripper.rules.iam_roles import *          # noqa
-from cfripper.rules.kms_key_wildcard_principal import *         # noqa
-from cfripper.rules.managed_policy_on_user import *         # noqa
-from cfripper.rules.policy_on_user import *         # noqa
-from cfripper.rules.privilege_escalation import *           # noqa
-from cfripper.rules.s3_bucked_policy import *           # noqa
-from cfripper.rules.s3_public_access import *           # noqa
-from cfripper.rules.security_group import *         # noqa
-from cfripper.rules.sns_topic_policy_not_principal import *         # noqa
-from cfripper.rules.sqs_queue_policy import *           # noqa
-from cfripper.rules.wildcard_principals import *            # noqa
+from cfripper.rules.cloudformation_authentication import *  # noqa
+from cfripper.rules.cross_account_trust import *  # noqa
+from cfripper.rules.ebs_volume_has_sse import *  # noqa
+from cfripper.rules.hardcoded_RDS_password import *  # noqa
+from cfripper.rules.iam_managed_policy_wildcard_action import *  # noqa
+from cfripper.rules.iam_roles import *  # noqa
+from cfripper.rules.kms_key_wildcard_principal import *  # noqa
+from cfripper.rules.managed_policy_on_user import *  # noqa
+from cfripper.rules.policy_on_user import *  # noqa
+from cfripper.rules.privilege_escalation import *  # noqa
+from cfripper.rules.s3_bucked_policy import *  # noqa
+from cfripper.rules.s3_public_access import *  # noqa
+from cfripper.rules.security_group import *  # noqa
+from cfripper.rules.sns_topic_policy_not_principal import *  # noqa
+from cfripper.rules.sqs_queue_policy import *  # noqa
+from cfripper.rules.wildcard_principals import *  # noqa
 
 DEFAULT_RULES = {
     "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
