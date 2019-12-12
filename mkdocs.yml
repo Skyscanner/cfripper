@@ -1,0 +1,36 @@
+site_name: CFRipper
+site_description: "Lambda function to \"rip apart\" a CloudFormation template and check it for security compliance."
+strict: true
+site_url: https://cfripper.readthedocs.io
+
+theme:
+  name: 'material'
+  logo: 'img/logo.png'
+
+repo_name: Skyscanner/cfripper
+repo_url: https://github.com/Skyscanner/cfripper
+
+nav:
+  - Home: index.md
+  - Rules: rules.md
+  - Contributing: contributing.md
+  - Code of conduct: code_of_conduct.md
+
+markdown_extensions:
+  - codehilite
+  - toc:
+      permalink: true
+
+plugins:
+    - search
+    - macros:
+        module_name: docs.macros
+
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/Skyscanner'
+    - type: 'twitter'
+      link: 'https://twitter.com/skyscannereng'
+    - type: 'linkedin'
+      link: 'https://www.linkedin.com/company/skyscanner/'
