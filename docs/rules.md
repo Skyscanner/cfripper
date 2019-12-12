@@ -15,7 +15,7 @@ To add custom rules first extend the [Rule](https://github.com/Skyscanner/cfripp
 {{ inline_source('cfripper.model.rule.Rule.invoke') }}
 
 CFripper uses [pycfmodel](https://github.com/Skyscanner/pycfmodel) to create a Python model of the CloudFormation script.
- This model is passed to the `invoke` function as the `resources` parameter. You can use the model's iterate through the
+ This model is passed to the `invoke` function as the `cfmodel` parameter. You can use the model's iterate through the
  resources and other objects of the model and use the helper functions to perform various checks. Look at the
  [current rules](cfripper/rules) for examples.
 
