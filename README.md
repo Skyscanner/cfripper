@@ -7,4 +7,4 @@
 
 Library designed to be used as part of a Lambda function to "rip apart" a CloudFormation template and check it for security compliance.
 
-Docs available in https://cfripper.readthedocs.io/en/stable/
+Docs available in https://cfripper.readthedocs.io/
