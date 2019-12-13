@@ -25,7 +25,7 @@ from cfripper.model.rule import Rule
 
 class IAMRolesOverprivilegedRule(Rule):
     """
-    Rule that checks for wildcards in policies and restrics managed policies
+    Rule that checks for wildcards in resources for a set of actions and restricts managed policies
     """
 
     def invoke(self, cfmodel):
