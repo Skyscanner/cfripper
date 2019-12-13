@@ -16,11 +16,14 @@ __all__ = ["PolicyOnUserRule"]
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 
 class PolicyOnUserRule(Rule):
+    """
+    Rule that checks for IAM policies attached directly to users
+    """
 
     REASON = "IAM policy {} should not apply directly to users. Should be on group"
     RULE_MODE = RuleMode.MONITOR

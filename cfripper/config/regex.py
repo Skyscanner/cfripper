@@ -101,3 +101,5 @@ Invalid:
 - potato
 """
 REGEX_IAM_ARN = re.compile(r"^arn:aws:iam::(\d*):(.*)$")
+
+REGEX_HAS_STAR_AFTER_COLON = re.compile(r"^(\w*:)?\*$")

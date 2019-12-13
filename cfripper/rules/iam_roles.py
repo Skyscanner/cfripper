@@ -19,11 +19,15 @@ __all__ = [
 ]
 from pycfmodel.model.resources.iam_role import IAMRole
 
-from ..config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
-from ..model.rule import Rule
+from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
+from cfripper.model.rule import Rule
 
 
 class IAMRolesOverprivilegedRule(Rule):
+    """
+    Rule that checks for wildcards in policies and restrics managed policies
+    """
+
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
@@ -60,6 +64,9 @@ class IAMRolesOverprivilegedRule(Rule):
 
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
+    """
+    Rule that checks for wildcards in actions in IAM role policies
+    """
 
     REASON = "IAM role {} should not allow * action on its permissions policy {}"
 
@@ -72,6 +79,9 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
 
 class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
+    """
+    Rule that checks for wildcards in actions in IAM role assume role policy documents
+    """
 
     REASON = "IAM role {} should not allow * action on its trust policy"
 

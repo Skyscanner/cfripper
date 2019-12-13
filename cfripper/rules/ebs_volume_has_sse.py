@@ -13,11 +13,14 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["EBSVolumeHasSSERule"]
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 
 class EBSVolumeHasSSERule(Rule):
+    """
+    Check that server side encryption is enabled for all EBS volumes.
+    """
 
     REASON = "EBS volume {} should have server-side encryption enabled"
     RULE_MODE = RuleMode.MONITOR

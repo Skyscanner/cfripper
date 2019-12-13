@@ -13,7 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["CloudFormationAuthenticationRule"]
-from ..model.rule import Rule
+from cfripper.model.rule import Rule
 
 
 class CloudFormationAuthenticationRule(Rule):

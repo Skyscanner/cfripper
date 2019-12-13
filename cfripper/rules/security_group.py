@@ -13,6 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorld", "SecurityGroupMissingEgressRule"]
+
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
 
@@ -21,6 +22,10 @@ from cfripper.model.rule import Rule
 
 
 class SecurityGroupOpenToWorldRule(Rule):
+    """
+    Rule that checks for open security groups
+    """
+
     REASON = "Port {} open to the world in security group '{}'"
 
     def invoke(self, cfmodel):
@@ -37,6 +42,10 @@ class SecurityGroupOpenToWorldRule(Rule):
 
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
+    """
+    Rule that checks for open security groups ingress
+    """
+
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroupIngress) and (
@@ -48,6 +57,9 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
 
 
 class SecurityGroupMissingEgressRule(Rule):
+    """
+    Rule that checks for open security groups egress
+    """
 
     REASON = (
         "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "

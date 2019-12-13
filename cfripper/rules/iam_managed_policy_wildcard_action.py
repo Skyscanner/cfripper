@@ -15,11 +15,14 @@ specific language governing permissions and limitations under the License.
 __all__ = ["IAMManagedPolicyWildcardActionRule"]
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 
-from ..config.regex import REGEX_WILDCARD_POLICY_ACTION
-from ..model.rule import Rule
+from cfripper.config.regex import REGEX_WILDCARD_POLICY_ACTION
+from cfripper.model.rule import Rule
 
 
 class IAMManagedPolicyWildcardActionRule(Rule):
+    """
+    This rule checks for wildcards in IAM Managed policies
+    """
 
     REASON = "IAM managed policy {} should not allow * action"
 
