@@ -19,6 +19,7 @@ from cfripper.config.regex import (
     REGEX_CONTAINS_STAR,
     REGEX_CROSS_ACCOUNT_ROOT,
     REGEX_FULL_WILDCARD_PRINCIPAL,
+    REGEX_HAS_STAR_OR_STAR_AFTER_COLON,
     REGEX_IAM_ARN,
     REGEX_IS_STAR,
     REGEX_WILDCARD_POLICY_ACTION,
@@ -63,7 +64,13 @@ from cfripper.config.regex import (
         (REGEX_IAM_ARN, "arn:aws:iam::437628376:root", True),
         (REGEX_IAM_ARN, "arn:aws:s3:::my_corporate_bucket", False),
         (REGEX_IAM_ARN, "potato", False),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:*", True),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "*", True),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:root", False),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:s3:::my_corporate_bucket*", False),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:s3:::*my_corporate_bucket", False),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "potato", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):
-    assert (regex.match(data) is not None) == valid
+    assert (regex.match(data) is not None) == valid, f"{data} failed"

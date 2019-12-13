@@ -18,7 +18,7 @@ import logging
 
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-from cfripper.config.regex import REGEX_HAS_STAR_AFTER_COLON
+from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
 from cfripper.model.enums import RuleMode, RuleRisk
 from cfripper.model.rule import Rule
 
@@ -52,10 +52,10 @@ class SQSQueuePolicyPublicRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
-                REGEX_HAS_STAR_AFTER_COLON
+                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
             ):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
-                    if statement.Effect == "Allow" and statement.principals_with(REGEX_HAS_STAR_AFTER_COLON):
+                    if statement.Effect == "Allow" and statement.principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
                         if statement.Condition and statement.Condition.dict():
                             logger.warning(
                                 f"Not adding {type(self).__name__} failure in {logical_id} "
@@ -75,6 +75,6 @@ class SQSQueuePolicyWildcardActionRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
-                REGEX_HAS_STAR_AFTER_COLON
+                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))
