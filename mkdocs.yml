@@ -13,6 +13,7 @@ repo_url: https://github.com/Skyscanner/cfripper
 nav:
   - Home: index.md
   - Rules: rules.md
+  - Changelog: changelog.md
   - Contributing: contributing.md
   - Code of conduct: code_of_conduct.md
 

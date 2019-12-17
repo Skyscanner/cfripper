@@ -22,7 +22,7 @@ from cfripper.rules.kms_key_wildcard_principal import *  # noqa: F403
 from cfripper.rules.managed_policy_on_user import *  # noqa: F403
 from cfripper.rules.policy_on_user import *  # noqa: F403
 from cfripper.rules.privilege_escalation import *  # noqa: F403
-from cfripper.rules.s3_bucked_policy import *  # noqa: F403
+from cfripper.rules.s3_bucket_policy import *  # noqa: F403
 from cfripper.rules.s3_public_access import *  # noqa: F403
 from cfripper.rules.security_group import *  # noqa: F403
 from cfripper.rules.sns_topic_policy_not_principal import *  # noqa: F403

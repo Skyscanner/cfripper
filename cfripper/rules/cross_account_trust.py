@@ -35,6 +35,8 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
     This class provides common methods used to detect access permissions from other accounts
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
+
     @property
     def valid_principals(self) -> Set[str]:
         if self._valid_principals is None:
@@ -86,7 +88,6 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
-    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():

@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.11.3] - 2019-12-17
+### Improvements
+- `S3CrossAccountTrustRule` now accepts resource level exceptions
+- New documentation!
+### Breaking changes
+- `cfripper.rules.s3_bucked_policy` renamed to `cfripper.rules.s3_bucket_policy` (typo)
+
 ## [0.11.2] - 2019-11-26
 ### Fixes
 - Fix `get_template` when AWS doesn't return a dict.
