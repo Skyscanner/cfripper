@@ -15,10 +15,13 @@ specific language governing permissions and limitations under the License.
 __all__ = ["HardcodedRDSPasswordRule"]
 from pycfmodel.model.parameter import Parameter
 
-from ..model.rule import Rule
+from cfripper.model.rule import Rule
 
 
 class HardcodedRDSPasswordRule(Rule):
+    """
+    This rule checks that RDS clusters and instances don't expose their passwords
+    """
 
     REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) for {}."
     REASON_MISSING_NOECHO = "RDS {} password parameter missing NoEcho for {}."

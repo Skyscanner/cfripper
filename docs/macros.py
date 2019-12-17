@@ -2,6 +2,7 @@ import importlib
 import inspect
 
 from cfripper import rules
+from cfripper.model.enums import RuleMode
 
 
 def define_env(env):
@@ -12,10 +13,13 @@ def define_env(env):
         for _, klass in rules_inspection:
             doc = inspect.getdoc(klass)
             # Remove ABCMeta default docstring
-            if not doc.startswith("Helper class that"):
-                results.append((klass.__name__, doc))
-            else:
-                results.append((klass.__name__, None))
+            if doc.startswith("Helper class that"):
+                doc = ""
+            if klass.RULE_MODE == RuleMode.MONITOR:
+                doc += "\nDefaults to monitor mode (rule not enforced)"
+            if klass.RULE_MODE == RuleMode.DEBUG:
+                doc += "\nDefaults to debug mode (rule not enforced)"
+            results.append((klass.__name__, doc.replace("\n", "\n\n")))
         return sorted(results)
 
     @env.macro

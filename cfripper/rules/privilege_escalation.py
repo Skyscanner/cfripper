@@ -15,10 +15,13 @@ specific language governing permissions and limitations under the License.
 __all__ = ["PrivilegeEscalationRule"]
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
-from ..model.rule import Rule
+from cfripper.model.rule import Rule
 
 
 class PrivilegeEscalationRule(Rule):
+    """
+    Rule that checks for actions that allow privilege escalation in IAM policies
+    """
 
     REASON = "{} has blacklisted IAM action {}"
     IAM_BLACKLIST = set(

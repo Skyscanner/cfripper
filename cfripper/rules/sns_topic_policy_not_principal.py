@@ -13,13 +13,18 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["SNSTopicPolicyNotPrincipalRule"]
+
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 
 class SNSTopicPolicyNotPrincipalRule(Rule):
+    """
+    Rule that checks for `Allow` and `NotPrincipal` at the same time in SNS Topic PolicyDocuments
+    """
+
     REASON = "SNS Topic {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 

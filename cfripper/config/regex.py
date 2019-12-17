@@ -101,3 +101,17 @@ Invalid:
 - potato
 """
 REGEX_IAM_ARN = re.compile(r"^arn:aws:iam::(\d*):(.*)$")
+
+
+"""
+Check for wildcards after colons
+Valid:
+- *
+- arn:aws:iam::437628376:*
+Invalid:
+- arn:aws:s3:::my_corporate_bucket
+- arn:aws:s3:::my_corporate_bucket*
+- arn:aws:s3:::*my_corporate_bucket
+- potato
+"""
+REGEX_HAS_STAR_OR_STAR_AFTER_COLON = re.compile(r"^(\w*:)*\*$")

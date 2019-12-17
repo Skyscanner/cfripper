@@ -13,20 +13,22 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["S3BucketPublicReadAclAndListStatementRule", "S3BucketPublicReadWriteAclRule"]
+
 import logging
 import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleRisk
-
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
 
 class S3BucketPublicReadAclAndListStatementRule(Rule):
+    """
+    Rule that checks for public read access to S3 bucket policies
+    """
 
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
     RULE_MODE = RuleMode.DEBUG
@@ -45,6 +47,10 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 
 
 class S3BucketPublicReadWriteAclRule(Rule):
+    """
+    Rule that checks for public read access to S3 buckets
+    """
+
     REASON = "S3 Bucket {} should not have a public read-write acl"
     RISK_VALUE = RuleRisk.HIGH
 

@@ -1,3 +1,6 @@
+Rules are the heart of CFRipper. When running CFRipper the Cloudformation stack will be checked against each rule and
+ the results will be combined.
+
 ## Available Rules
 {% for rule in cfripper_rules()-%}
 #### {{ rule.0 }}

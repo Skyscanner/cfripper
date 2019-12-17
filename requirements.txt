@@ -4,16 +4,16 @@
 #
 #    make freeze
 #
-boto3==1.10.27
-botocore==1.13.27         # via boto3, s3transfer
+boto3==1.10.38
+botocore==1.13.38         # via boto3, s3transfer
 cfn-flip==1.2.2
 click==7.0                # via cfn-flip
 docutils==0.15.2          # via botocore
 jmespath==0.9.4           # via boto3, botocore
-pycfmodel==0.6.0
-pydantic==1.1.1           # via pycfmodel
+pycfmodel==0.6.1
+pydantic==1.2             # via pycfmodel
 python-dateutil==2.8.0    # via botocore
-pyyaml==5.1.2
+pyyaml==5.2
 s3transfer==0.2.1         # via boto3
 six==1.13.0               # via cfn-flip, python-dateutil
 urllib3==1.25.7           # via botocore

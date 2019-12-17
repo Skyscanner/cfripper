@@ -19,12 +19,15 @@ import re
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.kms_key import KMSKey
 
-from ..model.rule import Rule
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
 
 class KMSKeyWildcardPrincipal(Rule):
+    """
+    This rule checks for KMS keys that contain wildcards in the key policies
+    """
 
     REASON = "KMS Key policy {} should not allow wildcard principals"
     CONTAINS_WILDCARD_PATTERN = re.compile(r"^(\w*:)?\*$")
@@ -38,7 +41,8 @@ class KMSKeyWildcardPrincipal(Rule):
                             if self.CONTAINS_WILDCARD_PATTERN.match(principal):
                                 if statement.Condition and statement.Condition.dict():
                                     logger.warning(
-                                        f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                        f"Not adding {type(self).__name__} failure in {logical_id} "
+                                        f"because there are conditions: {statement.Condition}"
                                     )
                                 else:
                                     self.add_failure(type(self).__name__, self.REASON.format(logical_id))
