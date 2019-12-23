@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 __all__ = ["PrivilegeEscalationRule"]
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 
@@ -23,6 +24,7 @@ class PrivilegeEscalationRule(Rule):
     Rule that checks for actions that allow privilege escalation in IAM policies
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "{} has blacklisted IAM action {}"
     IAM_BLACKLIST = set(
         action.lower()
@@ -49,4 +51,6 @@ class PrivilegeEscalationRule(Rule):
             if isinstance(resource, IAMPolicy):
                 policy_actions = set(action.lower() for action in resource.Properties.PolicyDocument.get_iam_actions())
                 for violation in policy_actions.intersection(self.IAM_BLACKLIST):
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id, violation))
+                    self.add_failure(
+                        type(self).__name__, self.REASON.format(logical_id, violation), resource_ids={logical_id}
+                    )

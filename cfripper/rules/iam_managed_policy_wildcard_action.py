@@ -16,6 +16,7 @@ __all__ = ["IAMManagedPolicyWildcardActionRule"]
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 
 from cfripper.config.regex import REGEX_WILDCARD_POLICY_ACTION
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 
@@ -24,6 +25,7 @@ class IAMManagedPolicyWildcardActionRule(Rule):
     This rule checks for wildcards in IAM Managed policies
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM managed policy {} should not allow * action"
 
     def invoke(self, cfmodel):
@@ -31,4 +33,4 @@ class IAMManagedPolicyWildcardActionRule(Rule):
             if isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

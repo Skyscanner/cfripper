@@ -17,7 +17,7 @@ __all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorld", "S
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
 
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.rule import Rule
 
 
@@ -26,6 +26,7 @@ class SecurityGroupOpenToWorldRule(Rule):
     Rule that checks for open security groups
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "Port {} open to the world in security group '{}'"
 
     def invoke(self, cfmodel):
@@ -38,7 +39,9 @@ class SecurityGroupOpenToWorldRule(Rule):
                     if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
-                                self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))
+                                self.add_failure(
+                                    type(self).__name__, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                                )
 
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
@@ -53,7 +56,9 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
             ):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
-                        self.add_failure(type(self).__name__, self.REASON.format(port, logical_id))
+                        self.add_failure(
+                            type(self).__name__, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                        )
 
 
 class SecurityGroupMissingEgressRule(Rule):
@@ -61,6 +66,7 @@ class SecurityGroupMissingEgressRule(Rule):
     Rule that checks for open security groups egress
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = (
         "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "
         "configuration"
@@ -70,4 +76,4 @@ class SecurityGroupMissingEgressRule(Rule):
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

@@ -13,6 +13,8 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["CloudFormationAuthenticationRule"]
+
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 
@@ -20,8 +22,9 @@ class CloudFormationAuthenticationRule(Rule):
     """This rule checks for hardcoded credentials"""
 
     REASON = "Hardcoded credentials in {}"
+    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.has_hardcoded_credentials():
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

@@ -18,7 +18,7 @@ from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
 from cfripper.rule_processor import RuleProcessor
-from cfripper.rules import DEFAULT_RULES
+from cfripper.rules import DEFAULT_RULES, KMSKeyCrossAccountTrustRule
 from cfripper.rules.cross_account_trust import CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
 
@@ -177,3 +177,39 @@ def test_org_accounts_cause_cross_account_issues(template_one_role):
     assert failed_rule.reason == (
         "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com"
     )
+
+
+@pytest.mark.parametrize(
+    "principal",
+    [
+        "arn:aws:iam::999999999:root",
+        "arn:aws:iam::*:root",
+        "arn:aws:iam::*:*",
+        "arn:aws:iam::*:root*",
+        "arn:aws:iam::*:not-root*",
+        "*",
+    ],
+)
+def test_kms_cross_account_failure(principal):
+    result = Result()
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
+    rule.invoke(model)
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    failed_rule = result.failed_rules[0]
+    assert failed_rule.reason == (
+        f"KMSKey has forbidden cross-account policy allow with {principal} for an KMS Key Policy"
+    )
+
+
+@pytest.mark.parametrize(
+    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+)
+def test_kms_cross_account_success(principal):
+    result = Result()
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
+    rule.invoke(model)
+    assert result.valid

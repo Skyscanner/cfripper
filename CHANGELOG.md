@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.12.0] - 2019-12-17
+### Added
+- `KMSKeyCrossAccountTrustRule`
+### Changed
+- `GenericWildcardPrincipalRule`, `PartialWildcardPrincipalRule`, `FullWildcardPrincipalRule` no longer check for
+wildcards in KMSKey principals.
+- Improved granularity of most rules 
+
 ## [0.11.3] - 2019-12-17
 ### Improvements
 - `S3CrossAccountTrustRule` now accepts resource level exceptions

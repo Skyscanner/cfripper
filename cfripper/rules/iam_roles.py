@@ -20,6 +20,7 @@ __all__ = [
 from pycfmodel.model.resources.iam_role import IAMRole
 
 from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 
@@ -27,6 +28,8 @@ class IAMRolesOverprivilegedRule(Rule):
     """
     Rule that checks for wildcards in resources for a set of actions and restricts managed policies
     """
+
+    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
@@ -42,7 +45,9 @@ class IAMRolesOverprivilegedRule(Rule):
         for managed_policy_arn in role.Properties.ManagedPolicyArns:
             if managed_policy_arn in self._config.forbidden_managed_policy_arns:
                 self.add_failure(
-                    type(self).__name__, f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}"
+                    type(self).__name__,
+                    f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",
+                    resource_ids={logical_id},
                 )
 
     def check_inline_policies(self, logical_id, role):
@@ -60,6 +65,7 @@ class IAMRolesOverprivilegedRule(Rule):
                                     type(self).__name__,
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
+                                    resource_ids={logical_id},
                                 )
 
 
@@ -68,6 +74,7 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     Rule that checks for wildcards in actions in IAM role policies
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM role {} should not allow * action on its permissions policy {}"
 
     def invoke(self, cfmodel):
@@ -75,7 +82,11 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
             if isinstance(resource, IAMRole):
                 for policy in resource.Properties.Policies:
                     if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
-                        self.add_failure(type(self).__name__, self.REASON.format(logical_id, policy.PolicyName))
+                        self.add_failure(
+                            type(self).__name__,
+                            self.REASON.format(logical_id, policy.PolicyName),
+                            resource_ids={logical_id},
+                        )
 
 
 class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
@@ -83,6 +94,7 @@ class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     Rule that checks for wildcards in actions in IAM role assume role policy documents
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM role {} should not allow * action on its trust policy"
 
     def invoke(self, cfmodel):
@@ -90,4 +102,4 @@ class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
             if isinstance(resource, IAMRole) and resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

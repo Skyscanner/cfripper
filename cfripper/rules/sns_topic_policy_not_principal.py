@@ -16,7 +16,7 @@ __all__ = ["SNSTopicPolicyNotPrincipalRule"]
 
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.rule import Rule
 
 
@@ -25,6 +25,7 @@ class SNSTopicPolicyNotPrincipalRule(Rule):
     Rule that checks for `Allow` and `NotPrincipal` at the same time in SNS Topic PolicyDocuments
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "SNS Topic {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
@@ -33,4 +34,4 @@ class SNSTopicPolicyNotPrincipalRule(Rule):
             if isinstance(resource, SNSTopicPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.NotPrincipal:
-                        self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                        self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
