@@ -19,7 +19,7 @@ import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
@@ -30,6 +30,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
     Rule that checks for public read access to S3 bucket policies
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
     RULE_MODE = RuleMode.DEBUG
 
@@ -43,7 +44,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                     bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
 
 
 class S3BucketPublicReadWriteAclRule(Rule):
@@ -51,6 +52,7 @@ class S3BucketPublicReadWriteAclRule(Rule):
     Rule that checks for public read access to S3 buckets
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public read-write acl"
     RISK_VALUE = RuleRisk.HIGH
 
@@ -61,4 +63,4 @@ class S3BucketPublicReadWriteAclRule(Rule):
                 and hasattr(resource, "Properties")
                 and resource.Properties.get("AccessControl") == "PublicReadWrite"
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

@@ -19,6 +19,7 @@ import re
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.kms_key import KMSKey
 
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
@@ -28,6 +29,8 @@ class KMSKeyWildcardPrincipal(Rule):
     """
     This rule checks for KMS keys that contain wildcards in the key policies
     """
+
+    GRANULARITY = RuleGranularity.RESOURCE
 
     REASON = "KMS Key policy {} should not allow wildcard principals"
     CONTAINS_WILDCARD_PATTERN = re.compile(r"^(\w*:)?\*$")
@@ -45,4 +48,6 @@ class KMSKeyWildcardPrincipal(Rule):
                                         f"because there are conditions: {statement.Condition}"
                                     )
                                 else:
-                                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                                    self.add_failure(
+                                        type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
+                                    )
