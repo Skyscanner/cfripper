@@ -20,6 +20,8 @@ from typing import Dict, List
 from pycfmodel import parse
 from pycfmodel.model.cf_model import CFModel
 
+from cfripper.model.utils import convert_json_or_yaml_to_dict
+
 FIXTURE_ROOT_PATH = Path(__file__).parent / "test_templates"
 
 
@@ -40,4 +42,6 @@ def get_fixture_json(path: str) -> Dict:
 
 
 def get_cfmodel_from(path: str) -> CFModel:
-    return parse(get_fixture_json(path))
+    with Path(FIXTURE_ROOT_PATH / path).open() as f:
+        content = f.read()
+    return parse(convert_json_or_yaml_to_dict(content))

@@ -18,7 +18,7 @@ import re
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.rule import Rule
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
@@ -32,6 +32,7 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
     This is designed to block unintended access from third party accounts to your buckets
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
@@ -51,7 +52,11 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
                                     f"because there are conditions: {statement.Condition}"
                                 )
                             else:
-                                self.add_failure(type(self).__name__, self.REASON.format(logical_id, account_id))
+                                self.add_failure(
+                                    type(self).__name__,
+                                    self.REASON.format(logical_id, account_id),
+                                    resource_ids={logical_id},
+                                )
 
 
 class S3BucketPolicyWildcardActionRule(Rule):
@@ -59,6 +64,7 @@ class S3BucketPolicyWildcardActionRule(Rule):
     Rule that checks for wildcard actions in S3 bucket policies
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket policy {} should not allow * action"
     REGEX = re.compile(r"^(\w*:){0,1}\*$")
 
@@ -67,4 +73,4 @@ class S3BucketPolicyWildcardActionRule(Rule):
             if isinstance(resource, S3BucketPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 self.REGEX
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

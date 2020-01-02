@@ -20,14 +20,13 @@ from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.iam_user import IAMUser
-from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
-from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.rules.base_rules import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
@@ -41,15 +40,14 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
     RULE_MODE = RuleMode.MONITOR
+    GRANULARITY = RuleGranularity.RESOURCE
 
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
     FULL_REGEX = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$")
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, KMSKey):
-                self.check_for_wildcards(logical_id, resource.Properties.KeyPolicy)
-            elif isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
+            if isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
                 self.check_for_wildcards(logical_id, resource.Properties.PolicyDocument)
             elif isinstance(resource, (IAMRole, IAMUser)):
                 if isinstance(resource, IAMRole):
@@ -74,7 +72,9 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                         )
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(
-                            type(self).__name__, self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal)
+                            type(self).__name__,
+                            self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
+                            resource_ids={logical_id},
                         )
 
     def resource_is_whitelisted(self, logical_id):

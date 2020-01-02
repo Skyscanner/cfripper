@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 __all__ = ["HardcodedRDSPasswordRule"]
 from pycfmodel.model.parameter import Parameter
 
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.rule import Rule
 
 
@@ -25,6 +26,7 @@ class HardcodedRDSPasswordRule(Rule):
 
     REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) for {}."
     REASON_MISSING_NOECHO = "RDS {} password parameter missing NoEcho for {}."
+    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         password_protected_cluster_ids = []
@@ -55,10 +57,16 @@ class HardcodedRDSPasswordRule(Rule):
         master_user_password = resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
         resource_type = resource.Type.replace("AWS::RDS::DB", "")
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
-            self.add_failure(type(self).__name__, self.REASON_DEFAULT.format(resource_type, logical_id))
+            self.add_failure(
+                type(self).__name__, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id}
+            )
             return True
         elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
-            self.add_failure(type(self).__name__, self.REASON_MISSING_NOECHO.format(resource_type, logical_id))
+            self.add_failure(
+                type(self).__name__,
+                self.REASON_MISSING_NOECHO.format(resource_type, logical_id),
+                resource_ids={logical_id},
+            )
             return True
 
         return False

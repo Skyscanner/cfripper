@@ -16,7 +16,7 @@ __all__ = ["PolicyOnUserRule"]
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.rule import Rule
 
 
@@ -25,10 +25,11 @@ class PolicyOnUserRule(Rule):
     Rule that checks for IAM policies attached directly to users
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM policy {} should not apply directly to users. Should be on group"
     RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel: CFModel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMPolicy) and resource.Properties.Users:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
