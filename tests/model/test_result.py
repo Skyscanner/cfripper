@@ -27,10 +27,12 @@ def test_result_valid_after_removing_failures():
     )
     # Result has a blocking failure, so it should be invalid
     assert result.valid is False
+    assert result.reason == "mock_rule: mock_reason"
 
     result.failed_rules = []
     # Result has no failures, so it should be valid
     assert result.valid is True
+    assert result.reason == ""
 
 
 def test_result_addition():

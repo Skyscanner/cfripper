@@ -1,4 +1,3 @@
-import json
 import logging
 import sys
 from io import TextIOWrapper
@@ -16,9 +15,16 @@ from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
 
+LOGGING_LEVELS = {
+    "ERROR": logging.ERROR,
+    "WARNING": logging.WARNING,
+    "INFO": logging.INFO,
+    "DEBUG": logging.DEBUG,
+}
+
 
 def setup_logging(level: str) -> None:
-    logging.basicConfig(level=logging._nameToLevel[level], format="%(message)s")
+    logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
 def get_cfmodel(template: TextIOWrapper) -> CFModel:
@@ -44,7 +50,9 @@ def process_template(
     if output_format == "json":
         formatted_result = result.json()
     else:
-        formatted_result = f"Valid: {result.valid}\n" + "\n".join(fr.reason for fr in result.failed_rules)
+        formatted_result = f"Valid: {result.valid}"
+        if not result.valid:
+            formatted_result += "\n" + "\n".join(fr.reason for fr in result.failed_rules)
 
     if output_folder:
         output_file = Path(output_folder) / f"{template.name}.cfripper.results.{output_format}"
@@ -67,7 +75,10 @@ def process_template(
 @click.option(
     "--resolve-parameters",
     type=click.File("r"),
-    help="JSON/YML file containing key/value pairs. Where key ",
+    help=(
+        "JSON/YML file containing key-value pairs used for resolving CloudFormation files with templated parameters. "
+        'For example, {"abc": "ABC"} will change all occurrences of {"Ref": "abc"} in the CloudFormation file to "ABC".'
+    ),
 )
 @click.option(
     "--format",
@@ -85,7 +96,7 @@ def process_template(
 @click.option(
     "--logging",
     "logging_level",
-    type=click.Choice(logging._nameToLevel.keys(), case_sensitive=True),
+    type=click.Choice(LOGGING_LEVELS.keys(), case_sensitive=True),
     default="INFO",
     help="Logging level",
     show_default=True,
