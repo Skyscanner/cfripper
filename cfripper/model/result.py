@@ -12,21 +12,24 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union
 
-from .enums import RuleMode
+from pydantic import BaseModel, Extra
+
+from cfripper.model.enums import RuleMode
 
 
-@dataclass
-class Failure:
+class Failure(BaseModel):
     granularity: str
     reason: str
     risk_value: str
     rule: str
     rule_mode: str
-    actions: Optional[set] = field(default_factory=set)
-    resource_ids: Optional[set] = field(default_factory=set)
+    actions: Optional[set] = set()
+    resource_ids: Optional[set] = set()
+
+    class Config(BaseModel.Config):
+        extra = Extra.forbid
 
     def serializable(self):
         return {
@@ -40,15 +43,58 @@ class Failure:
         }
 
 
-@dataclass
-class Result:
-    """An object to represent scan results."""
+class Result(BaseModel):
+    class Config(BaseModel.Config):
+        extra = Extra.forbid
 
-    valid: bool
-    failed_rules: List[Failure] = field(default_factory=list)
-    exceptions: List = field(default_factory=list)
-    failed_monitored_rules: List[Failure] = field(default_factory=list)
-    warnings: List[Failure] = field(default_factory=list)
+    failed_rules: List[Failure] = []
+    exceptions: List = []
+    failed_monitored_rules: List[Failure] = []
+    warnings: List[Failure] = []
+
+    # Temporary fix until https://github.com/samuelcolvin/pydantic/issues/935 is fixed
+    @classmethod
+    def get_properties(cls):
+        return [prop for prop in cls.__dict__ if isinstance(cls.__dict__[prop], property)]
+
+    def dict(
+        self,
+        *,
+        include: Union["AbstractSetIntStr", "DictIntStrAny"] = None,
+        exclude: Union["AbstractSetIntStr", "DictIntStrAny"] = None,
+        by_alias: bool = False,
+        skip_defaults: bool = None,
+        exclude_unset: bool = False,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False,
+    ) -> Dict[str, Any]:
+        """Override the dict function to include our properties"""
+        attribs = super().dict(
+            include=include,
+            exclude=exclude,
+            by_alias=by_alias,
+            skip_defaults=skip_defaults,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+        )
+        props = self.get_properties()
+
+        # Include and exclude properties
+        if include:
+            props = [prop for prop in props if prop in include]
+        if exclude:
+            props = [prop for prop in props if prop not in exclude]
+
+        # Update the attribute dict with the properties
+        if props:
+            attribs.update({prop: getattr(self, prop) for prop in props})
+        return attribs
+
+    def __repr_args__(self):
+        return self.dict().items()  # type: ignore
+
+    # End of temporary fix
 
     def add_failure(
         self, rule: str, reason: str, rule_mode: str, risk_value: str, granularity: str, resource_ids=None, actions=None
@@ -92,10 +138,13 @@ class Result:
     def valid(self) -> bool:
         return not bool([rule for rule in self.failed_rules if rule.rule_mode == RuleMode.BLOCKING])
 
-    @valid.setter
-    def valid(self, value):
-        # This setter is required as otherwise the dataclass raises a "can't be set" exception on init
-        # due to valid being defined as a property
-        if isinstance(value, property):
-            return
-        raise Exception("Valid attribute can't be set")
+    def __add__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return Result(
+            failed_rules=self.failed_rules + other.failed_rules,
+            exceptions=self.exceptions + other.exceptions,
+            failed_monitored_rules=self.failed_monitored_rules + other.failed_monitored_rules,
+            warnings=self.warnings + other.warnings,
+        )
