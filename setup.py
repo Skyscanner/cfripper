@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from setuptools import find_packages, setup
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+here = Path(__file__).parent
+
+package_name = "cfripper"
 
 install_requires = ["boto3>=1.4.7,<2", "PyYAML>=4.2b1", "pycfmodel>=0.5.1", "cfn_flip>=1.2.0"]
 
@@ -15,9 +18,19 @@ dev_requires = [
     "moto==1.3.13",
 ]
 
+# Import README for long-description.
+with open(here / "README.md") as f:
+    long_description = f.read()
+
+# Load the package's __version__.py module as a dictionary.
+vars_from_version_file = {}
+with open(here / package_name / "__version__.py") as f:
+    exec(f.read(), vars_from_version_file)
+version = vars_from_version_file["__version__"]
+
 setup(
-    name="cfripper",
-    version="0.11.2",
+    name=package_name,
+    version=version,
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
     long_description=long_description,
