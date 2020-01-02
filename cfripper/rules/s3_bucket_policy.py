@@ -12,6 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+__all__ = ["S3BucketPolicyPrincipalRule", "S3BucketPolicyWildcardActionRule"]
 import logging
 import re
 
@@ -26,6 +27,10 @@ logger = logging.getLogger(__file__)
 
 
 class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
+    """
+    Rule that checks for non-whitelisted principals in S3 bucket policies.
+    This is designed to block unintended access from third party accounts to your buckets
+    """
 
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
     RULE_MODE = RuleMode.BLOCKING
@@ -50,6 +55,10 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 
 
 class S3BucketPolicyWildcardActionRule(Rule):
+    """
+    Rule that checks for wildcard actions in S3 bucket policies
+    """
+
     REASON = "S3 Bucket policy {} should not allow * action"
     REGEX = re.compile(r"^(\w*:){0,1}\*$")
 

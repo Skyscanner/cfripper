@@ -18,6 +18,16 @@ dev_requires = [
     "moto==1.3.13",
 ]
 
+docs_requires = [
+    "ansi2html==1.5.2",
+    "markdown-include==0.5.1",
+    "mkdocs-exclude==1.0.2",
+    "mkdocs-macros-plugin",
+    "mkdocs-material==4.5.1",
+    "mkdocs==1.0.4",
+    "pygments==2.5.2",
+]
+
 # Import README for long-description.
 with open(here / "README.md") as f:
     long_description = f.read()
@@ -38,10 +48,10 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
     description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
-    packages=find_packages(),
+    packages=find_packages(exclude=("docs", "tests")),
     platforms="any",
     python_requires=">=3.7",
     install_requires=install_requires,
     tests_require=dev_requires,
-    extras_require={"dev": dev_requires},
+    extras_require={"dev": dev_requires, "docs": docs_requires},
 )

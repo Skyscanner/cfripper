@@ -12,20 +12,24 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule", "SQSQueuePolicyWildcardActionRule"]
+
 import logging
-import re
 
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-from cfripper.model.enums import RuleRisk
-
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
+from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
 
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
+    """
+    Rule that checks for `Allow` and `NotPrincipal` at the same time in SQS Queue PolicyDocuments
+    """
+
     REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
@@ -38,33 +42,39 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
 
 
 class SQSQueuePolicyPublicRule(Rule):
+    """
+    Rule that checks for wildcards in SQS queue PolicyDocuments principals
+    """
 
     REASON = "SQS Queue policy {} should not be public"
     RISK_VALUE = RuleRisk.HIGH
-    REGEX_HAS_STAR_AFTER_COLON = re.compile(r"^(\w*:){0,1}\*$")
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
-                self.REGEX_HAS_STAR_AFTER_COLON
+                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
             ):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
-                    if statement.Effect == "Allow" and statement.principals_with(self.REGEX_HAS_STAR_AFTER_COLON):
+                    if statement.Effect == "Allow" and statement.principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
                         if statement.Condition and statement.Condition.dict():
                             logger.warning(
-                                f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                                f"Not adding {type(self).__name__} failure in {logical_id} "
+                                f"because there are conditions: {statement.Condition}"
                             )
                         else:
                             self.add_failure(type(self).__name__, self.REASON.format(logical_id))
 
 
 class SQSQueuePolicyWildcardActionRule(Rule):
+    """
+    Rule that checks for wildcards in SQS queue PolicyDocuments actions
+    """
 
     REASON = "SQS Queue policy {} should not allow * action"
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
-                re.compile(r"^(\w*:){0,1}\*$")
+                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
             ):
                 self.add_failure(type(self).__name__, self.REASON.format(logical_id))

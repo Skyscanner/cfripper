@@ -12,6 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+__all__ = ["GenericWildcardPrincipalRule", "PartialWildcardPrincipalRule", "FullWildcardPrincipalRule"]
 import logging
 import re
 
@@ -33,6 +34,9 @@ logger = logging.getLogger(__file__)
 
 
 class GenericWildcardPrincipalRule(PrincipalCheckingRule):
+    """
+    Rule that checks for wildcard principals in resources
+    """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
@@ -65,7 +69,8 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
                     if statement.Condition and statement.Condition.dict():
                         logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: {statement.Condition}"
+                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: "
+                            f"{statement.Condition}"
                         )
                     elif not self.resource_is_whitelisted(logical_id):
                         self.add_failure(
@@ -86,6 +91,9 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
+    """
+    Rule that checks for partial wildcard principals or account-wide principals in resources
+    """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 
@@ -101,6 +109,9 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
 
 class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
+    """
+    Rule that checks for wildcard principals in resources
+    """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 

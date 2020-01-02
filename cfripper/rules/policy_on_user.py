@@ -12,14 +12,18 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+__all__ = ["PolicyOnUserRule"]
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
-from ..model.enums import RuleMode
-from ..model.rule import Rule
+from cfripper.model.enums import RuleMode
+from cfripper.model.rule import Rule
 
 
 class PolicyOnUserRule(Rule):
+    """
+    Rule that checks for IAM policies attached directly to users
+    """
 
     REASON = "IAM policy {} should not apply directly to users. Should be on group"
     RULE_MODE = RuleMode.MONITOR

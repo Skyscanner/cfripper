@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+__all__ = ["CrossAccountCheckingRule", "CrossAccountTrustRule", "S3CrossAccountTrustRule"]
+
 import logging
 import re
 from typing import Set
@@ -19,16 +21,22 @@ from typing import Set
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
+from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
+from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
-
-from ..config.regex import REGEX_CROSS_ACCOUNT_ROOT
-from ..model.enums import RuleGranularity, RuleMode
 
 logger = logging.getLogger(__file__)
 
 
 class CrossAccountCheckingRule(PrincipalCheckingRule):
+    """
+    Base class not intended to be instantiated, but inherited from
+    This class provides common methods used to detect access permissions from other accounts
+    """
+
+    GRANULARITY = RuleGranularity.RESOURCE
+
     @property
     def valid_principals(self) -> Set[str]:
         if self._valid_principals is None:
@@ -74,10 +82,12 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
 
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    This rule checks for permissions granted to principals from other accounts
+    """
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
-    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
@@ -87,6 +97,9 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
 
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    This rule checks for permissions granted to principals from other accounts in S3 Buckets
+    """
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
 
