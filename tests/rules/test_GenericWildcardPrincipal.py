@@ -89,3 +89,13 @@ def test_wildcard_principal_rule_is_whitelisted_retrieved_correctly(mock_rule_to
     wildcard_principal_rule = GenericWildcardPrincipalRule(config=config, result=None)
 
     assert wildcard_principal_rule.resource_is_whitelisted(logical_id="resource_1") is True
+
+
+def test_generic_wildcard_ignores_kms():
+    result = Result()
+    rule = GenericWildcardPrincipalRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(
+        extra_params={"Principal": "arn:aws:iam::*:*"}
+    )
+    rule.invoke(model)
+    assert result.valid
