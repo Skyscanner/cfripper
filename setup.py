@@ -33,6 +33,7 @@ setup(
     version=version,
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
+    entry_points={"console_scripts": ["cfripper=cfripper.cli:cli"]},
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
