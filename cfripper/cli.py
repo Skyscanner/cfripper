@@ -113,7 +113,6 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
 
     except Exception as e:
-        print(str(e))
         logging.error(str(e))
         logging.debug("", exc_info=True)
         try:
