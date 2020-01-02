@@ -45,7 +45,7 @@ def format_result(result: Result, format: str) -> str:
             indent=2,
             sort_keys=True,
         )
-    text = f"Valid: {result.valid}"
+    text = f"Valid: {result.valid}\n"
     for failed_rule in result.failed_rules:
         text += f"{failed_rule.rule}: {failed_rule.reason}\n"
     return text
