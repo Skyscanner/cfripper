@@ -10,8 +10,8 @@ install:
 install-dev: install
 	pip install -e ".[dev]"
 
-install-docs: install-dev
-	pip install -e ".[docs]"
+install-docs:
+	pip install -e ".[dev,docs]"
 
 format:
 	isort --recursive .

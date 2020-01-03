@@ -113,8 +113,7 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
 
     except Exception as e:
-        logging.error(str(e))
-        logging.debug("", exc_info=True)
+        logging.exception(e, exc_info=True)
         try:
             sys.exit(e.errno)
         except AttributeError:
