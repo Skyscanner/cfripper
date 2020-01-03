@@ -37,7 +37,7 @@ setup(
     long_description=(project_root_path / "README.md").read_text(),
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
-    description="Tool for analysing CloudFormation templates and check them for security compliance.",
+    description="Library and CLI tool for analysing CloudFormation templates and check them for security compliance.",
     packages=find_packages(exclude=("docs", "tests")),
     platforms="any",
     python_requires=">=3.7",
