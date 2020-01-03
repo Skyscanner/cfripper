@@ -54,12 +54,12 @@ def process_template(
         result_lines = []
         result_lines.append(f"Valid: {result.valid}")
         if result.failed_rules:
-            result_lines.append('Issues found:')
+            result_lines.append("Issues found:")
             [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
         if result.failed_monitored_rules:
-            result_lines.append('Monitored issues found:')
+            result_lines.append("Monitored issues found:")
             [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
-        formatted_result = '\n'.join(result_lines)
+        formatted_result = "\n".join(result_lines)
 
     if output_folder:
         output_file = Path(output_folder) / f"{template.name}.cfripper.results.{output_format}"
