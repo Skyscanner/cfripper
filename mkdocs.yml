@@ -15,8 +15,8 @@ nav:
   - Rules: rules.md
   - Changelog: changelog.md
   - Contributing: contributing.md
-  - Code of conduct: code_of_conduct.md
   - CLI: cli.md
+  - Code of conduct: code_of_conduct.md
 
 markdown_extensions:
   - codehilite
