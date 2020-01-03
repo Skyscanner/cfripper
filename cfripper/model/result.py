@@ -138,10 +138,6 @@ class Result(BaseModel):
     def valid(self) -> bool:
         return not bool([rule for rule in self.failed_rules if rule.rule_mode == RuleMode.BLOCKING])
 
-    @property
-    def reason(self) -> str:
-        return ", ".join([f"{r.rule}: {r.reason}" for r in self.failed_rules])
-
     def __add__(self, other):
         if not isinstance(other, self.__class__):
             return NotImplemented

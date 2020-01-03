@@ -1,6 +1,7 @@
 import logging
 import sys
 from io import TextIOWrapper
+from itertools import chain
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -50,9 +51,15 @@ def process_template(
     if output_format == "json":
         formatted_result = result.json()
     else:
-        formatted_result = f"Valid: {result.valid}"
-        if not result.valid:
-            formatted_result += "\n" + "\n".join(fr.reason for fr in result.failed_rules)
+        result_lines = []
+        result_lines.append(f"Valid: {result.valid}")
+        if result.failed_rules:
+            result_lines.append('Issues found:')
+            [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
+        if result.failed_monitored_rules:
+            result_lines.append('Monitored issues found:')
+            [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
+        formatted_result = '\n'.join(result_lines)
 
     if output_folder:
         output_file = Path(output_folder) / f"{template.name}.cfripper.results.{output_format}"
@@ -113,7 +120,7 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
 
     except Exception as e:
-        logging.exception(e, exc_info=True)
+        logging.exception(e)
         try:
             sys.exit(e.errno)
         except AttributeError:
