@@ -2,7 +2,7 @@ import importlib
 import inspect
 
 from cfripper import rules
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleMode, RuleRisk
 
 
 def define_env(env):
@@ -12,14 +12,30 @@ def define_env(env):
         results = []
         for _, klass in rules_inspection:
             doc = inspect.getdoc(klass)
+
+            summary, risk, fix_text, fix_code = parse_doc_string(doc)
+
             # Remove ABCMeta default docstring
-            if doc.startswith("Helper class that"):
-                doc = ""
+            if summary.startswith("Helper class that"):
+                summary = ""
             if klass.RULE_MODE == RuleMode.MONITOR:
-                doc += "\nDefaults to monitor mode (rule not enforced)"
+                summary += "\nDefaults to monitor mode (rule not enforced)\n"
             if klass.RULE_MODE == RuleMode.DEBUG:
-                doc += "\nDefaults to debug mode (rule not enforced)"
-            results.append((klass.__name__, doc.replace("\n", "\n\n")))
+                summary += "\nDefaults to debug mode (rule not enforced)\n"
+
+            severity_map = {RuleRisk.HIGH: "High", RuleRisk.MEDIUM: "Medium", RuleRisk.LOW: "Low"}
+
+            results.append(
+                (
+                    klass.__name__,
+                    summary.replace("\n", "\n\n"),
+                    severity_map.get(klass.RISK_VALUE),
+                    risk,
+                    fix_text,
+                    fix_code,
+                )
+            )
+
         return sorted(results)
 
     @env.macro
@@ -43,3 +59,43 @@ def get_object_from_reference(reference):
         for entry in reversed(right):
             module = getattr(module, entry)
     return module
+
+
+def parse_doc_string(doc):
+    lines = doc.split("\n")
+
+    summary, risk, fix_text, fix_code = "", "", "", ""
+    summary_complete, risk_complete, fix_complete = False, False, False
+
+    for line in lines:
+        if line.startswith("Risk:"):
+            summary_complete = True
+            continue
+
+        if line.startswith("Fix:"):
+            risk_complete = True
+            continue
+
+        if line.startswith("Code for fix:"):
+            fix_complete = True
+            continue
+
+        if not summary_complete:
+            summary += line.strip()
+            summary += "\n"
+            continue
+
+        if not risk_complete:
+            risk += line.strip()
+            risk += "\n"
+            continue
+
+        if not fix_complete:
+            fix_text += line.strip()
+            fix_text += "\n"
+            continue
+
+        fix_code += line
+        fix_code += "\n"
+
+    return summary, risk, fix_text, fix_code
