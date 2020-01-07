@@ -1,7 +1,6 @@
 import logging
 import sys
 from io import TextIOWrapper
-from itertools import chain
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
