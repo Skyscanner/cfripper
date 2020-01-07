@@ -3,7 +3,7 @@ import sys
 from io import TextIOWrapper
 from itertools import chain
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import click
 import pycfmodel
@@ -28,45 +28,77 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
+def init_cfripper() -> Tuple[Config, Result, RuleProcessor]:
+    config = Config(rules=DEFAULT_RULES.keys())
+    result = Result()
+    rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config, result) for rule in config.rules])
+    return config, result, rule_processor
+
+
 def get_cfmodel(template: TextIOWrapper) -> CFModel:
     template = convert_json_or_yaml_to_dict(template.read())
     cfmodel = pycfmodel.parse(template)
     return cfmodel
 
 
+def analyse_template(cfmodel: CFModel, rule_processor: RuleProcessor, config: Config, result: Result) -> None:
+    rule_processor.process_cf_template(cfmodel, config, result)
+
+
+def format_result_json(result: Result) -> str:
+    return result.json()
+
+
+def format_result_txt(result: Result) -> str:
+    result_lines = [f"Valid: {result.valid}"]
+    if result.failed_rules:
+        result_lines.append("Issues found:")
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
+    if result.failed_monitored_rules:
+        result_lines.append("Monitored issues found:")
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
+    return "\n".join(result_lines)
+
+
+def format_result(result: Result, output_format: str) -> str:
+    if output_format == "json":
+        return format_result_json(result)
+    else:
+        return format_result_txt(result)
+
+
+def save_to_file(file: Path, result: str) -> None:
+    file.write_text(result)
+    logging.info(f"Result saved in {file}")
+
+
+def print_to_stdout(result: str) -> None:
+    click.echo(result)
+
+
+def output_handling(template_name: str, result: str, output_format: str, output_folder: Optional[str]) -> None:
+    if output_folder:
+        save_to_file(Path(output_folder) / f"{template_name}.cfripper.results.{output_format}", result)
+    else:
+        print_to_stdout(result)
+
+
 def process_template(
     template, resolve: bool, resolve_parameters: Optional[Dict], output_folder: Optional[str], output_format: str
 ) -> None:
     logging.info(f"Analysing {template.name}...")
+
     cfmodel = get_cfmodel(template)
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
-    config = Config(rules=DEFAULT_RULES.keys())
-    result = Result()
-    rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
-    rule_processor = RuleProcessor(*rules)
 
-    rule_processor.process_cf_template(cfmodel, config, result)
+    config, result, rule_processor = init_cfripper()
 
-    if output_format == "json":
-        formatted_result = result.json()
-    else:
-        result_lines = []
-        result_lines.append(f"Valid: {result.valid}")
-        if result.failed_rules:
-            result_lines.append("Issues found:")
-            [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
-        if result.failed_monitored_rules:
-            result_lines.append("Monitored issues found:")
-            [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
-        formatted_result = "\n".join(result_lines)
+    analyse_template(cfmodel, rule_processor, config, result)
 
-    if output_folder:
-        output_file = Path(output_folder) / f"{template.name}.cfripper.results.{output_format}"
-        output_file.write_text(formatted_result)
-        logging.info(f"Result saved in {output_file}")
-    else:
-        click.echo(formatted_result)
+    formatted_result = format_result(result, output_format)
+
+    output_handling(template.name, formatted_result, output_format, output_folder)
 
 
 @click.command()
@@ -76,7 +108,7 @@ def process_template(
     "--resolve/--no-resolve",
     is_flag=True,
     default=False,
-    help="Resolves cloudformation intrinsic functions",
+    help="Resolves cloudformation variables and intrinsic functions",
     show_default=True,
 )
 @click.option(
