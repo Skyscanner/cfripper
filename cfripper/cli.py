@@ -66,9 +66,9 @@ def format_result(result: Result, output_format: str) -> str:
         return format_result_txt(result)
 
 
-def save_to_file(file: Path, result: str) -> None:
-    file.write_text(result)
-    logging.info(f"Result saved in {file}")
+def save_to_file(path: Path, result: str) -> None:
+    path.write_text(result)
+    logging.info(f"Result saved in {path}")
 
 
 def print_to_stdout(result: str) -> None:
@@ -151,7 +151,10 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
 
     except Exception as e:
-        logging.exception(e)
+        logging.exception(
+            "Unhandled exception raised, please create an issue wit the error message at "
+            "https://github.com/Skyscanner/cfripper/issues"
+        )
         try:
             sys.exit(e.errno)
         except AttributeError:
