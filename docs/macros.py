@@ -10,7 +10,6 @@ import click
 from cfripper import rules
 from cfripper.cli import cli
 from cfripper.model.enums import RuleMode, RuleRisk
-from cfripper.model.rule import Rule
 
 
 def define_env(env):
