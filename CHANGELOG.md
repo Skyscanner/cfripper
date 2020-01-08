@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.12.0] - 2020-01-03
+## [0.12.0] - 2020-01-08
 ### Added
 - Adds CLI to package
 - `KMSKeyCrossAccountTrustRule`
