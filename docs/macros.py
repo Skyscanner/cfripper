@@ -28,7 +28,7 @@ def define_env(env):
                     # Remove ABCMeta default docstring
                     if not paragraph_text.startswith("Helper class that"):
                         content += paragraph_text
-                    content += f"\nSeverity: {severity_map[klass.RISK_VALUE]}\n"
+                    content += f"\n\nSeverity: {severity_map[klass.RISK_VALUE]}\n"
                     if klass.RULE_MODE == RuleMode.MONITOR:
                         content += "\nDefaults to monitor mode (rule not enforced)\n"
                     if klass.RULE_MODE == RuleMode.DEBUG:
