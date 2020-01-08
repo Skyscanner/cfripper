@@ -12,13 +12,20 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = ["CrossAccountCheckingRule", "CrossAccountTrustRule", "S3CrossAccountTrustRule"]
+__all__ = [
+    "CrossAccountCheckingRule",
+    "CrossAccountTrustRule",
+    "KMSKeyCrossAccountTrustRule",
+    "S3CrossAccountTrustRule",
+]
 
 import logging
 import re
 from typing import Set
 
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_role import IAMRole
+from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
@@ -107,4 +114,18 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
+                    self._do_statement_check(logical_id, statement)
+
+
+class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    This rule checks for KMS keys that allow cross-account principals to get access to the key
+    """
+
+    REASON = "{} has forbidden cross-account policy allow with {} for an KMS Key Policy"
+
+    def invoke(self, cfmodel: CFModel):
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, KMSKey):
+                for statement in resource.Properties.KeyPolicy._statement_as_list():
                     self._do_statement_check(logical_id, statement)

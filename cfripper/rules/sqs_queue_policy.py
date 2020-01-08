@@ -19,7 +19,7 @@ import logging
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-from cfripper.model.enums import RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.rule import Rule
 
 logger = logging.getLogger(__file__)
@@ -30,6 +30,7 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
     Rule that checks for `Allow` and `NotPrincipal` at the same time in SQS Queue PolicyDocuments
     """
 
+    GRANULARITY = RuleGranularity.RESOURCE
     REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
@@ -38,7 +39,7 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
             if isinstance(resource, SQSQueuePolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.NotPrincipal:
-                        self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                        self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
 
 
 class SQSQueuePolicyPublicRule(Rule):
@@ -62,7 +63,9 @@ class SQSQueuePolicyPublicRule(Rule):
                                 f"because there are conditions: {statement.Condition}"
                             )
                         else:
-                            self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                            self.add_failure(
+                                type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
+                            )
 
 
 class SQSQueuePolicyWildcardActionRule(Rule):
@@ -77,4 +80,4 @@ class SQSQueuePolicyWildcardActionRule(Rule):
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_HAS_STAR_OR_STAR_AFTER_COLON
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

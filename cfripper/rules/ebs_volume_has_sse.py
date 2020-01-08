@@ -13,7 +13,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["EBSVolumeHasSSERule"]
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.rule import Rule
 
 
@@ -42,9 +42,10 @@ class EBSVolumeHasSSERule(Rule):
 
     REASON = "EBS volume {} should have server-side encryption enabled"
     RULE_MODE = RuleMode.MONITOR
+    GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::EC2::Volume":
                 if resource.Properties.get("Encrypted") != "true":
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id))
+                    self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

@@ -21,6 +21,8 @@ logger = logging.getLogger(__file__)
 
 
 class PrincipalCheckingRule(Rule):
+    """Abstract class for rules that check principals"""
+
     _valid_principals = None
 
     def _get_whitelist_from_config(self, services: List[str] = None) -> Set[str]:
