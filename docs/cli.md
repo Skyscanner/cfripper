@@ -1,15 +1,10 @@
-<img src="docs/img/logo.png" width="200">
+# CLI
 
-# CFripper
+```bash
+{{ cfripper_cli_help() }}
+```
 
-[![Build Status](https://travis-ci.org/Skyscanner/cfripper.svg?branch=master)](https://travis-ci.org/Skyscanner/cfripper)
-[![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
-
-Library and CLI tool for analysing CloudFormation templates and check them for security compliance.
-
-Docs available in https://cfripper.readthedocs.io/
-
-## CLI Usage
+## Examples
 
 ### Normal execution
 ```bash

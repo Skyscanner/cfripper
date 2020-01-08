@@ -1,8 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.12.0] - 2019-12-17
+## [0.12.0] - 2020-01-03
 ### Added
+- Adds CLI to package
 - `KMSKeyCrossAccountTrustRule`
 ### Changed
 - `GenericWildcardPrincipalRule`, `PartialWildcardPrincipalRule`, `FullWildcardPrincipalRule` no longer check for
