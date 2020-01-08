@@ -90,7 +90,15 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    This rule checks for permissions granted to principals from other accounts
+    Checks if the trust policy of a role grants permissions to principals from other accounts.
+    Do not use whole accounts as principals.
+
+    Risk:
+        It might allow other AWS identities to escalate privileges.
+
+    Fix:
+        If cross account permissions are required, the stack should be added to the whitelist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
     """
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
@@ -105,7 +113,14 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    This rule checks for permissions granted to principals from other accounts in S3 Buckets
+    Check for cross account access in S3 bucket policies. Cross account access by default is not allowed.
+
+    Risk:
+        It might allow other AWS identities to access/modify content of the bucket.
+
+    Fix:
+        If cross account permissions are required for S3 access, the stack should be added to the whitelist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
     """
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
@@ -119,7 +134,14 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    This rule checks for KMS keys that allow cross-account principals to get access to the key
+    Checks for KMS keys that allow cross-account principals to get access to the key
+
+    Risk:
+        It might allow other AWS identities to read/modify the secrets.
+
+    Fix:
+        If cross account permissions are required for KMS access, the stack should be added to the whitelist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
     """
 
     REASON = "{} has forbidden cross-account policy allow with {} for an KMS Key Policy"
