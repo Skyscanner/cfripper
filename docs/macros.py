@@ -76,7 +76,6 @@ def regex_for_splitting_paragraphs(sections: List[str]) -> re.Pattern:
 
 
 def process_paragraph(paragraph: str) -> str:
-    print(paragraph)
     return dedent(paragraph)
 
 
