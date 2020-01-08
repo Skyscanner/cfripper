@@ -30,6 +30,7 @@ class EBSVolumeHasSSERule(Rule):
         Enable server-side encryption on EBS volumes.
 
     Code for fix:
+        ````json
         {
             "Type" : "AWS::EC2::Volume",
             "Properties" : {
@@ -38,6 +39,7 @@ class EBSVolumeHasSSERule(Rule):
                 ...
             }
         }
+        ````
     """
 
     REASON = "EBS volume {} should have server-side encryption enabled"
