@@ -1,5 +1,9 @@
 import importlib
 import inspect
+import re
+from collections import OrderedDict
+from textwrap import dedent
+from typing import List
 
 import click
 
@@ -11,33 +15,30 @@ from cfripper.model.enums import RuleMode, RuleRisk
 def define_env(env):
     @env.macro
     def cfripper_rules():
+        severity_map = {RuleRisk.HIGH: "High", RuleRisk.MEDIUM: "Medium", RuleRisk.LOW: "Low"}
         rules_inspection = inspect.getmembers(rules, inspect.isclass)
         results = []
         for _, klass in rules_inspection:
             doc = inspect.getdoc(klass)
+            parsed_doc = parse_doc_string(doc)
 
-            summary, risk, fix_text, fix_code = parse_doc_string(doc)
+            content = ""
+            for paragraph_title, paragraph_text in parsed_doc.items():
+                if paragraph_title == "Description":
+                    # Remove ABCMeta default docstring
+                    if not paragraph_text.startswith("Helper class that"):
+                        content += paragraph_text
+                    content += f"\n\nSeverity: {severity_map[klass.RISK_VALUE]}\n"
+                    if klass.RULE_MODE == RuleMode.MONITOR:
+                        content += "\nDefaults to monitor mode (rule not enforced)\n"
+                    if klass.RULE_MODE == RuleMode.DEBUG:
+                        content += "\nDefaults to debug mode (rule not enforced)\n"
 
-            # Remove ABCMeta default docstring
-            if summary.startswith("Helper class that"):
-                summary = ""
-            if klass.RULE_MODE == RuleMode.MONITOR:
-                summary += "\nDefaults to monitor mode (rule not enforced)\n"
-            if klass.RULE_MODE == RuleMode.DEBUG:
-                summary += "\nDefaults to debug mode (rule not enforced)\n"
+                else:
+                    content += f"\n#### {paragraph_title}\n"
+                    content += paragraph_text
 
-            severity_map = {RuleRisk.HIGH: "High", RuleRisk.MEDIUM: "Medium", RuleRisk.LOW: "Low"}
-
-            results.append(
-                (
-                    klass.__name__,
-                    summary.replace("\n", "\n\n"),
-                    severity_map.get(klass.RISK_VALUE),
-                    risk,
-                    fix_text,
-                    fix_code,
-                )
-            )
+            results.append((klass.__name__, content))
 
         return sorted(results)
 
@@ -69,41 +70,23 @@ def get_object_from_reference(reference):
     return module
 
 
+def regex_for_splitting_paragraphs(sections: List[str]) -> re.Pattern:
+    return re.compile(r"\s*(" + "|".join(sections) + r"):")
+
+
+def process_paragraph(paragraph: str) -> str:
+    return dedent(paragraph)
+
+
 def parse_doc_string(doc):
-    lines = doc.split("\n")
-
-    summary, risk, fix_text, fix_code = "", "", "", ""
-    summary_complete, risk_complete, fix_complete = False, False, False
-
-    for line in lines:
-        if line.startswith("Risk:"):
-            summary_complete = True
-            continue
-
-        if line.startswith("Fix:"):
-            risk_complete = True
-            continue
-
-        if line.startswith("Code for fix:"):
-            fix_complete = True
-            continue
-
-        if not summary_complete:
-            summary += line.strip()
-            summary += "\n"
-            continue
-
-        if not risk_complete:
-            risk += line.strip()
-            risk += "\n"
-            continue
-
-        if not fix_complete:
-            fix_text += line.strip()
-            fix_text += "\n"
-            continue
-
-        fix_code += line
-        fix_code += "\n"
-
-    return summary, risk, fix_text, fix_code
+    sections = ["Risk", "Fix", "Code for fix"]
+    result = OrderedDict()
+    pattern_for_paragraphs = regex_for_splitting_paragraphs(sections)
+    paragraphs = pattern_for_paragraphs.split(doc.strip())
+    # Grab class summary
+    if paragraphs[0] not in sections:
+        result["Description"] = process_paragraph(paragraphs.pop(0))
+    # Add sections
+    for paragraph_title, paragraph_text in zip(paragraphs[0::2], paragraphs[1::2]):
+        result[paragraph_title] = process_paragraph(paragraph_text)
+    return result

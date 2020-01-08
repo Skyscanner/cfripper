@@ -9,27 +9,8 @@ When running CFRipper the CloudFormation stack will be checked against each rule
 
 {% if rule.1 -%}
 {{ rule.1 }}
-Severity: {{ rule.2 }}
 {% endif -%}
 
-{% if rule.3 -%}
-
-#### Risk Description
-
-{{ rule.3 }}
-
-{% endif -%}
-{% if rule.4 -%}
-
-#### Fix
-
-{{ rule.4 }}
-
-```json
-{{ rule.5 }}
-```
-
-{% endif -%}
 {% endfor %}
 
 ## Custom Rules
