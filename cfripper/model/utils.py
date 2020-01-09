@@ -109,7 +109,7 @@ def get_managed_policy(managed_policy_arn):
 def get_aws_service_from_arn(arn: str) -> Optional[str]:
     match = REGEX_ARN.match(arn)
     if match:
-        return match.group(2)
+        return match.group(1)
 
 
 def get_account_id_from_arn(arn: str) -> Optional[str]:
