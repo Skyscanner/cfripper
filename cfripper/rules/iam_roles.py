@@ -26,7 +26,7 @@ from cfripper.model.rule import Rule
 
 class IAMRolesOverprivilegedRule(Rule):
     """
-    Rule that checks for wildcards in resources for a set of actions and restricts managed policies
+    Rule that checks for wildcards in resources for a set of actions and restricts managed policies.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -71,8 +71,7 @@ class IAMRolesOverprivilegedRule(Rule):
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     """
-    Checks if an IAM role allows a `*` permissions policy.
-    Do not use `<aws_service>:*` in your IAM policies.
+    Checks if any IAM role is using a `*` permissions policy.
 
     Risk:
         The principle of least privilege (POLP), an important concept in computer security, is the practice of
@@ -96,7 +95,7 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
 class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     """
-    Checks if an IAM role allows a * trust policy.
+    Checks if any IAM role allows a `*` trust policy.
 
     Risk:
         Do not allow any principal to assume your role.

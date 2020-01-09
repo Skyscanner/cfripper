@@ -32,6 +32,10 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 
     Risk:
         This is designed to block unintended access from third party accounts to your buckets.
+
+    Fix:
+        All principals connected to S3 Bucket Policies should be known. CFRipper checks that **all** principals meet
+        the requirements expected. The list of valid accounts is defined in `valid_principals`, which is set in the config.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -64,6 +68,12 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 class S3BucketPolicyWildcardActionRule(Rule):
     """
     Checks if any S3 bucket policies contain wildcard actions.
+
+    Risk:
+        S3 contains a [large list](https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html)
+        of actions that can be specified in a policy. In most cases, a role will only ever need a small subset
+        of well defined permissions. If a role can only upload objects to one bucket, it massively reduces
+        the blast radius of a compromised role.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

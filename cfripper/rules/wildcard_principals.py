@@ -92,11 +92,12 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
     """
-    Checks for account-restricted wildcard principals in any policy. Principals with wilcard that allow access from one
-    account: `Principal: "arn:aws:iam::ACCOUNT_ID:xxxx*"`.
+    Checks for any wildcard or account-wide principals defined in any statements. This rule will flag
+    as non-compliant any principals where `root` or `*` are included at the end of the value, for
+    example, `arn:aws:iam:12345:12345*`.
 
     Risk:
-        It might allow other AWS identities to escalate privileges.
+        It might allow other AWS identities or the root access of the account to escalate privileges.
 
     Fix:
         Where possible, restrict the access to only the required resources.
@@ -118,8 +119,7 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
 class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
     """
-    Checks for multi-account wildcard principals in any policy. Principals that allow for access from multiple accounts are:
-    `Principal: "*"` and `Principal: "arn:aws:iam::*:xxxx"`.
+    Checks for any wildcard principals defined in any statements.
 
     Risk:
         It might allow other AWS identities to escalate privileges.

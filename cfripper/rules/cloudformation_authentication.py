@@ -20,7 +20,7 @@ from cfripper.model.rule import Rule
 
 class CloudFormationAuthenticationRule(Rule):
     """
-    Checks if the `AWS::CloudFormation::Authentication` resource contains plain text credentials.
+    Checks that any `AWS::CloudFormation::Authentication` resource does not contain plain text credentials.
 
     Risk:
         Secrets are stored in clear text and printed in clear text in the AWS console.
@@ -36,14 +36,14 @@ class CloudFormationAuthenticationRule(Rule):
             Description: Some cool password
             MinLength: 8
             Type: String
-        
+
         ...
 
         Resources:
-          AWS::CloudFormation::Authentication: 
+          AWS::CloudFormation::Authentication:
             ...
-            password: 
-                Ref: "PasswordAuth"
+            password:
+              Ref: "PasswordAuth"
             ...
         ````
     """

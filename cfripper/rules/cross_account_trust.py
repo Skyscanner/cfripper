@@ -38,8 +38,8 @@ logger = logging.getLogger(__file__)
 
 class CrossAccountCheckingRule(PrincipalCheckingRule):
     """
-    Base class not intended to be instantiated, but inherited from
-    This class provides common methods used to detect access permissions from other accounts
+    Base class not intended to be instantiated, but inherited from.
+    This class provides common methods used to detect access permissions from other accounts.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -134,7 +134,7 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    Checks for KMS keys that allow cross-account principals to get access to the key
+    Checks for KMS keys that allow cross-account principals to get access to the key.
 
     Risk:
         It might allow other AWS identities to read/modify the secrets.

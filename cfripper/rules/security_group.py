@@ -28,7 +28,7 @@ class SecurityGroupOpenToWorldRule(Rule):
 
     Fix:
         Most security groups only need to be access privately, and this can typically be done by specifying
-        the CIDR of a Security Group's ingress to 10.0.0.0/8 or similar (https://en.wikipedia.org/wiki/Private_network).
+        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
 
     Code for fix:
         ````json

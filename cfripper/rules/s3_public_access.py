@@ -27,7 +27,7 @@ logger = logging.getLogger(__file__)
 
 class S3BucketPublicReadAclAndListStatementRule(Rule):
     """
-    Checks if any S3 bucket policy has a public read ACL and `List` permission in the bucket policy. 
+    Checks if any S3 bucket policy has a public read ACL and `List` permission in the bucket policy.
 
     Fix:
         Unless the bucket is hosting static content and needs to be accessed publicly,

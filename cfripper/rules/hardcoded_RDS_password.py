@@ -32,7 +32,7 @@ class HardcodedRDSPasswordRule(Rule):
     Fix:
         When defining a password **do not use** the default value.
         If you specify a default password and you don’t provide a parameter, it will use the default
-        which can be found clear text in the CF.
+        which can be found clear text in the CloudFormation file.
 
     Code for fix:
         ````yml
@@ -42,7 +42,7 @@ class HardcodedRDSPasswordRule(Rule):
             Description: The database admin account password
             MinLength: 8
             Type: String
-        
+
         ...
 
         Resources:

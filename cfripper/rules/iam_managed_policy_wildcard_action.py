@@ -21,9 +21,9 @@ from cfripper.model.rule import Rule
 
 
 class IAMManagedPolicyWildcardActionRule(Rule):
+    #  TODO: update this description below and make it 100% accurate.
     """
-    Checks all actions of IAM roles in a CloudFormation file for any `Resource: *`,
-    and compares policies to a list of blacklisted roles, such as `administratoraccess`.
+    Checks all IAM managed policies resources in a CloudFormation file for any actions that are using a wilcard.
     See [current blacklisted roles](https://github.com/Skyscanner/cfripper/blob/master/cfripper/config/config.py#L26).
 
     Risk:
@@ -36,31 +36,6 @@ class IAMManagedPolicyWildcardActionRule(Rule):
         shows a compliant policy, and in the code comments, an example of a non-compliant policy.
 
     Code for fix:
-        This is an example of a compliant policy, and commented out is the violation that triggered the rule:
-
-        ````json
-        {
-            "PolicyName": "not_so_chill_policy",
-            "PolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Action": [
-                            "ec2:DeleteInternetGateway"
-                        ],
-                        "Resource": [
-                            // non-compliant example below:
-                            // "*"
-                            // compliant example where Resource has been better defined
-                            "arn:aws:ec2:::some-ec2-thing/*"
-                        ]
-                    }
-                ]
-            }
-        }
-        ````
-
         Managed policy ARNs can also be dangerous and allow more privilege to a service than required. These should be avoided:
         ````json
         {

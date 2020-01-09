@@ -73,7 +73,16 @@ class SQSQueuePolicyPublicRule(Rule):
 
 class SQSQueuePolicyWildcardActionRule(Rule):
     """
-    Checks if an SQS Queue Policy contains a `*` in the Action part of the policy.
+    Checks if an SQS Queue Policy contains a `*` for any action in the policy document.
+
+    Risk:
+        Wildcards are always dangerous to use if not all of the actions of a feature (like SQS) are known.
+        For example, `sqs:Delete*` might be acceptable if a service needs to delete messages from a queue.
+        However, this will allow the role to perform `sqs:DeleteQueue`, which can delete non-empty queues.
+
+    Fix:
+        Policies with wildcards contained in the `Action` statements should be reviewed. Writing out the actions
+        verbosely is sometimes clearer and safer. Stacks can be whitelisted otherwise.
     """
 
     REASON = "SQS Queue policy {} should not allow * action"

@@ -19,10 +19,10 @@ from cfripper.model.rule import Rule
 
 class EBSVolumeHasSSERule(Rule):
     """
-    Check that server side encryption is enabled for all EBS volumes.
+    Checks that server side encryption is enabled for all EBS volumes.
 
     Risk:
-        Data that is not encrpyted at rest could breach regulatory compliance
+        Data that is not encrypted at rest could breach regulatory compliance
         and allow easier access for an attacker to view any instace storage data
         of your EC2 instance.
 
