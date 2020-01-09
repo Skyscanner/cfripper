@@ -71,7 +71,12 @@ class IAMRolesOverprivilegedRule(Rule):
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     """
-    Rule that checks for wildcards in actions in IAM role policies
+    Checks if an IAM role allows a `*` permissions policy.
+    Do not use `<aws_service>:*` in your IAM policies.
+
+    Risk:
+        The principle of least privilege (POLP), an important concept in computer security, is the practice of
+        limiting access rights for users to the bare minimum permissions they need to perform their work.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -91,7 +96,11 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
 class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     """
-    Rule that checks for wildcards in actions in IAM role assume role policy documents
+    Checks if an IAM role allows a * trust policy.
+
+    Risk:
+        Do not allow any principal to assume your role.
+        This is a security risk as it allow a third party account to assume your role and escalate privileges in our account.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

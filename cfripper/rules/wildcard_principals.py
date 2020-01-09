@@ -34,7 +34,7 @@ logger = logging.getLogger(__file__)
 
 class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     """
-    Rule that checks for wildcard principals in resources
+    Checks for wildcard principals in resources.
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
@@ -92,7 +92,15 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
     """
-    Rule that checks for partial wildcard principals or account-wide principals in resources
+    Checks for account-restricted wildcard principals in any policy. Principals with wilcard that allow access from one
+    account: `Principal: "arn:aws:iam::ACCOUNT_ID:xxxx*"`.
+
+    Risk:
+        It might allow other AWS identities to escalate privileges.
+
+    Fix:
+        Where possible, restrict the access to only the required resources.
+        For example, instead of `Principal: "*"`, include a list of the roles that need access.
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
@@ -110,7 +118,15 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
 class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
     """
-    Rule that checks for wildcard principals in resources
+    Checks for multi-account wildcard principals in any policy. Principals that allow for access from multiple accounts are:
+    `Principal: "*"` and `Principal: "arn:aws:iam::*:xxxx"`.
+
+    Risk:
+        It might allow other AWS identities to escalate privileges.
+
+    Fix:
+        Where possible, restrict the access to only the required resources.
+        For example, instead of `Principal: "*"`, include a list of the roles that need access.
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"

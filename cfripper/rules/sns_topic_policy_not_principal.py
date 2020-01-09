@@ -22,7 +22,7 @@ from cfripper.model.rule import Rule
 
 class SNSTopicPolicyNotPrincipalRule(Rule):
     """
-    Rule that checks for `Allow` and `NotPrincipal` at the same time in SNS Topic PolicyDocuments
+    Checks if an SNS topic policy has an Allow + a NotPrincipal (exclusive principal).
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

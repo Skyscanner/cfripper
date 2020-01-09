@@ -22,7 +22,7 @@ from cfripper.model.rule import Rule
 
 class ManagedPolicyOnUserRule(Rule):
     """
-    Rule that checks for IAM managed policies attached directly to users
+    Checks if the IAM managed policy is applied to a group and not a user.
     """
 
     REASON = "IAM managed policy {} should not apply directly to users. Should be on group"

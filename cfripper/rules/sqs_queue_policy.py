@@ -27,7 +27,7 @@ logger = logging.getLogger(__file__)
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
     """
-    Rule that checks for `Allow` and `NotPrincipal` at the same time in SQS Queue PolicyDocuments
+    Checks if an SQS Queue policy has an Allow + a NotPrincipal (exclusive principal).
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -44,7 +44,10 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
 
 class SQSQueuePolicyPublicRule(Rule):
     """
-    Rule that checks for wildcards in SQS queue PolicyDocuments principals
+    Checks for wildcard principals in Allow statements in an SQS Queue Policy.
+
+    Risk:
+        This is deemed a potential security risk as anyone would be able to interact with your queue.
     """
 
     REASON = "SQS Queue policy {} should not be public"
@@ -70,7 +73,7 @@ class SQSQueuePolicyPublicRule(Rule):
 
 class SQSQueuePolicyWildcardActionRule(Rule):
     """
-    Rule that checks for wildcards in SQS queue PolicyDocuments actions
+    Checks if an SQS Queue Policy contains a `*` in the Action part of the policy.
     """
 
     REASON = "SQS Queue policy {} should not allow * action"

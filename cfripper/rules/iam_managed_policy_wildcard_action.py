@@ -22,7 +22,74 @@ from cfripper.model.rule import Rule
 
 class IAMManagedPolicyWildcardActionRule(Rule):
     """
-    This rule checks for wildcards in IAM Managed policies
+    Checks all actions of IAM roles in a CloudFormation file for any `Resource: *`,
+    and compares policies to a list of blacklisted roles, such as `administratoraccess`.
+    See [current blacklisted roles](https://github.com/Skyscanner/cfripper/blob/master/cfripper/config/config.py#L26).
+
+    Risk:
+        The principle of least privilege (POLP), an important concept in computer security, is the
+        practice of limiting access rights for users to the bare minimum permissions they need to
+        perform their work.
+
+    Fix:
+        Do not use a wildcard on resources for actions that are in the blacklist. The example below
+        shows a compliant policy, and in the code comments, an example of a non-compliant policy.
+
+    Code for fix:
+        This is an example of a compliant policy, and commented out is the violation that triggered the rule:
+
+        ````json
+        {
+            "PolicyName": "not_so_chill_policy",
+            "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "ec2:DeleteInternetGateway"
+                        ],
+                        "Resource": [
+                            // non-compliant example below:
+                            // "*"
+                            // compliant example where Resource has been better defined
+                            "arn:aws:ec2:::some-ec2-thing/*"
+                        ]
+                    }
+                ]
+            }
+        }
+        ````
+
+        Managed policy ARNs can also be dangerous and allow more privilege to a service than required. These should be avoided:
+        ````json
+        {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Resources": {
+                "RootRole": {
+                    "Type": "AWS::IAM::Role",
+                    "Properties": {
+                        "Path": "/",
+                        "AssumeRolePolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Principal": "*",
+                                    "Action": [
+                                        "sts:AssumeRole"
+                                    ]
+                                }
+                            ]
+                        },
+                        "ManagedPolicyArns": [
+                            "arn:aws:iam::aws:policy/AdministratorAccess"
+                        ]
+                    }
+                }
+            }
+        }
+        ````
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
