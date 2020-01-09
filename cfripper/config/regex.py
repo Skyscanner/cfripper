@@ -94,7 +94,7 @@ REGEX_ARN = re.compile(r"^arn:aws:(\w+):(\w*):(\d*):(.+)$")
 
 """
 Check for iam arns
-It has 2 groups. The first one for account id, the last one  for resource id
+It has 2 groups. The first one for account id, the last one for resource id
 Valid:
 - arn:aws:iam::437628376:not-root
 Invalid:
@@ -106,7 +106,7 @@ REGEX_IAM_ARN = re.compile(r"^arn:aws:iam::(\d*):(.*)$")
 
 """
 Check for sts arns
-It has 2 groups. The first one for account id, the last one  for resource id
+It has 2 groups. The first one for account id, the last one for resource id
 Valid:
 - arn:aws:sts::437628376:not-root
 Invalid:
