@@ -135,7 +135,9 @@ def get_account_id_from_principal(principal: str) -> Optional[str]:
         return principal
 
     aws_service = get_aws_service_from_arn(principal)
-    if aws 
+    if aws_service not in ["iam", "sts"]:
+        return None
+    
     if aws_service == "iam":
         return get_account_id_from_iam_arn(principal)
     elif aws_service == "sts":
