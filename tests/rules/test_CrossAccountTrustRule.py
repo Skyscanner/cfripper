@@ -214,6 +214,17 @@ def test_kms_cross_account_failure(principal):
     )
 
 
+@pytest.mark.parametrize(
+    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+)
+def test_kms_cross_account_success(principal):
+    result = Result()
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
+    rule.invoke(model)
+    assert result.valid
+
+
 def test_sts_valid(template_valid_with_sts):
     result = Result()
     rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
