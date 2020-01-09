@@ -16,12 +16,14 @@ import pytest
 
 from cfripper.config.regex import (
     REGEX_ARN,
+    REGEX_AWS_SERVICE_ARN,
     REGEX_CONTAINS_STAR,
     REGEX_CROSS_ACCOUNT_ROOT,
     REGEX_FULL_WILDCARD_PRINCIPAL,
     REGEX_HAS_STAR_OR_STAR_AFTER_COLON,
     REGEX_IAM_ARN,
     REGEX_IS_STAR,
+    REGEX_STS_ARN,
     REGEX_WILDCARD_POLICY_ACTION,
 )
 
@@ -56,6 +58,10 @@ from cfripper.config.regex import (
         (REGEX_IS_STAR, "*abcdef", False),
         (REGEX_IS_STAR, "arn:aws:iam::437628376:not-root", False),
         (REGEX_IS_STAR, "potato", False),
+        (REGEX_AWS_SERVICE_ARN, "arn:aws:sts::437628376:root", True),
+        (REGEX_AWS_SERVICE_ARN, "arn:aws:iam::437628376:root", True),
+        (REGEX_AWS_SERVICE_ARN, "arn:aws:s3:::my_corporate_bucket", True),
+        (REGEX_AWS_SERVICE_ARN, "potato", False),
         (REGEX_ARN, "arn:aws:iam::437628376:not-root", True),
         (REGEX_ARN, "arn:aws:iam::437628376:root", True),
         (REGEX_ARN, "arn:aws:s3:::my_corporate_bucket", True),
@@ -64,6 +70,10 @@ from cfripper.config.regex import (
         (REGEX_IAM_ARN, "arn:aws:iam::437628376:root", True),
         (REGEX_IAM_ARN, "arn:aws:s3:::my_corporate_bucket", False),
         (REGEX_IAM_ARN, "potato", False),
+        (REGEX_STS_ARN, "arn:aws:sts::437628376:not-root", True),
+        (REGEX_STS_ARN, "arn:aws:sts::437628376:root", True),
+        (REGEX_STS_ARN, "arn:aws:s3:::my_corporate_bucket", False),
+        (REGEX_STS_ARN, "potato", False),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:*", True),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "*", True),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:root", False),

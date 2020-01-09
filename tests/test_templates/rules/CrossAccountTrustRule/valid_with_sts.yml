@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  KmsMasterKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      Description: "kms-master-key-test"
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: "kms-key"
+        Statement:
+          - Sid: "Allow use of the key"
+            Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::123456789:role/test-role"
+                - "arn:aws:sts::123456789:assumed-role/test-role/session"
+            Action:
+              - "kms:Encrypt"
+              - "kms:Decrypt"
+              - "kms:ReEncrypt*"
+              - "kms:GenerateDataKey*"
+              - "kms:DescribeKey"
+            Resource: "*"
