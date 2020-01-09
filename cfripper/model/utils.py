@@ -25,7 +25,7 @@ import yaml
 from cfn_flip import to_json
 from pycfmodel.model.resources.properties.policy import Policy
 
-from cfripper.config.regex import REGEX_ARN, REGEX_AWS_SERVICE_ARN, REGEX_IAM_ARN, REGEX_STS_ARN
+from cfripper.config.regex import REGEX_ARN, REGEX_IAM_ARN, REGEX_STS_ARN
 
 logger = logging.getLogger(__file__)
 
@@ -107,9 +107,9 @@ def get_managed_policy(managed_policy_arn):
 
 
 def get_aws_service_from_arn(arn: str) -> Optional[str]:
-    match = REGEX_AWS_SERVICE_ARN.match(arn)
+    match = REGEX_ARN.match(arn)
     if match:
-        return match.group(1)
+        return match.group(2)
 
 
 def get_account_id_from_arn(arn: str) -> Optional[str]:
@@ -135,6 +135,7 @@ def get_account_id_from_principal(principal: str) -> Optional[str]:
         return principal
 
     aws_service = get_aws_service_from_arn(principal)
+    if aws 
     if aws_service == "iam":
         return get_account_id_from_iam_arn(principal)
     elif aws_service == "sts":

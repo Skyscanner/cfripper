@@ -80,19 +80,6 @@ REGEX_IS_STAR = re.compile(r"^\*$")
 
 
 """
-Check for aws service
-It has 2 group. The first one for service name, the second one for the rest
-Valid:
-- arn:aws:sts::437628376:not-root
-- arn:aws:iam::437628376:root
-- arn:aws:s3:::my_corporate_bucket
-Invalid:
-- potato
-"""
-REGEX_AWS_SERVICE_ARN = re.compile(r"^arn:aws:(\w+):(.+)$")
-
-
-"""
 Check for arns
 It has 4 groups. The first one for service name, the second one for region, the third, for account id, the last one
 for resource id
