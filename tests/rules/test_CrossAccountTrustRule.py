@@ -44,6 +44,16 @@ def template_valid_with_canonical_id():
 
 
 @pytest.fixture()
+def template_valid_with_sts():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_sts.yml").resolve()
+
+
+@pytest.fixture()
+def template_invalid_with_sts():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts.yml").resolve()
+
+
+@pytest.fixture()
 def expected_result_two_roles():
     return [
         Failure(
@@ -213,3 +223,27 @@ def test_kms_cross_account_success(principal):
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
     rule.invoke(model)
     assert result.valid
+
+
+def test_sts_valid(template_valid_with_sts):
+    result = Result()
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    rule.invoke(template_valid_with_sts)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 0
+
+
+def test_sts_failure(template_invalid_with_sts):
+    result = Result()
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    rule.invoke(template_invalid_with_sts)
+
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    failed_rule = result.failed_rules[0]
+    assert failed_rule.reason == (
+        "KmsMasterKey has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an KMS Key Policy"
+    )
