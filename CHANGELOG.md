@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.12.2] - 2020-01-10
+### Improvements
+- Documentation updated to show the risk of rules and possible fixes where available, 
+as well as a large set of updates to the content. The macros for parsing the documentation
+have also been updated.
+
 ## [0.12.1] - 2020-01-09
 ### Fixes
 - Fix for `CrossAccountCheckingRule` was adding errors when the principal was sts when it shouldn't. 
