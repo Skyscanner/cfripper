@@ -26,6 +26,7 @@ logger = logging.getLogger(__file__)
 
 
 class S3BucketPublicReadAclAndListStatementRule(Rule):
+    # TODO: refactor regex to regex file.
     """
     Checks if any S3 bucket policy has a public read ACL and `List` permission in the bucket policy.
 

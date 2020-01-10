@@ -113,7 +113,7 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    Check for cross account access in S3 bucket policies. Cross account access by default is not allowed.
+    Check for cross account access in S3 bucket policies. Cross account access by default should not be allowed.
 
     Risk:
         It might allow other AWS identities to access/modify content of the bucket.

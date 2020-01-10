@@ -23,48 +23,7 @@ from cfripper.model.rule import Rule
 class IAMManagedPolicyWildcardActionRule(Rule):
     #  TODO: update this description below and make it 100% accurate.
     """
-    Checks all IAM managed policies resources in a CloudFormation file for any actions that are using a wilcard.
-    See [current blacklisted roles](https://github.com/Skyscanner/cfripper/blob/master/cfripper/config/config.py#L26).
-
-    Risk:
-        The principle of least privilege (POLP), an important concept in computer security, is the
-        practice of limiting access rights for users to the bare minimum permissions they need to
-        perform their work.
-
-    Fix:
-        Do not use a wildcard on resources for actions that are in the blacklist. The example below
-        shows a compliant policy, and in the code comments, an example of a non-compliant policy.
-
-    Code for fix:
-        Managed policy ARNs can also be dangerous and allow more privilege to a service than required. These should be avoided:
-        ````json
-        {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Resources": {
-                "RootRole": {
-                    "Type": "AWS::IAM::Role",
-                    "Properties": {
-                        "Path": "/",
-                        "AssumeRolePolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Principal": "*",
-                                    "Action": [
-                                        "sts:AssumeRole"
-                                    ]
-                                }
-                            ]
-                        },
-                        "ManagedPolicyArns": [
-                            "arn:aws:iam::aws:policy/AdministratorAccess"
-                        ]
-                    }
-                }
-            }
-        }
-        ````
+    Rule currently not in use.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
