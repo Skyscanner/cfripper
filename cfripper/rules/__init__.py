@@ -52,6 +52,7 @@ from cfripper.rules.wildcard_principals import (
 )
 
 DEFAULT_RULES = {
+    "CloudFormationAuthenticationRule": CloudFormationAuthenticationRule,
     "CrossAccountTrustRule": CrossAccountTrustRule,
     "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
     "FullWildcardPrincipal": FullWildcardPrincipalRule,
@@ -68,6 +69,7 @@ DEFAULT_RULES = {
     "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
     "SecurityGroupIngressOpenToWorld": SecurityGroupIngressOpenToWorld,
+    "SecurityGroupMissingEgressRule": SecurityGroupMissingEgressRule,
     "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,
     "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
@@ -75,13 +77,11 @@ DEFAULT_RULES = {
 }
 
 NON_DEFAULT_RULES = {
-    "CloudFormationAuthenticationRule": CloudFormationAuthenticationRule,
     "GenericWildcardPrincipalRule": GenericWildcardPrincipalRule,
     "IAMManagedPolicyWildcardActionRule": IAMManagedPolicyWildcardActionRule,
     "IAMRoleWildcardActionOnPermissionsPolicyRule": IAMRoleWildcardActionOnPermissionsPolicyRule,
     "IAMRoleWildcardActionOnTrustPolicyRule": IAMRoleWildcardActionOnTrustPolicyRule,
     "S3BucketPolicyWildcardActionRule": S3BucketPolicyWildcardActionRule,
-    "SecurityGroupMissingEgressRule": SecurityGroupMissingEgressRule,
     "SQSQueuePolicyWildcardActionRule": SQSQueuePolicyWildcardActionRule,
 }
 

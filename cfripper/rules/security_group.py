@@ -63,7 +63,52 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
 
 class SecurityGroupMissingEgressRule(Rule):
     """
-    Rule that checks for open security groups egress
+    Checks that Security Groups are defined with an egress policy, even if this is still allowing all
+    outbound traffic.
+
+    Risk:
+        If no egress rule is specified, the default is to open all outbound traffic to the world. Whilst
+        some services may need this, it is usually the case that the security group can be locked down
+        more. A NAT instance for example may require a completely open egress policy.
+
+        Allowing unrestricted (0.0.0.0/0 or ::/0) outbound/egress access can increase opportunities for
+        malicious activity such as such as Denial of Service (DoS) attacks or Distributed Denial of Service (DDoS)
+        attacks.
+
+    Fix:
+        Explicitly defining the egress policy for the security group.
+
+    Code for fix:
+        Even in the example below, the egress rule added will allow HTTP traffic out to the world. However,
+        this will pass the rule.
+
+        ````json
+        // example from https://stelligent.com/2016/04/07/finding-security-problems-early-in-the-development-process-of-a-cloudformation-template-with-cfn-nag/
+        {
+            "Resources": {
+                "sg": {
+                    "Type": "AWS::EC2::SecurityGroup",
+                    "Properties": {
+                        "GroupDescription": "some_group_desc",
+                        "SecurityGroupIngress": {
+                            "CidrIp": "10.1.2.3/32",
+                            "FromPort": 34,
+                            "ToPort": 34,
+                            "IpProtocol": "tcp"
+                        },
+                        // addition of egress to the `sg` resource
+                        "SecurityGroupEgress": {
+                            "CidrIp": "0.0.0.0/0",
+                            "FromPort": 80,
+                            "ToPort": 80,
+                            "IpProtocol": "tcp"
+                        },
+                        "VpcId": "vpc-12345678"
+                    }
+                }
+            }
+        }
+        ````
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -71,7 +116,7 @@ class SecurityGroupMissingEgressRule(Rule):
         "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "
         "configuration"
     )
-    RULE_MODE = RuleMode.MONITOR
+    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
