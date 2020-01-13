@@ -37,11 +37,7 @@ from cfripper.rules.security_group import (
 from cfripper.rules.sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
 from cfripper.rules.wildcard_policies import S3BucketPolicyWildcardActionRule, SQSQueuePolicyWildcardActionRule
-from cfripper.rules.wildcard_principals import (
-    FullWildcardPrincipalRule,
-    GenericWildcardPrincipalRule,
-    PartialWildcardPrincipalRule,
-)
+from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
 
 DEFAULT_RULES = {
     "CloudFormationAuthenticationRule": CloudFormationAuthenticationRule,
@@ -58,6 +54,7 @@ DEFAULT_RULES = {
     "PolicyOnUserRule": PolicyOnUserRule,
     "PrivilegeEscalationRule": PrivilegeEscalationRule,
     "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
+    "S3BucketPolicyWildcardActionRule": S3BucketPolicyWildcardActionRule,
     "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
     "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,
     "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
@@ -67,11 +64,6 @@ DEFAULT_RULES = {
     "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
     "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
-}
-
-NON_DEFAULT_RULES = {
-    "GenericWildcardPrincipalRule": GenericWildcardPrincipalRule,
-    "S3BucketPolicyWildcardActionRule": S3BucketPolicyWildcardActionRule,
     "SQSQueuePolicyWildcardActionRule": SQSQueuePolicyWildcardActionRule,
 }
 

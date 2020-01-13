@@ -1,0 +1,72 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "WildcardActionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["ec2.amazonaws.com"]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": ["s3:ListBucket"],
+                  "Resource": "arn:aws:s3:::myExampleBucket",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:userid": ["AROAID2GEXAMPLEROLEID:*", "444455556666"]
+                    }
+                  }
+                },
+                {
+                  "Sid": "",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": ["s3:DeleteObject", "s3:GetObject", "s3:PutObject"],
+                  "Resource": "arn:aws:s3:::myExampleBucket/*",
+                  "Condition": {
+                    "StringLike": {
+                      "aws:userid": ["AROAID2GEXAMPLEROLEID:*", "444455556666"]
+                    }
+                  }
+                },
+                {
+                  "Sid": "",
+                  "Effect": "Deny",
+                  "Principal": "*",
+                  "Action": "s3:*",
+                  "Resource": [
+                    "arn:aws:s3:::myExampleBucket/*",
+                    "arn:aws:s3:::myExampleBucket"
+                  ],
+                  "Condition": {
+                    "StringNotLike": {
+                      "aws:userid": ["AROAID2GEXAMPLEROLEID:*", "444455556666"]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

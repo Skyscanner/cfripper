@@ -27,12 +27,12 @@ from tests.utils import get_cfmodel_from
 
 @pytest.fixture()
 def s3_bucket_with_wildcards():
-    return get_cfmodel_from("rules/S3BucketPolicyWildcardActionRule/s3_bucket_with_wildcards.json").resolve()
+    return get_cfmodel_from("rules/WildcardPoliciesRule/s3_bucket_with_wildcards.json").resolve()
 
 
 @pytest.fixture()
 def sqs_queue_with_wildcards():
-    return get_cfmodel_from("rules/SQSQueuePolicyWildcardActionRule/sqs_queue_with_wildcards.json").resolve()
+    return get_cfmodel_from("rules/WildcardPoliciesRule/sqs_queue_with_wildcards.json").resolve()
 
 
 @patch("cfripper.rules.wildcard_policies.logger.warning")
