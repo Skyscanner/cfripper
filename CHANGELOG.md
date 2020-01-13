@@ -1,7 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.12.2] - 2020-01-10
+## [0.12.3] - 2020-01-13
+### Changed
+- `CloudFormationAuthenticationRule` now in `MONITOR` mode and new test added
+- `IAMRoleWildcardActionOnPolicyRule` combines two previous unused rules in `IAMManagedPolicyWildcardActionRule`, `IAMRoleWildcardActionOnPermissionsPolicyRule`, and `IAMRoleWildcardActionOnTrustPolicyRule`
+- `IAMRoleWildcardActionOnPolicyRule` now in `DEBUG` mode
+- `S3BucketPolicyWildcardActionRule` has now been changed to be an instantiation of the new generic rule `GenericWildcardPolicyRule`. It is set in `DEBUG` mode
+- `S3BucketPolicyWildcardActionRule` has had updated regex filter to make it more aligned with both further rules to do with wildcards in actions, and the existing `SQSQueuePolicyWildcardActionRule`
+- `SQSQueuePolicyWildcardActionRule` has now been changed to be an instantiation of the new generic rule `GenericWildcardPolicyRule`. It is set in `DEBUG` mode
+- `SecurityGroupMissingEgressRule` now in `DEBUG` mode and a new test added
+
+## [0.12.2] - 2020-01-13
 ### Improvements
 - Documentation updated to show the risk of rules and possible fixes where available, 
 as well as a large set of updates to the content. The macros for parsing the documentation
