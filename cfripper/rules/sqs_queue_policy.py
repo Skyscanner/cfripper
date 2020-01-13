@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule", "SQSQueuePolicyWildcardActionRule"]
+__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule"]
 
 import logging
 
@@ -66,18 +66,3 @@ class SQSQueuePolicyPublicRule(Rule):
                             self.add_failure(
                                 type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
                             )
-
-
-class SQSQueuePolicyWildcardActionRule(Rule):
-    """
-    Rule that checks for wildcards in SQS queue PolicyDocuments actions
-    """
-
-    REASON = "SQS Queue policy {} should not allow * action"
-
-    def invoke(self, cfmodel):
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
-                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-            ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

@@ -98,6 +98,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                                 resource_ids={logical_id},
                             )
 
+            # check AWS::IAM::ManagedPolicy.
             if isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
