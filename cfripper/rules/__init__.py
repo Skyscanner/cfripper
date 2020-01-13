@@ -22,7 +22,6 @@ from cfripper.rules.cross_account_trust import (
 )
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
-from cfripper.rules.iam_managed_policy_wildcard_action import IAMManagedPolicyWildcardActionRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
 from cfripper.rules.kms_key_wildcard_principal import KMSKeyWildcardPrincipal
 from cfripper.rules.managed_policy_on_user import ManagedPolicyOnUserRule
@@ -75,7 +74,6 @@ DEFAULT_RULES = {
 
 NON_DEFAULT_RULES = {
     "GenericWildcardPrincipalRule": GenericWildcardPrincipalRule,
-    "IAMManagedPolicyWildcardActionRule": IAMManagedPolicyWildcardActionRule,
     "S3BucketPolicyWildcardActionRule": S3BucketPolicyWildcardActionRule,
     "SQSQueuePolicyWildcardActionRule": SQSQueuePolicyWildcardActionRule,
 }
