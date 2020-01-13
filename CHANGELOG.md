@@ -1,8 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.12.0] - 2019-12-17
+## [0.12.1] - 2020-01-09
+### Fixes
+- Fix for `CrossAccountCheckingRule` was adding errors when the principal was sts when it shouldn't. 
 ### Added
+- `get_account_id_from_sts_arn` and `get_aws_service_from_arn` in utils.
+
+## [0.12.0] - 2020-01-08
+### Added
+- Adds CLI to package
 - `KMSKeyCrossAccountTrustRule`
 ### Changed
 - `GenericWildcardPrincipalRule`, `PartialWildcardPrincipalRule`, `FullWildcardPrincipalRule` no longer check for

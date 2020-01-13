@@ -1,7 +1,10 @@
 import importlib
 import inspect
 
+import click
+
 from cfripper import rules
+from cfripper.cli import cli
 from cfripper.model.enums import RuleMode
 
 
@@ -27,6 +30,11 @@ def define_env(env):
         obj = get_object_from_reference(reference)
         source = "".join(inspect.getsourcelines(obj)[0])
         return f"```python3\n{source}```"
+
+    @env.macro
+    def cfripper_cli_help():
+        with click.Context(cli) as ctx:
+            return cli.get_help(ctx)
 
 
 def get_object_from_reference(reference):

@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from setuptools import find_packages, setup
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+from cfripper.__version__ import __version__
+
+project_root_path = Path(__file__).parent
 
 install_requires = ["boto3>=1.4.7,<2", "PyYAML>=4.2b1", "pycfmodel>=0.5.1", "cfn_flip>=1.2.0"]
 
@@ -27,17 +30,18 @@ docs_requires = [
 
 setup(
     name="cfripper",
-    version="0.12.0",
+    version=__version__,
     author="Skyscanner Product Security",
     author_email="security@skyscanner.net",
-    long_description=long_description,
+    entry_points={"console_scripts": ["cfripper=cfripper.cli:cli"]},
+    long_description=(project_root_path / "README.md").read_text(),
     long_description_content_type="text/markdown",
     url="https://github.com/Skyscanner/cfripper",
-    description='Lambda function to "rip apart" a CloudFormation template and check it for security compliance.',
+    description="Library and CLI tool for analysing CloudFormation templates and check them for security compliance.",
     packages=find_packages(exclude=("docs", "tests")),
     platforms="any",
     python_requires=">=3.7",
     install_requires=install_requires,
     tests_require=dev_requires,
-    extras_require={"dev": dev_requires, "docs": docs_requires,},
+    extras_require={"dev": dev_requires, "docs": docs_requires},
 )
