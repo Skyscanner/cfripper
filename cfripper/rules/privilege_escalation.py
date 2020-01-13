@@ -21,7 +21,13 @@ from cfripper.model.rule import Rule
 
 class PrivilegeEscalationRule(Rule):
     """
-    Rule that checks for actions that allow privilege escalation in IAM policies
+    Checks for any dangerous IAM actions that could allow privilege escalation and potentially
+    represent a large security risk.
+    See [current blacklisted IAM actions](https://github.com/Skyscanner/cfripper/blob/master/cfripper/rules/privilege_escalation.py#L29).
+
+    Fix:
+        Unless strictly necessary, do not use actions in the IAM action blacklist. CloudFormation files that do require these
+        actions should be added to the whitelist.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

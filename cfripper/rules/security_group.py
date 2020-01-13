@@ -23,7 +23,43 @@ from cfripper.model.rule import Rule
 
 class SecurityGroupOpenToWorldRule(Rule):
     """
-    Rule that checks for open security groups
+    Checks if security groups have an ingress rule of /0 for ports other than 80 and 443.
+    All other ports should be closed off from public access to prevent a serious security misconfiguration.
+
+    Fix:
+        Most security groups only need to be access privately, and this can typically be done by specifying
+        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
+
+    Code for fix:
+        ````json
+        {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Resources": {
+                "SecurityGroup": {
+                    "Type": "AWS::EC2::SecurityGroup",
+                    "Properties": {
+                        "GroupDescription": "description",
+                        "SecurityGroupIngress": [
+                            // this is compliant. Port 22 (typically SSH) is accessible from the private network only.
+                            {
+                                "IpProtocol": "tcp",
+                                "CidrIp": "10.0.0.0/8",
+                                "FromPort": 22,
+                                "ToPort": 22
+                            },
+                            // this is not compliant. Anyone with the IP for this EC2 instance can connect on port 9090.
+                            {
+                                "IpProtocol": "tcp",
+                                "CidrIp": "0.0.0.0/0",
+                                "FromPort": 9090,
+                                "ToPort": 9090
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        ````
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -46,7 +82,11 @@ class SecurityGroupOpenToWorldRule(Rule):
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
     """
-    Rule that checks for open security groups ingress
+    Checks if a security group has a CIDR open to world on ingress.
+
+    Fix:
+        Unless required, do not use 0.0.0.0/0 as an ingress rule in your Security group.
+        This is a security risk as your resource will be publicly available.
     """
 
     def invoke(self, cfmodel):

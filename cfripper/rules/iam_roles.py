@@ -23,7 +23,7 @@ from cfripper.model.rule import Rule, RuleMode
 
 class IAMRolesOverprivilegedRule(Rule):
     """
-    Rule that checks for wildcards in resources for a set of actions and restricts managed policies
+    Rule that checks for wildcards in resources for a set of actions and restricts managed policies.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
