@@ -27,7 +27,7 @@ logger = logging.getLogger(__file__)
 
 class KMSKeyWildcardPrincipal(Rule):
     """
-    Check for wildcards principals in KMS Policies.
+    Check for wildcards in principals in KMS Policies.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
