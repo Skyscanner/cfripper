@@ -27,7 +27,7 @@ logger = logging.getLogger(__file__)
 
 class GenericWildcardPolicyRule(Rule):
     """
-    To be completed.
+    Abstract rule that checks for use of the wildcard `*` character in Actions of Policy Documents of AWS Resources.
     """
 
     REASON = "The {} {} should not allow a `*` action"
@@ -55,7 +55,7 @@ class GenericWildcardPolicyRule(Rule):
 
 class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
-    To be completed!
+    Checks for use of the wildcard `*` character in the Actions of Policy Documents of S3 Bucket Policies.
     """
 
     AWS_RESOURCE = S3BucketPolicy
@@ -63,7 +63,7 @@ class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):
 
 class SQSQueuePolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
-    To be completed!
+    Checks for use of the wildcard `*` character in the Actions of Policy Documents of SQS Queue Policies.
     """
 
     AWS_RESOURCE = SQSQueuePolicy
