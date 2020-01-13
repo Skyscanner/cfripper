@@ -26,7 +26,7 @@ from cfripper.model.rule import Rule
 
 class IAMRolesOverprivilegedRule(Rule):
     """
-    Rule that checks for wildcards in resources for a set of actions and restricts managed policies
+    Rule that checks for wildcards in resources for a set of actions and restricts managed policies.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -71,11 +71,15 @@ class IAMRolesOverprivilegedRule(Rule):
 
 class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
     """
-    Rule that checks for wildcards in actions in IAM role policies
+    Checks if any IAM role is using a `*` character in any of its permissions policy.
+
+    Risk:
+        The principle of least privilege (POLP), an important concept in computer security, is the practice of
+        limiting access rights for users to the bare minimum permissions they need to perform their work.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "IAM role {} should not allow * action on its permissions policy {}"
+    REASON = "IAM role {} should not allow any * action on its permissions policy {}"
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
@@ -91,11 +95,15 @@ class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
 
 class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
     """
-    Rule that checks for wildcards in actions in IAM role assume role policy documents
+    Checks if any IAM role is using a `*` character in its trust policy.
+
+    Risk:
+        Do not allow any principal to assume your role.
+        This is a security risk as it allow a third party account to assume your role and escalate privileges in our account.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "IAM role {} should not allow * action on its trust policy"
+    REASON = "IAM role {} should not allow any * action on its trust policy"
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():

@@ -21,7 +21,39 @@ from cfripper.model.rule import Rule
 
 class HardcodedRDSPasswordRule(Rule):
     """
-    This rule checks that RDS clusters and instances don't expose their passwords
+    Checks that any RDS clusters or instances aren't exposing their passwords.
+    The rule forbids default password parameters and any missing `NoEcho` for RDS passwords.
+
+    Risk:
+        Not setting this correctly can lead to malicious agents attempting to gain access to your
+        RDS instaces with a default password, or by reading the value that will be printed in plain
+        text in the AWS console and logs if `NoEcho` is not set.
+
+    Fix:
+        When defining a password **do not use** the default value.
+        If you specify a default password and you don’t provide a parameter, it will use the default
+        which can be found clear text in the CloudFormation file.
+
+    Code for fix:
+        ````yml
+        Parameters:
+          MasterUserPassword:
+            NoEcho: true
+            Description: The database admin account password
+            MinLength: 8
+            Type: String
+
+        ...
+
+        Resources:
+          RDSCluster:
+            Type: AWS::RDS::DBCluster
+            DeletionPolicy: "Snapshot"
+            Properties:
+              ...
+              MasterUserPassword: !Ref 'MasterUserPassword'
+              ...
+        ````
     """
 
     REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) for {}."

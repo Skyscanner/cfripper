@@ -19,7 +19,34 @@ from cfripper.model.rule import Rule
 
 
 class CloudFormationAuthenticationRule(Rule):
-    """This rule checks for hardcoded credentials"""
+    """
+    Checks that any `AWS::CloudFormation::Authentication` resource does not contain plain text credentials.
+
+    Risk:
+        Secrets are stored in clear text and printed in clear text in the AWS console.
+
+    Fix:
+        Do not store credentials in CloudFormation files, use parameters.
+
+    Code for fix:
+        ````yml
+        Parameters:
+          PasswordAuth:
+            NoEcho: true
+            Description: Some cool password
+            MinLength: 8
+            Type: String
+
+        ...
+
+        Resources:
+          AWS::CloudFormation::Authentication:
+            ...
+            password:
+              Ref: "PasswordAuth"
+            ...
+        ````
+    """
 
     REASON = "Hardcoded credentials in {}"
     GRANULARITY = RuleGranularity.RESOURCE

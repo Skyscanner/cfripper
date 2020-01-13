@@ -22,7 +22,7 @@ from cfripper.model.rule import Rule
 
 class PolicyOnUserRule(Rule):
     """
-    Rule that checks for IAM policies attached directly to users
+    Checks if any IAM policy is applied to a group and not a user.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

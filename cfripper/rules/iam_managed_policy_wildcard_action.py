@@ -21,8 +21,9 @@ from cfripper.model.rule import Rule
 
 
 class IAMManagedPolicyWildcardActionRule(Rule):
+    #  TODO: update this description below and make it 100% accurate.
     """
-    This rule checks for wildcards in IAM Managed policies
+    Rule currently not in use.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

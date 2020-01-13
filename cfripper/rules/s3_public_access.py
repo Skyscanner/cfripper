@@ -26,8 +26,13 @@ logger = logging.getLogger(__file__)
 
 
 class S3BucketPublicReadAclAndListStatementRule(Rule):
+    # TODO: refactor regex to regex file.
     """
-    Rule that checks for public read access to S3 bucket policies
+    Checks if any S3 bucket policy has a public read ACL and `List` permission in the bucket policy.
+
+    Fix:
+        Unless the bucket is hosting static content and needs to be accessed publicly,
+        these bucket policies should be locked down.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -49,7 +54,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 
 class S3BucketPublicReadWriteAclRule(Rule):
     """
-    Rule that checks for public read access to S3 buckets
+    Checks if any S3 bucket policy has access control set to `PublicReadWrite`.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

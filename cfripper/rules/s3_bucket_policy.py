@@ -28,8 +28,14 @@ logger = logging.getLogger(__file__)
 
 class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
     """
-    Rule that checks for non-whitelisted principals in S3 bucket policies.
-    This is designed to block unintended access from third party accounts to your buckets
+    Checks for non-whitelisted principals in S3 bucket policies.
+
+    Risk:
+        This is designed to block unintended access from third party accounts to your buckets.
+
+    Fix:
+        All principals connected to S3 Bucket Policies should be known. CFRipper checks that **all** principals meet
+        the requirements expected. The list of valid accounts is defined in `valid_principals`, which is set in the config.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -61,7 +67,7 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 
 class S3BucketPolicyWildcardActionRule(Rule):
     """
-    Rule that checks for wildcard actions in S3 bucket policies
+    Checks if any S3 bucket policies contain wildcard actions.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

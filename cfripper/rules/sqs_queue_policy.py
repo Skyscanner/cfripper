@@ -27,7 +27,7 @@ logger = logging.getLogger(__file__)
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
     """
-    Rule that checks for `Allow` and `NotPrincipal` at the same time in SQS Queue PolicyDocuments
+    Checks if an SQS Queue policy has an Allow + a NotPrincipal (exclusive principal).
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -44,7 +44,10 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
 
 class SQSQueuePolicyPublicRule(Rule):
     """
-    Rule that checks for wildcards in SQS queue PolicyDocuments principals
+    Checks for wildcard principals in Allow statements in an SQS Queue Policy.
+
+    Risk:
+        This is deemed a potential security risk as anyone would be able to interact with your queue.
     """
 
     REASON = "SQS Queue policy {} should not be public"
@@ -70,7 +73,16 @@ class SQSQueuePolicyPublicRule(Rule):
 
 class SQSQueuePolicyWildcardActionRule(Rule):
     """
-    Rule that checks for wildcards in SQS queue PolicyDocuments actions
+    Checks if an SQS Queue Policy contains a `*` for any action in the policy document.
+
+    Risk:
+        Wildcards are always dangerous to use if not all of the actions of a feature (like SQS) are known.
+        For example, `sqs:Delete*` might be acceptable if a service needs to delete messages from a queue.
+        However, this will allow the role to perform `sqs:DeleteQueue`, which can delete non-empty queues.
+
+    Fix:
+        Policies with wildcards contained in the `Action` statements should be reviewed. Writing out the actions
+        verbosely is sometimes clearer and safer. Stacks can be whitelisted otherwise.
     """
 
     REASON = "SQS Queue policy {} should not allow * action"
