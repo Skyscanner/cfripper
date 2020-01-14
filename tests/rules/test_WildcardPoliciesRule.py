@@ -20,6 +20,7 @@ from cfripper.model.result import Result
 from cfripper.rules.wildcard_policies import (
     GenericWildcardPolicyRule,
     S3BucketPolicyWildcardActionRule,
+    SNSTopicPolicyWildcardActionRule,
     SQSQueuePolicyWildcardActionRule,
 )
 from tests.utils import get_cfmodel_from
@@ -33,6 +34,11 @@ def s3_bucket_with_wildcards():
 @pytest.fixture()
 def sqs_queue_with_wildcards():
     return get_cfmodel_from("rules/WildcardPoliciesRule/sqs_queue_with_wildcards.json").resolve()
+
+
+@pytest.fixture()
+def sns_topic_with_wildcards():
+    return get_cfmodel_from("rules/WildcardPoliciesRule/sns_topic_with_wildcards.json").resolve()
 
 
 @patch("cfripper.rules.wildcard_policies.logger.warning")
@@ -76,3 +82,15 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
     assert result.failed_monitored_rules[2].reason == "The SQSQueuePolicy mysqspolicy1c should not allow a `*` action"
     assert result.failed_monitored_rules[3].rule == "SQSQueuePolicyWildcardActionRule"
     assert result.failed_monitored_rules[3].reason == "The SQSQueuePolicy mysqspolicy1d should not allow a `*` action"
+
+
+def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
+    result = Result()
+    rule = SNSTopicPolicyWildcardActionRule(None, result)
+    rule.invoke(sns_topic_with_wildcards)
+
+    assert result.valid
+    assert len(result.failed_rules) == 0
+    assert len(result.failed_monitored_rules) == 1
+    assert result.failed_monitored_rules[0].rule == "SNSTopicPolicyWildcardActionRule"
+    assert result.failed_monitored_rules[0].reason == "The SNSTopicPolicy mysnspolicy1 should not allow a `*` action"

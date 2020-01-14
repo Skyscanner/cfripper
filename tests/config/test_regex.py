@@ -71,10 +71,12 @@ from cfripper.config.regex import (
         (REGEX_STS_ARN, "potato", False),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:*", True),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "*", True),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "sns:*", True),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:iam::437628376:root", False),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:s3:::my_corporate_bucket*", False),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "arn:aws:s3:::*my_corporate_bucket", False),
         (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "potato", False),
+        (REGEX_HAS_STAR_OR_STAR_AFTER_COLON, "sns:Get*", False),
     ],
 )
 def test_regex_cross_account_root(regex, data, valid):

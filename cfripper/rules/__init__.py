@@ -36,7 +36,11 @@ from cfripper.rules.security_group import (
 )
 from cfripper.rules.sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
-from cfripper.rules.wildcard_policies import S3BucketPolicyWildcardActionRule, SQSQueuePolicyWildcardActionRule
+from cfripper.rules.wildcard_policies import (
+    S3BucketPolicyWildcardActionRule,
+    SNSTopicPolicyWildcardActionRule,
+    SQSQueuePolicyWildcardActionRule,
+)
 from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
 
 DEFAULT_RULES = {
@@ -62,6 +66,7 @@ DEFAULT_RULES = {
     "SecurityGroupMissingEgressRule": SecurityGroupMissingEgressRule,
     "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,
     "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,
+    "SNSTopicPolicyWildcardActionRule": SNSTopicPolicyWildcardActionRule,
     "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
     "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
     "SQSQueuePolicyWildcardActionRule": SQSQueuePolicyWildcardActionRule,

@@ -56,7 +56,7 @@ def test_valid_iam_policy_permissions(iam_role_with_wildcard_action):
     assert result.failed_monitored_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
     assert (
         result.failed_monitored_rules[0].reason
-        == "IAM role WildcardActionRole should not allow a `*` action on its policy root"
+        == "IAM role WildcardActionRole should not allow a `*` action on its root policy"
     )
 
 
@@ -71,7 +71,7 @@ def test_valid_iam_policy_trust(iam_role_with_wildcard_action_on_trust):
     assert result.failed_monitored_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
     assert (
         result.failed_monitored_rules[0].reason
-        == "IAM role WildcardActionRole should not allow a `*` action on its policy AssumeRolePolicy"
+        == "IAM role WildcardActionRole should not allow a `*` action on its AssumeRolePolicy"
     )
 
 
@@ -87,7 +87,7 @@ def test_invalid_managed_policy_template(iam_managed_policy_bad_template):
     assert result.failed_monitored_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
     assert (
         result.failed_monitored_rules[0].reason
-        == "IAM role CreateTestDBPolicy3 should not allow a `*` action on its AWS::IAM::ManagedPolicy "
+        == "IAM role CreateTestDBPolicy3 should not allow a `*` action on its AWS::IAM::ManagedPolicy"
     )
 
 

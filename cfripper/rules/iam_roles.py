@@ -74,7 +74,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "IAM role {} should not allow a `*` action on its {} {}"
+    REASON = "IAM role {} should not allow a `*` action on its {}"
     RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel):
@@ -84,7 +84,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                 if resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                     self.add_failure(
                         type(self).__name__,
-                        self.REASON.format(logical_id, "policy", "AssumeRolePolicy"),
+                        self.REASON.format(logical_id, "AssumeRolePolicy"),
                         resource_ids={logical_id},
                     )
 
@@ -94,16 +94,16 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                         if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                             self.add_failure(
                                 type(self).__name__,
-                                self.REASON.format(logical_id, "policy", policy.PolicyName),
+                                self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
                                 resource_ids={logical_id},
                             )
 
             # check AWS::IAM::ManagedPolicy.
-            if isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
+            elif isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
                 self.add_failure(
                     type(self).__name__,
-                    self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy", ""),
+                    self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"),
                     resource_ids={logical_id},
                 )
