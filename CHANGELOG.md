@@ -11,6 +11,14 @@ All notable changes to this project will be documented in this file.
 - `SQSQueuePolicyWildcardActionRule` has now been changed to be an instantiation of the new generic rule `GenericWildcardPolicyRule`. It is set in `DEBUG` mode
 - `SecurityGroupMissingEgressRule` now in `DEBUG` mode and a new test added
 - `SNSTopicPolicyWildcardActionRule` has beed added. It is an instantiation of the new generic rule `GenericWildcardPolicyRule`. It is set in `DEBUG` mode
+### Breaking changes
+- The following rules are no longer available:
+  - `IAMRoleWildcardActionOnPermissionsPolicyRule`
+  - `IAMRoleWildcardActionOnTrustPolicyRule`
+  - `IAMManagedPolicyWildcardActionRule`
+- The following rules have been moved:
+  - `S3BucketPolicyWildcardActionRule`
+  - `SQSQueuePolicyWildcardActionRule`
 
 ## [0.12.2] - 2020-01-13
 ### Improvements
