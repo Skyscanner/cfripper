@@ -42,27 +42,27 @@ def extract_bucket_name_and_path_from_url(url):
     path = None
 
     # https://bucket.s3.amazonaws.com/path1/path2
-    match = re.search(r"^https://([^.]+).s3.amazonaws.com(.*?)$", url)
+    match = re.search(r"^https://([^.]+)\.s3\.amazonaws.com(.*?)$", url)
     if match:
         bucket_name, path = match.group(1), match.group(2)[1:]  # Trim start /
 
     # https://bucket.s3-aws-region.amazonaws.com/path1/path2
-    match = re.search(r"^https://([^.]+).s3-[^\.]+.amazonaws.com(.*?)$", url)
+    match = re.search(r"^https://([^.]+)\.s3-[^\.]+\.amazonaws\.com(.*?)$", url)
     if match:
         bucket_name, path = match.group(1), match.group(2)[1:]  # Trim start /
 
     # https://s3.amazonaws.com/bucket/path1/path2
-    match = re.search(r"^https://s3.amazonaws.com/([^\/]+)(.*?)$", url)
+    match = re.search(r"^https://s3\.amazonaws\.com/([^\/]+)(.*?)$", url)
     if match:
         bucket_name, path = match.group(1), match.group(2)[1:]  # Trim start /
 
     # https://s3.aws-region.amazonaws.com/bucket/path1/path2
-    match = re.search(r"^https://s3.[^.]+.amazonaws.com/([^\/]+)(.*?)$", url)
+    match = re.search(r"^https://s3\.[^.]+\.amazonaws\.com/([^\/]+)(.*?)$", url)
     if match:
         bucket_name, path = match.group(1), match.group(2)[1:]  # Trim start /
 
     # https://s3-aws-region.amazonaws.com/bucket/path1/path2
-    match = re.search(r"^https://s3-[^.]+.amazonaws.com/([^\/]+)(.*?)$", url)
+    match = re.search(r"^https://s3-[^.]+\.amazonaws\.com/([^\/]+)(.*?)$", url)
     if match:
         bucket_name, path = match.group(1), match.group(2)[1:]  # Trim start /
 
