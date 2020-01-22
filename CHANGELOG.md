@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.13.0] - 2020-01-22
+### Fixed
+- Regular expressions had an unescaped '.' before 'amazonaws.com', so it might match more hosts than expected.
 ### Changed
 - `CloudFormationAuthenticationRule` now in `MONITOR` mode and new test added
 - `IAMRoleWildcardActionOnPolicyRule` combines three previous unused rules in `IAMManagedPolicyWildcardActionRule`, `IAMRoleWildcardActionOnPermissionsPolicyRule`, and `IAMRoleWildcardActionOnTrustPolicyRule`
