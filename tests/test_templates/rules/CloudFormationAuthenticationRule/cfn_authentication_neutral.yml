@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Conditions:
+  EphemeralStorage: !Equals
+    - !Ref "PersistentStorage"
+    - "0"
+  OnDemandInstances: !Equals
+    - !Ref "NodeSpotPrice"
+    - "0.00"
+  UseDefaultVT: !Equals
+    - !Ref "PersistentStorageType"
+    - ""
+
+Parameters:
+  InstanceRole:
+    Description:
+      IAM Role for the deployment. The EC2 instances must be able to access
+      this role using the instance profile.
+    Type: String
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription:
+      Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description:
+      S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription:
+      Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-confluent-kafka/
+    Description:
+      S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+
+Resources:
+  NodeLaunchConfig:
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        S3AccessCreds:
+          buckets:
+            - !Ref "QSS3BucketName"
+          roleName: !Ref "InstanceRole"
+          type: S3
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            /tmp/sbin/compute-heap-opts:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/compute-heap-opts"
+            /tmp/sbin/cp-deploy.sh:
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/cp-deploy.sh"
+            /tmp/sbin/cp-install.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/cp-install.sh"
+            /tmp/sbin/cp-retrieve-connect-jars.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/cp-retrieve-connect-jars.sh"
+            /tmp/sbin/cp-retrieve-scripts.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/cp-retrieve-scripts.sh"
+            /tmp/sbin/gen-cluster-hosts.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/gen-cluster-hosts.sh"
+            /tmp/sbin/post-cp-info.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/post-cp-info.sh"
+            /tmp/sbin/prep-cp-instance.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/prep-cp-instance.sh"
+            /tmp/sbin/prepare-disks.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/prepare-disks.sh"
+            /tmp/sbin/wait-for-child-resource.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/wait-for-child-resource.sh"
+            /tmp/sbin/wait-for-resource.sh:
+              authentication: S3AccessCreds
+              group: root
+              mode: "000755"
+              owner: root
+              source: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}scripts/wait-for-resource.sh"

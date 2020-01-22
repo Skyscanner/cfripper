@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule", "SQSQueuePolicyWildcardActionRule"]
+__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule"]
 
 import logging
 
@@ -69,27 +69,3 @@ class SQSQueuePolicyPublicRule(Rule):
                             self.add_failure(
                                 type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
                             )
-
-
-class SQSQueuePolicyWildcardActionRule(Rule):
-    """
-    Checks if an SQS Queue Policy contains a `*` for any action in the policy document.
-
-    Risk:
-        Wildcards are always dangerous to use if not all of the actions of a feature (like SQS) are known.
-        For example, `sqs:Delete*` might be acceptable if a service needs to delete messages from a queue.
-        However, this will allow the role to perform `sqs:DeleteQueue`, which can delete non-empty queues.
-
-    Fix:
-        Policies with wildcards contained in the `Action` statements should be reviewed. Writing out the actions
-        verbosely is sometimes clearer and safer. Stacks can be whitelisted otherwise.
-    """
-
-    REASON = "SQS Queue policy {} should not allow * action"
-
-    def invoke(self, cfmodel):
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
-                REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-            ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})

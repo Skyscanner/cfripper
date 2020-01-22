@@ -1,0 +1,35 @@
+{
+  "Resources": {
+    "sns1": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "sns1"
+      }
+    },
+    "mysnspolicy1": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "MyTopicPolicy",
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Allow-User-SendTopic",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "arn:aws:iam::123123123123:user/some.user"
+              },
+              "Action": ["sns:*"],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Topics": [
+          {
+            "Ref": "sns1"
+          }
+        ]
+      }
+    }
+  }
+}
