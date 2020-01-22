@@ -1,6 +1,6 @@
 <img src="docs/img/logo.png" width="200">
 
-# CFripper
+# CFRipper
 
 [![Build Status](https://travis-ci.org/Skyscanner/cfripper.svg?branch=master)](https://travis-ci.org/Skyscanner/cfripper)
 [![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
