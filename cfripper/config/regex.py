@@ -121,10 +121,12 @@ Check for wildcards after colons
 Valid:
 - *
 - arn:aws:iam::437628376:*
+- sns:*
 Invalid:
 - arn:aws:s3:::my_corporate_bucket
 - arn:aws:s3:::my_corporate_bucket*
 - arn:aws:s3:::*my_corporate_bucket
 - potato
+- sns:Get*
 """
 REGEX_HAS_STAR_OR_STAR_AFTER_COLON = re.compile(r"^(\w*:)*\*$")

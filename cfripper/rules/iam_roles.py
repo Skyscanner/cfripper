@@ -12,16 +12,13 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = [
-    "IAMRolesOverprivilegedRule",
-    "IAMRoleWildcardActionOnPermissionsPolicyRule",
-    "IAMRoleWildcardActionOnTrustPolicyRule",
-]
+__all__ = ["IAMRolesOverprivilegedRule", "IAMRoleWildcardActionOnPolicyRule"]
+from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
 
 from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
 from cfripper.model.enums import RuleGranularity
-from cfripper.model.rule import Rule
+from cfripper.model.rule import Rule, RuleMode
 
 
 class IAMRolesOverprivilegedRule(Rule):
@@ -69,45 +66,44 @@ class IAMRolesOverprivilegedRule(Rule):
                                 )
 
 
-class IAMRoleWildcardActionOnPermissionsPolicyRule(Rule):
+class IAMRoleWildcardActionOnPolicyRule(Rule):
     """
-    Checks if any IAM role is using a `*` character in any of its permissions policy.
-
-    Risk:
-        The principle of least privilege (POLP), an important concept in computer security, is the practice of
-        limiting access rights for users to the bare minimum permissions they need to perform their work.
+    Checks for use of wildcard characters in all IAM Role policies (including AssumeRolePolicyDocument)
+    and AWS Managed Policies
+    (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html).
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "IAM role {} should not allow any * action on its permissions policy {}"
+    REASON = "IAM role {} should not allow a `*` action on its {}"
+    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel):
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
-                for policy in resource.Properties.Policies:
-                    if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
-                        self.add_failure(
-                            type(self).__name__,
-                            self.REASON.format(logical_id, policy.PolicyName),
-                            resource_ids={logical_id},
-                        )
+                # check AssumeRolePolicyDocument.
+                if resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
+                    self.add_failure(
+                        type(self).__name__,
+                        self.REASON.format(logical_id, "AssumeRolePolicy"),
+                        resource_ids={logical_id},
+                    )
 
+                # check other policies of the IAM role.
+                if resource.Properties.Policies:
+                    for policy in resource.Properties.Policies:
+                        if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
+                            self.add_failure(
+                                type(self).__name__,
+                                self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
+                                resource_ids={logical_id},
+                            )
 
-class IAMRoleWildcardActionOnTrustPolicyRule(Rule):
-    """
-    Checks if any IAM role is using a `*` character in its trust policy.
-
-    Risk:
-        Do not allow any principal to assume your role.
-        This is a security risk as it allow a third party account to assume your role and escalate privileges in our account.
-    """
-
-    GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "IAM role {} should not allow any * action on its trust policy"
-
-    def invoke(self, cfmodel):
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, IAMRole) and resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(
+            # check AWS::IAM::ManagedPolicy.
+            elif isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure(
+                    type(self).__name__,
+                    self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"),
+                    resource_ids={logical_id},
+                )
