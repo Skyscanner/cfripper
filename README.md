@@ -4,6 +4,8 @@
 
 [![Build Status](https://travis-ci.org/Skyscanner/cfripper.svg?branch=master)](https://travis-ci.org/Skyscanner/cfripper)
 [![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Skyscanner/cfripper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Skyscanner/cfripper/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Skyscanner/cfripper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Skyscanner/cfripper/context:python)
 
 Library and CLI tool for analysing CloudFormation templates and check them for security compliance.
 
