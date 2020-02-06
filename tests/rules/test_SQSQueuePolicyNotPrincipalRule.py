@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules import SQSQueuePolicyNotPrincipalRule
 from tests.utils import get_cfmodel_from
 
@@ -25,9 +24,8 @@ def s3_bucket_with_wildcards():
 
 
 def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
-    result = Result()
-    rule = SQSQueuePolicyNotPrincipalRule(None, result)
-    rule.invoke(s3_bucket_with_wildcards)
+    rule = SQSQueuePolicyNotPrincipalRule(None)
+    result = rule.invoke(s3_bucket_with_wildcards)
 
     assert result.valid
     assert len(result.failed_rules) == 0

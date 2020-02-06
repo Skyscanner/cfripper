@@ -13,11 +13,49 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 import logging
-from typing import List, Set
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional, Set
 
-from cfripper.model.rule import Rule
+from pycfmodel.model.cf_model import CFModel
+
+from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Result
 
 logger = logging.getLogger(__file__)
+
+
+class Rule(ABC):
+    RULE_MODE = RuleMode.BLOCKING
+    RISK_VALUE = RuleRisk.MEDIUM
+    GRANULARITY = RuleGranularity.STACK
+
+    def __init__(self, config: Optional[Config]):
+        self._config = config if config else Config()
+
+    @abstractmethod
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        pass
+
+    def add_failure(
+        self,
+        result: Result,
+        reason: str,
+        granularity: Optional[RuleGranularity] = None,
+        resource_ids: Optional[Set] = None,
+        actions: Optional[Set] = None,
+        risk_value: Optional[RuleRisk] = None,
+        rule_mode: Optional[RuleMode] = None,
+    ):
+        result.add_failure(
+            rule=type(self).__name__,
+            reason=reason,
+            rule_mode=rule_mode or self.RULE_MODE,
+            risk_value=risk_value or self.RISK_VALUE,
+            resource_ids=resource_ids,
+            actions=actions,
+            granularity=granularity or self.GRANULARITY,
+        )
 
 
 class PrincipalCheckingRule(Rule):

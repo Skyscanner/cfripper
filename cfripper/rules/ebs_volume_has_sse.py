@@ -13,8 +13,14 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["EBSVolumeHasSSERule"]
+
+from typing import Dict, Optional
+
+from pycfmodel.model.cf_model import CFModel
+
 from cfripper.model.enums import RuleGranularity, RuleMode
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 
 class EBSVolumeHasSSERule(Rule):
@@ -46,8 +52,10 @@ class EBSVolumeHasSSERule(Rule):
     RULE_MODE = RuleMode.MONITOR
     GRANULARITY = RuleGranularity.RESOURCE
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::EC2::Volume":
                 if resource.Properties.get("Encrypted") != "true":
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                    self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result

@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 from pytest import fixture
 
 from cfripper.config.config import Config
-from cfripper.model.result import Result
 from cfripper.rules import S3BucketPolicyPrincipalRule
 from tests.utils import get_cfmodel_from
 
@@ -26,9 +25,8 @@ def bad_template():
 
 
 def test_failures_are_raised(bad_template):
-    result = Result()
-    rule = S3BucketPolicyPrincipalRule(Config(aws_principals=["12345"]), result)
-    rule.invoke(bad_template)
+    rule = S3BucketPolicyPrincipalRule(Config(aws_principals=["12345"]))
+    result = rule.invoke(bad_template)
 
     assert not result.valid
     assert len(result.failed_rules) == 2

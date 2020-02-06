@@ -15,12 +15,14 @@ specific language governing permissions and limitations under the License.
 __all__ = ["KMSKeyWildcardPrincipal"]
 import logging
 import re
+from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.kms_key import KMSKey
 
 from cfripper.model.enums import RuleGranularity
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -35,7 +37,8 @@ class KMSKeyWildcardPrincipal(Rule):
     REASON = "KMS Key policy {} should not allow wildcard principals"
     CONTAINS_WILDCARD_PATTERN = re.compile(r"^(\w*:)?\*$")
 
-    def invoke(self, cfmodel: CFModel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, KMSKey):
                 for statement in resource.Properties.KeyPolicy._statement_as_list():
@@ -48,6 +51,5 @@ class KMSKeyWildcardPrincipal(Rule):
                                         f"because there are conditions: {statement.Condition}"
                                     )
                                 else:
-                                    self.add_failure(
-                                        type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
-                                    )
+                                    self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result

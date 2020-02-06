@@ -46,7 +46,8 @@ def test_correct_event():
     mock_created_boto3_client_object.compare_outputs.return_value = {}
     mock_boto3_client = Mock(return_value=mock_created_boto3_client_object)
 
-    mock_created_rule_processor_object = Mock()
+    mock_created_rule_processor_object = Mock(spec=RuleProcessor)
+    mock_created_rule_processor_object.process_cf_template.return_value = Result()
     mock_rule_processor = Mock(return_value=mock_created_rule_processor_object)
     mock_rule_processor.remove_debug_rules.return_value = []
 
@@ -61,7 +62,7 @@ def test_correct_event():
     mock_created_s3_adapter_object.download_template_to_dictionary.assert_called_once_with(
         "https://asdfasdfasdf/bucket/key"
     )
-    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(cfmodel, ANY, ANY)
+    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(cfmodel, ANY)
 
 
 @mock_s3
@@ -73,13 +74,12 @@ def test_with_templates(cf_path):
     config = Config(project_name=cf_path, service_name=cf_path, stack_name=cf_path, rules=DEFAULT_RULES.keys())
 
     # Scan result
-    result = Result()
 
     cfmodel = pycfmodel.parse(cf_template).resolve()
 
-    rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
+    rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
-    processor.process_cf_template(cfmodel, config, result)
+    result = processor.process_cf_template(cfmodel, config)
 
     # Use this to print the stack if there'IAMManagedPolicyWildcardActionRule an error
     if len(result.exceptions):

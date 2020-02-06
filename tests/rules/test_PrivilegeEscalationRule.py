@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from tests.utils import get_cfmodel_from
 
@@ -25,9 +24,8 @@ def valid_role_inline_policy():
 
 
 def test_valid_role_inline_policy(valid_role_inline_policy):
-    result = Result()
-    rule = PrivilegeEscalationRule(None, result)
-    rule.invoke(valid_role_inline_policy)
+    rule = PrivilegeEscalationRule(None)
+    result = rule.invoke(valid_role_inline_policy)
 
     assert not result.valid
     assert len(result.failed_rules) == 1

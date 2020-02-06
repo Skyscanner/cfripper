@@ -13,10 +13,16 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["HardcodedRDSPasswordRule"]
+
+from typing import Dict, Optional
+
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.parameter import Parameter
+from pycfmodel.model.resources.generic_resource import GenericResource
 
 from cfripper.model.enums import RuleGranularity
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 
 class HardcodedRDSPasswordRule(Rule):
@@ -60,14 +66,15 @@ class HardcodedRDSPasswordRule(Rule):
     REASON_MISSING_NOECHO = "RDS {} password parameter missing NoEcho for {}."
     GRANULARITY = RuleGranularity.RESOURCE
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         password_protected_cluster_ids = []
         instances_to_check = []
 
         for logical_id, resource in cfmodel.Resources.items():
             # flag insecure RDS Clusters.
             if resource.Type == "AWS::RDS::DBCluster":
-                failure_added = self._failure_added(logical_id, resource)
+                failure_added = self._failure_added(result, logical_id, resource)
                 if not failure_added:
                     password_protected_cluster_ids.append(logical_id)
 
@@ -83,21 +90,18 @@ class HardcodedRDSPasswordRule(Rule):
             ):
                 continue
 
-            self._failure_added(logical_id, resource)
+            self._failure_added(result, logical_id, resource)
+        return result
 
-    def _failure_added(self, logical_id, resource) -> bool:
+    def _failure_added(self, result: Result, logical_id: str, resource: GenericResource) -> bool:
         master_user_password = resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
         resource_type = resource.Type.replace("AWS::RDS::DB", "")
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
-            self.add_failure(
-                type(self).__name__, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id}
-            )
+            self.add_failure(result, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id})
             return True
         elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
             self.add_failure(
-                type(self).__name__,
-                self.REASON_MISSING_NOECHO.format(resource_type, logical_id),
-                resource_ids={logical_id},
+                result, self.REASON_MISSING_NOECHO.format(resource_type, logical_id), resource_ids={logical_id},
             )
             return True
 

@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.config.config import Config
-from cfripper.model.result import Result
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
 from tests.utils import get_cfmodel_from
 
@@ -31,9 +30,8 @@ def bad_template():
 
 
 def test_no_failures_are_raised(good_template):
-    result = Result()
-    rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"), result)
-    rule.invoke(good_template)
+    rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"))
+    result = rule.invoke(good_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -41,9 +39,8 @@ def test_no_failures_are_raised(good_template):
 
 
 def test_failures_are_raised(bad_template):
-    result = Result()
-    rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"), result)
-    rule.invoke(bad_template)
+    rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"))
+    result = rule.invoke(bad_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0

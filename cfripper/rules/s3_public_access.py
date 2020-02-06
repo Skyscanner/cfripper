@@ -16,11 +16,14 @@ __all__ = ["S3BucketPublicReadAclAndListStatementRule", "S3BucketPublicReadWrite
 
 import logging
 import re
+from typing import Dict, Optional
 
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -39,7 +42,8 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
     RULE_MODE = RuleMode.DEBUG
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 re.compile(r"^s3:L.*$")
@@ -49,7 +53,8 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                     bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
-                    self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                    self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result
 
 
 class S3BucketPublicReadWriteAclRule(Rule):
@@ -61,11 +66,13 @@ class S3BucketPublicReadWriteAclRule(Rule):
     REASON = "S3 Bucket {} should not have a public read-write acl"
     RISK_VALUE = RuleRisk.HIGH
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if (
                 resource.Type == "AWS::S3::Bucket"
                 and hasattr(resource, "Properties")
                 and resource.Properties.get("AccessControl") == "PublicReadWrite"
             ):
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result

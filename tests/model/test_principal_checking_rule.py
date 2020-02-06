@@ -12,6 +12,8 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
+from typing import Dict, Optional
+
 import pytest
 from pycfmodel.model.cf_model import CFModel
 
@@ -24,15 +26,15 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def invoke(self, cfmodel: CFModel):
-        pass
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        return Result()
 
 
 @pytest.mark.parametrize(
     "rule, params, expected_output",
     [
         (
-            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None), result=Result()),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None)),
             None,
             {
                 "009996457667",
@@ -64,7 +66,7 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
             },
         ),
         (
-            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None), result=Result()),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None)),
             ["elb_logs_account_ids", "elasticache_backup_canonical_ids"],
             {
                 "009996457667",
@@ -96,7 +98,7 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
             },
         ),
         (
-            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None), result=Result()),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts=None)),
             ["elasticache_backup_canonical_ids"],
             {
                 "40fa568277ad703bd160f66ae4f83fc9dfdfd06c2f1b5060ca22442ac3ef8be6",
@@ -104,41 +106,29 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
                 "b14d6a125bdf69854ed8ef2e71d8a20b7c490f252229b806e514966e490b8d83",
             },
         ),
+        (FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]})), None, {"a", "b", "c"},),
         (
-            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]}), result=Result()),
-            None,
-            {"a", "b", "c"},
-        ),
-        (
-            FakePrincipalCheckingRule(
-                config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "e", "f"]}), result=Result()
-            ),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "e", "f"]})),
             None,
             {"a", "b", "c", "d", "e", "f"},
         ),
         (
-            FakePrincipalCheckingRule(
-                config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "a", "b"]}), result=Result()
-            ),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "a", "b"]})),
             None,
             {"a", "b", "c", "d"},
         ),
         (
-            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]}), result=Result()),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]})),
             ["A"],
             {"a", "b", "c"},
         ),
         (
-            FakePrincipalCheckingRule(
-                config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "e", "f"]}), result=Result()
-            ),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "e", "f"]})),
             ["A", "B"],
             {"a", "b", "c", "d", "e", "f"},
         ),
         (
-            FakePrincipalCheckingRule(
-                config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "a", "b"]}), result=Result()
-            ),
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "a", "b"]})),
             ["A", "B"],
             {"a", "b", "c", "d"},
         ),

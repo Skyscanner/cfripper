@@ -16,6 +16,8 @@ import logging
 import re
 from typing import List
 
+from pycfmodel.model.cf_model import CFModel
+
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Failure, Result
@@ -27,10 +29,11 @@ class RuleProcessor:
     def __init__(self, *args):
         self.rules = args
 
-    def process_cf_template(self, cfmodel, config, result):
+    def process_cf_template(self, cfmodel: CFModel, config: Config) -> Result:
+        result = Result()
         for rule in self.rules:
             try:
-                rule.invoke(cfmodel)
+                result += rule.invoke(cfmodel)
             except Exception as other_exception:
                 result.add_exception(other_exception)
                 logger.exception(
@@ -45,6 +48,7 @@ class RuleProcessor:
                 continue
         self.remove_failures_of_whitelisted_actions(config=config, result=result)
         self.remove_failures_of_whitelisted_resources(config=config, result=result)
+        return result
 
     @staticmethod
     def remove_debug_rules(rules: List[Failure]):

@@ -14,10 +14,13 @@ specific language governing permissions and limitations under the License.
 """
 __all__ = ["S3BucketPolicyPrincipalRule"]
 import logging
+from typing import Dict, Optional
 
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Result
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
 
@@ -41,7 +44,8 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
@@ -57,7 +61,6 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
                                 )
                             else:
                                 self.add_failure(
-                                    type(self).__name__,
-                                    self.REASON.format(logical_id, account_id),
-                                    resource_ids={logical_id},
+                                    result, self.REASON.format(logical_id, account_id), resource_ids={logical_id},
                                 )
+        return result

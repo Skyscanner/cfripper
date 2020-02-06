@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from tests.utils import get_cfmodel_from
 
@@ -45,9 +44,8 @@ def bad_template_clusters_with_bad_instances():
 
 
 def test_failures_are_raised_for_instances(bad_template_instances):
-    result = Result()
-    rule = HardcodedRDSPasswordRule(None, result)
-    rule.invoke(bad_template_instances)
+    rule = HardcodedRDSPasswordRule(None)
+    result = rule.invoke(bad_template_instances)
 
     assert not result.valid
     assert len(result.failed_rules) == 2
@@ -61,9 +59,8 @@ def test_failures_are_raised_for_instances(bad_template_instances):
 
 
 def test_failures_are_raised_for_clusters(bad_template_clusters):
-    result = Result()
-    rule = HardcodedRDSPasswordRule(None, result)
-    rule.invoke(bad_template_clusters)
+    rule = HardcodedRDSPasswordRule(None)
+    result = rule.invoke(bad_template_clusters)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -73,17 +70,15 @@ def test_failures_are_raised_for_clusters(bad_template_clusters):
 
 
 def test_passed_cluster_pw_protected(good_template_clusters_and_instances):
-    result = Result()
-    rule = HardcodedRDSPasswordRule(None, result)
-    rule.invoke(good_template_clusters_and_instances)
+    rule = HardcodedRDSPasswordRule(None)
+    result = rule.invoke(good_template_clusters_and_instances)
 
     assert result.valid
 
 
 def test_failures_are_raised_for_instances_without_protected_clusters(bad_template_good_clusters_with_bad_instances):
-    result = Result()
-    rule = HardcodedRDSPasswordRule(None, result)
-    rule.invoke(bad_template_good_clusters_with_bad_instances)
+    rule = HardcodedRDSPasswordRule(None)
+    result = rule.invoke(bad_template_good_clusters_with_bad_instances)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -95,9 +90,8 @@ def test_failures_are_raised_for_instances_without_protected_clusters(bad_templa
 
 
 def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clusters_with_bad_instances):
-    result = Result()
-    rule = HardcodedRDSPasswordRule(None, result)
-    rule.invoke(bad_template_clusters_with_bad_instances)
+    rule = HardcodedRDSPasswordRule(None)
+    result = rule.invoke(bad_template_clusters_with_bad_instances)
 
     assert not result.valid
     assert len(result.failed_rules) == 2

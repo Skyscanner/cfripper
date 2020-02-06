@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules.security_group import SecurityGroupMissingEgressRule
 from tests.utils import get_cfmodel_from
 
@@ -32,9 +31,8 @@ def security_group_with_egress():
 
 
 def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_ingress):
-    result = Result()
-    rule = SecurityGroupMissingEgressRule(None, result)
-    rule.invoke(single_security_group_one_cidr_ingress)
+    rule = SecurityGroupMissingEgressRule(None)
+    result = rule.invoke(single_security_group_one_cidr_ingress)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -47,9 +45,8 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
 
 
 def test_security_group_with_egress(security_group_with_egress):
-    result = Result()
-    rule = SecurityGroupMissingEgressRule(None, result)
-    rule.invoke(security_group_with_egress)
+    rule = SecurityGroupMissingEgressRule(None)
+    result = rule.invoke(security_group_with_egress)
 
     assert result.valid
     assert len(result.failed_rules) == 0

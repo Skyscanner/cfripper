@@ -13,12 +13,17 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["IAMRolesOverprivilegedRule", "IAMRoleWildcardActionOnPolicyRule"]
+
+from typing import Dict, Optional
+
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
 
 from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
-from cfripper.model.enums import RuleGranularity
-from cfripper.model.rule import Rule, RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 
 class IAMRolesOverprivilegedRule(Rule):
@@ -28,13 +33,15 @@ class IAMRolesOverprivilegedRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
-                self.check_managed_policies(logical_id, resource)
-                self.check_inline_policies(logical_id, resource)
+                self.check_managed_policies(result, logical_id, resource)
+                self.check_inline_policies(result, logical_id, resource)
+        return result
 
-    def check_managed_policies(self, logical_id, role):
+    def check_managed_policies(self, result: Result, logical_id: str, role: IAMRole):
         """Run the managed policies against a blacklist."""
         if not role.Properties.ManagedPolicyArns:
             return
@@ -42,12 +49,12 @@ class IAMRolesOverprivilegedRule(Rule):
         for managed_policy_arn in role.Properties.ManagedPolicyArns:
             if managed_policy_arn in self._config.forbidden_managed_policy_arns:
                 self.add_failure(
-                    type(self).__name__,
+                    result,
                     f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",
                     resource_ids={logical_id},
                 )
 
-    def check_inline_policies(self, logical_id, role):
+    def check_inline_policies(self, result: Result, logical_id: str, role: IAMRole):
         """Check conditional and non-conditional inline policies."""
         if not role.Properties.Policies:
             return
@@ -59,7 +66,7 @@ class IAMRolesOverprivilegedRule(Rule):
                         for prefix in self._config.forbidden_resource_star_action_prefixes:
                             if action.startswith(prefix):
                                 self.add_failure(
-                                    type(self).__name__,
+                                    result,
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
                                     resource_ids={logical_id},
@@ -77,15 +84,14 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
     REASON = "IAM role {} should not allow a `*` action on its {}"
     RULE_MODE = RuleMode.DEBUG
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
                 # check AssumeRolePolicyDocument.
                 if resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                     self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(logical_id, "AssumeRolePolicy"),
-                        resource_ids={logical_id},
+                        result, self.REASON.format(logical_id, "AssumeRolePolicy"), resource_ids={logical_id},
                     )
 
                 # check other policies of the IAM role.
@@ -93,7 +99,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                     for policy in resource.Properties.Policies:
                         if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                             self.add_failure(
-                                type(self).__name__,
+                                result,
                                 self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
                                 resource_ids={logical_id},
                             )
@@ -103,7 +109,6 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                 REGEX_WILDCARD_POLICY_ACTION
             ):
                 self.add_failure(
-                    type(self).__name__,
-                    self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"),
-                    resource_ids={logical_id},
+                    result, self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"), resource_ids={logical_id},
                 )
+        return result

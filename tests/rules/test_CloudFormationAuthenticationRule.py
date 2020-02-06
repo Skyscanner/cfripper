@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules.cloudformation_authentication import CloudFormationAuthenticationRule
 from tests.utils import get_cfmodel_from
 
@@ -35,9 +34,8 @@ def bad_template():
 
 
 def test_no_failures_are_raised(good_template):
-    result = Result()
-    rule = CloudFormationAuthenticationRule(None, result)
-    rule.invoke(good_template)
+    rule = CloudFormationAuthenticationRule(None)
+    result = rule.invoke(good_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -45,9 +43,8 @@ def test_no_failures_are_raised(good_template):
 
 
 def test_failures_are_raised(bad_template):
-    result = Result()
-    rule = CloudFormationAuthenticationRule(None, result)
-    rule.invoke(bad_template)
+    rule = CloudFormationAuthenticationRule(None)
+    result = rule.invoke(bad_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -57,9 +54,8 @@ def test_failures_are_raised(bad_template):
 
 
 def test_rule_ignores_where_auth_not_mentioned(neutral_template):
-    result = Result()
-    rule = CloudFormationAuthenticationRule(None, result)
-    rule.invoke(neutral_template)
+    rule = CloudFormationAuthenticationRule(None)
+    result = rule.invoke(neutral_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0

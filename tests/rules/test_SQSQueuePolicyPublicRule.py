@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.enums import RuleRisk
-from cfripper.model.result import Result
 from cfripper.rules import SQSQueuePolicyPublicRule
 from tests.utils import get_cfmodel_from
 
@@ -26,9 +25,8 @@ def sqs_policy_public():
 
 
 def test_sqs_policy_public(sqs_policy_public):
-    result = Result()
-    rule = SQSQueuePolicyPublicRule(None, result)
-    rule.invoke(sqs_policy_public)
+    rule = SQSQueuePolicyPublicRule(None)
+    result = rule.invoke(sqs_policy_public)
 
     assert not result.valid
     assert len(result.failed_rules) == 4

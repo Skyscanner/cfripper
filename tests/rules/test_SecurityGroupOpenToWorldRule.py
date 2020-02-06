@@ -14,7 +14,6 @@ specific language governing permissions and limitations under the License.
 """
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules import SecurityGroupOpenToWorldRule
 from tests.utils import get_cfmodel_from
 
@@ -57,9 +56,8 @@ def invalid_security_group_multiple_statements():
 
 
 def test_security_group_type_slash0(security_group_type_slash0):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(security_group_type_slash0)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(security_group_type_slash0)
 
     assert not result.valid
     assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
@@ -67,9 +65,8 @@ def test_security_group_type_slash0(security_group_type_slash0):
 
 
 def test_valid_security_group_not_slash0(valid_security_group_not_slash0):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(valid_security_group_not_slash0)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(valid_security_group_not_slash0)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -77,9 +74,8 @@ def test_valid_security_group_not_slash0(valid_security_group_not_slash0):
 
 
 def test_valid_security_group_port80(valid_security_group_port80):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(valid_security_group_port80)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(valid_security_group_port80)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -87,9 +83,8 @@ def test_valid_security_group_port80(valid_security_group_port80):
 
 
 def test_valid_security_group_port443(valid_security_group_port443):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(valid_security_group_port443)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(valid_security_group_port443)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -97,9 +92,8 @@ def test_valid_security_group_port443(valid_security_group_port443):
 
 
 def test_invalid_security_group_cidripv6(invalid_security_group_cidripv6):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(invalid_security_group_cidripv6)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(invalid_security_group_cidripv6)
 
     assert not result.valid
     assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
@@ -107,9 +101,8 @@ def test_invalid_security_group_cidripv6(invalid_security_group_cidripv6):
 
 
 def test_invalid_security_group_range(invalid_security_group_range):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(invalid_security_group_range)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(invalid_security_group_range)
 
     assert not result.valid
     assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"
@@ -117,9 +110,8 @@ def test_invalid_security_group_range(invalid_security_group_range):
 
 
 def test_invalid_security_group_multiple_statements(invalid_security_group_multiple_statements):
-    result = Result()
-    rule = SecurityGroupOpenToWorldRule(None, result)
-    rule.invoke(invalid_security_group_multiple_statements)
+    rule = SecurityGroupOpenToWorldRule(None)
+    result = rule.invoke(invalid_security_group_multiple_statements)
 
     assert not result.valid
     assert result.failed_rules[0].rule == "SecurityGroupOpenToWorldRule"

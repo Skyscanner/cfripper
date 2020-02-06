@@ -34,9 +34,8 @@ def template():
 def test_with_no_rules(mock_remove_whitelisted_actions, mock_remove_whitelisted_resources, template):
     processor = RuleProcessor()
     config = Mock()
-    result = Result()
 
-    processor.process_cf_template(template, config, result)
+    processor.process_cf_template(template, config)
     mock_remove_whitelisted_actions.assert_called()
     mock_remove_whitelisted_resources.assert_called()
 
@@ -47,8 +46,7 @@ def test_with_mock_rule(template):
     processor = RuleProcessor(rule)
 
     config = Mock()
-    result = Result()
-    processor.process_cf_template(template, config, result)
+    processor.process_cf_template(template, config)
 
     rule.invoke.assert_called()
 

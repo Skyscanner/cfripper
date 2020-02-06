@@ -15,12 +15,15 @@ specific language governing permissions and limitations under the License.
 __all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule"]
 
 import logging
+from typing import Dict, Optional
 
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 logger = logging.getLogger(__file__)
 
@@ -34,12 +37,14 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
     REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
     RULE_MODE = RuleMode.MONITOR
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.NotPrincipal:
-                        self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                        self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result
 
 
 class SQSQueuePolicyPublicRule(Rule):
@@ -53,7 +58,8 @@ class SQSQueuePolicyPublicRule(Rule):
     REASON = "SQS Queue policy {} should not be public"
     RISK_VALUE = RuleRisk.HIGH
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SQSQueuePolicy) and resource.Properties.PolicyDocument.allowed_principals_with(
                 REGEX_HAS_STAR_OR_STAR_AFTER_COLON
@@ -66,6 +72,5 @@ class SQSQueuePolicyPublicRule(Rule):
                                 f"because there are conditions: {statement.Condition}"
                             )
                         else:
-                            self.add_failure(
-                                type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id}
-                            )
+                            self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result
