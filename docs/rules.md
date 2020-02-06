@@ -18,7 +18,7 @@ When running CFRipper the CloudFormation stack will be checked against each rule
 To add custom rules first extend the [Rule](https://github.com/Skyscanner/cfripper/blob/master/cfripper/model/rule.py)
 class. Then implement the `invoke` method by adding your logic.
 
-{{ inline_source('cfripper.model.rule.Rule.invoke') }}
+{{ inline_source('cfripper.rules.base_rules.Rule.invoke') }}
 
 CFRipper uses [pycfmodel](https://github.com/Skyscanner/pycfmodel) to create a Python model of the CloudFormation script.
 This model is passed to the `invoke` function as the `cfmodel` parameter. You can use the model's iterate through the

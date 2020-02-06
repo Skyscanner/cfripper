@@ -27,11 +27,10 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
-def init_cfripper() -> Tuple[Config, Result, RuleProcessor]:
+def init_cfripper() -> Tuple[Config, RuleProcessor]:
     config = Config(rules=DEFAULT_RULES.keys())
-    result = Result()
-    rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config, result) for rule in config.rules])
-    return config, result, rule_processor
+    rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config) for rule in config.rules])
+    return config, rule_processor
 
 
 def get_cfmodel(template: TextIOWrapper) -> CFModel:
@@ -40,8 +39,8 @@ def get_cfmodel(template: TextIOWrapper) -> CFModel:
     return cfmodel
 
 
-def analyse_template(cfmodel: CFModel, rule_processor: RuleProcessor, config: Config, result: Result) -> None:
-    rule_processor.process_cf_template(cfmodel, config, result)
+def analyse_template(cfmodel: CFModel, rule_processor: RuleProcessor, config: Config) -> Result:
+    return rule_processor.process_cf_template(cfmodel, config)
 
 
 def format_result_json(result: Result) -> str:
@@ -91,9 +90,9 @@ def process_template(
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
 
-    config, result, rule_processor = init_cfripper()
+    config, rule_processor = init_cfripper()
 
-    analyse_template(cfmodel, rule_processor, config, result)
+    result = analyse_template(cfmodel, rule_processor, config)
 
     formatted_result = format_result(result, output_format)
 
