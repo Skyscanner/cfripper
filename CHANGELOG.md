@@ -3,9 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [0.14.0] - ????-??-??
 ### Breaking changes
-- Completely changed base `Rule` abstract class signature. Adapted all classes to match it. Init now only takes a 
-`Config`, `invoke` method now accepts an optional extra Dict, `invoke` method returns a `Result` instead of `None` and 
-`add_failure` takes a result instead of a class name (that now it's inferred)
+- Completely changed base `Rule` abstract class signature and adapted rule classes to match it:
+    - Init now only takes a `Config`
+    - `invoke` method now accepts an optional extra Dict
+    - `invoke` method returns a `Result` instead of `None` 
+    - `add_failure` has been renamed to `add_failure_to_result`. It now takes a result instead of a reason 
+    (that now it's inferred)
 ### Improvements
 - Rule Invoke extras parameter has been added to allow changing the rule behaviour depending on state besides the cfmodel itself:
     - Stack naming rules

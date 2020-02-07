@@ -63,5 +63,7 @@ class PrivilegeEscalationRule(Rule):
             if isinstance(resource, IAMPolicy):
                 policy_actions = set(action.lower() for action in resource.Properties.PolicyDocument.get_iam_actions())
                 for violation in policy_actions.intersection(self.IAM_BLACKLIST):
-                    self.add_failure(result, self.REASON.format(logical_id, violation), resource_ids={logical_id})
+                    self.add_failure_to_result(
+                        result, self.REASON.format(logical_id, violation), resource_ids={logical_id}
+                    )
         return result

@@ -60,7 +60,7 @@ class GenericWildcardPolicyRule(Rule):
                 if isinstance(resource, self.AWS_RESOURCE) and resource.Properties.PolicyDocument.allowed_actions_with(
                     REGEX_HAS_STAR_OR_STAR_AFTER_COLON
                 ):
-                    self.add_failure(
+                    self.add_failure_to_result(
                         result, self.REASON.format(self.AWS_RESOURCE.__name__, logical_id), resource_ids={logical_id},
                     )
         return result

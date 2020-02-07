@@ -53,7 +53,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                     bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
-                    self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                    self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
         return result
 
 
@@ -74,5 +74,5 @@ class S3BucketPublicReadWriteAclRule(Rule):
                 and hasattr(resource, "Properties")
                 and resource.Properties.get("AccessControl") == "PublicReadWrite"
             ):
-                self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
         return result

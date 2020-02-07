@@ -97,10 +97,12 @@ class HardcodedRDSPasswordRule(Rule):
         master_user_password = resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
         resource_type = resource.Type.replace("AWS::RDS::DB", "")
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
-            self.add_failure(result, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id})
+            self.add_failure_to_result(
+                result, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id}
+            )
             return True
         elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
-            self.add_failure(
+            self.add_failure_to_result(
                 result, self.REASON_MISSING_NOECHO.format(resource_type, logical_id), resource_ids={logical_id},
             )
             return True

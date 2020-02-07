@@ -48,7 +48,7 @@ class IAMRolesOverprivilegedRule(Rule):
 
         for managed_policy_arn in role.Properties.ManagedPolicyArns:
             if managed_policy_arn in self._config.forbidden_managed_policy_arns:
-                self.add_failure(
+                self.add_failure_to_result(
                     result,
                     f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",
                     resource_ids={logical_id},
@@ -65,7 +65,7 @@ class IAMRolesOverprivilegedRule(Rule):
                     for action in statement.get_action_list():
                         for prefix in self._config.forbidden_resource_star_action_prefixes:
                             if action.startswith(prefix):
-                                self.add_failure(
+                                self.add_failure_to_result(
                                     result,
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
@@ -90,7 +90,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
             if isinstance(resource, IAMRole):
                 # check AssumeRolePolicyDocument.
                 if resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
-                    self.add_failure(
+                    self.add_failure_to_result(
                         result, self.REASON.format(logical_id, "AssumeRolePolicy"), resource_ids={logical_id},
                     )
 
@@ -98,7 +98,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                 if resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
                         if policy.PolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
-                            self.add_failure(
+                            self.add_failure_to_result(
                                 result,
                                 self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
                                 resource_ids={logical_id},
@@ -108,7 +108,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
             elif isinstance(resource, IAMManagedPolicy) and resource.Properties.PolicyDocument.allowed_actions_with(
                 REGEX_WILDCARD_POLICY_ACTION
             ):
-                self.add_failure(
+                self.add_failure_to_result(
                     result, self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"), resource_ids={logical_id},
                 )
         return result

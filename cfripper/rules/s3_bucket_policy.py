@@ -60,7 +60,7 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
                                     f"because there are conditions: {statement.Condition}"
                                 )
                             else:
-                                self.add_failure(
+                                self.add_failure_to_result(
                                     result, self.REASON.format(logical_id, account_id), resource_ids={logical_id},
                                 )
         return result

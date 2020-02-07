@@ -76,7 +76,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             f"{statement.Condition}"
                         )
                     elif not self.resource_is_whitelisted(logical_id):
-                        self.add_failure(
+                        self.add_failure_to_result(
                             result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
                             resource_ids={logical_id},
@@ -87,7 +87,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
     def validate_account_id(self, result: Result, logical_id: str, account_id: str):
         if self.should_add_failure(logical_id, account_id):
-            self.add_failure(result, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
+            self.add_failure_to_result(result, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
 
     def should_add_failure(self, logical_id: str, account_id: str) -> bool:
         if account_id in self.valid_principals:

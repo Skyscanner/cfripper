@@ -39,5 +39,5 @@ class SNSTopicPolicyNotPrincipalRule(Rule):
             if isinstance(resource, SNSTopicPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
                     if statement.NotPrincipal:
-                        self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                        self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
         return result

@@ -61,5 +61,5 @@ class CloudFormationAuthenticationRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if resource.has_hardcoded_credentials():
-                self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
         return result

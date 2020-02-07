@@ -78,14 +78,14 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                             f"because no AWS Account ID was found in the config."
                         )
                     elif "GETATT" in principal or "UNDEFINED_" in principal:
-                        self.add_failure(
+                        self.add_failure_to_result(
                             result,
                             self.REASON.format(logical_id, principal),
                             rule_mode=RuleMode.DEBUG,
                             resource_ids={logical_id},
                         )
                     else:
-                        self.add_failure(
+                        self.add_failure_to_result(
                             result, self.REASON.format(logical_id, principal), resource_ids={logical_id},
                         )
 

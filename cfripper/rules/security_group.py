@@ -80,7 +80,7 @@ class SecurityGroupOpenToWorldRule(Rule):
                     if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
-                                self.add_failure(
+                                self.add_failure_to_result(
                                     result, self.REASON.format(port, logical_id), resource_ids={logical_id}
                                 )
         return result
@@ -103,7 +103,9 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
             ):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
-                        self.add_failure(result, self.REASON.format(port, logical_id), resource_ids={logical_id})
+                        self.add_failure_to_result(
+                            result, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                        )
         return result
 
 
@@ -168,5 +170,5 @@ class SecurityGroupMissingEgressRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
-                self.add_failure(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
         return result

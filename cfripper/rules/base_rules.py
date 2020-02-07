@@ -37,7 +37,7 @@ class Rule(ABC):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         pass
 
-    def add_failure(
+    def add_failure_to_result(
         self,
         result: Result,
         reason: str,
