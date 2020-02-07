@@ -20,7 +20,7 @@ from pycfmodel.model.cf_model import CFModel
 
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
-from cfripper.model.result import Result
+from cfripper.model.result import Failure, Result
 
 logger = logging.getLogger(__file__)
 
@@ -56,6 +56,27 @@ class Rule(ABC):
             actions=actions,
             granularity=granularity or self.GRANULARITY,
         )
+
+    def add_warning_to_result(
+        self,
+        result: Result,
+        reason: str,
+        granularity: Optional[RuleGranularity] = None,
+        resource_ids: Optional[Set] = None,
+        actions: Optional[Set] = None,
+        risk_value: Optional[RuleRisk] = None,
+        rule_mode: Optional[RuleMode] = None,
+    ):
+        warning = Failure(
+            rule=type(self).__name__,
+            reason=reason,
+            granularity=granularity or self.GRANULARITY,
+            resource_ids=resource_ids,
+            actions=actions,
+            risk_value=risk_value or self.RISK_VALUE,
+            rule_mode=rule_mode or self.RULE_MODE,
+        )
+        result.add_warning(warning)
 
 
 class PrincipalCheckingRule(Rule):
