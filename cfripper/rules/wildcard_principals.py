@@ -15,7 +15,9 @@ specific language governing permissions and limitations under the License.
 __all__ = ["GenericWildcardPrincipalRule", "PartialWildcardPrincipalRule", "FullWildcardPrincipalRule"]
 import logging
 import re
+from typing import Dict, Optional
 
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
@@ -27,6 +29,7 @@ from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Result
 from cfripper.rules.base_rules import PrincipalCheckingRule
 
 logger = logging.getLogger(__file__)
@@ -45,25 +48,27 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
     FULL_REGEX = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$")
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
-                self.check_for_wildcards(logical_id, resource.Properties.PolicyDocument)
+                self.check_for_wildcards(result, logical_id, resource.Properties.PolicyDocument)
             elif isinstance(resource, (IAMRole, IAMUser)):
                 if isinstance(resource, IAMRole):
-                    self.check_for_wildcards(logical_id, resource.Properties.AssumeRolePolicyDocument)
+                    self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument)
                 if resource.Properties and resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
-                        self.check_for_wildcards(logical_id, policy.PolicyDocument)
+                        self.check_for_wildcards(result, logical_id, policy.PolicyDocument)
+        return result
 
-    def check_for_wildcards(self, logical_id: str, resource: PolicyDocument):
+    def check_for_wildcards(self, result: Result, logical_id: str, resource: PolicyDocument):
         for statement in resource._statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
                     # Check if account ID is allowed
                     account_id_match = self.IAM_PATTERN.match(principal)
                     if account_id_match:
-                        self.validate_account_id(logical_id, account_id_match.group(1))
+                        self.validate_account_id(result, logical_id, account_id_match.group(1))
 
                     if statement.Condition and statement.Condition.dict():
                         logger.warning(
@@ -71,8 +76,8 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             f"{statement.Condition}"
                         )
                     elif not self.resource_is_whitelisted(logical_id):
-                        self.add_failure(
-                            type(self).__name__,
+                        self.add_failure_to_result(
+                            result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
                             resource_ids={logical_id},
                         )
@@ -80,11 +85,11 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     def resource_is_whitelisted(self, logical_id):
         return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
 
-    def validate_account_id(self, logical_id, account_id):
+    def validate_account_id(self, result: Result, logical_id: str, account_id: str):
         if self.should_add_failure(logical_id, account_id):
-            self.add_failure(type(self).__name__, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
+            self.add_failure_to_result(result, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
 
-    def should_add_failure(self, logical_id, account_id) -> bool:
+    def should_add_failure(self, logical_id: str, account_id: str) -> bool:
         if account_id in self.valid_principals:
             return False
         return not self.resource_is_whitelisted(logical_id)

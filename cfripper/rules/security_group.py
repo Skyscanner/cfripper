@@ -14,11 +14,15 @@ specific language governing permissions and limitations under the License.
 """
 __all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorld", "SecurityGroupMissingEgressRule"]
 
+from typing import Dict, Optional
+
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
 
 from cfripper.model.enums import RuleGranularity, RuleMode
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 
 class SecurityGroupOpenToWorldRule(Rule):
@@ -65,7 +69,8 @@ class SecurityGroupOpenToWorldRule(Rule):
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "Port {} open to the world in security group '{}'"
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroup) and resource.Properties.SecurityGroupIngress:
                 list_security_group_ingress = resource.Properties.SecurityGroupIngress
@@ -75,9 +80,10 @@ class SecurityGroupOpenToWorldRule(Rule):
                     if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
-                                self.add_failure(
-                                    type(self).__name__, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                                self.add_failure_to_result(
+                                    result, self.REASON.format(port, logical_id), resource_ids={logical_id}
                                 )
+        return result
 
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
@@ -89,16 +95,18 @@ class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
         This is a security risk as your resource will be publicly available.
     """
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroupIngress) and (
                 resource.ipv4_slash_zero() or resource.ipv6_slash_zero()
             ):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
-                        self.add_failure(
-                            type(self).__name__, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                        self.add_failure_to_result(
+                            result, self.REASON.format(port, logical_id), resource_ids={logical_id}
                         )
+        return result
 
 
 class SecurityGroupMissingEgressRule(Rule):
@@ -158,7 +166,9 @@ class SecurityGroupMissingEgressRule(Rule):
     )
     RULE_MODE = RuleMode.DEBUG
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
-                self.add_failure(type(self).__name__, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+        return result

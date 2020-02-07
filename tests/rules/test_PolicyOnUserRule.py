@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 from pycfmodel.model.cf_model import CFModel
 from pytest import fixture
 
-from cfripper.model.result import Result
 from cfripper.rules import PolicyOnUserRule
 from tests.utils import get_cfmodel_from
 
@@ -31,9 +30,8 @@ def bad_template():
 
 
 def test_no_failures_are_raised(good_template):
-    result = Result()
-    rule = PolicyOnUserRule(None, result)
-    rule.invoke(good_template)
+    rule = PolicyOnUserRule(None)
+    result = rule.invoke(good_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -41,9 +39,8 @@ def test_no_failures_are_raised(good_template):
 
 
 def test_failures_are_raised(bad_template: CFModel):
-    result = Result()
-    rule = PolicyOnUserRule(None, result)
-    rule.invoke(bad_template)
+    rule = PolicyOnUserRule(None)
+    result = rule.invoke(bad_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0

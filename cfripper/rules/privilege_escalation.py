@@ -13,10 +13,15 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
 __all__ = ["PrivilegeEscalationRule"]
+
+from typing import Dict, Optional
+
+from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
 from cfripper.model.enums import RuleGranularity
-from cfripper.model.rule import Rule
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 
 class PrivilegeEscalationRule(Rule):
@@ -52,11 +57,13 @@ class PrivilegeEscalationRule(Rule):
         ]
     )
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMPolicy):
                 policy_actions = set(action.lower() for action in resource.Properties.PolicyDocument.get_iam_actions())
                 for violation in policy_actions.intersection(self.IAM_BLACKLIST):
-                    self.add_failure(
-                        type(self).__name__, self.REASON.format(logical_id, violation), resource_ids={logical_id}
+                    self.add_failure_to_result(
+                        result, self.REASON.format(logical_id, violation), resource_ids={logical_id}
                     )
+        return result

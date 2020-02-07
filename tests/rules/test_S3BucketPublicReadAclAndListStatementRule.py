@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.model.enums import RuleMode
-from cfripper.model.result import Result
 from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule
 from tests.utils import get_cfmodel_from
 
@@ -26,9 +25,8 @@ def s3_read_plus_list():
 
 
 def test_s3_read_plus_list(s3_read_plus_list):
-    result = Result()
-    rule = S3BucketPublicReadAclAndListStatementRule(None, result)
-    rule.invoke(s3_read_plus_list)
+    rule = S3BucketPublicReadAclAndListStatementRule(None)
+    result = rule.invoke(s3_read_plus_list)
 
     assert result.valid
     assert len(result.failed_rules) == 0

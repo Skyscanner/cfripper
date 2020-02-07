@@ -16,7 +16,6 @@ from unittest.mock import patch
 
 import pytest
 
-from cfripper.model.result import Result
 from cfripper.rules.wildcard_policies import (
     GenericWildcardPolicyRule,
     S3BucketPolicyWildcardActionRule,
@@ -43,9 +42,8 @@ def sns_topic_with_wildcards():
 
 @patch("cfripper.rules.wildcard_policies.logger.warning")
 def test_invoking_general_rule_not_allowed(mock_logger, s3_bucket_with_wildcards):
-    result = Result()
-    rule = GenericWildcardPolicyRule(None, result)
-    rule.invoke(s3_bucket_with_wildcards)
+    rule = GenericWildcardPolicyRule(None)
+    result = rule.invoke(s3_bucket_with_wildcards)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -55,9 +53,8 @@ def test_invoking_general_rule_not_allowed(mock_logger, s3_bucket_with_wildcards
 
 
 def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
-    result = Result()
-    rule = S3BucketPolicyWildcardActionRule(None, result)
-    rule.invoke(s3_bucket_with_wildcards)
+    rule = S3BucketPolicyWildcardActionRule(None)
+    result = rule.invoke(s3_bucket_with_wildcards)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -67,9 +64,8 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
 
 
 def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
-    result = Result()
-    rule = SQSQueuePolicyWildcardActionRule(None, result)
-    rule.invoke(sqs_queue_with_wildcards)
+    rule = SQSQueuePolicyWildcardActionRule(None)
+    result = rule.invoke(sqs_queue_with_wildcards)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -85,9 +81,8 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
 
 
 def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
-    result = Result()
-    rule = SNSTopicPolicyWildcardActionRule(None, result)
-    rule.invoke(sns_topic_with_wildcards)
+    rule = SNSTopicPolicyWildcardActionRule(None)
+    result = rule.invoke(sns_topic_with_wildcards)
 
     assert result.valid
     assert len(result.failed_rules) == 0

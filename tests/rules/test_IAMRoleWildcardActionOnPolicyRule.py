@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.config.config import Config
-from cfripper.model.result import Result
 from cfripper.rules.iam_roles import IAMRoleWildcardActionOnPolicyRule
 from tests.utils import get_cfmodel_from
 
@@ -46,9 +45,8 @@ def iam_managed_policy_good_template_with_allow_and_deny():
 
 
 def test_valid_iam_policy_permissions(iam_role_with_wildcard_action):
-    result = Result()
-    rule = IAMRoleWildcardActionOnPolicyRule(None, result)
-    rule.invoke(iam_role_with_wildcard_action)
+    rule = IAMRoleWildcardActionOnPolicyRule(None)
+    result = rule.invoke(iam_role_with_wildcard_action)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -61,9 +59,8 @@ def test_valid_iam_policy_permissions(iam_role_with_wildcard_action):
 
 
 def test_valid_iam_policy_trust(iam_role_with_wildcard_action_on_trust):
-    result = Result()
-    rule = IAMRoleWildcardActionOnPolicyRule(None, result)
-    rule.invoke(iam_role_with_wildcard_action_on_trust)
+    rule = IAMRoleWildcardActionOnPolicyRule(None)
+    result = rule.invoke(iam_role_with_wildcard_action_on_trust)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -76,10 +73,8 @@ def test_valid_iam_policy_trust(iam_role_with_wildcard_action_on_trust):
 
 
 def test_invalid_managed_policy_template(iam_managed_policy_bad_template):
-    result = Result()
-    rule = IAMRoleWildcardActionOnPolicyRule(Config(aws_account_id="123456789"), result)
-
-    rule.invoke(iam_managed_policy_bad_template)
+    rule = IAMRoleWildcardActionOnPolicyRule(Config(aws_account_id="123456789"))
+    result = rule.invoke(iam_managed_policy_bad_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -92,10 +87,8 @@ def test_invalid_managed_policy_template(iam_managed_policy_bad_template):
 
 
 def test_valid_iam_role_no_errors(iam_managed_policy_good_template_with_allow_and_deny):
-    result = Result()
-    rule = IAMRoleWildcardActionOnPolicyRule(None, result)
-
-    rule.invoke(iam_managed_policy_good_template_with_allow_and_deny)
+    rule = IAMRoleWildcardActionOnPolicyRule(None)
+    result = rule.invoke(iam_managed_policy_good_template_with_allow_and_deny)
 
     assert result.valid
     assert len(result.failed_rules) == 0

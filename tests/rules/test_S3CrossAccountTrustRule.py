@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 from pytest import fixture
 
 from cfripper.config.config import Config
-from cfripper.model.result import Result
 from cfripper.rules import S3CrossAccountTrustRule
 from tests.utils import get_cfmodel_from
 
@@ -36,9 +35,8 @@ def s3_bucket_cross_account_and_normal():
 
 
 def test_s3_bucket_cross_account(s3_bucket_cross_account):
-    result = Result()
-    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
-    rule.invoke(s3_bucket_cross_account)
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"))
+    result = rule.invoke(s3_bucket_cross_account)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -51,9 +49,8 @@ def test_s3_bucket_cross_account(s3_bucket_cross_account):
 
 
 def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
-    result = Result()
-    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
-    rule.invoke(s3_bucket_cross_account_and_normal)
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"))
+    result = rule.invoke(s3_bucket_cross_account_and_normal)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -66,9 +63,8 @@ def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
 
 
 def test_s3_bucket_cross_account_and_normal_with_org_aws_account(s3_bucket_cross_account_and_normal):
-    result = Result()
-    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["666555444"]), result)
-    rule.invoke(s3_bucket_cross_account_and_normal)
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["666555444"]))
+    result = rule.invoke(s3_bucket_cross_account_and_normal)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -81,17 +77,15 @@ def test_s3_bucket_cross_account_and_normal_with_org_aws_account(s3_bucket_cross
 
 
 def test_s3_bucket_cross_account_for_current_account(s3_bucket_cross_account):
-    result = Result()
-    rule = S3CrossAccountTrustRule(Config(aws_account_id="987654321"), result)
-    rule.invoke(s3_bucket_cross_account)
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="987654321"))
+    result = rule.invoke(s3_bucket_cross_account)
 
     assert result.valid
 
 
 def test_s3_bucket_cross_account_from_aws_service(s3_bucket_cross_account_from_aws_service):
-    result = Result()
-    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"), result)
-    rule.invoke(s3_bucket_cross_account_from_aws_service)
+    rule = S3CrossAccountTrustRule(Config(aws_account_id="123456789"))
+    result = rule.invoke(s3_bucket_cross_account_from_aws_service)
 
     assert result.valid
     assert len(result.failed_rules) == 0

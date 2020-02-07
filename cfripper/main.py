@@ -88,11 +88,11 @@ def handler(event, context):
     if not event.get("stack_template_url") and not event.get("stack", {}).get("name"):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
 
-    result = Result()
     template = get_template(event)
 
     if not template:
         # In case of an invalid script log a warning and return early
+        result = Result()
         result.add_exception(TypeError(f"Malformed Event - could not parse!! Event: {str(event)}"))
         logger.exception(f"Malformed Event - could not parse!! Event: {str(event)}")
         return {"valid": True, "reason": "", "failed_rules": [], "exceptions": [x.args[0] for x in result.exceptions]}
@@ -113,13 +113,13 @@ def handler(event, context):
 
     logger.info("Scan started for: {}; {}; {};".format(config.project_name, config.service_name, config.stack_name))
 
-    rules = [DEFAULT_RULES.get(rule)(config, result) for rule in config.rules]
+    rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
 
     # TODO get AWS variables/parameters and pass them to resolve
     cfmodel = pycfmodel.parse(template).resolve()
 
-    processor.process_cf_template(cfmodel, config, result)
+    result = processor.process_cf_template(cfmodel, config)
 
     perform_logging(result, config, event)
 

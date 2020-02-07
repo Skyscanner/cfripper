@@ -21,15 +21,17 @@ __all__ = [
 
 import logging
 import re
-from typing import Set
+from typing import Dict, Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.kms_key import KMSKey
+from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.result import Result
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
 
@@ -52,7 +54,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                 self._valid_principals.add(self._config.aws_account_id)
         return self._valid_principals
 
-    def _do_statement_check(self, logical_id, statement):
+    def _do_statement_check(self, result: Result, logical_id: str, statement: Statement):
 
         if statement.Effect == "Allow":
             for principal in statement.get_principal_list():
@@ -76,15 +78,15 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                             f"because no AWS Account ID was found in the config."
                         )
                     elif "GETATT" in principal or "UNDEFINED_" in principal:
-                        self.add_failure(
-                            type(self).__name__,
+                        self.add_failure_to_result(
+                            result,
                             self.REASON.format(logical_id, principal),
                             rule_mode=RuleMode.DEBUG,
                             resource_ids={logical_id},
                         )
                     else:
-                        self.add_failure(
-                            type(self).__name__, self.REASON.format(logical_id, principal), resource_ids={logical_id}
+                        self.add_failure_to_result(
+                            result, self.REASON.format(logical_id, principal), resource_ids={logical_id},
                         )
 
 
@@ -104,11 +106,13 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
     REASON = "{} has forbidden cross-account trust relationship with {}"
     ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
                 for statement in resource.Properties.AssumeRolePolicyDocument._statement_as_list():
-                    self._do_statement_check(logical_id, statement)
+                    self._do_statement_check(result, logical_id, statement)
+        return result
 
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
@@ -125,11 +129,13 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, S3BucketPolicy):
                 for statement in resource.Properties.PolicyDocument._statement_as_list():
-                    self._do_statement_check(logical_id, statement)
+                    self._do_statement_check(result, logical_id, statement)
+        return result
 
 
 class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
@@ -146,8 +152,10 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
 
     REASON = "{} has forbidden cross-account policy allow with {} for an KMS Key Policy"
 
-    def invoke(self, cfmodel: CFModel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, KMSKey):
                 for statement in resource.Properties.KeyPolicy._statement_as_list():
-                    self._do_statement_check(logical_id, statement)
+                    self._do_statement_check(result, logical_id, statement)
+        return result

@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 
 from cfripper.config.config import Config
-from cfripper.model.result import Result
 from cfripper.rules.wildcard_principals import GenericWildcardPrincipalRule
 from tests.utils import get_cfmodel_from
 
@@ -31,9 +30,8 @@ def bad_template():
 
 
 def test_no_failures_are_raised(good_template):
-    result = Result()
-    rule = GenericWildcardPrincipalRule(None, result)
-    rule.invoke(good_template)
+    rule = GenericWildcardPrincipalRule(None)
+    result = rule.invoke(good_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -41,9 +39,8 @@ def test_no_failures_are_raised(good_template):
 
 
 def test_failures_are_raised(bad_template):
-    result = Result()
-    rule = GenericWildcardPrincipalRule(None, result)
-    rule.invoke(bad_template)
+    rule = GenericWildcardPrincipalRule(None)
+    result = rule.invoke(bad_template)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -86,16 +83,15 @@ def test_wildcard_principal_rule_is_whitelisted_retrieved_correctly(mock_rule_to
         rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
     )
 
-    wildcard_principal_rule = GenericWildcardPrincipalRule(config=config, result=None)
+    wildcard_principal_rule = GenericWildcardPrincipalRule(config=config)
 
     assert wildcard_principal_rule.resource_is_whitelisted(logical_id="resource_1") is True
 
 
 def test_generic_wildcard_ignores_kms():
-    result = Result()
-    rule = GenericWildcardPrincipalRule(Config(aws_account_id="123456789", aws_principals=["999999999"]), result)
+    rule = GenericWildcardPrincipalRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(
         extra_params={"Principal": "arn:aws:iam::*:*"}
     )
-    rule.invoke(model)
+    result = rule.invoke(model)
     assert result.valid

@@ -19,13 +19,17 @@ __all__ = [
     "SQSQueuePolicyWildcardActionRule",
 ]
 import logging
+from typing import Dict, Optional, Type
 
+from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
 from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
 logger = logging.getLogger(__file__)
@@ -43,10 +47,10 @@ class GenericWildcardPolicyRule(Rule):
     RULE_MODE = RuleMode.DEBUG
     GRANULARITY = RuleGranularity.RESOURCE
 
-    # this should be of type pycfmodel.model.resources
-    AWS_RESOURCE = None
+    AWS_RESOURCE: Type[Resource] = None
 
-    def invoke(self, cfmodel):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
         if self.AWS_RESOURCE is None:
             logger.warning(f"Not running {type(self).__name__} rule as AWS_RESOURCE is not defined.")
         else:
@@ -56,11 +60,10 @@ class GenericWildcardPolicyRule(Rule):
                 if isinstance(resource, self.AWS_RESOURCE) and resource.Properties.PolicyDocument.allowed_actions_with(
                     REGEX_HAS_STAR_OR_STAR_AFTER_COLON
                 ):
-                    self.add_failure(
-                        type(self).__name__,
-                        self.REASON.format(self.AWS_RESOURCE.__name__, logical_id),
-                        resource_ids={logical_id},
+                    self.add_failure_to_result(
+                        result, self.REASON.format(self.AWS_RESOURCE.__name__, logical_id), resource_ids={logical_id},
                     )
+        return result
 
 
 class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):

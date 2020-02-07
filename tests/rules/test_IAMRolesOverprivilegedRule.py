@@ -15,7 +15,6 @@ specific language governing permissions and limitations under the License.
 import pytest
 from pycfmodel.model.cf_model import CFModel
 
-from cfripper.model.result import Result
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule
 from tests.utils import get_cfmodel_from
 
@@ -53,9 +52,8 @@ def invalid_role_inline_policy_fn_if() -> CFModel:
 
 
 def test_with_valid_role_inline_policy(valid_role_inline_policy):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(valid_role_inline_policy)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(valid_role_inline_policy)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -63,9 +61,8 @@ def test_with_valid_role_inline_policy(valid_role_inline_policy):
 
 
 def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(invalid_role_inline_policy)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(invalid_role_inline_policy)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -78,9 +75,8 @@ def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
 
 
 def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_policy_resource_as_array):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(invalid_role_inline_policy_resource_as_array)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(invalid_role_inline_policy_resource_as_array)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -93,9 +89,8 @@ def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_p
 
 
 def test_with_valid_role_managed_policy(valid_role_managed_policy):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(valid_role_managed_policy)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(valid_role_managed_policy)
 
     assert result.valid
     assert len(result.failed_rules) == 0
@@ -103,9 +98,8 @@ def test_with_valid_role_managed_policy(valid_role_managed_policy):
 
 
 def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(invalid_role_managed_policy)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(invalid_role_managed_policy)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
@@ -118,9 +112,8 @@ def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
 
 
 def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if):
-    result = Result()
-    rule = IAMRolesOverprivilegedRule(None, result)
-    rule.invoke(invalid_role_inline_policy_fn_if)
+    rule = IAMRolesOverprivilegedRule(None)
+    result = rule.invoke(invalid_role_inline_policy_fn_if)
 
     assert not result.valid
     assert len(result.failed_rules) == 1
