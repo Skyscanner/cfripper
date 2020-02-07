@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
     - `invoke` method returns a `Result` instead of `None` 
     - `add_failure` has been renamed to `add_failure_to_result`. It now takes a result instead of a reason 
     (that now it's inferred)
+    - `add_warning` has been renamed to `add_warning_to_result`. It now has the same signature than `add_failure_to_result`
 ### Improvements
 - Rule Invoke extras parameter has been added to allow changing the rule behaviour depending on state besides the cfmodel itself:
     - Stack naming rules
