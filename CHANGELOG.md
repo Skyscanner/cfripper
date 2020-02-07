@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.14.0] - ????-??-??
+## [0.14.0] - 2020-02-07
 ### Breaking changes
 - Completely changed base `Rule` abstract class signature and adapted rule classes to match it:
     - Init now only takes a `Config`
