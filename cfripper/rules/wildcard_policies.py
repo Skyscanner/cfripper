@@ -19,9 +19,10 @@ __all__ = [
     "SQSQueuePolicyWildcardActionRule",
 ]
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, Type
 
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
@@ -46,8 +47,7 @@ class GenericWildcardPolicyRule(Rule):
     RULE_MODE = RuleMode.DEBUG
     GRANULARITY = RuleGranularity.RESOURCE
 
-    # this should be a pycfmodel.model.resources class
-    AWS_RESOURCE = None
+    AWS_RESOURCE: Type[Resource] = None
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
