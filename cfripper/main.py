@@ -27,6 +27,7 @@ from .model.result import Result
 from .rules import DEFAULT_RULES
 
 logger = logging.getLogger(__file__)
+DEFAULT_EXTRA_KEYS_FROM_EVENT = ("account", "event", "project", "region", "stack", "tags")
 
 
 def log_results(project_name, service_name, stack_name, rules, _type, warnings, template_url):
@@ -139,7 +140,7 @@ def handler(event, context):
 
 
 def get_extras(event) -> Dict[str, Any]:
-    return {k: v for k, v in event.items() if k in ("account", "event", "project", "region", "stack", "tags")}
+    return {k: v for k, v in event.items() if k in DEFAULT_EXTRA_KEYS_FROM_EVENT}
 
 
 def get_template(event):
