@@ -62,7 +62,9 @@ def test_correct_event():
     mock_created_s3_adapter_object.download_template_to_dictionary.assert_called_once_with(
         "https://asdfasdfasdf/bucket/key"
     )
-    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(cfmodel, ANY)
+    mock_created_rule_processor_object.process_cf_template.assert_called_once_with(
+        cfmodel=cfmodel, config=ANY, extras={"stack": {"name": "blooblah"}}
+    )
 
 
 @mock_s3

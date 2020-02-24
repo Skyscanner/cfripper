@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.14.1] - 2020-02-24
+### Improvements
+- Rule processor now accepts an extras parameter that will be forwarded to the rules
+- Main gets extra information from the event and forwards it to the rule formatter
+
 ## [0.14.0] - 2020-02-07
 ### Breaking changes
 - Completely changed base `Rule` abstract class signature and adapted rule classes to match it:
