@@ -14,6 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import json
 import logging
+from typing import Any, Dict
 
 import pycfmodel
 
@@ -26,6 +27,7 @@ from .model.result import Result
 from .rules import DEFAULT_RULES
 
 logger = logging.getLogger(__file__)
+DEFAULT_EXTRA_KEYS_FROM_EVENT = ("account", "event", "project", "region", "stack", "tags")
 
 
 def log_results(project_name, service_name, stack_name, rules, _type, warnings, template_url):
@@ -89,6 +91,7 @@ def handler(event, context):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
 
     template = get_template(event)
+    extras = get_extras(event)
 
     if not template:
         # In case of an invalid script log a warning and return early
@@ -119,7 +122,7 @@ def handler(event, context):
     # TODO get AWS variables/parameters and pass them to resolve
     cfmodel = pycfmodel.parse(template).resolve()
 
-    result = processor.process_cf_template(cfmodel, config)
+    result = processor.process_cf_template(cfmodel=cfmodel, config=config, extras=extras)
 
     perform_logging(result, config, event)
 
@@ -134,6 +137,10 @@ def handler(event, context):
             failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
         ],
     }
+
+
+def get_extras(event) -> Dict[str, Any]:
+    return {k: v for k, v in event.items() if k in DEFAULT_EXTRA_KEYS_FROM_EVENT}
 
 
 def get_template(event):

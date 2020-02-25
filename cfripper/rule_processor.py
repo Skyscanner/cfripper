@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
 """
 import logging
 import re
-from typing import List
+from typing import Dict, List, Optional
 
 from pycfmodel.model.cf_model import CFModel
 
@@ -29,11 +29,11 @@ class RuleProcessor:
     def __init__(self, *args):
         self.rules = args
 
-    def process_cf_template(self, cfmodel: CFModel, config: Config) -> Result:
+    def process_cf_template(self, cfmodel: CFModel, config: Config, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for rule in self.rules:
             try:
-                result += rule.invoke(cfmodel)
+                result += rule.invoke(cfmodel, extras)
             except Exception as other_exception:
                 result.add_exception(other_exception)
                 logger.exception(
