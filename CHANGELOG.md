@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.14.2] - 2020-03-04
+### Improvements
+- Update dependencies
+
 ## [0.14.1] - 2020-02-24
 ### Improvements
 - Rule processor now accepts an extras parameter that will be forwarded to the rules
