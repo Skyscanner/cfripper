@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Improvements
 - Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
 ### Fixed
-- Whitelist didnot work if it didn't have the `Rule` prefix
+- Whitelist did not work if it didn't have the `Rule` prefix
 ### Breaking changes
-- Prefix `KMSKeyWildcardPrincipal` and `SecurityGroupIngressOpenToWorld` with `Rule`
+- Sufix `KMSKeyWildcardPrincipal` and `SecurityGroupIngressOpenToWorld` with `Rule`
 
 ## [0.14.2] - 2020-03-04
 ### Improvements
