@@ -17,6 +17,7 @@ __all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorld", "S
 from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.properties.security_group_ingress_prop import SecurityGroupIngressProp
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
 
@@ -77,7 +78,7 @@ class SecurityGroupOpenToWorldRule(Rule):
                 if not isinstance(list_security_group_ingress, list):
                     list_security_group_ingress = [list_security_group_ingress]
                 for ingress in list_security_group_ingress:
-                    if ingress.ipv4_slash_zero() or ingress.ipv6_slash_zero():
+                    if self.non_compliant_ip_range(item=ingress):
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
                                 self.add_failure_to_result(
@@ -85,22 +86,36 @@ class SecurityGroupOpenToWorldRule(Rule):
                                 )
         return result
 
+    def non_compliant_ip_range(self, item) -> bool:
+        cidr_ip = item.CidrIp if isinstance(item, SecurityGroupIngressProp) else item.Properties.CidrIp
+        cidr_ipv6 = item.CidrIpv6 if isinstance(item, SecurityGroupIngressProp) else item.Properties.CidrIpv6
+
+        return (
+            item.ipv4_slash_zero()
+            or item.ipv6_slash_zero()
+            or (cidr_ip and cidr_ip.is_global)
+            or (cidr_ipv6 and cidr_ipv6.is_global)
+        )
+
 
 class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
     """
     Checks if a security group has a CIDR open to world on ingress.
+    This is a security risk as your resource may be publicly available.
 
     Fix:
-        Unless required, do not use 0.0.0.0/0 as an ingress rule in your Security group.
-        This is a security risk as your resource will be publicly available.
+        Unless required, do not use the following IP ranges in your Security Group Ingress:
+          - 0.0.0.0/0.
+          - Any `/8` that does not start with 10.
+          - 172/8 or 192/8 (use 172.16/12 and 192.168/16 ranges, per RFC1918 specification).
+
+        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
     """
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SecurityGroupIngress) and (
-                resource.ipv4_slash_zero() or resource.ipv6_slash_zero()
-            ):
+            if isinstance(resource, SecurityGroupIngress) and self.non_compliant_ip_range(item=resource):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
                         self.add_failure_to_result(

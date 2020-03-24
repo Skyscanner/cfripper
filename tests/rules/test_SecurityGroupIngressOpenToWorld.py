@@ -24,6 +24,11 @@ def bad_template():
     return get_cfmodel_from("rules/SecurityGroupIngressOpenToWorld/bad_template.json").resolve()
 
 
+@fixture()
+def good_template():
+    return get_cfmodel_from("rules/SecurityGroupIngressOpenToWorld/good_template.json").resolve()
+
+
 def test_failures_are_raised(bad_template):
     rule = SecurityGroupIngressOpenToWorld(Config())
     result = rule.invoke(bad_template)
@@ -35,3 +40,9 @@ def test_failures_are_raised(bad_template):
     assert result.failed_rules[0].reason == "Port 46 open to the world in security group 'securityGroupIngress1'"
     assert result.failed_rules[1].rule == "SecurityGroupIngressOpenToWorld"
     assert result.failed_rules[1].reason == "Port 46 open to the world in security group 'securityGroupIngress2'"
+
+
+def test_valid_security_group_ingress(good_template):
+    rule = SecurityGroupIngressOpenToWorld(Config())
+    result = rule.invoke(good_template)
+    assert result.valid
