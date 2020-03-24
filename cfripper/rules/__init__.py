@@ -44,32 +44,41 @@ from cfripper.rules.wildcard_policies import (
 from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
 
 DEFAULT_RULES = {
-    "CloudFormationAuthenticationRule": CloudFormationAuthenticationRule,
-    "CrossAccountTrustRule": CrossAccountTrustRule,
-    "EBSVolumeHasSSERule": EBSVolumeHasSSERule,
-    "FullWildcardPrincipalRule": FullWildcardPrincipalRule,
-    "HardcodedRDSPasswordRule": HardcodedRDSPasswordRule,
-    "IAMRolesOverprivilegedRule": IAMRolesOverprivilegedRule,
-    "IAMRoleWildcardActionOnPolicyRule": IAMRoleWildcardActionOnPolicyRule,
-    "KMSKeyCrossAccountTrustRule": KMSKeyCrossAccountTrustRule,
-    "KMSKeyWildcardPrincipalRule": KMSKeyWildcardPrincipalRule,
-    "ManagedPolicyOnUserRule": ManagedPolicyOnUserRule,
-    "PartialWildcardPrincipalRule": PartialWildcardPrincipalRule,
-    "PolicyOnUserRule": PolicyOnUserRule,
-    "PrivilegeEscalationRule": PrivilegeEscalationRule,
-    "S3BucketPolicyPrincipalRule": S3BucketPolicyPrincipalRule,
-    "S3BucketPolicyWildcardActionRule": S3BucketPolicyWildcardActionRule,
-    "S3BucketPublicReadAclAndListStatementRule": S3BucketPublicReadAclAndListStatementRule,
-    "S3BucketPublicReadWriteAclRule": S3BucketPublicReadWriteAclRule,
-    "S3CrossAccountTrustRule": S3CrossAccountTrustRule,
-    "SecurityGroupIngressOpenToWorldRule": SecurityGroupIngressOpenToWorldRule,
-    "SecurityGroupMissingEgressRule": SecurityGroupMissingEgressRule,
-    "SecurityGroupOpenToWorldRule": SecurityGroupOpenToWorldRule,
-    "SNSTopicPolicyNotPrincipalRule": SNSTopicPolicyNotPrincipalRule,
-    "SNSTopicPolicyWildcardActionRule": SNSTopicPolicyWildcardActionRule,
-    "SQSQueuePolicyNotPrincipalRule": SQSQueuePolicyNotPrincipalRule,
-    "SQSQueuePolicyPublicRule": SQSQueuePolicyPublicRule,
-    "SQSQueuePolicyWildcardActionRule": SQSQueuePolicyWildcardActionRule,
+    rule.__name__: rule
+    for rule in [
+        CloudFormationAuthenticationRule,
+        CrossAccountTrustRule,
+        EBSVolumeHasSSERule,
+        FullWildcardPrincipalRule,
+        HardcodedRDSPasswordRule,
+        IAMRolesOverprivilegedRule,
+        IAMRoleWildcardActionOnPolicyRule,
+        KMSKeyCrossAccountTrustRule,
+        KMSKeyWildcardPrincipalRule,
+        ManagedPolicyOnUserRule,
+        PartialWildcardPrincipalRule,
+        PolicyOnUserRule,
+        PrivilegeEscalationRule,
+        S3BucketPolicyPrincipalRule,
+        S3BucketPolicyWildcardActionRule,
+        S3BucketPublicReadAclAndListStatementRule,
+        S3BucketPublicReadWriteAclRule,
+        S3CrossAccountTrustRule,
+        SecurityGroupIngressOpenToWorldRule,
+        SecurityGroupMissingEgressRule,
+        SecurityGroupOpenToWorldRule,
+        SNSTopicPolicyNotPrincipalRule,
+        SNSTopicPolicyWildcardActionRule,
+        SQSQueuePolicyNotPrincipalRule,
+        SQSQueuePolicyPublicRule,
+        SQSQueuePolicyWildcardActionRule,
+    ]
 }
 
-BASE_CLASSES = {"CrossAccountCheckingRule": CrossAccountCheckingRule, "PrincipalCheckingRule": PrincipalCheckingRule}
+BASE_CLASSES = {
+    rule.__name__: rule
+    for rule in [
+        CrossAccountCheckingRule,
+        PrincipalCheckingRule,
+    ]
+}
