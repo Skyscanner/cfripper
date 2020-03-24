@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = ["KMSKeyWildcardPrincipal"]
+__all__ = ["KMSKeyWildcardPrincipalRule"]
 import logging
 import re
 from typing import Dict, Optional
@@ -27,7 +27,7 @@ from cfripper.rules.base_rules import Rule
 logger = logging.getLogger(__file__)
 
 
-class KMSKeyWildcardPrincipal(Rule):
+class KMSKeyWildcardPrincipalRule(Rule):
     """
     Check for wildcards in principals in KMS Policies.
     """

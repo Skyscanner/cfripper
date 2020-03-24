@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 from pytest import fixture
 
 from cfripper.config.config import Config
-from cfripper.rules import SecurityGroupIngressOpenToWorld
+from cfripper.rules import SecurityGroupIngressOpenToWorldRule
 from tests.utils import get_cfmodel_from
 
 
@@ -25,7 +25,7 @@ def bad_template():
 
 
 def test_failures_are_raised(bad_template):
-    rule = SecurityGroupIngressOpenToWorld(Config())
+    rule = SecurityGroupIngressOpenToWorldRule(Config())
     result = rule.invoke(bad_template)
 
     assert not result.valid
