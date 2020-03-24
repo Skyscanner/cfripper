@@ -75,10 +75,4 @@ DEFAULT_RULES = {
     ]
 }
 
-BASE_CLASSES = {
-    rule.__name__: rule
-    for rule in [
-        CrossAccountCheckingRule,
-        PrincipalCheckingRule,
-    ]
-}
+BASE_CLASSES = {rule.__name__: rule for rule in [CrossAccountCheckingRule, PrincipalCheckingRule]}
