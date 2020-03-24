@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.15.0] - 2020-03-24
+### Improvements
+- Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
+### Fixed
+- Prefix `KMSKeyWildcardPrincipal` and `SecurityGroupIngressOpenToWorld` with `Rule`
+- Whitelist didnot work if it didn't have the `Rule` prefix
+
 ## [0.14.2] - 2020-03-04
 ### Improvements
 - Update dependencies
