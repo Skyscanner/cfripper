@@ -45,7 +45,7 @@ from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, Partia
 
 DEFAULT_RULES = {
     rule.__name__: rule
-    for rule in [
+    for rule in {
         CloudFormationAuthenticationRule,
         CrossAccountTrustRule,
         EBSVolumeHasSSERule,
@@ -72,7 +72,7 @@ DEFAULT_RULES = {
         SQSQueuePolicyNotPrincipalRule,
         SQSQueuePolicyPublicRule,
         SQSQueuePolicyWildcardActionRule,
-    ]
+    }
 }
 
-BASE_CLASSES = {rule.__name__: rule for rule in [CrossAccountCheckingRule, PrincipalCheckingRule]}
+BASE_CLASSES = {rule.__name__: rule for rule in {CrossAccountCheckingRule, PrincipalCheckingRule}}
