@@ -1,13 +1,12 @@
 import operator
 import re
-from functools import reduce
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pycfmodel.model.resources.iam_role import IAMRole
 from pydantic import BaseModel, validator
+from pydash.objects import get
 
 from cfripper.model.enums import RuleMode, RuleRisk
-from pydash.objects import get
+
 IMPLEMENTED_FILTER_FUNCTIONS = {
     "eq": lambda *args, **kwargs: operator.eq(*args),
     "ne": lambda *args, **kwargs: operator.ne(*args),
@@ -52,45 +51,3 @@ class Filter(BaseModel):
 
     def __call__(self, **kwargs):
         return self.eval(kwargs)
-
-
-filter = Filter(
-    rule_mode=RuleMode.DISABLED,
-    eval={
-        "and": [
-            {"regex": ["^alc-db-.*$", {"ref": "resource.Properties.RoleName"}]},
-            {"eq": [{"ref": "principal"}, "arn:aws:iam::512406415041:role/databricks-assuming-role"]},
-        ]
-    },
-)
-
-assert filter(
-    resource=IAMRole(
-        **{
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": {
-                        "Effect": "Allow",
-                        "Principal": {"Service": ["ec2.amazonaws.com"], "AWS": "arn:aws:iam::111111111111:root"},
-                        "Action": ["sts:AssumeRole"],
-                    },
-                },
-                "Path": "/",
-                "Policies": [
-                    {
-                        "PolicyName": "root",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": {"Effect": "Allow", "Action": "*", "Resource": "*"},
-                        },
-                    }
-                ],
-                "ManagedPolicyArns": ["arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"],
-                "RoleName": "alc-db-test",
-            },
-        }
-    ),
-    principal="arn:aws:iam::512406415041:role/databricks-assuming-role",
-)
