@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 - `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` now more accurately setup to block
 potentially public CIDR ranges. It it utilising the latest `pycfmodel` release (0.7.0).
 
+## [0.15.0] - 2020-03-25
+### Improvements
+- Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
+### Fixed
+- Whitelist did not work if it didn't have the `Rule` prefix
+### Breaking changes
+- Sufix `KMSKeyWildcardPrincipal` and `SecurityGroupIngressOpenToWorld` with `Rule`
+- Sufix whitelist constant `FullWildcardPrincipal` and `PartialWildcardPrincipal` with `Rule`
+
 ## [0.14.2] - 2020-03-04
 ### Improvements
 - Update dependencies

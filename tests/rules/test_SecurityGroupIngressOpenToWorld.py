@@ -15,7 +15,7 @@ specific language governing permissions and limitations under the License.
 from pytest import fixture
 
 from cfripper.config.config import Config
-from cfripper.rules import SecurityGroupIngressOpenToWorld
+from cfripper.rules import SecurityGroupIngressOpenToWorldRule
 from tests.utils import get_cfmodel_from
 
 
@@ -30,15 +30,15 @@ def good_template():
 
 
 def test_failures_are_raised(bad_template):
-    rule = SecurityGroupIngressOpenToWorld(Config())
+    rule = SecurityGroupIngressOpenToWorldRule(Config())
     result = rule.invoke(bad_template)
 
     assert not result.valid
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "SecurityGroupIngressOpenToWorld"
+    assert result.failed_rules[0].rule == "SecurityGroupIngressOpenToWorldRule"
     assert result.failed_rules[0].reason == "Port 46 open to the world in security group 'securityGroupIngress1'"
-    assert result.failed_rules[1].rule == "SecurityGroupIngressOpenToWorld"
+    assert result.failed_rules[1].rule == "SecurityGroupIngressOpenToWorldRule"
     assert result.failed_rules[1].reason == "Port 46 open to the world in security group 'securityGroupIngress2'"
 
 
