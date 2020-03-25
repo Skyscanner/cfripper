@@ -12,7 +12,7 @@ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 """
-__all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorld", "SecurityGroupMissingEgressRule"]
+__all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorldRule", "SecurityGroupMissingEgressRule"]
 
 from typing import Dict, Optional
 
@@ -86,7 +86,7 @@ class SecurityGroupOpenToWorldRule(Rule):
         return result
 
 
-class SecurityGroupIngressOpenToWorld(SecurityGroupOpenToWorldRule):
+class SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
     """
     Checks if a security group has a CIDR open to world on ingress.
 
