@@ -43,6 +43,6 @@ def test_failures_are_raised(bad_template):
 
 
 def test_valid_security_group_ingress(good_template):
-    rule = SecurityGroupIngressOpenToWorld(Config())
+    rule = SecurityGroupIngressOpenToWorldRule(Config())
     result = rule.invoke(good_template)
     assert result.valid
