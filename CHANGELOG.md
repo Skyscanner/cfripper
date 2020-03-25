@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.15.1] - 2020-03-26
+### Improvements
+- `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` now more accurately setup to block
+potentially public CIDR ranges. It it utilising the latest `pycfmodel` release (0.7.0).
+
 ## [0.14.2] - 2020-03-04
 ### Improvements
 - Update dependencies
