@@ -157,8 +157,8 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type             | Description                                                    |
         |:-----------:|:----------------:|:--------------------------------------------------------------:|
-        |`config`     | str         | `config` variable available inside the rule                    |
-        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`config`     | str              | `config` variable available inside the rule                    |
+        |`extras`     | str              | `extras` variable available inside the rule                    |
         |`logical_id` | str              | ID used in Cloudformation to refer the resource being analysed |
         |`resource`   | `S3BucketPolicy` | Resource that is being addressed                               |
         |`statement`  | `Statement`      | Statement being checked found in the Resource                  |
