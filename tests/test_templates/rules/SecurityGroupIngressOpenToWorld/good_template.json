@@ -4,7 +4,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": "sg-12341234",
-        "CidrIp": "11.0.0.0/8",
+        "CidrIp": "172.16.0.0/12",
         "FromPort": 46,
         "ToPort": 46,
         "IpProtocol": "tcp"
@@ -14,7 +14,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": "sg-12341234",
-        "CidrIpv6": "::/0",
+        "CidrIpv6": "fd00::/8",
         "FromPort": 46,
         "ToPort": 46,
         "IpProtocol": "tcp"

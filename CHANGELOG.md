@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.15.0] - 2020-03-24
+## [0.15.1] - 2020-03-26
+### Improvements
+- `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` are now more accurately scoped to block
+potentially public CIDR ranges. It it utilising the latest `pycfmodel` release (0.7.0).
+
+## [0.15.0] - 2020-03-25
 ### Improvements
 - Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
 ### Fixed

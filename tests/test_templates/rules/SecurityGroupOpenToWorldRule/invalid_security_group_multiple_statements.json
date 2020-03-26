@@ -14,7 +14,7 @@
           },
           {
             "IpProtocol": "tcp",
-            "CidrIp": "0.0.0.0/0",
+            "CidrIp": "172.0.0.0/8",
             "FromPort": 9090,
             "ToPort": 9090
           }
