@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -10,6 +10,3 @@ class RuleConfig(BaseModel):
     rule_mode: Optional[RuleMode] = None
     risk_value: Optional[RuleRisk] = None
     filters: List[Filter] = []
-
-
-RULE_CONFIGURATIONS: Dict[str, Union[RuleConfig, Dict]] = {}
