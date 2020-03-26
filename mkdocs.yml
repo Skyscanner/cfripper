@@ -14,11 +14,13 @@ nav:
   - Home: index.md
   - CLI: cli.md
   - Rules: rules.md
+  - Rule Config: rule_config.md
   - Changelog: changelog.md
   - Contributing: contributing.md
   - Code of conduct: code_of_conduct.md
 
 markdown_extensions:
+  - admonition
   - codehilite
   - toc:
       permalink: true
