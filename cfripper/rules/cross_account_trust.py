@@ -20,16 +20,15 @@ __all__ = [
 ]
 
 import logging
-import re
 from typing import Dict, Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.statement import Statement
+from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.config.regex import REGEX_CROSS_ACCOUNT_ROOT
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Result
 from cfripper.model.utils import get_account_id_from_principal
@@ -45,6 +44,8 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
+    RESOURCE_TYPE: Resource
+    PROPERTY_WITH_POLICYDOCUMENT: str
 
     @property
     def valid_principals(self) -> Set[str]:
@@ -54,11 +55,31 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                 self._valid_principals.add(self._config.aws_account_id)
         return self._valid_principals
 
-    def _do_statement_check(self, result: Result, logical_id: str, statement: Statement):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, self.RESOURCE_TYPE):
+                properties = resource.Properties
+                policy_document = getattr(properties, self.PROPERTY_WITH_POLICYDOCUMENT)
+                for statement in policy_document._statement_as_list():
+                    filters_available_context = {
+                        "config": self._config,
+                        "extras": extras,
+                        "logical_id": logical_id,
+                        "resource": resource,
+                        "statement": statement,
+                    }
+                    self._do_statement_check(result, logical_id, statement, filters_available_context)
+        return result
 
+    def _do_statement_check(
+        self, result: Result, logical_id: str, statement: Statement, filters_available_context: Dict
+    ):
         if statement.Effect == "Allow":
             for principal in statement.get_principal_list():
                 account_id = get_account_id_from_principal(principal)
+                filters_available_context["principal"] = principal
+                filters_available_context["account_id"] = account_id
                 if (
                     # checks if principal is a canonical id and is whitelisted
                     principal not in self.valid_principals
@@ -86,7 +107,10 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                         )
                     else:
                         self.add_failure_to_result(
-                            result, self.REASON.format(logical_id, principal), resource_ids={logical_id},
+                            result,
+                            self.REASON.format(logical_id, principal),
+                            resource_ids={logical_id},
+                            context=filters_available_context,
                         )
 
 
@@ -101,18 +125,22 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
     Fix:
         If cross account permissions are required, the stack should be added to the whitelist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type        | Description                                                    |
+        |:-----------:|:-----------:|:--------------------------------------------------------------:|
+        |`config`     | str         | `config` variable available inside the rule                    |
+        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `IAMRole`   | Resource that is being addressed                               |
+        |`statement`  | `Statement` | Statement being checked found in the Resource                  |
+        |`principal`  | `str`       | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`       | Account ID found in the principal                              |
     """
 
     REASON = "{} has forbidden cross-account trust relationship with {}"
-    ROOT_PATTERN = re.compile(REGEX_CROSS_ACCOUNT_ROOT)
-
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
-        result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, IAMRole):
-                for statement in resource.Properties.AssumeRolePolicyDocument._statement_as_list():
-                    self._do_statement_check(result, logical_id, statement)
-        return result
+    RESOURCE_TYPE = IAMRole
+    PROPERTY_WITH_POLICYDOCUMENT = "AssumeRolePolicyDocument"
 
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
@@ -125,17 +153,22 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     Fix:
         If cross account permissions are required for S3 access, the stack should be added to the whitelist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type             | Description                                                    |
+        |:-----------:|:----------------:|:--------------------------------------------------------------:|
+        |`config`     | str         | `config` variable available inside the rule                    |
+        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`logical_id` | str              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `S3BucketPolicy` | Resource that is being addressed                               |
+        |`statement`  | `Statement`      | Statement being checked found in the Resource                  |
+        |`principal`  | `str`            | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`            | Account ID found in the principal                              |
     """
 
     REASON = "{} has forbidden cross-account policy allow with {} for an S3 bucket."
-
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
-        result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, S3BucketPolicy):
-                for statement in resource.Properties.PolicyDocument._statement_as_list():
-                    self._do_statement_check(result, logical_id, statement)
-        return result
+    RESOURCE_TYPE = S3BucketPolicy
+    PROPERTY_WITH_POLICYDOCUMENT = "PolicyDocument"
 
 
 class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
@@ -148,14 +181,19 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     Fix:
         If cross account permissions are required for KMS access, the stack should be added to the whitelist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type        | Description                                                    |
+        |:-----------:|:-----------:|:--------------------------------------------------------------:|
+        |`config`     | str         | `config` variable available inside the rule                    |
+        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `KMSKey`    | Resource that is being addressed                               |
+        |`statement`  | `Statement` | Statement being checked found in the Resource                  |
+        |`principal`  | `str`       | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`       | Account ID found in the principal                              |
     """
 
     REASON = "{} has forbidden cross-account policy allow with {} for an KMS Key Policy"
-
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
-        result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, KMSKey):
-                for statement in resource.Properties.KeyPolicy._statement_as_list():
-                    self._do_statement_check(result, logical_id, statement)
-        return result
+    RESOURCE_TYPE = KMSKey
+    PROPERTY_WITH_POLICYDOCUMENT = "KeyPolicy"
