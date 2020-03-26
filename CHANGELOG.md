@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.16.0] - 2020-03-26
+## [0.16.0] - 2020-03-27
 ### Improvements
 - Add new `RuleConfig`, allows to overwrite the default behaviour of the rule changing rule mode and risk value.
 - Add new `Filter`, allows setting custom rule configuration to matching coincidences.
@@ -11,7 +11,12 @@ All notable changes to this project will be documented in this file.
 - If rule mode is `DISABLED` or `WHITELISTED`; methods `add_failure_to_result` and `add_warning_to_result` will have no effect.
 - `add_failure_to_result` and `add_warning_to_result` accepts a new optional parameter named `context`. This variable is going to be evaluated by filters defined in the custom config.
 
-## [0.15.0] - 2020-03-24
+## [0.15.1] - 2020-03-26
+### Improvements
+- `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` are now more accurately scoped to block
+potentially public CIDR ranges. It it utilising the latest `pycfmodel` release (0.7.0).
+
+## [0.15.0] - 2020-03-25
 ### Improvements
 - Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
 ### Fixed
