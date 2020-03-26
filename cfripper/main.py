@@ -23,6 +23,7 @@ from cfripper.rule_processor import RuleProcessor
 from .boto3_client import Boto3Client
 from .config.config import Config
 from .config.logger import setup_logging
+from .config.rule_config import RULE_CONFIGURATIONS
 from .model.result import Result
 from .rules import DEFAULT_RULES
 
@@ -112,6 +113,7 @@ def handler(event, context):
         aws_account_name=event.get("account", {}).get("name", "N/A"),
         aws_account_id=event.get("account", {}).get("id", "N/A"),
         aws_user_agent=event.get("user_agent", "N/A"),
+        rules_config=RULE_CONFIGURATIONS,
     )
 
     logger.info("Scan started for: {}; {}; {};".format(config.project_name, config.service_name, config.stack_name))
