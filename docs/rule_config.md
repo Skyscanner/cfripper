@@ -7,7 +7,7 @@ configuration using the filter.
 
 Allows to set custom rule configuration to matching coincidences. When adding a failure it will check if there is a 
 filter that match the current context and set the new risk or mode. Context depends on each rule and is available inside
-each documentation.
+each rule's documentation.
 The object accepts a reason parameter to say why that filter exists.
 
 {{ inline_source('cfripper.config.filter.Filter') }}

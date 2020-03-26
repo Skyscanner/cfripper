@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.16.0] - 2020-03-26
+### Improvements
+- Add new `RuleConfig`, allows to overwrite the default behaviour of the rule changing rule mode and risk value.
+- Add new `Filter`, allows to set custom rule configuration to matching coincidences.
+- New RuleModes supported: `RuleMode.DISABLED` and `RuleMode.WHITELISTED`.
+### Breaking changes
+- Class variables `Rule.RULE_MODE` and `Rule.RISK_VALUE` should be changed to use properties `rule_mode` and `risk_value`. These properties take in consideration the custome config that might be applied.
+- If rule mode is `DISABLED` or `WHITELISTED`; methods `add_failure_to_result` and `add_warning_to_result` will have no effect.
+- `add_failure_to_result` and `add_warning_to_result` accepts a new optional parameter named `context`. This variable is going to be evaluated by filters defined in the custom config.
+
 ## [0.15.0] - 2020-03-24
 ### Improvements
 - Generate DEFAULT_RULES and BASE_CLASSES using code instead of hardcoding
