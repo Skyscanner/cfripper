@@ -1,13 +1,12 @@
-Allows to overwrite the default behaviour of the rule changing rule mode and risk value. It accepts a more granular 
-configuration using the filter.
+Allows to overwrite the default behaviour of the rule, such as changing the rule mode and risk value. It accepts a more
+ granular configuration using the filter.
  
 {{ inline_source('cfripper.config.rule_config.RuleConfig') }}
 
 ## Filters
 
-Allows to set custom rule configuration to matching coincidences. When adding a failure it will check if there is a 
-filter that match the current context and set the new risk or mode. Context depends on each rule and is available inside
-each rule's documentation.
+When adding a failure or warning it will check if there is a filter that matches the current context and set the new 
+risk or mode. Context depends on each rule and is available inside each rule's documentation.
 The object accepts a reason parameter to say why that filter exists.
 
 {{ inline_source('cfripper.config.filter.Filter') }}
@@ -35,7 +34,7 @@ The object accepts a reason parameter to say why that filter exists.
 
 ### Examples
 
-Disable the rule if the role name is prefixed with `sandbox-` and the principal equals to `arn:aws:iam::123456789012:role/test-role`.
+Disable the rule if the role name is prefixed with `sandbox-` and the principal equals `arn:aws:iam::123456789012:role/test-role`.
 ```python3
 Filter(
     reason="",
