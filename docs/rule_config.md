@@ -15,6 +15,15 @@ The object accepts a reason parameter to say why that filter exists.
     Only available for the following rules: 
     
       - Not supported yet
+      
+### Filter preference
+
+Following the cascade style, takes preference always the last value set following this structure:
+
+```
+Rule Standard -> Rule Config -> Filter #1 -> ... -> Filter #N
+```
+ 
 
 ### Implemented filter functions
 |  Function  |   Description                                                               |  Example                                | 
