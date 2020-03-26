@@ -6,7 +6,7 @@ from cfripper.__version__ import __version__
 
 project_root_path = Path(__file__).parent
 
-install_requires = ["boto3>=1.4.7,<2", "PyYAML>=4.2b1", "pycfmodel>=0.7.0", "cfn_flip>=1.2.0"]
+install_requires = ["boto3>=1.4.7,<2", "cfn_flip>=1.2.0", "pycfmodel>=0.7.0", "pydash~=4.7.6", "PyYAML>=4.2b1"]
 
 dev_requires = [
     "black==19.10b0",

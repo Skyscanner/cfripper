@@ -79,7 +79,7 @@ def process_paragraph(paragraph: str) -> str:
 
 
 def parse_doc_string(doc):
-    sections = ["Risk", "Fix", "Code for fix"]
+    sections = ["Risk", "Fix", "Code for fix", "Filters context"]
     result = OrderedDict()
     pattern_for_paragraphs = regex_for_splitting_paragraphs(sections)
     paragraphs = pattern_for_paragraphs.split(doc.strip())

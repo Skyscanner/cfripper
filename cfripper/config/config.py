@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 import re
 from typing import List
 
+from .rule_config import RuleConfig
 from .whitelist import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
 from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
 from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
@@ -99,6 +100,7 @@ class Config:
         stack_whitelist=None,
         rule_to_action_whitelist=None,
         rule_to_resource_whitelist=None,
+        rules_config=None,
     ):
         self.project_name = project_name
         self.service_name = service_name
@@ -138,6 +140,15 @@ class Config:
 
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
+        self.rules_config = rules_config if rules_config is not None else {}
+
+    def get_rule_config(self, rule_name: str) -> RuleConfig:
+        rule_config = self.rules_config.get(rule_name)
+        if rule_config is None:
+            return RuleConfig()
+        elif isinstance(rule_config, RuleConfig):
+            return rule_config
+        return RuleConfig(**rule_config)
 
     def get_whitelisted_actions(self, rule_name: str) -> List[str]:
         allowed_actions = []
