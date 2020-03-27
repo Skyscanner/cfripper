@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.17.0] - 2020-03-27
+### Improvements
+- `CrossAccountCheckingRule`, `CrossAccountTrustRule`, `S3CrossAccountTrustRule` and `KMSKeyCrossAccountTrustRule` include support for filters.
+### Breaking changes
+- `CrossAccountCheckingRule` now includes the invoke method. Statements of PolicyDocument are now analysed using `RESOURCE_TYPE` and `PROPERTY_WITH_POLICYDOCUMENT` class variables. 
+
 ## [0.16.0] - 2020-03-27
 ### Improvements
 - Add new `RuleConfig`, allows to overwrite the default behaviour of the rule changing rule mode and risk value.

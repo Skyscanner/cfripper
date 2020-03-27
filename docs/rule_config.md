@@ -14,7 +14,10 @@ The object accepts a reason parameter to say why that filter exists.
 !!! warning
     Only available for the following rules: 
     
-      - Not supported yet
+      - CrossAccountCheckingRule
+      - CrossAccountTrustRule
+      - S3CrossAccountTrustRule
+      - KMSKeyCrossAccountTrustRule
       
 ### Filter preference
 

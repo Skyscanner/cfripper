@@ -36,7 +36,7 @@ def define_env(env):
 
                 else:
                     content += f"\n#### {paragraph_title}\n"
-                    content += paragraph_text
+                    content += f"{paragraph_text}\n"
 
             results.append((klass.__name__, content))
 
