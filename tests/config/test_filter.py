@@ -238,7 +238,7 @@ def test_exist_function_and_property_does_not_exist(template_cross_account_role_
                                         {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
                                     ]
                                 },
-                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com",]},
+                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
                             ]
                         },
                     ),
@@ -271,7 +271,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
                                         {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
                                     ]
                                 },
-                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com",]},
+                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
                             ]
                         },
                     ),
