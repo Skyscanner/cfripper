@@ -1,6 +1,22 @@
 import pytest
 
+from cfripper.config.config import Config
 from cfripper.config.filter import Filter
+from cfripper.config.rule_config import RuleConfig
+from cfripper.model.enums import RuleMode
+from cfripper.rule_processor import RuleProcessor
+from cfripper.rules import DEFAULT_RULES
+from tests.utils import get_cfmodel_from
+
+
+@pytest.fixture()
+def template_cross_account_role_no_name():
+    return get_cfmodel_from("config/cross_account_role_no_name.json").resolve()
+
+
+@pytest.fixture()
+def template_cross_account_role_with_name():
+    return get_cfmodel_from("config/cross_account_role_with_name.json").resolve()
 
 
 @pytest.mark.parametrize(
@@ -202,3 +218,69 @@ from cfripper.config.filter import Filter
 )
 def test_filter(filter, args, expected_result):
     assert filter(**args) == expected_result
+
+
+def test_exist_function_and_property_does_not_exist(template_cross_account_role_no_name):
+    mock_config = Config(
+        rules=["CrossAccountTrustRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={
+            "CrossAccountTrustRule": RuleConfig(
+                filters=[
+                    Filter(
+                        rule_mode=RuleMode.WHITELISTED,
+                        eval={
+                            "and": [
+                                {
+                                    "and": [
+                                        {"exists": {"ref": "resource.Properties.RoleName"}},
+                                        {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
+                                    ]
+                                },
+                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com",]},
+                            ]
+                        },
+                    ),
+                ]
+            )
+        },
+    )
+
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_cross_account_role_no_name, mock_config)
+    assert not result.valid
+
+
+def test_exist_function_and_property_exists(template_cross_account_role_with_name):
+    mock_config = Config(
+        rules=["CrossAccountTrustRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={
+            "CrossAccountTrustRule": RuleConfig(
+                filters=[
+                    Filter(
+                        rule_mode=RuleMode.WHITELISTED,
+                        eval={
+                            "and": [
+                                {
+                                    "and": [
+                                        {"exists": {"ref": "resource.Properties.RoleName"}},
+                                        {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
+                                    ]
+                                },
+                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com",]},
+                            ]
+                        },
+                    ),
+                ]
+            )
+        },
+    )
+
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
+    assert result.valid
