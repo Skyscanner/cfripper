@@ -188,8 +188,16 @@ from cfripper.config.filter import Filter
         (Filter(eval={"eq": [{"ref": "param_a"}, {"ref": "param_b"}]}), {"param_a": "a", "param_b": "a"}, True),
         (Filter(eval={"eq": [{"ref": "param_a"}, {"ref": "param_b"}]}), {"param_a": "a", "param_b": "b"}, False),
         (Filter(eval={"eq": [{"ref": "param_a"}, {"ref": "param_b"}]}), {"param_a": "b", "param_b": "a"}, False),
-        (Filter(eval={"and": [{"exists": {"ref": "param_a.param_b"}}, {"eq": [{"ref": "param_a.param_b"}, "b"]}]}), {}, False),
-        (Filter(eval={"and": [{"exists": {"ref": "param_a.param_b"}}, {"eq": [{"ref": "param_a.param_b"}, "b"]}]}), {"param_a": {"param_b": "b"}}, True),
+        (
+            Filter(eval={"and": [{"exists": {"ref": "param_a.param_b"}}, {"eq": [{"ref": "param_a.param_b"}, "b"]}]}),
+            {},
+            False,
+        ),
+        (
+            Filter(eval={"and": [{"exists": {"ref": "param_a.param_b"}}, {"eq": [{"ref": "param_a.param_b"}, "b"]}]}),
+            {"param_a": {"param_b": "b"}},
+            True,
+        ),
     ],
 )
 def test_filter(filter, args, expected_result):
