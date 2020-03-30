@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.17.1] - 2020-03-30
+### Improvements
+- Add `exists` and `empty` functions to filters
+- Add `param_resolver` to filters to evaluate just necessary params
+### Fixed
+- Add protection when a filter is evaluated to catch the exception and continue
+
 ## [0.17.0] - 2020-03-27
 ### Improvements
 - `CrossAccountCheckingRule`, `CrossAccountTrustRule`, `S3CrossAccountTrustRule` and `KMSKeyCrossAccountTrustRule` include support for filters.

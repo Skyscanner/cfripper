@@ -64,9 +64,13 @@ class Rule(ABC):
         rule_mode = rule_mode or self.rule_mode
         risk_value = risk_value or self.risk_value
         for fltr in self.rule_config.filters:
-            if fltr(**context):
-                risk_value = fltr.risk_value or risk_value
-                rule_mode = fltr.rule_mode or rule_mode
+            try:
+                if fltr(**context):
+                    risk_value = fltr.risk_value or risk_value
+                    rule_mode = fltr.rule_mode or rule_mode
+            except Exception:
+                logger.exception(f"Exception raised while evaluating filter for `{fltr.reason}`", extra=context)
+
         if rule_mode not in (RuleMode.DISABLED, RuleMode.WHITELISTED):
             result.add_failure(
                 rule=type(self).__name__,
