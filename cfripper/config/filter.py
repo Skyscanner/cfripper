@@ -1,4 +1,3 @@
-import operator
 import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -7,19 +6,29 @@ from pydash.objects import get
 
 from cfripper.model.enums import RuleMode, RuleRisk
 
+
+def param_resolver(f):
+    def wrap(*args, **kwargs):
+        return f(*(arg(kwargs) for arg in args), **kwargs)
+
+    return wrap
+
+
 IMPLEMENTED_FILTER_FUNCTIONS = {
-    "eq": lambda *args, **kwargs: operator.eq(*args),
-    "ne": lambda *args, **kwargs: operator.ne(*args),
-    "lt": lambda *args, **kwargs: operator.lt(*args),
-    "gt": lambda *args, **kwargs: operator.gt(*args),
-    "le": lambda *args, **kwargs: operator.le(*args),
-    "ge": lambda *args, **kwargs: operator.ge(*args),
-    "not": lambda *args, **kwargs: operator.not_(*args),
-    "or": lambda *args, **kwargs: any(args),
-    "and": lambda *args, **kwargs: all(args),
-    "in": lambda a, b, *args, **kwargs: operator.contains(b, a),
-    "regex": lambda *args, **kwargs: bool(re.match(*args)),
-    "ref": lambda param_name, *args, **kwargs: get(kwargs, param_name),
+    "eq": param_resolver(lambda a, b, **kwargs: a == b),
+    "ne": param_resolver(lambda a, b, **kwargs: a != b),
+    "lt": param_resolver(lambda a, b, **kwargs: a < b),
+    "gt": param_resolver(lambda a, b, **kwargs: a > b),
+    "le": param_resolver(lambda a, b, **kwargs: a <= b),
+    "ge": param_resolver(lambda a, b, **kwargs: a >= b),
+    "not": param_resolver(lambda a, **kwargs: not a),
+    "or": lambda *args, **kwargs: any(arg(kwargs) for arg in args),
+    "and": lambda *args, **kwargs: all(arg(kwargs) for arg in args),
+    "in": param_resolver(lambda a, b, **kwargs: a in b),
+    "regex": param_resolver(lambda *args, **kwargs: bool(re.match(*args))),
+    "exists": param_resolver(lambda a, **kwargs: a is not None),
+    "empty": param_resolver(lambda *args, **kwargs: len(args) == 0),
+    "ref": param_resolver(lambda param_name, **kwargs: get(kwargs, param_name)),
 }
 
 
@@ -34,7 +43,7 @@ def build_evaluator(tree: Union[str, int, float, bool, List, Dict]) -> Callable:
             nodes = [nodes]
         nodes = [build_evaluator(node) for node in nodes]
         function_resolver = IMPLEMENTED_FILTER_FUNCTIONS[function_name]
-        return lambda kwargs: function_resolver(*[node(kwargs) for node in nodes], **kwargs)
+        return lambda kwargs: function_resolver(*nodes, **kwargs)
 
     return lambda kwargs: tree
 
