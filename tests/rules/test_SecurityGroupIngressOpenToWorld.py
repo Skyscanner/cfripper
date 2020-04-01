@@ -23,9 +23,14 @@ def test_failures_are_raised(bad_template):
     assert len(result.failed_rules) == 2
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "SecurityGroupIngressOpenToWorldRule"
-    assert result.failed_rules[0].reason == "Port 46 open to the world in security group 'securityGroupIngress1'"
+    assert (
+        result.failed_rules[0].reason
+        == "Port 46 open to public IPs: (11.0.0.0/8) in security group 'securityGroupIngress1'"
+    )
     assert result.failed_rules[1].rule == "SecurityGroupIngressOpenToWorldRule"
-    assert result.failed_rules[1].reason == "Port 46 open to the world in security group 'securityGroupIngress2'"
+    assert (
+        result.failed_rules[1].reason == "Port 46 open to public IPs: (::/0) in security group 'securityGroupIngress2'"
+    )
 
 
 def test_valid_security_group_ingress(good_template):
