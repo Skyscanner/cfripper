@@ -14,12 +14,22 @@ from cfripper.rules.base_rules import Rule
 
 class SecurityGroupOpenToWorldRule(Rule):
     """
-    Checks if security groups have an ingress rule of /0 for ports other than 80 and 443.
+    Checks if security groups have an ingress IP that is open to the world for ports other than 80 and 443.
     All other ports should be closed off from public access to prevent a serious security misconfiguration.
 
     Fix:
-        Most security groups only need to be access privately, and this can typically be done by specifying
+        Most security groups only need to be accessed privately, and this can typically be done by specifying
         the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
+
+        Unless required, do not use the following IP ranges in your Security Group Ingress:
+
+          - `0.0.0.0/0`.
+
+          - Any `/8` that does not start with 10.
+
+          - `172/8` or `192/8` (use `172.16/12` and `192.168/16` ranges, per RFC1918 specification).
+
+        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
 
     Code for fix:
         ````json
@@ -54,7 +64,7 @@ class SecurityGroupOpenToWorldRule(Rule):
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "Port {} open to the world in security group '{}'"
+    REASON = "Port {} open to public IPs: ({}) in security group '{}'"
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
@@ -68,7 +78,9 @@ class SecurityGroupOpenToWorldRule(Rule):
                         for port in range(ingress.FromPort, ingress.ToPort + 1):
                             if str(port) not in self._config.allowed_world_open_ports:
                                 self.add_failure_to_result(
-                                    result, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                                    result,
+                                    self.REASON.format(port, (ingress.CidrIp or ingress.CidrIpv6), logical_id),
+                                    resource_ids={logical_id},
                                 )
         return result
 
@@ -85,19 +97,6 @@ class SecurityGroupOpenToWorldRule(Rule):
 
 
 class SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
-    """
-    Checks if a security group has a CIDR open to world on ingress.
-    This is a security risk as your resource may be publicly available.
-
-    Fix:
-        Unless required, do not use the following IP ranges in your Security Group Ingress:
-          - 0.0.0.0/0.
-          - Any `/8` that does not start with 10.
-          - 172/8 or 192/8 (use 172.16/12 and 192.168/16 ranges, per RFC1918 specification).
-
-        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
-    """
-
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
@@ -105,7 +104,11 @@ class SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
                 for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
                     if str(port) not in self._config.allowed_world_open_ports:
                         self.add_failure_to_result(
-                            result, self.REASON.format(port, logical_id), resource_ids={logical_id}
+                            result,
+                            self.REASON.format(
+                                port, (resource.Properties.CidrIp or resource.Properties.CidrIpv6), logical_id
+                            ),
+                            resource_ids={logical_id},
                         )
         return result
 

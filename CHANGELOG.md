@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.17.2] - 2020-04-01
+### Improvements
+- Improved message for users when failing the `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` rules.
+- Improved documentation for the above rules, including styling fixes which have now been tested.
+
 ## [0.17.1] - 2020-03-30
 ### Improvements
 - Add `exists` and `empty` functions to filters
