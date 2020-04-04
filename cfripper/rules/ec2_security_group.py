@@ -1,11 +1,17 @@
-__all__ = ["SecurityGroupOpenToWorldRule", "SecurityGroupIngressOpenToWorldRule", "SecurityGroupMissingEgressRule"]
+__all__ = [
+    "EC2SecurityGroupOpenToWorldRule",
+    "EC2SecurityGroupIngressOpenToWorldRule",
+    "EC2SecurityGroupMissingEgressRule",
+]
 
-from typing import Dict, Optional
+from itertools import groupby
+from operator import itemgetter
+from typing import Dict, List, Optional, Tuple, Union
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.properties.security_group_ingress_prop import SecurityGroupIngressProp
 from pycfmodel.model.resources.security_group import SecurityGroup
-from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress
+from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress, SecurityGroupIngressProperties
 
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Result
@@ -64,56 +70,72 @@ class SecurityGroupOpenToWorldRule(Rule):
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "Port {} open to public IPs: ({}) in security group '{}'"
+    REASON = "Port(s) {} open to public IPs: ({}) in security group '{}'"
 
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
-        result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SecurityGroup) and resource.Properties.SecurityGroupIngress:
-                list_security_group_ingress = resource.Properties.SecurityGroupIngress
-                if not isinstance(list_security_group_ingress, list):
-                    list_security_group_ingress = [list_security_group_ingress]
-                for ingress in list_security_group_ingress:
-                    if self.non_compliant_ip_range(item=ingress):
-                        for port in range(ingress.FromPort, ingress.ToPort + 1):
-                            if str(port) not in self._config.allowed_world_open_ports:
-                                self.add_failure_to_result(
-                                    result,
-                                    self.REASON.format(port, (ingress.CidrIp or ingress.CidrIpv6), logical_id),
-                                    resource_ids={logical_id},
-                                )
-        return result
+    def analyse_ingress(
+        self, result: Result, logical_id: str, ingress: Union[SecurityGroupIngressProp, SecurityGroupIngressProperties]
+    ):
+        if self.non_compliant_ip_range(ingress=ingress):
+            open_ports = list(range(ingress.FromPort, ingress.ToPort + 1))
+            non_allowed_open_ports = sorted(set(open_ports) - set(self._config.allowed_world_open_ports))
 
-    def non_compliant_ip_range(self, item) -> bool:
-        cidr_ip = item.CidrIp if isinstance(item, SecurityGroupIngressProp) else item.Properties.CidrIp
-        cidr_ipv6 = item.CidrIpv6 if isinstance(item, SecurityGroupIngressProp) else item.Properties.CidrIpv6
+            if non_allowed_open_ports:
+                formatted_ports_range = []
+                for port_range_start, port_range_end in self.get_open_ports_ranges(non_allowed_open_ports):
+                    if port_range_start == port_range_end:
+                        formatted_ports_range.append(f"{port_range_start}")
+                    else:
+                        formatted_ports_range.append(f"{port_range_start}-{port_range_end}")
 
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(
+                        ", ".join(formatted_ports_range), (ingress.CidrIp or ingress.CidrIpv6), logical_id
+                    ),
+                    resource_ids={logical_id},
+                )
+
+    def get_open_ports_ranges(self, open_ports: List[int]) -> List[Tuple[int, int]]:
+        open_ports_ranges = []
+        for k, group in groupby(enumerate(open_ports), lambda x: x[1] - x[0]):
+            port_range = list(map(itemgetter(1), group))
+            open_ports_ranges.append((port_range[0], port_range[-1]))
+        return open_ports_ranges
+
+    def non_compliant_ip_range(
+        self, ingress: Optional[Union[SecurityGroupIngressProp, SecurityGroupIngressProperties]]
+    ) -> bool:
+        if ingress is None:
+            return False
         return (
-            item.ipv4_slash_zero()
-            or item.ipv6_slash_zero()
-            or (cidr_ip and cidr_ip.is_global)
-            or (cidr_ipv6 and cidr_ipv6.is_global)
+            ingress.ipv4_slash_zero()
+            or ingress.ipv6_slash_zero()
+            or (ingress.CidrIp and ingress.CidrIp.is_global)
+            or (ingress.CidrIpv6 and ingress.CidrIpv6.is_global)
         )
 
 
-class SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
+class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SecurityGroupIngress) and self.non_compliant_ip_range(item=resource):
-                for port in range(resource.Properties.FromPort, resource.Properties.ToPort + 1):
-                    if str(port) not in self._config.allowed_world_open_ports:
-                        self.add_failure_to_result(
-                            result,
-                            self.REASON.format(
-                                port, (resource.Properties.CidrIp or resource.Properties.CidrIpv6), logical_id
-                            ),
-                            resource_ids={logical_id},
-                        )
+        for logical_id, resource in cfmodel.resources_filtered_by_type({SecurityGroup}).items():
+            list_security_group_ingress = resource.Properties.SecurityGroupIngress
+            if not isinstance(list_security_group_ingress, list):
+                list_security_group_ingress = [list_security_group_ingress]
+            for ingress in list_security_group_ingress:
+                self.analyse_ingress(result, logical_id, ingress)
         return result
 
 
-class SecurityGroupMissingEgressRule(Rule):
+class EC2SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.resources_filtered_by_type({SecurityGroupIngress}).items():
+            self.analyse_ingress(result, logical_id, resource.Properties)
+        return result
+
+
+class EC2SecurityGroupMissingEgressRule(Rule):
     """
     Checks that Security Groups are defined with an egress policy, even if this is still allowing all
     outbound traffic.
