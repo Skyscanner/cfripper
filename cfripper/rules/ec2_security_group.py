@@ -73,13 +73,20 @@ class SecurityGroupOpenToWorldRule(Rule):
     REASON = "Port(s) {} open to public IPs: ({}) in security group '{}'"
 
     def analyse_ingress(
-        self, result: Result, logical_id: str, ingress: Union[SecurityGroupIngressProp, SecurityGroupIngressProperties]
+        self,
+        result: Result,
+        logical_id: str,
+        ingress: Union[SecurityGroupIngressProp, SecurityGroupIngressProperties],
+        filters_available_context: Dict,
     ):
         if self.non_compliant_ip_range(ingress=ingress):
             open_ports = list(range(ingress.FromPort, ingress.ToPort + 1))
             non_allowed_open_ports = sorted(set(open_ports) - set(self._config.allowed_world_open_ports))
 
             if non_allowed_open_ports:
+                filters_available_context["open_ports"] = open_ports
+                filters_available_context["non_allowed_open_ports"] = non_allowed_open_ports
+
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(
@@ -88,6 +95,7 @@ class SecurityGroupOpenToWorldRule(Rule):
                         logical_id,
                     ),
                     resource_ids={logical_id},
+                    context=filters_available_context,
                 )
 
     def get_open_ports_wording(self, non_allowed_open_ports: List[int]) -> str:
@@ -127,7 +135,14 @@ class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
             if not isinstance(list_security_group_ingress, list):
                 list_security_group_ingress = [list_security_group_ingress]
             for ingress in list_security_group_ingress:
-                self.analyse_ingress(result, logical_id, ingress)
+                filters_available_context = {
+                    "config": self._config,
+                    "extras": extras,
+                    "logical_id": logical_id,
+                    "resource": resource,
+                    "ingress": ingress,
+                }
+                self.analyse_ingress(result, logical_id, ingress, filters_available_context)
         return result
 
 
@@ -135,7 +150,13 @@ class EC2SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.resources_filtered_by_type({SecurityGroupIngress}).items():
-            self.analyse_ingress(result, logical_id, resource.Properties)
+            filters_available_context = {
+                "config": self._config,
+                "extras": extras,
+                "logical_id": logical_id,
+                "resource": resource,
+            }
+            self.analyse_ingress(result, logical_id, resource.Properties, filters_available_context)
         return result
 
 
@@ -200,5 +221,10 @@ class EC2SecurityGroupMissingEgressRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
-                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource,},
+                )
         return result
