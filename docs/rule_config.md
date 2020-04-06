@@ -45,6 +45,8 @@ Rule Standard -> Rule Config -> Filter #1 -> ... -> Filter #N
 | `and`      | True if all args are True                                                   | `{"and": [True, True]}`                 |
 | `in`       | Same as a in b                                                              | `{"in": ["b", ["a", "b"]]}`             |
 | `regex`    | True if b match pattern a                                                   | `{"regex": [r"^\d+$", "5"]}`            |
+| `exists`   | True if a is not None                                                       | `{"exists": None}`                      |
+| `empty`    | True if len(a) equals 0                                                     | `{"empty": []}`                         |
 | `ref`      | Get the value at any depth of the context based on the path described by a. | `{"ref": "param_a.param_b"}`            |
 
 ### Examples
