@@ -20,53 +20,8 @@ from cfripper.rules.base_rules import Rule
 
 class SecurityGroupOpenToWorldRule(Rule):
     """
-    Checks if security groups have an ingress IP that is open to the world for ports other than 80 and 443.
-    All other ports should be closed off from public access to prevent a serious security misconfiguration.
-
-    Fix:
-        Most security groups only need to be accessed privately, and this can typically be done by specifying
-        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
-
-        Unless required, do not use the following IP ranges in your Security Group Ingress:
-
-          - `0.0.0.0/0`.
-
-          - Any `/8` that does not start with 10.
-
-          - `172/8` or `192/8` (use `172.16/12` and `192.168/16` ranges, per RFC1918 specification).
-
-        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
-
-    Code for fix:
-        ````json
-        {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Resources": {
-                "SecurityGroup": {
-                    "Type": "AWS::EC2::SecurityGroup",
-                    "Properties": {
-                        "GroupDescription": "description",
-                        "SecurityGroupIngress": [
-                            // this is compliant. Port 22 (typically SSH) is accessible from the private network only.
-                            {
-                                "IpProtocol": "tcp",
-                                "CidrIp": "10.0.0.0/8",
-                                "FromPort": 22,
-                                "ToPort": 22
-                            },
-                            // this is not compliant. Anyone with the IP for this EC2 instance can connect on port 9090.
-                            {
-                                "IpProtocol": "tcp",
-                                "CidrIp": "0.0.0.0/0",
-                                "FromPort": 9090,
-                                "ToPort": 9090
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-        ````
+    Base class not intended to be instantiated, but inherited from.
+    This class provides common methods used to detect open ports.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -128,6 +83,67 @@ class SecurityGroupOpenToWorldRule(Rule):
 
 
 class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
+    """
+    Checks if security groups have an ingress IP that is open to the world for ports other than 80 and 443.
+    All other ports should be closed off from public access to prevent a serious security misconfiguration.
+
+    Fix:
+        Most security groups only need to be accessed privately, and this can typically be done by specifying
+        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
+
+        Unless required, do not use the following IP ranges in your Security Group Ingress:
+
+          - `0.0.0.0/0`.
+
+          - Any `/8` that does not start with 10.
+
+          - `172/8` or `192/8` (use `172.16/12` and `192.168/16` ranges, per RFC1918 specification).
+
+        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
+
+    Code for fix:
+        ````json
+        {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Resources": {
+                "SecurityGroup": {
+                    "Type": "AWS::EC2::SecurityGroup",
+                    "Properties": {
+                        "GroupDescription": "description",
+                        "SecurityGroupIngress": [
+                            // this is compliant. Port 22 (typically SSH) is accessible from the private network only.
+                            {
+                                "IpProtocol": "tcp",
+                                "CidrIp": "10.0.0.0/8",
+                                "FromPort": 22,
+                                "ToPort": 22
+                            },
+                            // this is not compliant. Anyone with the IP for this EC2 instance can connect on port 9090.
+                            {
+                                "IpProtocol": "tcp",
+                                "CidrIp": "0.0.0.0/0",
+                                "FromPort": 9090,
+                                "ToPort": 9090
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        ````
+
+    Filters context:
+        | Parameter               | Type                       | Description                                                    |
+        |:-----------------------:|:--------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                        | `config` variable available inside the rule                    |
+        |`extras`                 | str                        | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                        | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SecurityGroup`            | Resource that is being addressed                               |
+        |`ingress`                | `SecurityGroupIngressProp` | SecurityGroupIngressProp being checked found in the Resource   |
+        |`open_ports`             | `List[int]`                | List of all open ports defined                                 |
+        |`non_allowed_open_ports` | `List[int]`                | List of all non allowed open ports defined                     |
+    """
+
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.resources_filtered_by_type({SecurityGroup}).items():
@@ -147,6 +163,81 @@ class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
 
 
 class EC2SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
+    """
+    Checks if security groups have an ingress IP that is open to the world for ports other than 80 and 443.
+    All other ports should be closed off from public access to prevent a serious security misconfiguration.
+
+    Fix:
+        Most security groups only need to be accessed privately, and this can typically be done by specifying
+        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
+
+        Unless required, do not use the following IP ranges in your Security Group Ingress:
+
+          - `0.0.0.0/0`.
+
+          - Any `/8` that does not start with 10.
+
+          - `172/8` or `192/8` (use `172.16/12` and `192.168/16` ranges, per RFC1918 specification).
+
+        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
+
+    Code for fix:
+        ````json
+        {
+            "AWSTemplateFormatVersion": "2010-09-09",
+            "Resources": {
+                // this is compliant. Port 22 (typically SSH) is accessible from the private network only.
+                "InboundRule1": {
+                    "Type": "AWS::EC2::SecurityGroupIngress",
+                    "Properties": {
+                        "GroupId": {
+                            "Fn::GetAtt": [
+                                "TargetSG",
+                                "GroupId"
+                            ]
+                        },
+                        "CidrIp": "10.0.0.0/8",
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "SourceSecurityGroupId": "sg-12345678",
+                        "SourceSecurityGroupOwnerId": "123456789012"
+                    }
+                },
+                // this is not compliant. Anyone with the IP for this EC2 instance can connect on port 9090.
+                "InboundRule2": {
+                    "Type": "AWS::EC2::SecurityGroupIngress",
+                    "Properties": {
+                        "GroupId": {
+                            "Fn::GetAtt": [
+                                "TargetSG",
+                                "GroupId"
+                            ]
+                        },
+                        "CidrIp": "0.0.0.0/0",
+                        "IpProtocol": "tcp",
+                        "FromPort": "9090",
+                        "ToPort": "9090",
+                        "SourceSecurityGroupId": "sg-12345678",
+                        "SourceSecurityGroupOwnerId": "123456789012"
+                    }
+                }
+            }
+        }
+        ````
+
+    Filters context:
+        | Parameter               | Type                       | Description                                                    |
+        |:-----------------------:|:--------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                        | `config` variable available inside the rule                    |
+        |`extras`                 | str                        | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                        | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SecurityGroup`            | Resource that is being addressed                               |
+        |`ingress`                | `SecurityGroupIngress`     | SecurityGroupIngress being checked found in the Resource       |
+        |`open_ports`             | `List[int]`                | List of all open ports defined                                 |
+        |`non_allowed_open_ports` | `List[int]`                | List of all non allowed open ports defined                     |
+    """
+
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.resources_filtered_by_type({SecurityGroupIngress}).items():
@@ -208,6 +299,14 @@ class EC2SecurityGroupMissingEgressRule(Rule):
             }
         }
         ````
+
+    Filters context:
+        | Parameter   | Type            | Description                                                    |
+        |:-----------:|:---------------:|:--------------------------------------------------------------:|
+        |`config`     | str             | `config` variable available inside the rule                    |
+        |`extras`     | str             | `extras` variable available inside the rule                    |
+        |`logical_id` | str             | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `SecurityGroup` | Resource that is being addressed                               |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
