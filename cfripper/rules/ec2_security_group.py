@@ -1,7 +1,7 @@
 __all__ = [
-    "EC2SecurityGroupOpenToWorldRule",
     "EC2SecurityGroupIngressOpenToWorldRule",
     "EC2SecurityGroupMissingEgressRule",
+    "EC2SecurityGroupOpenToWorldRule",
 ]
 
 from itertools import groupby
