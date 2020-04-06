@@ -80,20 +80,24 @@ class SecurityGroupOpenToWorldRule(Rule):
             non_allowed_open_ports = sorted(set(open_ports) - set(self._config.allowed_world_open_ports))
 
             if non_allowed_open_ports:
-                formatted_ports_range = []
-                for port_range_start, port_range_end in self.get_open_ports_ranges(non_allowed_open_ports):
-                    if port_range_start == port_range_end:
-                        formatted_ports_range.append(f"{port_range_start}")
-                    else:
-                        formatted_ports_range.append(f"{port_range_start}-{port_range_end}")
-
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(
-                        ", ".join(formatted_ports_range), (ingress.CidrIp or ingress.CidrIpv6), logical_id
+                        self.get_open_ports_wording(non_allowed_open_ports),
+                        (ingress.CidrIp or ingress.CidrIpv6),
+                        logical_id,
                     ),
                     resource_ids={logical_id},
                 )
+
+    def get_open_ports_wording(self, non_allowed_open_ports: List[int]) -> str:
+        formatted_ports_range = []
+        for port_range_start, port_range_end in self.get_open_ports_ranges(non_allowed_open_ports):
+            if port_range_start == port_range_end:
+                formatted_ports_range.append(f"{port_range_start}")
+            else:
+                formatted_ports_range.append(f"{port_range_start}-{port_range_end}")
+        return ", ".join(formatted_ports_range)
 
     def get_open_ports_ranges(self, open_ports: List[int]) -> List[Tuple[int, int]]:
         open_ports_ranges = []
