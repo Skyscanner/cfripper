@@ -1,6 +1,11 @@
 import pytest
 
-from cfripper.rules import EC2SecurityGroupOpenToWorldRule
+from cfripper.config.config import Config
+from cfripper.config.filter import Filter
+from cfripper.config.rule_config import RuleConfig
+from cfripper.model.enums import RuleMode
+from cfripper.rule_processor import RuleProcessor
+from cfripper.rules import DEFAULT_RULES, EC2SecurityGroupOpenToWorldRule
 from tests.utils import get_cfmodel_from
 
 
@@ -109,4 +114,57 @@ def test_invalid_security_group_multiple_statements(invalid_security_group_multi
     assert (
         result.failed_rules[0].reason
         == "Port(s) 9090 open to public IPs: (172.0.0.0/8) in security group 'SecurityGroup'"
+    )
+
+
+def test_filter_do_not_report_anything(invalid_security_group_range):
+    mock_config = Config(
+        rules=["EC2SecurityGroupOpenToWorldRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={
+            "EC2SecurityGroupOpenToWorldRule": RuleConfig(
+                filters=[
+                    Filter(
+                        rule_mode=RuleMode.WHITELISTED,
+                        eval={
+                            "and": [
+                                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                                {"eq": [{"ref": "open_ports"}, list(range(0, 101))]},
+                            ]
+                        },
+                    )
+                ],
+            )
+        },
+    )
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(invalid_security_group_range, mock_config)
+
+    assert result.valid
+
+
+def test_non_matching_filters_are_reported_normally(invalid_security_group_range):
+    mock_config = Config(
+        rules=["EC2SecurityGroupOpenToWorldRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={
+            "EC2SecurityGroupOpenToWorldRule": RuleConfig(
+                filters=[
+                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]})
+                ],
+            )
+        },
+    )
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(invalid_security_group_range, mock_config)
+
+    assert not result.valid
+    assert result.failed_rules[0].rule == "EC2SecurityGroupOpenToWorldRule"
+    assert (
+        result.failed_rules[0].reason
+        == "Port(s) 0-79, 81-100 open to public IPs: (11.0.0.0/8) in security group 'SecurityGroup'"
     )
