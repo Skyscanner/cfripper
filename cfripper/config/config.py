@@ -9,7 +9,7 @@ from .whitelist import stack_whitelist as default_stack_whitelist
 
 
 class Config:
-    DEFAULT_ALLOWED_WORLD_OPEN_PORTS = ["80", "443"]
+    DEFAULT_ALLOWED_WORLD_OPEN_PORTS = [80, 443]
     DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS = [
         "arn:aws:iam::aws:policy/AdministratorAccess",
         "arn:aws:iam::aws:policy/IAMFullAccess",
