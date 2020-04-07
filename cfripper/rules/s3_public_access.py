@@ -46,6 +46,13 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 class S3BucketPublicReadWriteAclRule(Rule):
     """
     Checks if any S3 bucket policy has access control set to `PublicReadWrite`.
+
+    Risk:
+        Unless required, S3 buckets should not have Public Write available on a bucket. This allows anyone
+        to write any objects to your S3 bucket.
+
+    Fix:
+        Remove any configuration that looks like `"AccessControl": "PublicReadWrite"` from your S3 bucket policy.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

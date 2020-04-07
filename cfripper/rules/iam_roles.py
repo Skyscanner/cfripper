@@ -61,9 +61,8 @@ class IAMRolesOverprivilegedRule(Rule):
 
 class IAMRoleWildcardActionOnPolicyRule(Rule):
     """
-    Checks for use of wildcard characters in all IAM Role policies (including AssumeRolePolicyDocument)
-    and AWS Managed Policies
-    (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html).
+    Checks for use of wildcard characters in all IAM Role policies (including `AssumeRolePolicyDocument`)
+    and [AWS Managed Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html).
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

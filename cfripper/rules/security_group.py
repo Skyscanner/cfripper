@@ -18,8 +18,8 @@ class SecurityGroupOpenToWorldRule(Rule):
     All other ports should be closed off from public access to prevent a serious security misconfiguration.
 
     Fix:
-        Most security groups only need to be accessed privately, and this can typically be done by specifying
-        the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar (https://en.wikipedia.org/wiki/Private_network).
+        Most security groups only need to be [accessed privately](https://en.wikipedia.org/wiki/Private_network), and
+        this can typically be done by specifying the CIDR of a Security Group's ingress to `10.0.0.0/8` or similar.
 
         Unless required, do not use the following IP ranges in your Security Group Ingress:
 
@@ -29,7 +29,7 @@ class SecurityGroupOpenToWorldRule(Rule):
 
           - `172/8` or `192/8` (use `172.16/12` and `192.168/16` ranges, per RFC1918 specification).
 
-        As per RFC4193, fd00::/8 IPv6 addresses should be used to define a private network.
+        As per RFC4193, `fd00::/8` IPv6 addresses should be used to define a private network.
 
     Code for fix:
         ````json
@@ -123,7 +123,7 @@ class SecurityGroupMissingEgressRule(Rule):
         some services may need this, it is usually the case that the security group can be locked down
         more. A NAT instance for example may require a completely open egress policy.
 
-        Allowing unrestricted (0.0.0.0/0 or ::/0) outbound/egress access can increase opportunities for
+        Allowing unrestricted (`0.0.0.0/0` or `::/0`) outbound/egress access can increase opportunities for
         malicious activity such as such as Denial of Service (DoS) attacks or Distributed Denial of Service (DDoS)
         attacks.
 
