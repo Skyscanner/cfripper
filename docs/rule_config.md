@@ -16,8 +16,11 @@ The object accepts a reason parameter to say why that filter exists.
     
       - CrossAccountCheckingRule
       - CrossAccountTrustRule
-      - S3CrossAccountTrustRule
+      - EC2SecurityGroupIngressOpenToWorldRule
+      - EC2SecurityGroupMissingEgressRule
+      - EC2SecurityGroupOpenToWorldRule
       - KMSKeyCrossAccountTrustRule
+      - S3CrossAccountTrustRule
       
 ### Filter preference
 

@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.18.0] - 2020-04-07
+### Improvements
+- `EC2SecurityGroupIngressOpenToWorldRule`, `EC2SecurityGroupMissingEgressRule` and `EC2SecurityGroupOpenToWorldRule` include support for filters.
+- `EC2SecurityGroupIngressOpenToWorldRule` and `EC2SecurityGroupOpenToWorldRule` support adding errors for port ranges.
+### Breaking changes
+- `Config.DEFAULT_ALLOWED_WORLD_OPEN_PORTS` type changes to `List[int]`
+- Rename `SecurityGroupIngressOpenToWorldRule` to `EC2SecurityGroupIngressOpenToWorldRule`
+- Rename `SecurityGroupMissingEgressRule` to `EC2SecurityGroupMissingEgressRule`
+- Rename `SecurityGroupOpenToWorldRule` to `EC2SecurityGroupOpenToWorldRule`
+- Improved message for users when failing the `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` rules.
+- Improved documentation for the above rules, including styling fixes which have now been tested.
+
 ## [0.17.2] - 2020-04-01
 ### Improvements
 - Improved message for users when failing the `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` rules.

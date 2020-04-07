@@ -7,6 +7,11 @@ from cfripper.rules.cross_account_trust import (
     S3CrossAccountTrustRule,
 )
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
+from cfripper.rules.ec2_security_group import (
+    EC2SecurityGroupIngressOpenToWorldRule,
+    EC2SecurityGroupMissingEgressRule,
+    EC2SecurityGroupOpenToWorldRule,
+)
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
 from cfripper.rules.kms_key_wildcard_principal import KMSKeyWildcardPrincipalRule
@@ -15,11 +20,6 @@ from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule, S3BucketPublicReadWriteAclRule
-from cfripper.rules.security_group import (
-    SecurityGroupIngressOpenToWorldRule,
-    SecurityGroupMissingEgressRule,
-    SecurityGroupOpenToWorldRule,
-)
 from cfripper.rules.sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
 from cfripper.rules.wildcard_policies import (
@@ -35,10 +35,13 @@ DEFAULT_RULES = {
         CloudFormationAuthenticationRule,
         CrossAccountTrustRule,
         EBSVolumeHasSSERule,
+        EC2SecurityGroupIngressOpenToWorldRule,
+        EC2SecurityGroupMissingEgressRule,
+        EC2SecurityGroupOpenToWorldRule,
         FullWildcardPrincipalRule,
         HardcodedRDSPasswordRule,
-        IAMRolesOverprivilegedRule,
         IAMRoleWildcardActionOnPolicyRule,
+        IAMRolesOverprivilegedRule,
         KMSKeyCrossAccountTrustRule,
         KMSKeyWildcardPrincipalRule,
         ManagedPolicyOnUserRule,
@@ -50,9 +53,6 @@ DEFAULT_RULES = {
         S3BucketPublicReadAclAndListStatementRule,
         S3BucketPublicReadWriteAclRule,
         S3CrossAccountTrustRule,
-        SecurityGroupIngressOpenToWorldRule,
-        SecurityGroupMissingEgressRule,
-        SecurityGroupOpenToWorldRule,
         SNSTopicPolicyNotPrincipalRule,
         SNSTopicPolicyWildcardActionRule,
         SQSQueuePolicyNotPrincipalRule,
