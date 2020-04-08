@@ -16,7 +16,12 @@ logger = logging.getLogger(__file__)
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
     """
-    Checks if an SQS Queue policy has an Allow + a NotPrincipal (exclusive principal).
+    Checks if an SQS Queue policy has an Allow + a NotPrincipal.
+
+    Risk:
+        AWS **strongly** recommends against using `NotPrincipal` in the same policy statement as `"Effect": "Allow"`.
+        Doing so grants the permissions specified in the policy statement to all principals except the one named
+        in the `NotPrincipal` element. By doing this, you might grant access to anonymous (unauthenticated) users.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

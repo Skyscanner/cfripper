@@ -13,6 +13,53 @@ from cfripper.rules.base_rules import Rule
 class PolicyOnUserRule(Rule):
     """
     Checks if any IAM policy is applied to a group and not a user.
+
+    Risk:
+        Instead of defining permissions for individual IAM users, it's usually more convenient and secure
+        to create [IAM groups](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups.html) that relate
+        to different functions. IAM users can be assigned to these groups.
+        All the users in an IAM group inherit the permissions assigned to the group. That way, you can make
+        changes for everyone in a group in just one place. As people move around in your company, you can
+        simply change what IAM group their IAM user belongs to, without risking a user having too much
+        privilege.
+
+    Fix:
+        Use IAM Groups as opposed to users in IAM Policies.
+
+    Code for fix:
+        This is an example which will be flagged by CFRipper:
+
+        ```json
+        "BadPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "Description": "Policy for something.",
+            "Path": "/",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [...]
+            },
+            "Users": [{"Ref": "TestUser"}]
+          }
+        }
+        ```
+
+        This is an example of a more acceptable CloudFormation policy:
+
+        ```json
+        "GoodPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "Description": "Policy for something.",
+            "Path": "/",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [...]
+            },
+            "Groups": ["user_group"]
+          }
+        }
+        ```
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
