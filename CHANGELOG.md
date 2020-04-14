@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.18.1] - 2020-04-14
+### Fixed
+- `CrossAccountCheckingRule` calling `add_failure_to_result` on `UNDEFINED_` was missing context variable.
+
 ## [0.18.0] - 2020-04-07
 ### Improvements
 - `EC2SecurityGroupIngressOpenToWorldRule`, `EC2SecurityGroupMissingEgressRule` and `EC2SecurityGroupOpenToWorldRule` include support for filters.
