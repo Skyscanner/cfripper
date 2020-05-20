@@ -96,7 +96,6 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 
-    RULE_MODE = RuleMode.MONITOR
     RISK_VALUE = RuleRisk.MEDIUM
     """
     Will catch:
