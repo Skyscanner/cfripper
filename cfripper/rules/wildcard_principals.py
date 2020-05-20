@@ -28,7 +28,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
-    RULE_MODE = RuleMode.MONITOR
     GRANULARITY = RuleGranularity.RESOURCE
 
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
@@ -122,7 +121,6 @@ class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 
-    RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
 
     FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

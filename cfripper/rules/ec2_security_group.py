@@ -13,7 +13,7 @@ from pycfmodel.model.resources.properties.security_group_ingress_prop import Sec
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress, SecurityGroupIngressProperties
 
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -314,7 +314,6 @@ class EC2SecurityGroupMissingEgressRule(Rule):
         "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "
         "configuration"
     )
-    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

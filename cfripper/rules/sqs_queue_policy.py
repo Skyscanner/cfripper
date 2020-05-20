@@ -7,7 +7,7 @@ from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -26,7 +26,6 @@ class SQSQueuePolicyNotPrincipalRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
-    RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

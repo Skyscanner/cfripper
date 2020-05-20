@@ -7,7 +7,7 @@ from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
 
 from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_POLICY_ACTION
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -67,7 +67,6 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM role {} should not allow a `*` action on its {}"
-    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

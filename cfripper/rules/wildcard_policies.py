@@ -14,7 +14,7 @@ from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -30,7 +30,6 @@ class GenericWildcardPolicyRule(Rule):
 
     REASON = "The {} {} should not allow a `*` action"
 
-    RULE_MODE = RuleMode.DEBUG
     GRANULARITY = RuleGranularity.RESOURCE
 
     AWS_RESOURCE: Type[Resource] = None
