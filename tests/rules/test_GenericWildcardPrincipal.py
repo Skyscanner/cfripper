@@ -28,21 +28,19 @@ def test_failures_are_raised(bad_template):
     rule = GenericWildcardPrincipalRule(None)
     result = rule.invoke(bad_template)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 3
-    assert result.failed_monitored_rules[0].rule == "GenericWildcardPrincipalRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 3
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "GenericWildcardPrincipalRule"
     assert (
-        result.failed_monitored_rules[0].reason
-        == "PolicyA should not allow wildcard in principals or account-wide principals "
+        result.failed_rules[0].reason == "PolicyA should not allow wildcard in principals or account-wide principals "
         "(principal: 'somewhatrestricted:*')"
     )
-    assert result.failed_monitored_rules[1].rule == "GenericWildcardPrincipalRule"
-    assert result.failed_monitored_rules[1].reason == "PolicyA contains an unknown principal: 123445"
-    assert result.failed_monitored_rules[2].rule == "GenericWildcardPrincipalRule"
+    assert result.failed_rules[1].rule == "GenericWildcardPrincipalRule"
+    assert result.failed_rules[1].reason == "PolicyA contains an unknown principal: 123445"
+    assert result.failed_rules[2].rule == "GenericWildcardPrincipalRule"
     assert (
-        result.failed_monitored_rules[2].reason
-        == "PolicyA should not allow wildcard in principals or account-wide principals "
+        result.failed_rules[2].reason == "PolicyA should not allow wildcard in principals or account-wide principals "
         "(principal: 'arn:aws:iam::123445:*')"
     )
 

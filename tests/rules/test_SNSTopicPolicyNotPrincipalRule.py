@@ -5,19 +5,19 @@ from tests.utils import get_cfmodel_from
 
 
 @pytest.fixture()
-def s3_bucket_with_wildcards():
+def sns_topic_not_principal():
     return get_cfmodel_from("rules/SNSTopicPolicyNotPrincipalRule/bad_template.json").resolve()
 
 
-def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
+def test_sns_topic_not_principal(sns_topic_not_principal):
     rule = SNSTopicPolicyNotPrincipalRule(None)
-    result = rule.invoke(s3_bucket_with_wildcards)
+    result = rule.invoke(sns_topic_not_principal)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0].rule == "SNSTopicPolicyNotPrincipalRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "SNSTopicPolicyNotPrincipalRule"
     assert (
-        result.failed_monitored_rules[0].reason
+        result.failed_rules[0].reason
         == "SNS Topic mysnspolicyA policy should not allow Allow and NotPrincipal at the same time"
     )

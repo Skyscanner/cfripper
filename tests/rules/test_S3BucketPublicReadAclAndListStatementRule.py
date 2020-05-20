@@ -14,12 +14,12 @@ def test_s3_read_plus_list(s3_read_plus_list):
     rule = S3BucketPublicReadAclAndListStatementRule(None)
     result = rule.invoke(s3_read_plus_list)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 2
-    assert result.failed_monitored_rules[0].rule == "S3BucketPublicReadAclAndListStatementRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 2
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "S3BucketPublicReadAclAndListStatementRule"
     assert (
-        result.failed_monitored_rules[0].reason
+        result.failed_rules[0].reason
         == "S3 Bucket S3BucketPolicy should not have a public read acl and list bucket statement"
     )
-    assert result.failed_monitored_rules[0].rule_mode == RuleMode.DEBUG
+    assert result.failed_rules[0].rule_mode == RuleMode.BLOCKING
