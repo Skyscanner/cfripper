@@ -27,11 +27,11 @@ def test_failures_are_raised(bad_template):
     rule = ManagedPolicyOnUserRule(None)
     result = rule.invoke(bad_template)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0].rule == "ManagedPolicyOnUserRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "ManagedPolicyOnUserRule"
     assert (
-        result.failed_monitored_rules[0].reason
+        result.failed_rules[0].reason
         == "IAM managed policy DirectManagedPolicy should not apply directly to users. Should be on group"
     )

@@ -14,7 +14,7 @@ from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import PrincipalCheckingRule
 
@@ -28,7 +28,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
-    RULE_MODE = RuleMode.MONITOR
     GRANULARITY = RuleGranularity.RESOURCE
 
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
@@ -97,7 +96,6 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
 
-    RULE_MODE = RuleMode.MONITOR
     RISK_VALUE = RuleRisk.MEDIUM
     """
     Will catch:
@@ -122,7 +120,6 @@ class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
 
-    RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
 
     FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

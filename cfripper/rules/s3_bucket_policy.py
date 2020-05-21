@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.model.utils import get_account_id_from_principal
 from cfripper.rules.base_rules import PrincipalCheckingRule
@@ -27,7 +27,6 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
-    RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:

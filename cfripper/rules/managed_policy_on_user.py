@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -63,7 +63,6 @@ class ManagedPolicyOnUserRule(Rule):
     """
 
     REASON = "IAM managed policy {} should not apply directly to users. Should be on group"
-    RULE_MODE = RuleMode.MONITOR
     GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:

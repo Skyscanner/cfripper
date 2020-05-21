@@ -7,7 +7,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -26,7 +26,6 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
-    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

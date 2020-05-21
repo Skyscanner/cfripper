@@ -144,7 +144,7 @@ def get_template(event):
             if event.get("stack_template_url"):
                 template = boto3_client.download_template_to_dictionary(event["stack_template_url"])
             else:
-                logger.info(f"stack_template_url not available")
+                logger.info("stack_template_url not available")
         except Exception:
             logger.exception(
                 f"Error calling download_template_to_dictionary for: {stack_name} on {account_id} - {region}"

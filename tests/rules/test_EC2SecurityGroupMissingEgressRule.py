@@ -26,12 +26,12 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
     rule = EC2SecurityGroupMissingEgressRule(None)
     result = rule.invoke(single_security_group_one_cidr_ingress)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
     assert (
-        result.failed_monitored_rules[0].reason
+        result.failed_rules[0].reason
         == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
     )
 
@@ -82,11 +82,11 @@ def test_non_matching_filters_are_reported_normally(single_security_group_one_ci
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(single_security_group_one_cidr_ingress, mock_config)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
     assert (
-        result.failed_monitored_rules[0].reason
+        result.failed_rules[0].reason
         == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
     )

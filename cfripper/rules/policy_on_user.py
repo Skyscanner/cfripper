@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -64,7 +64,6 @@ class PolicyOnUserRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "IAM policy {} should not apply directly to users. Should be on group"
-    RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
