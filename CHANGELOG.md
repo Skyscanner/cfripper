@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.19.0] - 2020-05-21
+### Breaking changes
+- `rule_mode` is now `BLOCKING` for all Rules.
+
 ## [0.18.1] - 2020-04-14
 ### Fixed
 - `CrossAccountCheckingRule` calling `add_failure_to_result` on `UNDEFINED_` was missing context variable.
