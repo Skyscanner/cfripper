@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.19.1] - 2020-09-01
+### Improvements
+- Add support for this new S3 url format: `https://bucket.s3.aws-region.amazonaws.com/path1/path2`
+
 ## [0.19.0] - 2020-05-21
 ### Breaking changes
 - `rule_mode` is now `BLOCKING` for all Rules.
