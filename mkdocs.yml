@@ -6,7 +6,11 @@ site_url: https://cfripper.readthedocs.io
 theme:
   name: 'material'
   logo: 'img/logo.png'
-
+  favicon: 'img/favicon.ico'
+  features:
+    - instant
+    - navigation.expand
+    - search.highlight
 repo_name: Skyscanner/cfripper
 repo_url: https://github.com/Skyscanner/cfripper
 
@@ -26,15 +30,18 @@ markdown_extensions:
       permalink: true
 
 plugins:
-    - search
-    - macros:
-        module_name: docs.macros
+  - search
+  - macros:
+      module_name: docs.macros
 
 extra:
   social:
-    - type: 'github'
+    - icon: fontawesome/brands/github
       link: 'https://github.com/Skyscanner'
-    - type: 'twitter'
+      name: 'Skyscanner on Github'
+    - icon: fontawesome/brands/twitter
       link: 'https://twitter.com/skyscannereng'
-    - type: 'linkedin'
+      name: 'Skyscanner on twitter'
+    - icon: fontawesome/brands/linkedin
       link: 'https://www.linkedin.com/company/skyscanner/'
+      name: 'Skyscanner on linkedin'

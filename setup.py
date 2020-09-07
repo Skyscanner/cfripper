@@ -27,11 +27,14 @@ dev_requires = [
 
 docs_requires = [
     "ansi2html==1.5.2",
+    "Markdown==3.2.2",
     "markdown-include==0.5.1",
     "mkdocs-exclude==1.0.2",
-    "mkdocs-macros-plugin",
-    "mkdocs-material==4.5.1",
-    "mkdocs==1.0.4",
+    "mkdocs-macros-plugin==0.4.9",
+    "mkdocs-material==5.5.12",
+    "mkdocs-material-extensions==1.0",
+    "mkdocs-minify-plugin==0.3.0",
+    "mkdocs==1.1.2",
     "pygments==2.5.2",
 ]
 
