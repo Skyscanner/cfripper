@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.19.1] - 2020-09-16
+## [0.19.2] - 2020-09-16
 ### Improvements
 - Add `regex:ignorecase` filter function
 
