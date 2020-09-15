@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.19.1] - 2020-09-16
+### Improvements
+- Add `regex:ignorecase` filter function
+
 ## [0.19.1] - 2020-09-01
 ### Improvements
 - Add support for this new S3 url format: `https://bucket.s3.aws-region.amazonaws.com/path1/path2`

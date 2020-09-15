@@ -26,6 +26,7 @@ IMPLEMENTED_FILTER_FUNCTIONS = {
     "and": lambda *args, **kwargs: all(arg(kwargs) for arg in args),
     "in": param_resolver(lambda a, b, **kwargs: a in b),
     "regex": param_resolver(lambda *args, **kwargs: bool(re.match(*args))),
+    "regex:ignorecase": param_resolver(lambda *args, **kwargs: bool(re.match(*args, re.IGNORECASE))),
     "exists": param_resolver(lambda a, **kwargs: a is not None),
     "empty": param_resolver(lambda *args, **kwargs: len(args) == 0),
     "ref": param_resolver(lambda param_name, **kwargs: get(kwargs, param_name)),
