@@ -62,7 +62,7 @@ class WildcardResourceRule(Rule):
                         self._check_policy_document(
                             result, logical_id, policy.PolicyDocument, policy.PolicyName, extras
                         )
-            elif isinstance(resource, IAMUser):
+            elif isinstance(resource, IAMUser) and resource.Properties and resource.Properties.Policies:
                 for policy in resource.Properties.Policies:
                     self._check_policy_document(result, logical_id, policy.PolicyDocument, policy.PolicyName, extras)
             elif isinstance(resource, KMSKey):
