@@ -19,7 +19,7 @@ from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
 from cfripper.config.regex import REGEX_IS_STAR
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -41,8 +41,6 @@ class WildcardResourceRule(Rule):
     REASON_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource for "{}"'
     REASON_ALL_ACTIONS_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" allowing all actions'
     REASON_ALL_ACTIONS_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource allowing all actions'
-
-    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
