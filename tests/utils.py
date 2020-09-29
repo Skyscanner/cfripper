@@ -33,7 +33,7 @@ def get_cfmodel_from(path: str) -> CFModel:
     return parse(convert_json_or_yaml_to_dict(content))
 
 
-def compare_lists_of_failures(list_1: List, list_2: List):
+def compare_lists_of_failures(list_1: List, list_2: List) -> bool:
     def get_reason(item):
         return item["reason"] if isinstance(item, dict) else item.reason
 

@@ -4,11 +4,6 @@ __all__ = [
 import logging
 from typing import Dict, Optional
 
-from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
-from cfripper.config.regex import REGEX_IS_STAR
-from cfripper.model.enums import RuleGranularity, RuleMode
-from cfripper.model.result import Result
-from cfripper.rules.base_rules import Rule
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.generic_resource import GenericResource
 from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
@@ -22,7 +17,11 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-
+from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
+from cfripper.config.regex import REGEX_IS_STAR
+from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.result import Result
+from cfripper.rules.base_rules import Rule
 
 logger = logging.getLogger(__file__)
 

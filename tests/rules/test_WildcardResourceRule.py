@@ -1,7 +1,8 @@
 import pytest
+
 from cfripper.model.result import Failure
 from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
-from tests.utils import get_cfmodel_from, compare_lists_of_failures
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -656,7 +657,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
 
 
 def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
-    iam_policy_with_wildcard_resource_without_policy_name
+    iam_policy_with_wildcard_resource_without_policy_name,
 ):
     rule = WildcardResourceRule(None)
     rule._config.stack_name = "stack3"
@@ -852,7 +853,7 @@ def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
 
 
 def test_policy_document_with_wildcard_resource_and_wilcard_action_without_policy_name_is_detected(
-    iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name
+    iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name,
 ):
     rule = WildcardResourceRule(None)
     rule._config.stack_name = "stack3"
