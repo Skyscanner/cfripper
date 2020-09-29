@@ -28,6 +28,7 @@ from cfripper.rules.wildcard_policies import (
     SQSQueuePolicyWildcardActionRule,
 )
 from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
+from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
 
 DEFAULT_RULES = {
     rule.__name__: rule
@@ -58,6 +59,7 @@ DEFAULT_RULES = {
         SQSQueuePolicyNotPrincipalRule,
         SQSQueuePolicyPublicRule,
         SQSQueuePolicyWildcardActionRule,
+        WildcardResourceRule,
     )
 }
 
