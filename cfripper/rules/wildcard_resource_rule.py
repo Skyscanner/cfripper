@@ -28,13 +28,23 @@ logger = logging.getLogger(__file__)
 
 class WildcardResourceRule(Rule):
     """
-    WIP
+    Generic rule that detects actions that accept a resource and are using a wildcard.
 
     Risk:
-        WIP
+        Give roles access to undesired resources.
 
     Fix:
-        WIP
+        Check AWS docs to use the recommended resource value.
+
+    Filters context:
+        | Parameter    | Type             | Description                                                     |
+        |:------------:|:----------------:|:---------------------------------------------------------------:|
+        |`config`      | str              | `config` variable available inside the rule                     |
+        |`extras`      | str              | `extras` variable available inside the rule                     |
+        |`logical_id`  | str              | ID used in Cloudformation to refer the resource being analysed  |
+        |`policy_name` | `Optional[str]`  | If available, the policy name                                   |
+        |`statement`   | `Statement`      | Statement being checked found in the Resource                   |
+        |`action`      | `Optional[str]`  | Action that has a wildcard resource. If None, means all actions |
     """
 
     REASON_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" for "{}"'
