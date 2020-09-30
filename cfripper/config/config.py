@@ -15,58 +15,6 @@ class Config:
         "arn:aws:iam::aws:policy/IAMFullAccess",
         "arn:aws:iam::aws:policy/job-function/NetworkAdministrator",
     ]
-    DEFAULT_FORBIDDEN_RESOURCE_STAR_ACTION_PREFIXES = [
-        # catch Action * Resource *
-        "*",
-        # stop S3 modifications on Resource *
-        "s3:Put",
-        "s3:Delete",
-        # DynamoDB
-        # http://docs.aws.amazon.com/IAM/latest/UserGuide/list_dynamodb.html
-        "dynamodb:GetItem",
-        "dynamodb:Delete",
-        # IAM
-        # http://docs.aws.amazon.com/IAM/latest/UserGuide/list_iam.html
-        "iam:Add",
-        "iam:Attach",
-        "iam:Create",
-        "iam:Delete",
-        "iam:Put",
-        "iam:Update",
-        "iam:Remove",
-        # pword / MFA STUFF
-        "iam:ChangePassword",
-        "iam:ResyncMFADevice",
-        "iam:Deactivate",
-        "iam:Enable",
-        # EC2
-        "ec2:DeleteCustomerGateway",
-        "ec2:DeleteDhcpOptions",
-        "ec2:DeleteFlowLogs",
-        "ec2:DeleteInternetGateway",
-        "ec2:DeleteNatGateway",
-        # must keep as DeleteNetworkInterface needs to be allowed (for Lambda)
-        "ec2:DeleteNetworkAcl",
-        "ec2:DeleteNetworkAclEntry",
-        "ec2:DeleteRoute",
-        "ec2:DeleteRouteTable",
-        "ec2:DeleteSecurityGroup",
-        "ec2:DeleteSpotDatafeedSubscription",
-        "ec2:DeleteSubnet",
-        "ec2:DeleteVpc",
-        "ec2:CreateSubnet",
-        "ec2:CreateNatGateway",
-        "ec2:CreateDhcpOptions",
-        "ec2:CreateCustomerGateway",
-        "ecs:*",
-        # other lovely services
-        "cloudtrail:",
-        "aws-portal:",
-        "acm:",
-        "trustedadvisor:",
-        "aws-marketplace",
-        "directconnect:",
-    ]
 
     def __init__(
         self,
@@ -121,8 +69,6 @@ class Config:
         self.allowed_world_open_ports = list(self.DEFAULT_ALLOWED_WORLD_OPEN_PORTS)
 
         self.forbidden_managed_policy_arns = list(self.DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS)
-
-        self.forbidden_resource_star_action_prefixes = list(self.DEFAULT_FORBIDDEN_RESOURCE_STAR_ACTION_PREFIXES)
 
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
