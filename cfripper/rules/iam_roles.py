@@ -37,6 +37,12 @@ class IAMRolesOverprivilegedRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
 
+    FORBIDDEN_MANAGED_POLICY_ARNS = [
+        "arn:aws:iam::aws:policy/AdministratorAccess",
+        "arn:aws:iam::aws:policy/IAMFullAccess",
+        "arn:aws:iam::aws:policy/job-function/NetworkAdministrator",
+    ]
+
     FORBIDDEN_ACTION_PREFIXES = [
         # stop S3 modifications on Resource *
         "s3:Put",
@@ -102,7 +108,7 @@ class IAMRolesOverprivilegedRule(Rule):
             return
 
         for managed_policy_arn in role.Properties.ManagedPolicyArns:
-            if managed_policy_arn in self._config.forbidden_managed_policy_arns:
+            if managed_policy_arn in self.FORBIDDEN_MANAGED_POLICY_ARNS:
                 self.add_failure_to_result(
                     result,
                     f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",

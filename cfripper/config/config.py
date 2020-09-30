@@ -10,11 +10,6 @@ from .whitelist import stack_whitelist as default_stack_whitelist
 
 class Config:
     DEFAULT_ALLOWED_WORLD_OPEN_PORTS = [80, 443]
-    DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS = [
-        "arn:aws:iam::aws:policy/AdministratorAccess",
-        "arn:aws:iam::aws:policy/IAMFullAccess",
-        "arn:aws:iam::aws:policy/job-function/NetworkAdministrator",
-    ]
 
     def __init__(
         self,
@@ -67,8 +62,6 @@ class Config:
             self.rules = list(set(self.rules) - set(whitelisted_rules))
 
         self.allowed_world_open_ports = list(self.DEFAULT_ALLOWED_WORLD_OPEN_PORTS)
-
-        self.forbidden_managed_policy_arns = list(self.DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS)
 
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
