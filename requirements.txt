@@ -4,17 +4,16 @@
 #
 #    make freeze-upgrade
 #
-boto3==1.12.35            # via cfripper (setup.py)
-botocore==1.15.35         # via boto3, s3transfer
-cfn-flip==1.2.2           # via cfripper (setup.py)
-click==7.1.1              # via cfn-flip, cfripper (setup.py)
-docutils==0.15.2          # via botocore
-jmespath==0.9.5           # via boto3, botocore
-pycfmodel==0.7.1          # via cfripper (setup.py)
-pydantic==1.4             # via pycfmodel
+boto3==1.15.7             # via cfripper (setup.py)
+botocore==1.18.7          # via boto3, s3transfer
+cfn-flip==1.2.3           # via cfripper (setup.py)
+click==7.1.2              # via cfn-flip, cfripper (setup.py)
+jmespath==0.10.0          # via boto3, botocore
+pycfmodel==0.7.2          # via cfripper (setup.py)
+pydantic==1.6.1           # via pycfmodel
 pydash==4.7.6             # via cfripper (setup.py)
 python-dateutil==2.8.1    # via botocore
 pyyaml==5.3.1             # via cfn-flip, cfripper (setup.py)
 s3transfer==0.3.3         # via boto3
-six==1.14.0               # via cfn-flip, python-dateutil
-urllib3==1.25.8           # via botocore
+six==1.15.0               # via cfn-flip, python-dateutil
+urllib3==1.25.10          # via botocore

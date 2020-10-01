@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.0] - 2020-09-30
+### Improvements
+- Add `WildcardResourceRule` rule
+
 ## [0.19.2] - 2020-09-16
 ### Improvements
 - Add `regex:ignorecase` filter function
