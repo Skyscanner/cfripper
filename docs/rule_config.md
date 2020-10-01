@@ -21,6 +21,7 @@ The object accepts a reason parameter to say why that filter exists.
       - EC2SecurityGroupOpenToWorldRule
       - KMSKeyCrossAccountTrustRule
       - S3CrossAccountTrustRule
+      - WildcardResourceRule
       
 ### Filter preference
 

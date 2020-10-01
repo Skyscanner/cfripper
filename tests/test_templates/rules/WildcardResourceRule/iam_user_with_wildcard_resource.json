@@ -1,0 +1,28 @@
+{
+  "Resources": {
+    "userWithInline": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Groups": [
+          "group1"
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2018-12-13",
+              "Statement": {
+                "Effect": "Allow",
+                "Resource": "*",
+                "Action": [
+                  "s3:DeleteBucket",
+                  "s3:ListBucket"
+                ]
+              }
+            },
+            "PolicyName": "somePolicy"
+          }
+        ]
+      }
+    }
+  }
+}
