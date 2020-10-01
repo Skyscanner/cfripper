@@ -7,6 +7,7 @@ from cfripper.rules.cross_account_trust import (
     S3CrossAccountTrustRule,
 )
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
+from cfripper.rules.forbid_access_to_billing_and_cost_management import ForbidAccessToBillingAndCostManagement
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
 from cfripper.rules.kms_key_wildcard_principal import KMSKeyWildcardPrincipalRule
@@ -35,10 +36,11 @@ DEFAULT_RULES = {
         CloudFormationAuthenticationRule,
         CrossAccountTrustRule,
         EBSVolumeHasSSERule,
+        ForbidAccessToBillingAndCostManagement,
         FullWildcardPrincipalRule,
         HardcodedRDSPasswordRule,
-        IAMRolesOverprivilegedRule,
         IAMRoleWildcardActionOnPolicyRule,
+        IAMRolesOverprivilegedRule,
         KMSKeyCrossAccountTrustRule,
         KMSKeyWildcardPrincipalRule,
         ManagedPolicyOnUserRule,
@@ -50,14 +52,14 @@ DEFAULT_RULES = {
         S3BucketPublicReadAclAndListStatementRule,
         S3BucketPublicReadWriteAclRule,
         S3CrossAccountTrustRule,
-        SecurityGroupIngressOpenToWorldRule,
-        SecurityGroupMissingEgressRule,
-        SecurityGroupOpenToWorldRule,
         SNSTopicPolicyNotPrincipalRule,
         SNSTopicPolicyWildcardActionRule,
         SQSQueuePolicyNotPrincipalRule,
         SQSQueuePolicyPublicRule,
         SQSQueuePolicyWildcardActionRule,
+        SecurityGroupIngressOpenToWorldRule,
+        SecurityGroupMissingEgressRule,
+        SecurityGroupOpenToWorldRule,
     )
 }
 
