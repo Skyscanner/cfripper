@@ -90,6 +90,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                             self.REASON.format(logical_id, principal),
                             rule_mode=RuleMode.DEBUG,
                             resource_ids={logical_id},
+                            context=filters_available_context,
                         )
                     else:
                         self.add_failure_to_result(

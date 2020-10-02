@@ -28,8 +28,8 @@ def test_failures_are_raised(bad_template):
     rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"))
     result = rule.invoke(bad_template)
 
-    assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 1
-    assert result.failed_monitored_rules[0].rule == "EBSVolumeHasSSERule"
-    assert result.failed_monitored_rules[0].reason == "EBS volume TestVolume should have server-side encryption enabled"
+    assert not result.valid
+    assert len(result.failed_rules) == 1
+    assert len(result.failed_monitored_rules) == 0
+    assert result.failed_rules[0].rule == "EBSVolumeHasSSERule"
+    assert result.failed_rules[0].reason == "EBS volume TestVolume should have server-side encryption enabled"

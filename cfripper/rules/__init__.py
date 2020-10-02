@@ -7,6 +7,11 @@ from cfripper.rules.cross_account_trust import (
     S3CrossAccountTrustRule,
 )
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
+from cfripper.rules.ec2_security_group import (
+    EC2SecurityGroupIngressOpenToWorldRule,
+    EC2SecurityGroupMissingEgressRule,
+    EC2SecurityGroupOpenToWorldRule,
+)
 from cfripper.rules.forbid_access_to_billing_and_cost_management import ForbidAccessToBillingAndCostManagement
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
@@ -16,11 +21,6 @@ from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule, S3BucketPublicReadWriteAclRule
-from cfripper.rules.security_group import (
-    SecurityGroupIngressOpenToWorldRule,
-    SecurityGroupMissingEgressRule,
-    SecurityGroupOpenToWorldRule,
-)
 from cfripper.rules.sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
 from cfripper.rules.wildcard_policies import (
@@ -29,6 +29,7 @@ from cfripper.rules.wildcard_policies import (
     SQSQueuePolicyWildcardActionRule,
 )
 from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
+from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
 
 DEFAULT_RULES = {
     rule.__name__: rule
@@ -36,6 +37,9 @@ DEFAULT_RULES = {
         CloudFormationAuthenticationRule,
         CrossAccountTrustRule,
         EBSVolumeHasSSERule,
+        EC2SecurityGroupIngressOpenToWorldRule,
+        EC2SecurityGroupMissingEgressRule,
+        EC2SecurityGroupOpenToWorldRule,
         ForbidAccessToBillingAndCostManagement,
         FullWildcardPrincipalRule,
         HardcodedRDSPasswordRule,
@@ -57,9 +61,7 @@ DEFAULT_RULES = {
         SQSQueuePolicyNotPrincipalRule,
         SQSQueuePolicyPublicRule,
         SQSQueuePolicyWildcardActionRule,
-        SecurityGroupIngressOpenToWorldRule,
-        SecurityGroupMissingEgressRule,
-        SecurityGroupOpenToWorldRule,
+        WildcardResourceRule,
     )
 }
 

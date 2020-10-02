@@ -1,0 +1,61 @@
+{
+  "Resources": {
+    "userWithInline": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Groups": [
+          "group1"
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2018-12-13",
+              "Statement": {
+                "Effect": "Allow",
+                "Resource": "*",
+                "Action": [
+                  "s3:DeleteBucket",
+                  "s3:ListBucket"
+                ]
+              }
+            },
+            "PolicyName": "somePolicy"
+          }
+        ]
+      }
+    },
+    "RolePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "TheExtremePolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:BatchGet*",
+                "dynamodb:DescribeStream",
+                "dynamodb:DescribeTable",
+                "dynamodb:Get*",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWrite*",
+                "dynamodb:CreateTable",
+                "dynamodb:Delete*",
+                "dynamodb:Update*",
+                "dynamodb:PutItem"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "RootRole"
+          }
+        ]
+      }
+    }
+  }
+}

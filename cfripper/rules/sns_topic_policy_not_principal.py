@@ -5,19 +5,23 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode
+from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
 
 class SNSTopicPolicyNotPrincipalRule(Rule):
     """
-    Checks if an SNS topic policy has an Allow + a NotPrincipal (exclusive principal).
+    Checks if an SNS topic policy has an Allow + a NotPrincipal.
+
+    Risk:
+        AWS **strongly** recommends against using `NotPrincipal` in the same policy statement as `"Effect": "Allow"`.
+        Doing so grants the permissions specified in the policy statement to all principals except the one named
+        in the `NotPrincipal` element. By doing this, you might grant access to anonymous (unauthenticated) users.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "SNS Topic {} policy should not allow Allow and NotPrincipal at the same time"
-    RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

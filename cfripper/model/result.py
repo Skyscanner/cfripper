@@ -1,8 +1,11 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Extra
 
 from cfripper.model.enums import RuleMode
+
+if TYPE_CHECKING:
+    from pydantic.typing import AbstractSetIntStr, DictIntStrAny
 
 
 class Failure(BaseModel):

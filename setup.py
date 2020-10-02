@@ -6,7 +6,14 @@ from cfripper.__version__ import __version__
 
 project_root_path = Path(__file__).parent
 
-install_requires = ["boto3>=1.4.7,<2", "cfn_flip>=1.2.0", "pycfmodel>=0.7.0", "pydash~=4.7.6", "PyYAML>=4.2b1"]
+install_requires = [
+    "boto3>=1.4.7,<2",
+    "cfn_flip>=1.2.0",
+    "click~=7.1.1",
+    "pycfmodel>=0.7.1",
+    "pydash~=4.7.6",
+    "PyYAML>=4.2b1",
+]
 
 dev_requires = [
     "black==19.10b0",
@@ -20,11 +27,14 @@ dev_requires = [
 
 docs_requires = [
     "ansi2html==1.5.2",
+    "Markdown==3.2.2",
     "markdown-include==0.5.1",
     "mkdocs-exclude==1.0.2",
-    "mkdocs-macros-plugin",
-    "mkdocs-material==4.5.1",
-    "mkdocs==1.0.4",
+    "mkdocs-macros-plugin==0.4.9",
+    "mkdocs-material==5.5.12",
+    "mkdocs-material-extensions==1.0",
+    "mkdocs-minify-plugin==0.3.0",
+    "mkdocs==1.1.2",
     "pygments==2.5.2",
 ]
 

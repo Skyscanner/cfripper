@@ -10,7 +10,7 @@ When running CFRipper the CloudFormation stack will be checked against each rule
 {% if rule.1 -%}
 {{ rule.1 }}
 {% endif -%}
-
+---
 {% endfor %}
 
 ## Custom Rules

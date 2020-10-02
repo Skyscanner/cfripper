@@ -15,7 +15,7 @@ from cfripper.model.enums import RuleMode, RuleRisk
 def define_env(env):
     @env.macro
     def cfripper_rules():
-        severity_map = {RuleRisk.HIGH: "High", RuleRisk.MEDIUM: "Medium", RuleRisk.LOW: "Low"}
+        severity_map = {RuleRisk.HIGH: "**High**", RuleRisk.MEDIUM: "Medium", RuleRisk.LOW: "Low"}
         rules_inspection = inspect.getmembers(rules, inspect.isclass)
         results = []
         for _, klass in rules_inspection:
@@ -28,12 +28,11 @@ def define_env(env):
                     # Remove ABCMeta default docstring
                     if not paragraph_text.startswith("Helper class that"):
                         content += paragraph_text
-                    content += f"\n\nSeverity: {severity_map[klass.RISK_VALUE]}\n"
+                    content += f"\n\n>Severity: {severity_map[klass.RISK_VALUE]}\n"
                     if klass.RULE_MODE == RuleMode.MONITOR:
-                        content += "\nDefaults to monitor mode (rule not enforced)\n"
+                        content += "\n>Defaults to monitor mode (rule not enforced)\n"
                     if klass.RULE_MODE == RuleMode.DEBUG:
-                        content += "\nDefaults to debug mode (rule not enforced)\n"
-
+                        content += "\n>Defaults to debug mode (rule not enforced)\n"
                 else:
                     content += f"\n#### {paragraph_title}\n"
                     content += f"{paragraph_text}\n"

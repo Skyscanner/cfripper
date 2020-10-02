@@ -1,6 +1,43 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.0] - 2020-09-30
+### Improvements
+- Add `WildcardResourceRule` rule
+
+## [0.19.2] - 2020-09-16
+### Improvements
+- Add `regex:ignorecase` filter function
+
+## [0.19.1] - 2020-09-01
+### Improvements
+- Add support for this new S3 url format: `https://bucket.s3.aws-region.amazonaws.com/path1/path2`
+
+## [0.19.0] - 2020-05-21
+### Breaking changes
+- `rule_mode` is now `BLOCKING` for all Rules.
+
+## [0.18.1] - 2020-04-14
+### Fixed
+- `CrossAccountCheckingRule` calling `add_failure_to_result` on `UNDEFINED_` was missing context variable.
+
+## [0.18.0] - 2020-04-07
+### Improvements
+- `EC2SecurityGroupIngressOpenToWorldRule`, `EC2SecurityGroupMissingEgressRule` and `EC2SecurityGroupOpenToWorldRule` include support for filters.
+- `EC2SecurityGroupIngressOpenToWorldRule` and `EC2SecurityGroupOpenToWorldRule` support adding errors for port ranges.
+### Breaking changes
+- `Config.DEFAULT_ALLOWED_WORLD_OPEN_PORTS` type changes to `List[int]`
+- Rename `SecurityGroupIngressOpenToWorldRule` to `EC2SecurityGroupIngressOpenToWorldRule`
+- Rename `SecurityGroupMissingEgressRule` to `EC2SecurityGroupMissingEgressRule`
+- Rename `SecurityGroupOpenToWorldRule` to `EC2SecurityGroupOpenToWorldRule`
+- Improved message for users when failing the `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` rules.
+- Improved documentation for the above rules, including styling fixes which have now been tested.
+
+## [0.17.2] - 2020-04-01
+### Improvements
+- Improved message for users when failing the `SecurityGroupOpenToWorldRule` and `SecurityGroupIngressOpenToWorldRule` rules.
+- Improved documentation for the above rules, including styling fixes which have now been tested.
+
 ## [0.17.1] - 2020-03-30
 ### Improvements
 - Add `exists` and `empty` functions to filters

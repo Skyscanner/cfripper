@@ -7,7 +7,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -26,7 +26,6 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public read acl and list bucket statement"
-    RULE_MODE = RuleMode.DEBUG
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
@@ -46,6 +45,13 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
 class S3BucketPublicReadWriteAclRule(Rule):
     """
     Checks if any S3 bucket policy has access control set to `PublicReadWrite`.
+
+    Risk:
+        Unless required, S3 buckets should not have Public Write available on a bucket. This allows anyone
+        to write any objects to your S3 bucket.
+
+    Fix:
+        Remove any configuration that looks like `"AccessControl": "PublicReadWrite"` from your S3 bucket policy.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE

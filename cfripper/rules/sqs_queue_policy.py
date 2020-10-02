@@ -7,7 +7,7 @@ from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
-from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
@@ -16,12 +16,16 @@ logger = logging.getLogger(__file__)
 
 class SQSQueuePolicyNotPrincipalRule(Rule):
     """
-    Checks if an SQS Queue policy has an Allow + a NotPrincipal (exclusive principal).
+    Checks if an SQS Queue policy has an Allow + a NotPrincipal.
+
+    Risk:
+        AWS **strongly** recommends against using `NotPrincipal` in the same policy statement as `"Effect": "Allow"`.
+        Doing so grants the permissions specified in the policy statement to all principals except the one named
+        in the `NotPrincipal` element. By doing this, you might grant access to anonymous (unauthenticated) users.
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "SQS Queue {} policy should not allow Allow and NotPrincipal at the same time"
-    RULE_MODE = RuleMode.MONITOR
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()

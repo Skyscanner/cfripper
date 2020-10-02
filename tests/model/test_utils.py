@@ -23,6 +23,11 @@ from cfripper.model.utils import InvalidURLException, extract_bucket_name_and_pa
             "cf-templates",
             "path/to/template.yml",
         ),
+        (
+            "https://cf-templates.s3.eu-central-1.amazonaws.com/path/to/template.yml",
+            "cf-templates",
+            "path/to/template.yml",
+        ),
     ],
 )
 def test_extract_bucket_name_and_path_from_url_works(template_url, bucket, path):
