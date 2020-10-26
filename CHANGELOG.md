@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.20.1] - 2020-10-26
+### Improvements
+- Added more actions that only allow wildcard as resource
+### Fixes
+- Require pycfmodel 0.7.2
+### Other
+- Bump pip-tools dev requirement to 5.3.1
+
 ## [0.20.0] - 2020-09-30
 ### Improvements
 - Add `WildcardResourceRule` rule
