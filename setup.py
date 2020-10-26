@@ -10,7 +10,7 @@ install_requires = [
     "boto3>=1.4.7,<2",
     "cfn_flip>=1.2.0",
     "click~=7.1.1",
-    "pycfmodel>=0.7.1",
+    "pycfmodel>=0.7.2",
     "pydash~=4.7.6",
     "PyYAML>=4.2b1",
 ]
@@ -21,7 +21,7 @@ dev_requires = [
     "isort==4.3.21",
     "pytest>=3.6",
     "pytest-cov>=2.5.1",
-    "pip-tools==4.2.0",
+    "pip-tools>=5.3.1",
     "moto==1.3.13",
 ]
 
