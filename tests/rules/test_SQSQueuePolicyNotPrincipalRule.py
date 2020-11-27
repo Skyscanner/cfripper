@@ -19,5 +19,5 @@ def test_sqs_policy_not_principal(sqs_policy_not_principal):
     assert result.failed_rules[0].rule == "SQSQueuePolicyNotPrincipalRule"
     assert (
         result.failed_rules[0].reason
-        == "SQS Queue QueuePolicyWithNotPrincipal policy should not allow Allow and NotPrincipal at the same time"
+        == "SQS Queue policy QueuePolicyWithNotPrincipal should not allow Allow and NotPrincipal at the same time"
     )

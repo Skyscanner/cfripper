@@ -17,4 +17,7 @@ def test_valid_role_inline_policy(valid_role_inline_policy):
     assert len(result.failed_rules) == 1
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "PrivilegeEscalationRule"
-    assert result.failed_rules[0].reason == "PolicyA has blacklisted IAM action iam:createpolicy"
+    assert (
+        result.failed_rules[0].reason
+        == "PolicyA has blacklisted IAM actions: ['iam:AddUserToGroup', 'iam:CreatePolicy']"
+    )

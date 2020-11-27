@@ -20,7 +20,7 @@ from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule, S3BucketPublicReadWriteAclRule
-from cfripper.rules.sns_topic_policy_not_principal import SNSTopicPolicyNotPrincipalRule
+from cfripper.rules.sns_topic_policy import SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
 from cfripper.rules.wildcard_policies import (
     S3BucketPolicyWildcardActionRule,

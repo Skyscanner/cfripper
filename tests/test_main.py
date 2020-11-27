@@ -69,7 +69,7 @@ def test_with_templates(cf_path):
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(cfmodel, config)
 
-    # Use this to print the stack if there'IAMManagedPolicyWildcardActionRule an error
+    # Use this to print the stack if there is am IAMManagedPolicyWildcardActionRule an error
     if len(result.exceptions):
         print(cf_path)
         traceback.print_tb(result.exceptions[0].__traceback__)
