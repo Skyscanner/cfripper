@@ -1,6 +1,6 @@
 __all__ = ["PrivilegeEscalationRule"]
 
-from pycfmodel.model.resources.iam_policy import IAMPolicy
+from pycfmodel.model.resources.resource import Resource
 
 from cfripper.model.enums import RuleGranularity
 from cfripper.rules.base_rules import BaseDangerousPolicyActions
@@ -19,7 +19,7 @@ class PrivilegeEscalationRule(BaseDangerousPolicyActions):
 
     GRANULARITY = RuleGranularity.ACTION
     REASON = "{} has blacklisted IAM actions: {}"
-    RESOURCE_TYPES = (IAMPolicy,)
+    RESOURCE_TYPES = (Resource,)
     DANGEROUS_ACTIONS = [
         "iam:AddUserToGroup",
         "iam:AttachGroupPolicy",
