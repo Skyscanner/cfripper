@@ -40,8 +40,6 @@ class GenericWildcardPolicyRule(Rule):
             logger.warning(f"Not running {type(self).__name__} rule as AWS_RESOURCE is not defined.")
         else:
             for logical_id, resource in cfmodel.Resources.items():
-                if isinstance(resource, self.AWS_RESOURCE):
-                    print(resource.Properties.PolicyDocument)
                 if isinstance(resource, self.AWS_RESOURCE) and resource.Properties.PolicyDocument.allowed_actions_with(
                     REGEX_HAS_STAR_OR_STAR_AFTER_COLON
                 ):
