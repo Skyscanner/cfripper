@@ -32,7 +32,7 @@ class SNSTopicPolicyNotPrincipalRule(ResourceSpecificRule):
 
 class SNSTopicDangerousPolicyActionsRule(BaseDangerousPolicyActions):
     """
-    Checks for dangerous permissions in Action statements in an SQS Queue Policy.
+    Checks for dangerous permissions in Action statements in an SNS Topic Policy.
 
     Risk:
         This is deemed a potential security risk as it could allow privilege escalation.
