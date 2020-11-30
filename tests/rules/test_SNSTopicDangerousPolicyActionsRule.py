@@ -20,6 +20,6 @@ def test_sns_dangerous_policy_actions(sqs_policy):
     assert result.failed_rules[0].risk_value == RuleRisk.MEDIUM
     assert result.failed_rules[0].rule == "SNSTopicDangerousPolicyActionsRule"
     assert (
-        result.failed_rules[0].reason == "SQS Topic policy mysnspolicyA should not not include the following dangerous "
+        result.failed_rules[0].reason == "SNS Topic policy mysnspolicyA should not not include the following dangerous "
         "actions: ['sns:AddPermission', 'sns:RemovePermission', 'sns:TagResource', 'sns:UntagResource']"
     )
