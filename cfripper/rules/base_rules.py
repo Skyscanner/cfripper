@@ -100,6 +100,10 @@ class Rule(ABC):
 
 
 class ResourceSpecificRule(Rule):
+    """
+    Base class for rules that only apply to a subset of resource types
+    """
+
     RESOURCE_TYPES: Tuple[Type] = tuple()
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:

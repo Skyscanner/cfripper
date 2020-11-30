@@ -1,4 +1,4 @@
-from cfripper.rules.base_rules import PrincipalCheckingRule
+from cfripper.rules.base_rules import BaseDangerousPolicyActions, PrincipalCheckingRule, ResourceSpecificRule
 from cfripper.rules.cloudformation_authentication import CloudFormationAuthenticationRule
 from cfripper.rules.cross_account_trust import (
     CrossAccountCheckingRule,
@@ -20,8 +20,12 @@ from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_public_access import S3BucketPublicReadAclAndListStatementRule, S3BucketPublicReadWriteAclRule
-from cfripper.rules.sns_topic_policy import SNSTopicPolicyNotPrincipalRule
-from cfripper.rules.sqs_queue_policy import SQSQueuePolicyNotPrincipalRule, SQSQueuePolicyPublicRule
+from cfripper.rules.sns_topic_policy import SNSTopicDangerousPolicyActionsRule, SNSTopicPolicyNotPrincipalRule
+from cfripper.rules.sqs_queue_policy import (
+    SQSDangerousPolicyActionsRule,
+    SQSQueuePolicyNotPrincipalRule,
+    SQSQueuePolicyPublicRule,
+)
 from cfripper.rules.wildcard_policies import (
     S3BucketPolicyWildcardActionRule,
     SNSTopicPolicyWildcardActionRule,
@@ -41,8 +45,8 @@ DEFAULT_RULES = {
         EC2SecurityGroupOpenToWorldRule,
         FullWildcardPrincipalRule,
         HardcodedRDSPasswordRule,
-        IAMRoleWildcardActionOnPolicyRule,
         IAMRolesOverprivilegedRule,
+        IAMRoleWildcardActionOnPolicyRule,
         KMSKeyCrossAccountTrustRule,
         KMSKeyWildcardPrincipalRule,
         ManagedPolicyOnUserRule,
@@ -54,8 +58,10 @@ DEFAULT_RULES = {
         S3BucketPublicReadAclAndListStatementRule,
         S3BucketPublicReadWriteAclRule,
         S3CrossAccountTrustRule,
+        SNSTopicDangerousPolicyActionsRule,
         SNSTopicPolicyNotPrincipalRule,
         SNSTopicPolicyWildcardActionRule,
+        SQSDangerousPolicyActionsRule,
         SQSQueuePolicyNotPrincipalRule,
         SQSQueuePolicyPublicRule,
         SQSQueuePolicyWildcardActionRule,
@@ -63,4 +69,7 @@ DEFAULT_RULES = {
     )
 }
 
-BASE_CLASSES = {rule.__name__: rule for rule in (CrossAccountCheckingRule, PrincipalCheckingRule)}
+BASE_CLASSES = {
+    rule.__name__: rule
+    for rule in (BaseDangerousPolicyActions, CrossAccountCheckingRule, PrincipalCheckingRule, ResourceSpecificRule,)
+}

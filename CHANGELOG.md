@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 - Refactored a few classes to use improvements from new base classes and pycfmodel
 - `PrivilegeEscalationRule` now detects issues in all policies
 ### Additions
-- New Rules: SNSTopicDangerousPolicyActions and SQSDangerousPolicyActions
+- New Rules: `SNSTopicDangerousPolicyActionsRule` and `SQSDangerousPolicyActionsRule`
 - New abstract base rule: BaseDangerousPolicyActions
 ### Fixes
 - Various typo fixes

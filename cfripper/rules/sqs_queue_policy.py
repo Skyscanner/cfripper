@@ -1,4 +1,4 @@
-__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule"]
+__all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule", "SQSDangerousPolicyActionsRule"]
 
 import logging
 
@@ -62,7 +62,7 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
         return result
 
 
-class SQSDangerousPolicyActions(BaseDangerousPolicyActions):
+class SQSDangerousPolicyActionsRule(BaseDangerousPolicyActions):
     """
     Checks for dangerous permissions in Action statements in an SQS Queue Policy.
 

@@ -1,4 +1,4 @@
-__all__ = ["SNSTopicPolicyNotPrincipalRule"]
+__all__ = ["SNSTopicPolicyNotPrincipalRule", "SNSTopicDangerousPolicyActionsRule"]
 
 
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
@@ -30,7 +30,7 @@ class SNSTopicPolicyNotPrincipalRule(ResourceSpecificRule):
         return result
 
 
-class SNSTopicDangerousPolicyActions(BaseDangerousPolicyActions):
+class SNSTopicDangerousPolicyActionsRule(BaseDangerousPolicyActions):
     """
     Checks for dangerous permissions in Action statements in an SQS Queue Policy.
 
