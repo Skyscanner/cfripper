@@ -165,10 +165,11 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
         for policy in resource.policy_documents:
             actions = policy.policy_document.get_allowed_actions()
             dangerous_actions = set(actions) & set(self.DANGEROUS_ACTIONS)
-            self.add_failure_to_result(
-                result,
-                self.REASON.format(logical_id, sorted(dangerous_actions)),
-                resource_ids={logical_id},
-                actions=dangerous_actions,
-            )
+            if dangerous_actions:
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id, sorted(dangerous_actions)),
+                    resource_ids={logical_id},
+                    actions=dangerous_actions,
+                )
         return result
