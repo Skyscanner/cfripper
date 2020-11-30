@@ -11,7 +11,6 @@ def valid_role_inline_policy():
 
 @fixture()
 def privilege_escalation_role_cf():
-    print(get_cfmodel_from("rules/PrivilegeEscalationRule/privilege_escalation_role.yaml"))
     return get_cfmodel_from("rules/PrivilegeEscalationRule/privilege_escalation_role.yaml").resolve()
 
 
