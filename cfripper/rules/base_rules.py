@@ -149,7 +149,7 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
     Base class for dangerous actions. Admits a DANGEROUS_ACTIONS class variable with a list of dangerous actions
     """
 
-    REASON = "Resource {} should not be include the following dangerous actions: {}"
+    REASON = "Resource {} should not include the following dangerous actions: {}"
     RISK_VALUE = RuleRisk.HIGH
     GRANULARITY = RuleGranularity.ACTION
 
