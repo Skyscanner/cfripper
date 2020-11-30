@@ -1,10 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.21.0] - ???
+## [0.21.0] - 2020-11-30
 ### Improvements
 - Upgraded to pycfmodel 0.8.1 (this will improve policy action detection)
 - Refactored a few classes to use improvements from new base classes and pycfmodel
+- `PrivilegeEscalationRule` now detects issues in all policies
 ### Additions
 - New Rules: SNSTopicDangerousPolicyActions and SQSDangerousPolicyActions
 - New abstract base rule: BaseDangerousPolicyActions
