@@ -38,7 +38,7 @@ class SNSTopicDangerousPolicyActionsRule(BaseDangerousPolicyActions):
         This is deemed a potential security risk as it could allow privilege escalation.
     """
 
-    REASON = "SQS Topic policy {} should not not include the following dangerous actions: {}"
+    REASON = "SNS Topic policy {} should not not include the following dangerous actions: {}"
     RISK_VALUE = RuleRisk.MEDIUM
     RESOURCE_TYPES = (SNSTopicPolicy,)
 
