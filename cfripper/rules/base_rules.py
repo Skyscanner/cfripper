@@ -146,14 +146,19 @@ class PrincipalCheckingRule(Rule, ABC):
 
 class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
     """
-    Base class for dangerous actions
+    Base class for dangerous actions. Admits a DANGEROUS_ACTIONS class variable with a list of dangerous actions
     """
 
     REASON = "Resource {} should not be include the following dangerous actions: {}"
     RISK_VALUE = RuleRisk.HIGH
     GRANULARITY = RuleGranularity.ACTION
 
-    DANGEROUS_ACTIONS: List[str]
+    @property
+    @classmethod
+    @abstractmethod
+    def DANGEROUS_ACTIONS(cls) -> List[str]:
+        # This is designed to be overwritten as a class variable
+        return NotImplementedError
 
     def resource_invoke(self, resource: Resource, logical_id: str) -> Result:
         result = Result()
