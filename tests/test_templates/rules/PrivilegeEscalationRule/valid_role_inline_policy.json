@@ -11,7 +11,8 @@
             {
               "Effect": "Allow",
               "Action": [
-                "IAM:CREATEPOLICY"
+                "IAM:CREATEPOLICY",
+                "iam:addUser*"
               ],
               "Resource": [
                 "arn:aws:glue:eu-west-1:12345678:catalog"

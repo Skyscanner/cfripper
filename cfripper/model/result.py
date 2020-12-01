@@ -1,11 +1,8 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Extra
 
 from cfripper.model.enums import RuleMode
-
-if TYPE_CHECKING:
-    from pydantic.typing import AbstractSetIntStr, DictIntStrAny
 
 
 class Failure(BaseModel):
@@ -49,8 +46,8 @@ class Result(BaseModel):
     def dict(
         self,
         *,
-        include: Union["AbstractSetIntStr", "DictIntStrAny"] = None,
-        exclude: Union["AbstractSetIntStr", "DictIntStrAny"] = None,
+        include: Union["AbstractSetIntStr", "DictIntStrAny"] = None,  # noqa: F821
+        exclude: Union["AbstractSetIntStr", "DictIntStrAny"] = None,  # noqa: F821
         by_alias: bool = False,
         skip_defaults: bool = None,
         exclude_unset: bool = False,

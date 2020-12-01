@@ -4,6 +4,7 @@ __all__ = [
     "EC2SecurityGroupOpenToWorldRule",
 ]
 
+from abc import ABC
 from itertools import groupby
 from operator import itemgetter
 from typing import Dict, List, Optional, Tuple, Union
@@ -18,7 +19,7 @@ from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
 
 
-class SecurityGroupOpenToWorldRule(Rule):
+class SecurityGroupOpenToWorldRule(Rule, ABC):
     """
     Base class not intended to be instantiated, but inherited from.
     This class provides common methods used to detect open ports.

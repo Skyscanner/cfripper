@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Access Role for the talos batch
+
+Resources:
+  PrivilegeInjectorRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'TestRole'
+      Policies:
+        - PolicyName: policy1
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:UpdateAssumeRolePolicy
+                Resource: 'arn:aws:iam::123456789:role/infra_access'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRoleWithSAML
+            Principal:
+              Federated: !Sub "arn:aws:iam::${AWS::AccountId}:saml-provider/saml-provider"
+              Action:
+                - sts:AssumeRole

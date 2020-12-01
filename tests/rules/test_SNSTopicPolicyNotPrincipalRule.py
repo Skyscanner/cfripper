@@ -19,5 +19,5 @@ def test_sns_topic_not_principal(sns_topic_not_principal):
     assert result.failed_rules[0].rule == "SNSTopicPolicyNotPrincipalRule"
     assert (
         result.failed_rules[0].reason
-        == "SNS Topic mysnspolicyA policy should not allow Allow and NotPrincipal at the same time"
+        == "SNS Topic policy mysnspolicyA should not allow Allow and NotPrincipal at the same time"
     )

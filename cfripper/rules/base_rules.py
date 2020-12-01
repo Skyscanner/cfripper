@@ -1,8 +1,9 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple, Type
 
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.resource import Resource
 
 from cfripper.config.config import Config
 from cfripper.config.rule_config import RuleConfig
@@ -98,7 +99,26 @@ class Rule(ABC):
             result.add_warning(warning)
 
 
-class PrincipalCheckingRule(Rule):
+class ResourceSpecificRule(Rule):
+    """
+    Base class for rules that only apply to a subset of resource types
+    """
+
+    RESOURCE_TYPES: Tuple[Type] = tuple()
+
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, self.RESOURCE_TYPES):
+                result += self.resource_invoke(resource=resource, logical_id=logical_id)
+        return result
+
+    @abstractmethod
+    def resource_invoke(self, resource: Resource, logical_id: str) -> Result:
+        pass
+
+
+class PrincipalCheckingRule(Rule, ABC):
     """Abstract class for rules that check principals"""
 
     _valid_principals = None
@@ -122,3 +142,34 @@ class PrincipalCheckingRule(Rule):
             if self._config.aws_account_id:
                 self._valid_principals.add(self._config.aws_account_id)
         return self._valid_principals
+
+
+class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
+    """
+    Base class for dangerous actions. Admits a DANGEROUS_ACTIONS class variable with a list of dangerous actions
+    """
+
+    REASON = "Resource {} should not include the following dangerous actions: {}"
+    RISK_VALUE = RuleRisk.HIGH
+    GRANULARITY = RuleGranularity.ACTION
+
+    @property
+    @classmethod
+    @abstractmethod
+    def DANGEROUS_ACTIONS(cls) -> List[str]:
+        # This is designed to be overwritten as a class variable
+        return NotImplementedError
+
+    def resource_invoke(self, resource: Resource, logical_id: str) -> Result:
+        result = Result()
+        for policy in resource.policy_documents:
+            actions = policy.policy_document.get_allowed_actions()
+            dangerous_actions = set(actions) & set(self.DANGEROUS_ACTIONS)
+            if dangerous_actions:
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id, sorted(dangerous_actions)),
+                    resource_ids={logical_id},
+                    actions=dangerous_actions,
+                )
+        return result

@@ -6,16 +6,10 @@ from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.generic_resource import GenericResource
-from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
-from pycfmodel.model.resources.iam_policy import IAMPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
-from pycfmodel.model.resources.iam_user import IAMUser
 from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
 from pycfmodel.model.resources.properties.statement import Statement
-from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
-from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
-from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
 from cfripper.config.regex import REGEX_IS_STAR
@@ -55,24 +49,12 @@ class WildcardResourceRule(Rule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, IAMPolicy):
-                self._check_policy_document(
-                    result, logical_id, resource.Properties.PolicyDocument, resource.Properties.PolicyName, extras
-                )
-            elif isinstance(resource, (IAMManagedPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
-                self._check_policy_document(result, logical_id, resource.Properties.PolicyDocument, None, extras)
-            elif isinstance(resource, IAMRole):
+            for policy in resource.policy_documents:
+                self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
+            if isinstance(resource, IAMRole):
                 self._check_policy_document(
                     result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras
                 )
-                if resource.Properties.Policies:
-                    for policy in resource.Properties.Policies:
-                        self._check_policy_document(
-                            result, logical_id, policy.PolicyDocument, policy.PolicyName, extras
-                        )
-            elif isinstance(resource, IAMUser) and resource.Properties and resource.Properties.Policies:
-                for policy in resource.Properties.Policies:
-                    self._check_policy_document(result, logical_id, policy.PolicyDocument, policy.PolicyName, extras)
             elif isinstance(resource, KMSKey):
                 self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
             elif isinstance(resource, GenericResource):
