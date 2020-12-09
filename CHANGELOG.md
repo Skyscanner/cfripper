@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.21.1] - 2020-12-9
+### Improvements
+- Add SNS actions that only allow wildcards
+
+
 ## [0.21.0] - 2020-11-30
 ### Improvements
 - Upgraded to pycfmodel 0.8.1 (this will improve policy action detection)
