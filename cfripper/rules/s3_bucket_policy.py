@@ -1,5 +1,6 @@
 __all__ = ["S3BucketPolicyPrincipalRule"]
 import logging
+from typing import Dict, Optional
 
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
@@ -29,7 +30,7 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
     RISK_VALUE = RuleRisk.HIGH
     RESOURCE_TYPES = (S3BucketPolicy,)
 
-    def resource_invoke(self, resource: S3BucketPolicy, logical_id: str) -> Result:
+    def resource_invoke(self, resource: S3BucketPolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
 
         for statement in resource.Properties.PolicyDocument._statement_as_list():

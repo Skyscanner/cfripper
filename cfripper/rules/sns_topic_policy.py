@@ -1,5 +1,6 @@
 __all__ = ["SNSTopicPolicyNotPrincipalRule", "SNSTopicDangerousPolicyActionsRule"]
 
+from typing import Dict, Optional
 
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 
@@ -22,7 +23,7 @@ class SNSTopicPolicyNotPrincipalRule(ResourceSpecificRule):
     REASON = "SNS Topic policy {} should not allow Allow and NotPrincipal at the same time"
     RESOURCE_TYPES = (SNSTopicPolicy,)
 
-    def resource_invoke(self, resource: SNSTopicPolicy, logical_id: str) -> Result:
+    def resource_invoke(self, resource: SNSTopicPolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for statement in resource.Properties.PolicyDocument._statement_as_list():
             if statement.NotPrincipal:
@@ -31,11 +32,13 @@ class SNSTopicPolicyNotPrincipalRule(ResourceSpecificRule):
 
 
 class SNSTopicDangerousPolicyActionsRule(BaseDangerousPolicyActions):
-    """
+    f"""
     Checks for dangerous permissions in Action statements in an SNS Topic Policy.
 
     Risk:
         This is deemed a potential security risk as it could allow privilege escalation.
+
+    {BaseDangerousPolicyActions.DEFAULT_FILTERS_CONTEXT}
     """
 
     REASON = "SNS Topic policy {} should not not include the following dangerous actions: {}"

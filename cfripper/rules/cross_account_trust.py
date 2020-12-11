@@ -6,6 +6,7 @@ __all__ = [
 ]
 
 import logging
+from abc import ABC
 from typing import Dict, Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
@@ -23,7 +24,7 @@ from cfripper.rules.base_rules import PrincipalCheckingRule
 logger = logging.getLogger(__file__)
 
 
-class CrossAccountCheckingRule(PrincipalCheckingRule):
+class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
     """
     Base class not intended to be instantiated, but inherited from.
     This class provides common methods used to detect access permissions from other accounts.
@@ -84,7 +85,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule):
                             f"Not adding {type(self).__name__} failure in {logical_id} "
                             f"because no AWS Account ID was found in the config."
                         )
-                    elif "GETATT" in principal or "UNDEFINED_" in principal:
+                    elif principal.startswith("GETATT") or principal.startswith("UNDEFINED_"):
                         self.add_failure_to_result(
                             result,
                             self.REASON.format(logical_id, principal),

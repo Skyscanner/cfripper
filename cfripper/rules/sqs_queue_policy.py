@@ -1,6 +1,7 @@
 __all__ = ["SQSQueuePolicyNotPrincipalRule", "SQSQueuePolicyPublicRule", "SQSDangerousPolicyActionsRule"]
 
 import logging
+from typing import Dict, Optional
 
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
@@ -26,7 +27,7 @@ class SQSQueuePolicyNotPrincipalRule(ResourceSpecificRule):
     RESOURCE_TYPES = (SQSQueuePolicy,)
     REASON = "SQS Queue policy {} should not allow Allow and NotPrincipal at the same time"
 
-    def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str) -> Result:
+    def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for statement in resource.Properties.PolicyDocument._statement_as_list():
             if statement.NotPrincipal:
@@ -47,7 +48,7 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
     GRANULARITY = RuleGranularity.RESOURCE
     RESOURCE_TYPES = (SQSQueuePolicy,)
 
-    def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str) -> Result:
+    def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
         if resource.Properties.PolicyDocument.allowed_principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
             for statement in resource.Properties.PolicyDocument._statement_as_list():
@@ -63,11 +64,13 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
 
 
 class SQSDangerousPolicyActionsRule(BaseDangerousPolicyActions):
-    """
+    f"""
     Checks for dangerous permissions in Action statements in an SQS Queue Policy.
 
     Risk:
         This is deemed a potential security risk as it'd allow various attacks to the queue.
+
+    {BaseDangerousPolicyActions.DEFAULT_FILTERS_CONTEXT}
     """
 
     REASON = "SQS Queue policy {} should not not include the following dangerous actions: {}"

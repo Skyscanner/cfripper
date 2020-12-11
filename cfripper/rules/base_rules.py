@@ -110,11 +110,11 @@ class ResourceSpecificRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, self.RESOURCE_TYPES):
-                result += self.resource_invoke(resource=resource, logical_id=logical_id)
+                result += self.resource_invoke(resource=resource, logical_id=logical_id, extras=extras)
         return result
 
     @abstractmethod
-    def resource_invoke(self, resource: Resource, logical_id: str) -> Result:
+    def resource_invoke(self, resource: Resource, logical_id: str, extras: Optional[Dict] = None) -> Result:
         pass
 
 
@@ -149,6 +149,17 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
     Base class for dangerous actions. Admits a DANGEROUS_ACTIONS class variable with a list of dangerous actions
     """
 
+    DEFAULT_FILTERS_CONTEXT = """\
+    Filters context:
+        | Parameter    | Type             | Description                                                     |
+        |:------------:|:----------------:|:---------------------------------------------------------------:|
+        |`config`      | str              | `config` variable available inside the rule                     |
+        |`extras`      | str              | `extras` variable available inside the rule                     |
+        |`logical_id`  | str              | ID used in Cloudformation to refer the resource being analysed  |
+        |`policy_name` | `Optional[str]`  | If available, the policy name                                   |
+        |`action`      | `List[str]`      | List of dangerous actions contained within the policy           |
+    """
+
     REASON = "Resource {} should not include the following dangerous actions: {}"
     RISK_VALUE = RuleRisk.HIGH
     GRANULARITY = RuleGranularity.ACTION
@@ -158,9 +169,9 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
     @abstractmethod
     def DANGEROUS_ACTIONS(cls) -> List[str]:
         # This is designed to be overwritten as a class variable
-        return NotImplementedError
+        raise NotImplementedError
 
-    def resource_invoke(self, resource: Resource, logical_id: str) -> Result:
+    def resource_invoke(self, resource: Resource, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for policy in resource.policy_documents:
             actions = policy.policy_document.get_allowed_actions()
@@ -171,5 +182,12 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
                     self.REASON.format(logical_id, sorted(dangerous_actions)),
                     resource_ids={logical_id},
                     actions=dangerous_actions,
+                    context={
+                        "config": self._config,
+                        "extras": extras,
+                        "logical_id": logical_id,
+                        "policy_name": policy.name,
+                        "actions": sorted(dangerous_actions),
+                    },
                 )
         return result
