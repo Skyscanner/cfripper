@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.22.0] - 2020-12-11
+### Breaking changes
+- Classes inheriting from `ResourceSpecificRule` now must allow an `extra` field in the `resource_invoke` function
+### Improvements
+- Improved context data for `BaseDangerousPolicyActions` and classes inheriting from it
+### Bugfix
+- `CrossAccountCheckingRule` did not check properly for calculated mock fields. 
+
 ## [0.21.1] - 2020-12-9
 ### Improvements
 - Add SNS actions that only allow wildcards
