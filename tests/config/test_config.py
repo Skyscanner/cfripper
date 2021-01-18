@@ -159,3 +159,13 @@ def test_stack_to_action_whitelist_stack_without_resources(mock_rule_to_action_w
         rule_to_action_whitelist=mock_rule_to_action_whitelist,
     )
     assert config.get_whitelisted_actions("SecurityGroupOpenToWorldRule") == []
+
+
+def test_load_rules_config_file_success(test_files_location):
+    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
+    config.load_rules_config_file(path=f"{test_files_location}/config/rules_config_CrossAccountTrustRule.json")
+    rule_config = config.get_rule_config("CrossAccountTrustRule")
+    assert not rule_config.risk_value
+    assert not rule_config.rule_mode
+    assert len(rule_config.filters) == 1

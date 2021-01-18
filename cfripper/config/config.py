@@ -1,3 +1,4 @@
+import json
 import re
 from typing import List
 
@@ -159,3 +160,8 @@ class Config:
                 whitelisted_rules += v
 
         return whitelisted_rules
+
+    def load_rules_config_file(self, path: str):
+        with open(path) as json_file:
+            rules_config = json.load(json_file)
+            self.rules_config = rules_config

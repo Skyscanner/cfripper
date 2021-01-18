@@ -1,7 +1,7 @@
 import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, root_validator
 from pydash.objects import get
 
 from cfripper.model.enums import RuleMode, RuleRisk
@@ -51,13 +51,14 @@ def build_evaluator(tree: Union[str, int, float, bool, List, Dict]) -> Callable:
 
 class Filter(BaseModel):
     reason: str = ""
-    eval: Union[Dict, Callable]
+    eval: Dict
+    _compiled_eval = Callable
     rule_mode: Optional[RuleMode] = None
     risk_value: Optional[RuleRisk] = None
 
-    @validator("eval", pre=True)
-    def set_eval(cls, eval):
-        return build_evaluator(eval)
+    @root_validator
+    def set__eval(cls, values):
+        return {**values, "_compiled_eval": build_evaluator(values["eval"])}
 
     def __call__(self, **kwargs):
-        return self.eval(kwargs)
+        return self._compiled_eval(kwargs)
