@@ -1,4 +1,4 @@
-from pytest import fixture
+from pytest import fixture, mark
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
@@ -44,24 +44,26 @@ def test_valid_security_group_ingress(good_template):
     assert result.valid
 
 
-def test_filter_do_not_report_anything(bad_template):
+@mark.parametrize(
+    "filter_eval_object",
+    [
+        {"and": [{"eq": [{"ref": "config.stack_name"}, "mockstack"]}, {"eq": [{"ref": "ingress_obj.FromPort"}, 46]}]},
+        {
+            "and": [
+                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                {"in": [{"ref": "ingress_ip"}, ["11.0.0.0/8", "::/0"]]},
+            ]
+        },
+    ],
+)
+def test_filter_do_not_report_anything(filter_eval_object, bad_template):
     mock_config = Config(
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
         rules_config={
             "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
-                            "and": [
-                                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
-                                {"eq": [{"ref": "ingress.FromPort"}, 46]},
-                            ]
-                        },
-                    )
-                ],
+                filters=[Filter(rule_mode=RuleMode.WHITELISTED, eval=filter_eval_object)],
             )
         },
     )
