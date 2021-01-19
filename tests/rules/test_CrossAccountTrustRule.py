@@ -142,7 +142,7 @@ def test_filter_works_as_expected_with_rules_config_file(
     template_two_roles_dict, expected_result_two_roles, test_files_location
 ):
     config = Config(rules=["CrossAccountTrustRule"], aws_account_id="123456789", stack_name="mockstack",)
-    config.load_rules_config_file(path=f"{test_files_location}/config/rules_config_CrossAccountTrustRule.json")
+    config.load_rules_config_file(filename=f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py")
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_two_roles_dict, config)

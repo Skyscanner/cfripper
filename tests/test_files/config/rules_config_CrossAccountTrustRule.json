@@ -1,1 +1,0 @@
-{"CrossAccountTrustRule": {"rule_mode": null, "risk_value": null, "filters": [{"reason": "", "eval": {"and": [{"eq": [{"ref": "config.stack_name"}, "mockstack"]}, {"eq": [{"ref": "logical_id"}, "RootRoleOne"]}]}, "rule_mode": "WHITELISTED", "risk_value": null}]}}

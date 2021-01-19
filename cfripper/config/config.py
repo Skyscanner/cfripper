@@ -1,5 +1,8 @@
+import importlib
 import json
+import os
 import re
+import sys
 from typing import List
 
 from .rule_config import RuleConfig
@@ -161,7 +164,21 @@ class Config:
 
         return whitelisted_rules
 
-    def load_rules_config_file(self, path: str):
-        with open(path) as json_file:
-            rules_config = json.load(json_file)
+    def load_rules_config_file(self, filename: str):
+        if not os.path.exists(filename):
+            raise RuntimeError("%r doesn't exist" % filename)
+
+        ext = os.path.splitext(filename)[1]
+
+        try:
+            module_name = '__config__'
+            if ext not in [".py", ".pyc"]:
+                raise Exception("configuration file should have a valid Python extension.")
+            spec = importlib.util.spec_from_file_location(module_name, filename)
+            mod = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = mod
+            spec.loader.exec_module(mod)
+            rules_config = vars(mod)["RULES_CONFIG"]
             self.rules_config = rules_config
+        except Exception:
+            print("Failed to read config file: %s" % filename, file=sys.stderr)
