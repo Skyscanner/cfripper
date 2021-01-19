@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.23.0] - 2021-01-19
+### Breaking changes
+- Rule config files using filters must now use `ingress_obj` and not `ingress`.
+### Additions
+- Rules using IP Address Ranges now export both `ingress_obj` and `ingress_ip` filter fields.
+
 ## [0.22.0] - 2020-12-11
 ### Breaking changes
 - Classes inheriting from `ResourceSpecificRule` now must allow an `extra` field in the `resource_invoke` function
