@@ -1,14 +1,19 @@
 import importlib
+import logging
 import os
 import re
 import sys
 from typing import List
+
+from schema import Schema
 
 from .rule_config import RuleConfig
 from .whitelist import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
 from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
 from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
 from .whitelist import stack_whitelist as default_stack_whitelist
+
+logger = logging.getLogger(__file__)
 
 
 class Config:
@@ -70,6 +75,8 @@ class Config:
         "aws-marketplace",
         "directconnect:",
     ]
+
+    rules_config_schema = Schema({str: RuleConfig})
 
     def __init__(
         self,
@@ -165,19 +172,20 @@ class Config:
 
     def load_rules_config_file(self, filename: str):
         if not os.path.exists(filename):
-            raise RuntimeError("%r doesn't exist" % filename)
-
-        ext = os.path.splitext(filename)[1]
+            raise RuntimeError(f"{filename} doesn't exist")
 
         try:
-            module_name = "__config__"
+            ext = os.path.splitext(filename)[1]
+            module_name = "__rules_config__"
             if ext not in [".py", ".pyc"]:
-                raise Exception("configuration file should have a valid Python extension.")
+                raise RuntimeError("Configuration file should have a valid Python extension.")
             spec = importlib.util.spec_from_file_location(module_name, filename)
-            mod = importlib.util.module_from_spec(spec)
-            sys.modules[module_name] = mod
-            spec.loader.exec_module(mod)
-            rules_config = vars(mod)["RULES_CONFIG"]
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            rules_config = vars(module).get("RULES_CONFIG")
+            self.rules_config_schema.validate(rules_config)
             self.rules_config = rules_config
         except Exception:
-            print("Failed to read config file: %s" % filename, file=sys.stderr)
+            logger.exception(f"Failed to read config file: {filename}")
+            raise

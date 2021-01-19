@@ -1,4 +1,5 @@
 import pytest
+from schema import SchemaUnexpectedTypeError
 
 from cfripper.config.config import Config
 
@@ -169,3 +170,19 @@ def test_load_rules_config_file_success(test_files_location):
     assert not rule_config.risk_value
     assert not rule_config.rule_mode
     assert len(rule_config.filters) == 1
+
+
+def test_load_rules_config_file_no_file(test_files_location):
+    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
+
+    with pytest.raises(RuntimeError):
+        config.load_rules_config_file(filename=f"{test_files_location}/config/non_existing_file.py")
+
+
+def test_load_rules_config_file_invalid_file(test_files_location):
+    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
+
+    with pytest.raises(SchemaUnexpectedTypeError):
+        config.load_rules_config_file(filename=f"{test_files_location}/config/rules_config_invalid.py")
