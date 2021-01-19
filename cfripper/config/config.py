@@ -1,5 +1,4 @@
 import importlib
-import json
 import os
 import re
 import sys
@@ -171,7 +170,7 @@ class Config:
         ext = os.path.splitext(filename)[1]
 
         try:
-            module_name = '__config__'
+            module_name = "__config__"
             if ext not in [".py", ".pyc"]:
                 raise Exception("configuration file should have a valid Python extension.")
             spec = importlib.util.spec_from_file_location(module_name, filename)
