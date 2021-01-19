@@ -1,4 +1,8 @@
-from pytest import fixture
+from ipaddress import IPv4Network, IPv6Network
+from unittest import mock
+
+from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngressProperties
+from pytest import fixture, mark
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
@@ -44,24 +48,26 @@ def test_valid_security_group_ingress(good_template):
     assert result.valid
 
 
-def test_filter_do_not_report_anything(bad_template):
+@mark.parametrize(
+    "filter_eval_object",
+    [
+        {"and": [{"eq": [{"ref": "config.stack_name"}, "mockstack"]}, {"eq": [{"ref": "ingress_obj.FromPort"}, 46]}]},
+        {
+            "and": [
+                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                {"in": [{"ref": "ingress_ip"}, ["11.0.0.0/8", "::/0"]]},
+            ]
+        },
+    ],
+)
+def test_filter_do_not_report_anything(filter_eval_object, bad_template):
     mock_config = Config(
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
         rules_config={
             "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
-                            "and": [
-                                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
-                                {"eq": [{"ref": "ingress.FromPort"}, 46]},
-                            ]
-                        },
-                    )
-                ],
+                filters=[Filter(rule_mode=RuleMode.WHITELISTED, eval=filter_eval_object)],
             )
         },
     )
@@ -70,6 +76,28 @@ def test_filter_do_not_report_anything(bad_template):
     result = processor.process_cf_template(bad_template, mock_config)
 
     assert result.valid
+
+
+@mock.patch("cfripper.rules.base_rules.Rule.add_failure_to_result")
+def test_filter_context_set_correctly(mock_failure_to_result, bad_template):
+    mock_failure_to_result.side_effect = [None, None]
+    mock_config = Config(
+        rules=["EC2SecurityGroupIngressOpenToWorldRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={},
+    )
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    processor.process_cf_template(bad_template, mock_config)
+    assert mock_failure_to_result.mock_calls[0][2]["context"]["ingress_ip"] == "11.0.0.0/8"
+    assert mock_failure_to_result.mock_calls[1][2]["context"]["ingress_ip"] == "::/0"
+    assert mock_failure_to_result.mock_calls[0][2]["context"]["ingress_obj"] == SecurityGroupIngressProperties(
+        CidrIp=IPv4Network("11.0.0.0/8"), FromPort=46, IpProtocol="tcp", ToPort=46, GroupId="sg-12341234",
+    )
+    assert mock_failure_to_result.mock_calls[1][2]["context"]["ingress_obj"] == SecurityGroupIngressProperties(
+        CidrIpv6=IPv6Network("::/0"), FromPort=46, IpProtocol="tcp", ToPort=46, GroupId="sg-12341234",
+    )
 
 
 def test_non_matching_filters_are_reported_normally(bad_template):

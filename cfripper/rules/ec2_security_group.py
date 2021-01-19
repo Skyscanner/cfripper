@@ -40,17 +40,15 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
             non_allowed_open_ports = sorted(set(open_ports) - set(self._config.allowed_world_open_ports))
 
             if non_allowed_open_ports:
-                filters_available_context["ingress"] = ingress
+                ip_range = ingress.CidrIp or ingress.CidrIpv6
+                filters_available_context["ingress_obj"] = ingress
+                filters_available_context["ingress_ip"] = str(ip_range)
                 filters_available_context["open_ports"] = open_ports
                 filters_available_context["non_allowed_open_ports"] = non_allowed_open_ports
 
                 self.add_failure_to_result(
                     result,
-                    self.REASON.format(
-                        self.get_open_ports_wording(non_allowed_open_ports),
-                        (ingress.CidrIp or ingress.CidrIpv6),
-                        logical_id,
-                    ),
+                    self.REASON.format(self.get_open_ports_wording(non_allowed_open_ports), ip_range, logical_id,),
                     resource_ids={logical_id},
                     context=filters_available_context,
                 )
@@ -141,7 +139,8 @@ class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
         |`extras`                 | str                        | `extras` variable available inside the rule                    |
         |`logical_id`             | str                        | ID used in Cloudformation to refer the resource being analysed |
         |`resource`               | `SecurityGroup`            | Resource that is being addressed                               |
-        |`ingress`                | `SecurityGroupIngressProp` | SecurityGroupIngressProp being checked found in the Resource   |
+        |`ingress_ip`             | str                        | IP Address range (IpV4 or IpV6) of the ingress object          |
+        |`ingress_obj`            | `SecurityGroupIngressProp` | SecurityGroupIngressProp being checked found in the Resource   |
         |`open_ports`             | `List[int]`                | List of all open ports defined                                 |
         |`non_allowed_open_ports` | `List[int]`                | List of all non allowed open ports defined                     |
     """
@@ -234,7 +233,8 @@ class EC2SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
         |`extras`                 | str                              | `extras` variable available inside the rule                    |
         |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
         |`resource`               | `SecurityGroupIngress`           | Resource that is being addressed                               |
-        |`ingress`                | `SecurityGroupIngressProperties` | SecurityGroupIngress being checked found in the Resource       |
+        |`ingress_ip`             | str                              | IP Address range (IpV4 or IpV6) of the ingress object          |
+        |`ingress_obj`            | `SecurityGroupIngressProperties` | SecurityGroupIngress being checked found in the Resource       |
         |`open_ports`             | `List[int]`                      | List of all open ports defined                                 |
         |`non_allowed_open_ports` | `List[int]`                      | List of all non allowed open ports defined                     |
     """
