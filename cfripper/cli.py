@@ -10,6 +10,7 @@ from pycfmodel.model.cf_model import CFModel
 
 from cfripper.__version__ import __version__
 from cfripper.config.config import Config
+from cfripper.exceptions import FileEmptyException
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
@@ -34,8 +35,10 @@ def init_cfripper() -> Tuple[Config, RuleProcessor]:
 
 
 def get_cfmodel(template: TextIOWrapper) -> CFModel:
-    template = convert_json_or_yaml_to_dict(template.read())
-    cfmodel = pycfmodel.parse(template)
+    template_file = convert_json_or_yaml_to_dict(template.read())
+    if not template_file:
+        raise FileEmptyException(f"{template.name} is empty and not a valid template.")
+    cfmodel = pycfmodel.parse(template_file)
     return cfmodel
 
 
@@ -148,7 +151,8 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
 
         for template in templates:
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
-
+    except FileEmptyException as file_empty:
+        sys.exit(file_empty)
     except Exception as e:
         logging.exception(
             "Unhandled exception raised, please create an issue wit the error message at "
