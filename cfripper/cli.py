@@ -148,7 +148,7 @@ def process_template(
 @click.option(
     "--rules-config-file",
     type=click.File("r"),
-    help="Loads rules configuration file for filtering (type: [.py, .pyc])",
+    help="Loads rules configuration file (type: [.py, .pyc])",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """Analyse AWS Cloudformation templates passed by parameter."""
