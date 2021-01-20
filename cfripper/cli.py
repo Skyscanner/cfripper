@@ -83,7 +83,7 @@ def output_handling(template_name: str, result: str, output_format: str, output_
 
 def process_template(
     template, resolve: bool, resolve_parameters: Optional[Dict], output_folder: Optional[str], output_format: str
-) -> None:
+) -> bool:
     logging.info(f"Analysing {template.name}...")
 
     cfmodel = get_cfmodel(template)
@@ -97,6 +97,8 @@ def process_template(
     formatted_result = format_result(result, output_format)
 
     output_handling(template.name, formatted_result, output_format, output_folder)
+
+    return result.valid
 
 
 @click.command()
@@ -139,25 +141,34 @@ def process_template(
     show_default=True,
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
-    """Analyse AWS Cloudformation templates passed by parameter."""
+    """
+    Analyse AWS Cloudformation templates passed by parameter.
+    Exit codes:
+      - 0 = all templates valid
+      - 1 = at least one template is not valid
+      - 2 = error in scanning at least one template
+    """
     try:
         setup_logging(logging_level)
 
         if kwargs["resolve"] and resolve_parameters:
             resolve_parameters = convert_json_or_yaml_to_dict(resolve_parameters.read())
 
-        for template in templates:
+        results_of_templates = [
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
+            for template in templates
+        ]
+        sys.exit(1 if False in results_of_templates else 0)
 
     except Exception as e:
         logging.exception(
-            "Unhandled exception raised, please create an issue wit the error message at "
+            "Unhandled exception raised, please create an issue with the error message at "
             "https://github.com/Skyscanner/cfripper/issues"
         )
         try:
             sys.exit(e.errno)
         except AttributeError:
-            sys.exit(1)
+            sys.exit(2)
 
 
 if __name__ == "__main__":
