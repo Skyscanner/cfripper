@@ -154,9 +154,10 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
     """
     Analyse AWS Cloudformation templates passed by parameter.
     Exit codes:
-      - 0 = all templates valid
-      - 1 = at least one template is not valid
-      - 2 = error in scanning at least one template
+      - 0 = all templates valid and scanned successfully
+      - 1 = error / issue in scanning at least one template
+      - 2 = at least one template is not valid according to CFRipper (template scanned successfully)
+      - 3 = unknown / unhandled exception in scanning the templates
     """
     try:
         setup_logging(logging_level)
@@ -168,7 +169,7 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
             process_template(template=template, resolve_parameters=resolve_parameters, **kwargs)
             for template in templates
         ]
-        sys.exit(1 if False in results_of_templates else 0)
+        sys.exit(2 if False in results_of_templates else 0)
 
     except Exception as e:
         logging.exception(
@@ -178,7 +179,7 @@ def cli(templates, logging_level, resolve_parameters, **kwargs):
         try:
             sys.exit(e.errno)
         except AttributeError:
-            sys.exit(2)
+            sys.exit(3)
 
 
 if __name__ == "__main__":
