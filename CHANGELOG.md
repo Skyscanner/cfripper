@@ -1,11 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.23.0] - 2021-01-19
+## [0.23.0] - 2021-01-20
 ### Breaking changes
 - Rule config files using filters must now use `ingress_obj` and not `ingress`.
 ### Additions
 - Rules using IP Address Ranges now export both `ingress_obj` and `ingress_ip` filter fields.
+- Add support to load an external rules configuration file
 
 ## [0.22.0] - 2020-12-11
 ### Breaking changes
