@@ -13,7 +13,6 @@ install_requires = [
     "pycfmodel>=0.8.1",
     "pydash~=4.7.6",
     "PyYAML>=4.2b1",
-    "schema>=0.7.2",
 ]
 
 dev_requires = [

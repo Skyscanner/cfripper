@@ -3,9 +3,9 @@ import logging
 import os
 import re
 import sys
-from typing import List
+from typing import Dict, List
 
-from schema import Schema
+from pydantic import BaseModel
 
 from .rule_config import RuleConfig
 from .whitelist import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
@@ -75,8 +75,6 @@ class Config:
         "aws-marketplace",
         "directconnect:",
     ]
-
-    rules_config_schema = Schema({str: RuleConfig})
 
     def __init__(
         self,
@@ -184,8 +182,13 @@ class Config:
             sys.modules[module_name] = module
             spec.loader.exec_module(module)
             rules_config = vars(module).get("RULES_CONFIG")
-            self.rules_config_schema.validate(rules_config)
+            # Validate rules_config format
+            RulesConfigMapping(__root__=rules_config)
             self.rules_config = rules_config
         except Exception:
             logger.exception(f"Failed to read config file: {filename}")
             raise
+
+
+class RulesConfigMapping(BaseModel):
+    __root__: Dict[str, RuleConfig]

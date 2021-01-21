@@ -1,5 +1,5 @@
 import pytest
-from schema import SchemaUnexpectedTypeError
+from pydantic import ValidationError
 
 from cfripper.config.config import Config
 
@@ -184,5 +184,5 @@ def test_load_rules_config_file_invalid_file(test_files_location):
     mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
 
-    with pytest.raises(SchemaUnexpectedTypeError):
+    with pytest.raises(ValidationError):
         config.load_rules_config_file(filename=f"{test_files_location}/config/rules_config_invalid.py")
