@@ -28,8 +28,10 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
-def init_cfripper() -> Tuple[Config, RuleProcessor]:
+def init_cfripper(rules_config_file: Optional[str]) -> Tuple[Config, RuleProcessor]:
     config = Config(rules=DEFAULT_RULES.keys())
+    if rules_config_file:
+        config.load_rules_config_file(rules_config_file)
     rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config) for rule in config.rules])
     return config, rule_processor
 
@@ -85,7 +87,12 @@ def output_handling(template_name: str, result: str, output_format: str, output_
 
 
 def process_template(
-    template, resolve: bool, resolve_parameters: Optional[Dict], output_folder: Optional[str], output_format: str
+    template,
+    resolve: bool,
+    resolve_parameters: Optional[Dict],
+    output_folder: Optional[str],
+    output_format: str,
+    rules_config_file: Optional[str],
 ) -> None:
     logging.info(f"Analysing {template.name}...")
 
@@ -93,7 +100,7 @@ def process_template(
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
 
-    config, rule_processor = init_cfripper()
+    config, rule_processor = init_cfripper(rules_config_file)
 
     result = analyse_template(cfmodel, rule_processor, config)
 
@@ -140,6 +147,9 @@ def process_template(
     default="INFO",
     help="Logging level",
     show_default=True,
+)
+@click.option(
+    "--rules-config-file", type=click.File("r"), help="Loads rules configuration file (type: [.py, .pyc])",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """Analyse AWS Cloudformation templates passed by parameter."""
