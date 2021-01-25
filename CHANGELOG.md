@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.23.1] - 2021-01-25
+## [0.23.1] - 2021-01-26
 ### Improvements
 - Add more X-Ray permissions that accept wildcard resource only
 - CLI handles case of empty template by returning appropriate exception message

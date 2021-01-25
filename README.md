@@ -56,3 +56,15 @@ Analysing /tmp/root_bypass.json...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Result saved in /tmp/root_bypass.json.cfripper.results.json
 ```
+
+### Exit Codes
+```python
+"""
+Analyse AWS Cloudformation templates passed by parameter.
+Exit codes:
+  - 0 = all templates valid and scanned successfully
+  - 1 = error / issue in scanning at least one template
+  - 2 = at least one template is not valid according to CFRipper (template scanned successfully)
+  - 3 = unknown / unhandled exception in scanning the templates
+"""
+```
