@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.23.1] - 2021-01-26
+### Improvements
+- Add more X-Ray permissions that accept wildcard resource only
+- CLI handles case of empty template by returning appropriate exception message
+- CLI now returns exit code 2 for scenarios where CFRipper finds a template violating any of the rules
+
 ## [0.23.0] - 2021-01-20
 ### Breaking changes
 - Rule config files using filters must now use `ingress_obj` and not `ingress`.
