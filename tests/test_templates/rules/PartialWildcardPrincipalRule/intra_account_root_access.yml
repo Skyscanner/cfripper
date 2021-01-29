@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for bucket policy with principal being the same AWS account as stack.
+Resources:
+  AccLoadBalancerAccessLogBucketPolicy:
+    DependsOn: AccLoadBalancerAccessLogBucket
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: AccLoadBalancerAccessLogBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::123456789012:root"
+            Action: s3:PutObject
+            Resource: !Sub
+              - "arn:aws:s3:::${BucketName}/*"
+              - BucketName: !Ref AccLoadBalancerAccessLogBucket
