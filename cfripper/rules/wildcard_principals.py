@@ -52,7 +52,9 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                     account_id_match = self.IAM_PATTERN.match(principal)
                     account_id = account_id_match.group(1) if account_id_match else None
 
-                    # Check if account ID is allowed.
+                    # Check if account ID is allowed. `self._get_whitelist_from_config()` used here
+                    # to reduce number of false negatives and only allow exemptions for accounts
+                    # which belong to AWS Services (such as ELB and ElastiCache).
                     if account_id in self._get_whitelist_from_config():
                         continue
 
