@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.23.2] - 2021-02-01
+### Bugfix
+- `GenericWildcardPrincipalRule` to ignore account IDs where full or partial wildcard is required in the Principal.
+These accounts should be just some AWS Service Accounts and any user defined exemptions.
+
 ## [0.23.0] - 2021-01-20
 ### Breaking changes
 - Rule config files using filters must now use `ingress_obj` and not `ingress`.
