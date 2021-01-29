@@ -14,6 +14,11 @@ def privilege_escalation_role_cf():
     return get_cfmodel_from("rules/PrivilegeEscalationRule/privilege_escalation_role.yaml").resolve()
 
 
+@fixture()
+def valid_privilege_escalation_on_s3_bucket_policy():
+    return get_cfmodel_from("rules/PrivilegeEscalationRule/privilege_escalation_s3_bucket_policy.yaml").resolve()
+
+
 def test_valid_role_inline_policy(valid_role_inline_policy):
     rule = PrivilegeEscalationRule(None)
     result = rule.invoke(valid_role_inline_policy)
@@ -40,3 +45,9 @@ def test_privilege_escalation_using_role(privilege_escalation_role_cf):
         result.failed_rules[0].reason
         == "PrivilegeInjectorRole has blacklisted IAM actions: ['iam:UpdateAssumeRolePolicy']"
     )
+
+
+def test_valid_privilege_escalation_on_s3_bucket_policy(valid_privilege_escalation_on_s3_bucket_policy):
+    rule = PrivilegeEscalationRule(None)
+    result = rule.invoke(valid_privilege_escalation_on_s3_bucket_policy)
+    assert result.valid
