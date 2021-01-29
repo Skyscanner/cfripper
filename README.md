@@ -14,39 +14,42 @@ Docs and more details available in https://cfripper.readthedocs.io/
 ## CLI Usage
 
 ### Normal execution
+
 ```bash
 $ cfripper /tmp/root.yaml /tmp/root_bypass.json --format txt
 Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
-	- IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
+ - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Valid: True
 ```
 
 ### Using the "resolve" flag
+
 ```bash
 $ cfripper /tmp/root.yaml /tmp/root_bypass.json --format txt --resolve
 Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
-	- IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
+ - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
+ - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Monitored issues found:
-	- PartialWildcardPrincipalRule: rootRole contains an unknown principal: 123456789012
-	- PartialWildcardPrincipalRule: rootRole should not allow wildcard in principals or account-wide principals 
+ - PartialWildcardPrincipalRule: rootRole contains an unknown principal: 123456789012
+ - PartialWildcardPrincipalRule: rootRole should not allow wildcard in principals or account-wide principals
 (principal: 'arn:aws:iam::123456789012:root')
 ```
 
 ### Using json format and output-folder argument
+
 ```bash
 $ cfripper /tmp/root.yaml /tmp/root_bypass.json --format json --resolve --output-folder /tmp
 Analysing /tmp/root.yaml...
@@ -57,7 +60,16 @@ Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID w
 Result saved in /tmp/root_bypass.json.cfripper.results.json
 ```
 
+### Using rules config file
+
+```bash
+$ cfripper tests/test_templates/config/security_group_firehose_ips.json --rules-config-file cfripper/config/rule_configs/example_rules_config_for_cli.py
+Analysing tests/test_templates/config/security_group_firehose_ips.json...
+Valid: True
+```
+
 ### Exit Codes
+
 ```python
 """
 Analyse AWS Cloudformation templates passed by parameter.
