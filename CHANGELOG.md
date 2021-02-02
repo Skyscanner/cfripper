@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.23.2] - 2021-02-01
+### Improvements
+- Update `ResourceSpecificRule` to allow for certain resources to be excluded. In particular, the
+`PrivilegeEscalationRule` will now no longer be invoked for `S3BucketPolicy` resources.
+
 ## [0.23.1] - 2021-01-26
 ### Improvements
 - Add more X-Ray permissions that accept wildcard resource only

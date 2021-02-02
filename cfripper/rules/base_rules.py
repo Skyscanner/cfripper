@@ -101,15 +101,28 @@ class Rule(ABC):
 
 class ResourceSpecificRule(Rule):
     """
-    Base class for rules that only apply to a subset of resource types
+    Base class for rules that only apply to a subset of resource types.
+
+    RESOURCE_TYPES: Resources to invoke the rule for.
+    EXCLUDED_RESOURCE_TYPES: Resources to explicitly not run the rule for.
+
+    Both fields are included to allow for more granular rule definitions. For example,
+    you may want to allow all resources except S3BucketPolicies, in which case you
+    would define these variables as:
+
+    EXCLUDED_RESOURCE_TYPES = (S3BucketPolicy,)
+    RESOURCE_TYPES = (Resource,)
+
+    Where the `S3BucketPolicy` Resource inherits from the base `Resource` class.
     """
 
+    EXCLUDED_RESOURCE_TYPES: Tuple[Type] = tuple()
     RESOURCE_TYPES: Tuple[Type] = tuple()
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, self.RESOURCE_TYPES):
+            if isinstance(resource, self.RESOURCE_TYPES) and not isinstance(resource, self.EXCLUDED_RESOURCE_TYPES):
                 result += self.resource_invoke(resource=resource, logical_id=logical_id, extras=extras)
         return result
 
