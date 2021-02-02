@@ -13,8 +13,8 @@ from cfripper.config.config import Config
 from cfripper.exceptions import FileEmptyException
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
+from cfripper.plugin import get_all_rules
 from cfripper.rule_processor import RuleProcessor
-from cfripper.rules import DEFAULT_RULES
 
 LOGGING_LEVELS = {
     "ERROR": logging.ERROR,
@@ -29,10 +29,11 @@ def setup_logging(level: str) -> None:
 
 
 def init_cfripper(rules_config_file: Optional[str]) -> Tuple[Config, RuleProcessor]:
-    config = Config(rules=DEFAULT_RULES.keys())
+    rules = get_all_rules()
+    config = Config(rules=rules.keys())
     if rules_config_file:
         config.load_rules_config_file(rules_config_file)
-    rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config) for rule in config.rules])
+    rule_processor = RuleProcessor(*[rules.get(rule)(config) for rule in config.rules])
     return config, rule_processor
 
 
