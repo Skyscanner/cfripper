@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Bucket policy with Action:* in place"
+
+Resources:
+  TestBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SomeS3Bucket
+      PolicyDocument:
+        Version: 2008-10-17
+        Statement:
+          - Sid: Stmt123456789012
+            Effect: Allow
+            Principal:
+              {
+                CanonicalUser: 1234abcd5678,
+                AWS: "arn:aws:iam::123456789012:role/s3-bucket-foo-bar-role",
+              }
+            Action: "*"
+            Resource: "arn:aws:s3:::my-bucket-of-potatoes"
+          - Sid: Stmt987654321345
+            Effect: Allow
+            Principal:
+              {
+                CanonicalUser: 1234abcd5678,
+                AWS: "arn:aws:iam::123456789012:role/s3-bucket-foo-bar-role",
+              }
+            Action: "*"
+            Resource: "arn:aws:s3:::my-bucket-of-potatoes/*"

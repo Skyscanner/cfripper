@@ -28,7 +28,7 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
-def init_cfripper(rules_config_file: Optional[str]) -> Tuple[Config, RuleProcessor]:
+def init_cfripper(rules_config_file: Optional[TextIOWrapper]) -> Tuple[Config, RuleProcessor]:
     config = Config(rules=DEFAULT_RULES.keys())
     if rules_config_file:
         config.load_rules_config_file(rules_config_file)
@@ -87,12 +87,12 @@ def output_handling(template_name: str, result: str, output_format: str, output_
 
 
 def process_template(
-    template,
+    template: TextIOWrapper,
     resolve: bool,
     resolve_parameters: Optional[Dict],
     output_folder: Optional[str],
     output_format: str,
-    rules_config_file: Optional[str],
+    rules_config_file: Optional[TextIOWrapper],
 ) -> bool:
     logging.info(f"Analysing {template.name}...")
 
