@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import sys
+from io import TextIOWrapper
 from typing import Dict, List
 
 from pydantic import BaseModel
@@ -168,7 +169,9 @@ class Config:
 
         return whitelisted_rules
 
-    def load_rules_config_file(self, filename: str):
+    def load_rules_config_file(self, rules_config_file: TextIOWrapper):
+        filename = rules_config_file.name
+
         if not os.path.exists(filename):
             raise RuntimeError(f"{filename} doesn't exist")
 
