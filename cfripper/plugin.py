@@ -8,8 +8,6 @@ def get_plugin_manager():
     pm.add_hookspecs(hookspecs)
     pm.load_setuptools_entrypoints("cfripper")
     pm.register(rules)
-
-    print(pm.list_name_plugin())
     return pm
 
 
