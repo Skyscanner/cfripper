@@ -165,7 +165,7 @@ def test_stack_to_action_whitelist_stack_without_resources(mock_rule_to_action_w
 def test_load_rules_config_file_success(test_files_location):
     mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
-    config.load_rules_config_file(filename=f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py")
+    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
     rule_config = config.get_rule_config("CrossAccountTrustRule")
     assert not rule_config.risk_value
     assert not rule_config.rule_mode
@@ -176,8 +176,8 @@ def test_load_rules_config_file_no_file(test_files_location):
     mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
 
-    with pytest.raises(RuntimeError):
-        config.load_rules_config_file(filename=f"{test_files_location}/config/non_existing_file.py")
+    with pytest.raises(FileNotFoundError):
+        config.load_rules_config_file(open(f"{test_files_location}/config/non_existing_file.py"))
 
 
 def test_load_rules_config_file_invalid_file(test_files_location):
@@ -185,4 +185,4 @@ def test_load_rules_config_file_invalid_file(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
 
     with pytest.raises(ValidationError):
-        config.load_rules_config_file(filename=f"{test_files_location}/config/rules_config_invalid.py")
+        config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_invalid.py"))
