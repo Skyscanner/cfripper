@@ -1,0 +1,20 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "RedshiftSecurityGroup": {
+      "Properties": {
+        "GroupDescription": "Enable TCP access on port 5439 from Firehose in eu-west-1",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "52.19.239.192/27",
+            "FromPort": "5439",
+            "IpProtocol": "tcp",
+            "ToPort": "5439",
+            "Description": "Allows access from Firehose in eu-west-1"
+          }
+        ]
+      },
+      "Type": "AWS::EC2::SecurityGroup"
+    }
+  }
+}
