@@ -3,6 +3,7 @@ import pytest
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
 from cfripper.config.rule_config import RuleConfig
+from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_filter
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
@@ -17,6 +18,11 @@ def template_cross_account_role_no_name():
 @pytest.fixture()
 def template_cross_account_role_with_name():
     return get_cfmodel_from("config/cross_account_role_with_name.json").resolve()
+
+
+@pytest.fixture()
+def template_security_group_firehose_ips():
+    return get_cfmodel_from("config/security_group_firehose_ips.json").resolve()
 
 
 @pytest.mark.parametrize(
@@ -301,3 +307,18 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
     assert result.valid
+
+
+@pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
+def test_externally_defined_rule_filter(filters, valid, template_security_group_firehose_ips):
+    mock_config = Config(
+        rules=["EC2SecurityGroupOpenToWorldRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_config={} if not filters else {"EC2SecurityGroupOpenToWorldRule": RuleConfig(filters=filters)},
+    )
+
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_security_group_firehose_ips, mock_config)
+    assert result.valid == valid
