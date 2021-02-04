@@ -132,7 +132,20 @@ class ResourceSpecificRule(Rule):
 
 
 class PrincipalCheckingRule(Rule, ABC):
-    """Abstract class for rules that check principals"""
+    """
+    Abstract class for rules that check principals.
+
+    `valid_principals` is a set of the following Account IDs and Canonical IDs:
+      - `aws_principals` set in the user defined config (default = None)
+      - ELB Log Account IDs from AWS
+      - ElastiCache Backup Canonical IDs
+      - (if defined) The AWS Account in the config which CFRipper is executing with
+
+    When using `valid_principals`, make sure the scope of accounts allowed is not too large.
+    It might be the case that the account the stack is being deployed in is in this set.
+    This could raise false negatives in rules. If a rule should only be exempt for AWS Service
+    IDs, such as ELB and ElastiCache, consider using `_get_whitelist_from_config()` directly.
+    """
 
     _valid_principals = None
 

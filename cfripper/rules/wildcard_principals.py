@@ -27,7 +27,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
-    REASON_NOT_ALLOWED_PRINCIPAL = "{} contains an unknown principal: {}"
     GRANULARITY = RuleGranularity.RESOURCE
 
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
@@ -50,17 +49,21 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         for statement in resource._statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
-                    # Check if account ID is allowed
                     account_id_match = self.IAM_PATTERN.match(principal)
-                    if account_id_match:
-                        self.validate_account_id(result, logical_id, account_id_match.group(1))
+                    account_id = account_id_match.group(1) if account_id_match else None
+
+                    # Check if account ID is allowed. `self._get_whitelist_from_config()` used here
+                    # to reduce number of false negatives and only allow exemptions for accounts
+                    # which belong to AWS Services (such as ELB and ElastiCache).
+                    if account_id in self._get_whitelist_from_config():
+                        continue
 
                     if statement.Condition and statement.Condition.dict():
                         logger.warning(
                             f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: "
                             f"{statement.Condition}"
                         )
-                    elif not self.resource_is_whitelisted(logical_id):
+                    elif not self.resource_is_whitelisted(logical_id=logical_id):
                         self.add_failure_to_result(
                             result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
@@ -69,15 +72,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
 
     def resource_is_whitelisted(self, logical_id):
         return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
-
-    def validate_account_id(self, result: Result, logical_id: str, account_id: str):
-        if self.should_add_failure(logical_id, account_id):
-            self.add_failure_to_result(result, self.REASON_NOT_ALLOWED_PRINCIPAL.format(logical_id, account_id))
-
-    def should_add_failure(self, logical_id: str, account_id: str) -> bool:
-        if account_id in self.valid_principals:
-            return False
-        return not self.resource_is_whitelisted(logical_id)
 
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
