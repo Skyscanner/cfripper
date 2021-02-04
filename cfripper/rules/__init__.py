@@ -1,4 +1,4 @@
-from cfripper import hookimpl
+from cfripper.config.pluggy import hookimpl
 from cfripper.rules.base_rules import BaseDangerousPolicyActions, PrincipalCheckingRule, ResourceSpecificRule
 from cfripper.rules.cloudformation_authentication import CloudFormationAuthenticationRule
 from cfripper.rules.cross_account_trust import (
