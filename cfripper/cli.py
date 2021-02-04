@@ -10,10 +10,10 @@ from pycfmodel.model.cf_model import CFModel
 
 from cfripper.__version__ import __version__
 from cfripper.config.config import Config
+from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.exceptions import FileEmptyException
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
-from cfripper.plugin import get_all_rules
 from cfripper.rule_processor import RuleProcessor
 
 LOGGING_LEVELS = {
