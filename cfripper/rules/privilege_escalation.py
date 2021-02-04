@@ -1,6 +1,7 @@
 __all__ = ["PrivilegeEscalationRule"]
 
 from pycfmodel.model.resources.resource import Resource
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleGranularity
 from cfripper.rules.base_rules import BaseDangerousPolicyActions
@@ -22,6 +23,7 @@ class PrivilegeEscalationRule(BaseDangerousPolicyActions):
 
     GRANULARITY = RuleGranularity.ACTION
     REASON = "{} has blacklisted IAM actions: {}"
+    EXCLUDED_RESOURCE_TYPES = (S3BucketPolicy,)
     RESOURCE_TYPES = (Resource,)
     DANGEROUS_ACTIONS = [
         "iam:AddUserToGroup",
