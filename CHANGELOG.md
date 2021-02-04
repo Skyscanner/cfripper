@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.23.2] - 2021-02-02
+## [0.23.2] - 2021-02-04
 ### Bugfix
 - `GenericWildcardPrincipalRule` to ignore account IDs where full or partial wildcard is required in the Principal.
 These accounts should be AWS Service Accounts defined in the config.
@@ -9,6 +9,7 @@ These accounts should be AWS Service Accounts defined in the config.
 ### Improvements
 - Update `ResourceSpecificRule` to allow for certain resources to be excluded. In particular, the
 `PrivilegeEscalationRule` will now no longer be invoked for `S3BucketPolicy` resources.
+- Add rules config for Kinesis Data Firehose IPs that can be applied
 
 ## [0.23.1] - 2021-01-26
 ### Improvements
