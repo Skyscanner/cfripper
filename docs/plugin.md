@@ -65,7 +65,7 @@ Package                   Version
 boto3                     1.17.1
 botocore                  1.20.1
 cfn-flip                  1.2.3
-cfripper                  0.1.0
+cfripper                  1.0.0
 cfripper-shiny-new-plugin 0.0.0
 click                     7.1.2
 importlib-metadata        3.4.0
