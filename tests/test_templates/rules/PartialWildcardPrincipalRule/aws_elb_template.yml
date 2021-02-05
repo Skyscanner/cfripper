@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for bucket policy with principal being AWS owned account
+Resources:
+  BrokerLoadBalancerAccessLogBucketPolicy:
+    DependsOn: BrokerLoadBalancerAccessLogBucket
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: BrokerLoadBalancerAccessLogBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub
+                - "arn:aws:iam::${ELBAccountId}:root"
+                - ELBAccountId:
+                    !FindInMap [
+                      ElasticLoadBalancing,
+                      !Ref "AWS::Region",
+                      AccountId,
+                    ]
+            Action: s3:PutObject
+            Resource: !Sub
+              - "arn:aws:s3:::${BucketName}/*"
+              - BucketName: !Ref BrokerLoadBalancerAccessLogBucket
+Mappings:
+  ElasticLoadBalancing:
+    us-east-1:
+      AccountId: "127311923021"
+    us-east-2:
+      AccountId: "033677994240"
+    us-west-1:
+      AccountId: "027434742980"
+    us-west-2:
+      AccountId: "797873946194"
+    ca-central-1:
+      AccountId: "985666609251"
+    eu-central-1:
+      AccountId: "054676820928"
+    eu-west-1:
+      AccountId: "156460612806"
+    eu-west-2:
+      AccountId: "652711504416"
+    eu-west-3:
+      AccountId: "009996457667"
+    eu-north-1:
+      AccountId: "897822967062"
+    ap-east-1:
+      AccountId: "754344448648"
+    ap-northeast-1:
+      AccountId: "582318560864"
+    ap-northeast-2:
+      AccountId: "600734575887"
+    ap-northeast-3:
+      AccountId: "383597477331"
+    ap-southeast-1:
+      AccountId: "114774131450"
+    ap-southeast-2:
+      AccountId: "783225319266"
+    ap-south-1:
+      AccountId: "718504428378"
+    me-south-1:
+      AccountId: "076674570225"
+    sa-east-1:
+      AccountId: "507241528517"
