@@ -17,7 +17,8 @@ repo_url: https://github.com/Skyscanner/cfripper
 nav:
   - Home: index.md
   - CLI: cli.md
-  - Rules: rules.md
+  - Default rules: rules.md
+  - Writing your own rules: plugin.md
   - Rule Config: rule_config.md
   - Changelog: changelog.md
   - Contributing: contributing.md
