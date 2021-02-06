@@ -10,9 +10,9 @@ resources and other objects of the model and use the helper functions to perform
 
 ## Making your rules available to CFRipper
 
-CFRipper in order to load dynamic rules uses [pluggy](https://github.com/pytest-dev/pluggy). You have to define a 
-so-called entry point for your distribution so that cfripper finds your plugin module. Entry points are a feature 
-provided by setuptools. CFRipper CLI looks up the `cfripper` entrypoint to discover its plugins and load them.
+CFRipper uses [pluggy](https://github.com/pytest-dev/pluggy) in order to load dynamic rules. You have to define an 
+entrypoint for your distribution so that CFRipper finds your plugin module. Entrypoints are a feature 
+provided by `setuptools`. The CFRipper CLI looks up the `cfripper` entrypoint to discover its plugins and load them.
 
 CFRipper just have one hook that has to be implemented to provide custom rules. `cfripper_get_rules` hook returns a 
 dictionary where key are strings and values are rule inherited classes.
