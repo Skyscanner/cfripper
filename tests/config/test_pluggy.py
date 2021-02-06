@@ -59,7 +59,7 @@ def test_load_setuptools_instantiation(monkeypatch):
     assert plugin_name == plugin
     assert plugin_module._dist == dist
 
-    num_loaded_plugins = plugin_manager.load_setuptools_entrypoints("hello")
+    num_loaded_plugins = plugin_manager.load_setuptools_entrypoints("cfripper")
     assert num_loaded_plugins == 0  # no plugin loaded by this call
 
 
