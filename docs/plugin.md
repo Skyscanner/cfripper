@@ -14,6 +14,8 @@ CFRipper uses [pluggy](https://github.com/pytest-dev/pluggy) in order to load dy
 entrypoint for your distribution so that CFRipper finds your plugin module. Entrypoints are a feature 
 provided by `setuptools`. The CFRipper CLI looks up the `cfripper` entrypoint to discover its plugins and load them.
 
+In case that more than one rule uses the same ID, the last added will be preserved. 
+
 CFRipper just have one hook that has to be implemented to provide custom rules. `cfripper_get_rules` hook returns a 
 dictionary where key are strings and values are rule inherited classes.
 
