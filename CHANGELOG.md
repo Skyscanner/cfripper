@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2021-02-??
+### Improvements
+- Implements `pluggy` https://github.com/pytest-dev/pluggy to enable dynamic rule loading.
+
 ## [0.23.2] - 2021-02-04
 ### Bugfix
 - `GenericWildcardPrincipalRule` to ignore account IDs where full or partial wildcard is required in the Principal.

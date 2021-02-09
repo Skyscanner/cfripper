@@ -1,3 +1,4 @@
+from cfripper.config.pluggy import hookimpl
 from cfripper.rules.base_rules import BaseDangerousPolicyActions, PrincipalCheckingRule, ResourceSpecificRule
 from cfripper.rules.cloudformation_authentication import CloudFormationAuthenticationRule
 from cfripper.rules.cross_account_trust import (
@@ -73,3 +74,8 @@ BASE_CLASSES = {
     rule.__name__: rule
     for rule in (BaseDangerousPolicyActions, CrossAccountCheckingRule, PrincipalCheckingRule, ResourceSpecificRule,)
 }
+
+
+@hookimpl
+def cfripper_get_rules():
+    return DEFAULT_RULES
