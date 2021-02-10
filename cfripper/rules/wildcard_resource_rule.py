@@ -2,25 +2,25 @@ __all__ = [
     "WildcardResourceRule",
 ]
 import logging
-from typing import Dict, Optional, Tuple, Type
+from typing import Dict, Optional
 
-from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.generic_resource import GenericResource
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
 from pycfmodel.model.resources.properties.statement import Statement
+from pycfmodel.model.resources.resource import Resource
 
 from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
 from cfripper.config.regex import REGEX_IS_STAR
 from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
-from cfripper.rules.base_rules import Rule
+from cfripper.rules.base_rules import ResourceSpecificRule
 
 logger = logging.getLogger(__file__)
 
 
-class WildcardResourceRule(Rule):
+class WildcardResourceRule(ResourceSpecificRule):
     """
     Generic rule that detects actions that accept a resource and are using a wildcard.
 
@@ -41,30 +41,27 @@ class WildcardResourceRule(Rule):
         |`action`      | `Optional[str]`  | Action that has a wildcard resource. If None, means all actions |
     """
 
-    EXCLUDED_RESOURCE_TYPES: Tuple[Type] = tuple()
+    RESOURCE_TYPES = (Resource,)
     REASON_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" for "{}"'
     REASON_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource for "{}"'
     REASON_ALL_ACTIONS_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" allowing all actions'
     REASON_ALL_ACTIONS_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource allowing all actions'
 
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+    def resource_invoke(self, resource: Resource, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, self.EXCLUDED_RESOURCE_TYPES):
-                continue
-            for policy in resource.policy_documents:
-                self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
-            if isinstance(resource, IAMRole):
-                self._check_policy_document(
-                    result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras
-                )
-            elif isinstance(resource, KMSKey):
-                self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
-            elif isinstance(resource, GenericResource):
-                if hasattr(resource, "Properties"):
-                    policy_document = resource.Properties.get("PolicyDocument")
-                    if policy_document:
-                        self._check_policy_document(result, logical_id, PolicyDocument(**policy_document), None, extras)
+
+        for policy in resource.policy_documents:
+            self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
+        if isinstance(resource, IAMRole):
+            self._check_policy_document(result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras)
+        elif isinstance(resource, KMSKey):
+            self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
+        elif isinstance(resource, GenericResource):
+            if hasattr(resource, "Properties"):
+                policy_document = resource.Properties.get("PolicyDocument")
+                if policy_document:
+                    self._check_policy_document(result, logical_id, PolicyDocument(**policy_document), None, extras)
+
         return result
 
     def _check_policy_document(
