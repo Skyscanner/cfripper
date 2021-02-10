@@ -1,4 +1,5 @@
 import pytest
+from pycfmodel.model.resources.iam_policy import IAMPolicy
 
 from cfripper.model.result import Failure
 from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
@@ -88,6 +89,19 @@ def test_kms_key_with_wildcard_resource_not_whitelisted_is_not_flagged(kms_key_w
     rule._config.stack_name = "stack3"
     rule.all_cf_actions = set()
     result = rule.invoke(kms_key_with_wildcard_policy)
+
+    assert result.valid
+    assert result.failed_rules == []
+    assert result.failed_monitored_rules == []
+
+
+def test_exclude_certain_resources_on_rule(iam_policy_with_wildcard_resource_and_wildcard_action):
+    # Any subclass of this rule may want to exclude certain resource types. As a test, let's exclude IAM Policies.
+    rule = WildcardResourceRule(None)
+    rule._config.stack_name = "stack3"
+    rule.all_cf_actions = set()
+    rule.EXCLUDED_RESOURCE_TYPES = (IAMPolicy,)
+    result = rule.invoke(iam_policy_with_wildcard_resource_and_wildcard_action)
 
     assert result.valid
     assert result.failed_rules == []

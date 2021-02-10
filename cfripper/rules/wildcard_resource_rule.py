@@ -2,7 +2,7 @@ __all__ = [
     "WildcardResourceRule",
 ]
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple, Type
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.generic_resource import GenericResource
@@ -41,6 +41,7 @@ class WildcardResourceRule(Rule):
         |`action`      | `Optional[str]`  | Action that has a wildcard resource. If None, means all actions |
     """
 
+    EXCLUDED_RESOURCE_TYPES: Tuple[Type] = tuple()
     REASON_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" for "{}"'
     REASON_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource for "{}"'
     REASON_ALL_ACTIONS_WITH_POLICY_NAME = '"{}" is using a wildcard resource in "{}" allowing all actions'
@@ -49,6 +50,8 @@ class WildcardResourceRule(Rule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
+            if isinstance(resource, self.EXCLUDED_RESOURCE_TYPES):
+                continue
             for policy in resource.policy_documents:
                 self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
             if isinstance(resource, IAMRole):
