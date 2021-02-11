@@ -21,6 +21,15 @@ class SQSQueuePolicyNotPrincipalRule(ResourceSpecificRule):
         AWS **strongly** recommends against using `NotPrincipal` in the same policy statement as `"Effect": "Allow"`.
         Doing so grants the permissions specified in the policy statement to all principals except the one named
         in the `NotPrincipal` element. By doing this, you might grant access to anonymous (unauthenticated) users.
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SQSQueuePolicy`                 | Resource that is being addressed                               |
+        |`statement`              | `Statement`                      | Statement being checked found in the Resource                  |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -31,7 +40,18 @@ class SQSQueuePolicyNotPrincipalRule(ResourceSpecificRule):
         result = Result()
         for statement in resource.Properties.PolicyDocument._statement_as_list():
             if statement.NotPrincipal:
-                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={
+                        "config": self._config,
+                        "extras": extras,
+                        "logical_id": logical_id,
+                        "resource": resource,
+                        "statement": statement,
+                    },
+                )
         return result
 
 
@@ -41,6 +61,15 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
 
     Risk:
         This is deemed a potential security risk as anyone would be able to interact with your queue.
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SQSQueuePolicy`                 | Resource that is being addressed                               |
+        |`statement`              | `Statement`                      | Statement being checked found in the Resource                  |
     """
 
     REASON = "SQS Queue policy {} should not be public"
@@ -59,7 +88,18 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
                             f"because there are conditions: {statement.Condition}"
                         )
                     else:
-                        self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                        self.add_failure_to_result(
+                            result,
+                            self.REASON.format(logical_id),
+                            resource_ids={logical_id},
+                            context={
+                                "config": self._config,
+                                "extras": extras,
+                                "logical_id": logical_id,
+                                "resource": resource,
+                                "statement": statement,
+                            },
+                        )
         return result
 
 

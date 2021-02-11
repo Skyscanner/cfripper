@@ -44,7 +44,15 @@ class GenericWildcardPolicyRule(Rule):
                     REGEX_HAS_STAR_OR_STAR_AFTER_COLON
                 ):
                     self.add_failure_to_result(
-                        result, self.REASON.format(self.AWS_RESOURCE.__name__, logical_id), resource_ids={logical_id},
+                        result,
+                        self.REASON.format(self.AWS_RESOURCE.__name__, logical_id),
+                        resource_ids={logical_id},
+                        context={
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                        },
                     )
         return result
 
@@ -53,6 +61,14 @@ class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of S3 Bucket Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `S3BucketPolicy`                 | Resource that is being addressed                               |
     """
 
     AWS_RESOURCE = S3BucketPolicy
@@ -62,6 +78,14 @@ class SNSTopicPolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of SQS Queue Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SNSTopicPolicy`                 | Resource that is being addressed                               |
     """
 
     AWS_RESOURCE = SNSTopicPolicy
@@ -71,6 +95,14 @@ class SQSQueuePolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of SQS Queue Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `SQSQueuePolicy`                 | Resource that is being addressed                               |
     """
 
     AWS_RESOURCE = SQSQueuePolicy

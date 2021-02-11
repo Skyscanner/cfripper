@@ -16,6 +16,16 @@ logger = logging.getLogger(__file__)
 class KMSKeyWildcardPrincipalRule(Rule):
     """
     Check for wildcards in principals in KMS Policies.
+
+    Filters context:
+        | Parameter           | Type                               | Description                                                    |
+        |:-------------------:|:----------------------------------:|:--------------------------------------------------------------:|
+        |`config`             | str                                | `config` variable available inside the rule                    |
+        |`extras`             | str                                | `extras` variable available inside the rule                    |
+        |`logical_id`         | str                                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`           | `KMSKey`                           | Resource that is being addressed                               |
+        |`statement`          | `Statement`                        | Statement being checked found in the Resource                  |
+        |`principal`          | str                                | AWS Principal being checked found in the statement             |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -38,6 +48,16 @@ class KMSKeyWildcardPrincipalRule(Rule):
                                     )
                                 else:
                                     self.add_failure_to_result(
-                                        result, self.REASON.format(logical_id), resource_ids={logical_id}
+                                        result,
+                                        self.REASON.format(logical_id),
+                                        resource_ids={logical_id},
+                                        context={
+                                            "config": self._config,
+                                            "extras": extras,
+                                            "logical_id": logical_id,
+                                            "resource": resource,
+                                            "statement": statement,
+                                            "principal": principal,
+                                        },
                                     )
         return result
