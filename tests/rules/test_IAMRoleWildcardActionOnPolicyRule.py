@@ -78,3 +78,9 @@ def test_valid_iam_role_no_errors(iam_managed_policy_good_template_with_allow_an
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 0
+
+
+def test_rule_supports_filter_config(iam_managed_policy_bad_template, default_allow_all_config):
+    rule = IAMRoleWildcardActionOnPolicyRule(default_allow_all_config)
+    result = rule.invoke(iam_managed_policy_bad_template)
+    assert result.valid

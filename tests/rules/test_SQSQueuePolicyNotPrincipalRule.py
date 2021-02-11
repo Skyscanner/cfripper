@@ -21,3 +21,9 @@ def test_sqs_policy_not_principal(sqs_policy_not_principal):
         result.failed_rules[0].reason
         == "SQS Queue policy QueuePolicyWithNotPrincipal should not allow Allow and NotPrincipal at the same time"
     )
+
+
+def test_rule_supports_filter_config(sqs_policy_not_principal, default_allow_all_config):
+    rule = SQSQueuePolicyNotPrincipalRule(default_allow_all_config)
+    result = rule.invoke(sqs_policy_not_principal)
+    assert result.valid
