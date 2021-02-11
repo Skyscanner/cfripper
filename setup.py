@@ -10,7 +10,7 @@ install_requires = [
     "boto3>=1.4.7,<2",
     "cfn_flip>=1.2.0",
     "click~=7.1.1",
-    "pycfmodel>=0.8.1",
+    "pycfmodel>=0.8.2",
     "pydash~=4.7.6",
     "PyYAML>=4.2b1",
 ]
