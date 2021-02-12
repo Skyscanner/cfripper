@@ -5,7 +5,7 @@ import re
 import sys
 from collections import defaultdict
 from io import TextIOWrapper
-from typing import Dict, List
+from typing import DefaultDict, Dict, List
 
 from pydantic import BaseModel
 
@@ -79,7 +79,7 @@ class Config:
         "directconnect:",
     ]
 
-    rules_filters = defaultdict(lambda: List[Filter])
+    rules_filters: DefaultDict[str, List[Filter]] = defaultdict(list)
 
     def __init__(
         self,
@@ -142,7 +142,8 @@ class Config:
         self.aws_principals = aws_principals if aws_principals is not None else []
 
         self.rules_config = rules_config if rules_config is not None else {}
-        self.rules_filters = self.add_filters(rules_filters) if rules_filters is not None else {}
+        if rules_filters:
+            self.add_filters(rules_filters)
 
     def get_rule_config(self, rule_name: str) -> RuleConfig:
         rule_config = self.rules_config.get(rule_name)
@@ -241,4 +242,4 @@ class RulesConfigMapping(BaseModel):
 
 
 class RulesFiltersMapping(BaseModel):
-    __root__: List[str, Filter]
+    __root__: List[Filter]

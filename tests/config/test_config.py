@@ -166,10 +166,12 @@ def test_load_rules_config_file_success(test_files_location):
     mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
     config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    config.add_filters_from_dir(f"{test_files_location}/filters")
     rule_config = config.get_rule_config("CrossAccountTrustRule")
+    filters = config.get_rule_filters("CrossAccountTrustRule")
     assert not rule_config.risk_value
     assert not rule_config.rule_mode
-    assert len(rule_config.filters) == 1
+    assert len(filters) == 1
 
 
 def test_load_rules_config_file_no_file(test_files_location):
@@ -186,3 +188,11 @@ def test_load_rules_config_file_invalid_file(test_files_location):
 
     with pytest.raises(ValidationError):
         config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_invalid.py"))
+
+
+def test_load_filters_file_invalid_file(test_files_location):
+    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    config = Config(stack_name="test_stack", rules=mock_rules, stack_whitelist={})
+
+    with pytest.raises(ValidationError):
+        config.add_filters_from_dir(f"{test_files_location}/invalid_filters")

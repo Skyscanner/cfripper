@@ -54,7 +54,7 @@ class Filter(BaseModel):
     eval: Union[Dict, Callable]
     rule_mode: Optional[RuleMode] = None
     risk_value: Optional[RuleRisk] = None
-    rules: Set[str]
+    rules: Set[str] = None
 
     @validator("eval", pre=True)
     def set_eval(cls, eval):

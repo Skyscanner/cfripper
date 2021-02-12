@@ -53,4 +53,5 @@ firehose_ips_rules_config_filter = Filter(
     ),
     rule_mode=RuleMode.WHITELISTED,
     eval={"and": [{"exists": {"ref": "ingress_ip"}}, {"in": [{"ref": "ingress_ip"}, FIREHOSE_IPS]}]},
+    rules={"EC2SecurityGroupOpenToWorldRule"},
 )
