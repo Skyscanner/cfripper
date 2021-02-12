@@ -3,11 +3,13 @@ import logging
 import os
 import re
 import sys
+from collections import defaultdict
 from io import TextIOWrapper
 from typing import Dict, List
 
 from pydantic import BaseModel
 
+from .filter import Filter
 from .rule_config import RuleConfig
 from .whitelist import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
 from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
@@ -77,6 +79,8 @@ class Config:
         "directconnect:",
     ]
 
+    rules_filters = defaultdict(lambda: List[Filter])
+
     def __init__(
         self,
         *,
@@ -96,6 +100,7 @@ class Config:
         rule_to_action_whitelist=None,
         rule_to_resource_whitelist=None,
         rules_config=None,
+        rules_filters=None,
     ):
         self.project_name = project_name
         self.service_name = service_name
@@ -135,7 +140,9 @@ class Config:
 
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
+
         self.rules_config = rules_config if rules_config is not None else {}
+        self.rules_filters = self.add_filters(rules_filters) if rules_filters is not None else {}
 
     def get_rule_config(self, rule_name: str) -> RuleConfig:
         rule_config = self.rules_config.get(rule_name)
@@ -144,6 +151,9 @@ class Config:
         elif isinstance(rule_config, RuleConfig):
             return rule_config
         return RuleConfig(**rule_config)
+
+    def get_rule_filters(self, rule_name: str) -> List[Filter]:
+        return self.rules_filters.get(rule_name, [])
 
     def get_whitelisted_actions(self, rule_name: str) -> List[str]:
         allowed_actions = []
@@ -192,6 +202,43 @@ class Config:
             logger.exception(f"Failed to read config file: {filename}")
             raise
 
+    def add_filters_from_dir(self, path: str):
+        if not os.path.exists(path):
+            raise RuntimeError(f"{path} doesn't exist")
+
+        try:
+            module_name = "__rules_config__"
+            _, _, filenames = next(os.walk(path))
+            for filename in filenames:
+                ext = os.path.splitext(filename)[1]
+                if ext not in [".py", ".pyc"]:
+                    continue
+                abs_path = f"{path}/{filename}"
+                spec = importlib.util.spec_from_file_location(module_name, abs_path)
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = module
+                spec.loader.exec_module(module)
+                filters = vars(module).get("FILTERS")
+                if not filters:
+                    logger.warning(f"{filename} has no filters")
+                    continue
+                # Validate filters format
+                RulesFiltersMapping(__root__=filters)
+                self.add_filters(filters=filters)
+                logger.info(f"{filename} loaded")
+        except Exception:
+            logger.exception(f"Failed to read files in path: {path}")
+            raise
+
+    def add_filters(self, filters: List[Filter]):
+        for filter in filters:
+            for rule in filter.rules:
+                self.rules_filters[rule].append(filter)
+
 
 class RulesConfigMapping(BaseModel):
     __root__: Dict[str, RuleConfig]
+
+
+class RulesFiltersMapping(BaseModel):
+    __root__: List[str, Filter]

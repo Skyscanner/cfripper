@@ -1,5 +1,5 @@
 import re
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from pydantic import BaseModel, validator
 from pydash.objects import get
@@ -54,6 +54,7 @@ class Filter(BaseModel):
     eval: Union[Dict, Callable]
     rule_mode: Optional[RuleMode] = None
     risk_value: Optional[RuleRisk] = None
+    rules: Set[str]
 
     @validator("eval", pre=True)
     def set_eval(cls, eval):
