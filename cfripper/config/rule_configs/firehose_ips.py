@@ -2,18 +2,14 @@ from cfripper.config.filter import Filter
 from cfripper.model.enums import RuleMode
 
 """
-To use this RuleConfig, or any RuleConfig, make sure to include it in the `Config` instantiation.
+To use this Filter, or any Filter, make sure to include it in the `Config` instantiation.
 
 ```python
-RULES_CONFIG = {
-    "EC2SecurityGroupOpenToWorldRule": RuleConfig(
-        filters=[firehose_ips_rules_config_filter]
-    )
-}
+FILTERS = [firehose_ips_rules_config_filter]
 
 config = Config(
     ...
-    rules_config=RULES_CONFIG,
+    rules_filters=FILTERS,
 )
 ```
 """

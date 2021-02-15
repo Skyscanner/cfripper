@@ -28,11 +28,15 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
-def init_cfripper(rules_config_file: Optional[TextIOWrapper]) -> Tuple[Config, RuleProcessor]:
+def init_cfripper(
+    rules_config_file: Optional[TextIOWrapper], rules_filters_folder: Optional[str]
+) -> Tuple[Config, RuleProcessor]:
     rules = get_all_rules()
     config = Config(rules=rules.keys())
     if rules_config_file:
         config.load_rules_config_file(rules_config_file)
+    if rules_filters_folder:
+        config.add_filters_from_dir(rules_filters_folder)
     rule_processor = RuleProcessor(*[rules.get(rule)(config) for rule in config.rules])
     return config, rule_processor
 
@@ -94,6 +98,7 @@ def process_template(
     output_folder: Optional[str],
     output_format: str,
     rules_config_file: Optional[TextIOWrapper],
+    rules_filters_folder: Optional[str],
 ) -> bool:
     logging.info(f"Analysing {template.name}...")
 
@@ -101,7 +106,7 @@ def process_template(
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
 
-    config, rule_processor = init_cfripper(rules_config_file)
+    config, rule_processor = init_cfripper(rules_config_file, rules_filters_folder)
 
     result = analyse_template(cfmodel, rule_processor, config)
 
@@ -153,6 +158,11 @@ def process_template(
 )
 @click.option(
     "--rules-config-file", type=click.File("r"), help="Loads rules configuration file (type: [.py, .pyc])",
+)
+@click.option(
+    "--rules-filters-folder",
+    type=click.Path(exists=True, resolve_path=True, readable=True, file_okay=False),
+    help="Loads rules filters files from folder (type: [.py, .pyc])",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """

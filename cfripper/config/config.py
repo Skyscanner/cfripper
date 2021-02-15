@@ -208,19 +208,19 @@ class Config:
 
         try:
             module_name = "__rules_config__"
-            _, _, filenames = next(os.walk(path))
+            dirpath, _, filenames = next(os.walk(path))
+            filenames = sorted(filenames)
             for filename in filenames:
                 ext = os.path.splitext(filename)[1]
                 if ext not in [".py", ".pyc"]:
                     continue
-                abs_path = f"{path}/{filename}"
+                abs_path = os.path.join(dirpath, filename)
                 spec = importlib.util.spec_from_file_location(module_name, abs_path)
                 module = importlib.util.module_from_spec(spec)
                 sys.modules[module_name] = module
                 spec.loader.exec_module(module)
                 filters = vars(module).get("FILTERS")
                 if not filters:
-                    logger.warning(f"{filename} has no filters")
                     continue
                 # Validate filters format
                 RulesFiltersMapping(__root__=filters)
