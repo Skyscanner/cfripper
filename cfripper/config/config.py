@@ -79,8 +79,6 @@ class Config:
         "directconnect:",
     ]
 
-    rules_filters: DefaultDict[str, List[Filter]] = defaultdict(list)
-
     def __init__(
         self,
         *,
@@ -142,6 +140,7 @@ class Config:
         self.aws_principals = aws_principals if aws_principals is not None else []
 
         self.rules_config = rules_config if rules_config is not None else {}
+        self.rules_filters: DefaultDict[str, List[Filter]] = defaultdict(list)
         if rules_filters:
             self.add_filters(rules_filters)
 

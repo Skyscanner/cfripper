@@ -2,7 +2,6 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
@@ -50,13 +49,13 @@ def test_filter_do_not_report_anything(single_security_group_one_cidr_ingress):
         rules=["EC2SecurityGroupMissingEgressRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupMissingEgressRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]},)
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                rules={"EC2SecurityGroupMissingEgressRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
@@ -70,13 +69,13 @@ def test_non_matching_filters_are_reported_normally(single_security_group_one_ci
         rules=["EC2SecurityGroupMissingEgressRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupMissingEgressRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]})
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
+                rules={"EC2SecurityGroupMissingEgressRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)

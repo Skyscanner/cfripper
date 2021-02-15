@@ -2,7 +2,6 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_filter
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor

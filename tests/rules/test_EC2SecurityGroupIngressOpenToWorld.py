@@ -6,7 +6,6 @@ from pytest import fixture, mark
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES, EC2SecurityGroupIngressOpenToWorldRule
@@ -65,11 +64,13 @@ def test_filter_do_not_report_anything(filter_eval_object, bad_template):
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[Filter(rule_mode=RuleMode.WHITELISTED, eval=filter_eval_object)],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval=filter_eval_object,
+                rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
@@ -105,13 +106,13 @@ def test_non_matching_filters_are_reported_normally(bad_template):
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]})
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
+                rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)

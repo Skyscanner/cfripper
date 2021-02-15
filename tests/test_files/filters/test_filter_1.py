@@ -1,5 +1,4 @@
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleMode
 
 FILTERS = [
