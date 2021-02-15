@@ -33,3 +33,9 @@ def test_failures_are_raised(bad_template: CFModel):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "PolicyOnUserRule"
     assert result.failed_rules[0].reason == "IAM policy Policy should not apply directly to users. Should be on group"
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = PolicyOnUserRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid

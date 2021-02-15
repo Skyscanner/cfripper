@@ -21,3 +21,9 @@ def test_sns_topic_not_principal(sns_topic_not_principal):
         result.failed_rules[0].reason
         == "SNS Topic policy mysnspolicyA should not allow Allow and NotPrincipal at the same time"
     )
+
+
+def test_rule_supports_filter_config(sns_topic_not_principal, default_allow_all_config):
+    rule = SNSTopicPolicyNotPrincipalRule(default_allow_all_config)
+    result = rule.invoke(sns_topic_not_principal)
+    assert result.valid

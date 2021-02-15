@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.23.3] - 2021-02-11
+### Additions
+- All rules now support filter contexts!
 ### Improvements
 - Update `WildcardResourceRule` to allow for certain resources to be excluded.
 

@@ -26,3 +26,9 @@ def test_sqs_policy_public(sqs_policy_public):
     assert result.failed_rules[2].reason == "SQS Queue policy QueuePolicyPublic3 should not be public"
     assert result.failed_rules[3].rule == "SQSQueuePolicyPublicRule"
     assert result.failed_rules[3].reason == "SQS Queue policy QueuePolicyPublic4 should not be public"
+
+
+def test_rule_supports_filter_config(sqs_policy_public, default_allow_all_config):
+    rule = SQSQueuePolicyPublicRule(default_allow_all_config)
+    result = rule.invoke(sqs_policy_public)
+    assert result.valid

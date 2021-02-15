@@ -37,6 +37,14 @@ class CloudFormationAuthenticationRule(Rule):
               Ref: "PasswordAuth"
             ...
         ````
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `Resource`                       | Resource that is being addressed                               |
     """
 
     REASON = "Hardcoded credentials in {}"
@@ -46,5 +54,10 @@ class CloudFormationAuthenticationRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if resource.has_hardcoded_credentials():
-                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                )
         return result

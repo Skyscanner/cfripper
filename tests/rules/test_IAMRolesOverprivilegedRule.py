@@ -109,3 +109,9 @@ def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if)
         result.failed_rules[0].reason
         == "Role 'RootRole' contains an insecure permission 'ec2:DeleteVpc' in policy 'ProdCredentialStoreAccessPolicy'"
     )
+
+
+def test_rule_supports_filter_config(invalid_role_managed_policy, default_allow_all_config):
+    rule = IAMRolesOverprivilegedRule(default_allow_all_config)
+    result = rule.invoke(invalid_role_managed_policy)
+    assert result.valid

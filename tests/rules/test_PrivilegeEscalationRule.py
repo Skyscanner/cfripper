@@ -51,3 +51,9 @@ def test_valid_privilege_escalation_on_s3_bucket_policy(valid_privilege_escalati
     rule = PrivilegeEscalationRule(None)
     result = rule.invoke(valid_privilege_escalation_on_s3_bucket_policy)
     assert result.valid
+
+
+def test_rule_supports_filter_config(privilege_escalation_role_cf, default_allow_all_config):
+    rule = PrivilegeEscalationRule(default_allow_all_config)
+    result = rule.invoke(privilege_escalation_role_cf)
+    assert result.valid

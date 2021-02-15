@@ -46,6 +46,14 @@ class HardcodedRDSPasswordRule(Rule):
               MasterUserPassword: !Ref 'MasterUserPassword'
               ...
         ````
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `Resource`                       | Resource that is being addressed                               |
     """
 
     REASON_DEFAULT = "Default RDS {} password parameter (readable in plain-text) for {}."
@@ -60,7 +68,7 @@ class HardcodedRDSPasswordRule(Rule):
         for logical_id, resource in cfmodel.Resources.items():
             # flag insecure RDS Clusters.
             if resource.Type == "AWS::RDS::DBCluster":
-                failure_added = self._failure_added(result, logical_id, resource)
+                failure_added = self._failure_added(result, logical_id, resource, extras)
                 if not failure_added:
                     password_protected_cluster_ids.append(logical_id)
 
@@ -76,20 +84,28 @@ class HardcodedRDSPasswordRule(Rule):
             ):
                 continue
 
-            self._failure_added(result, logical_id, resource)
+            self._failure_added(result, logical_id, resource, extras)
         return result
 
-    def _failure_added(self, result: Result, logical_id: str, resource: GenericResource) -> bool:
+    def _failure_added(
+        self, result: Result, logical_id: str, resource: GenericResource, extras: Optional[Dict] = None
+    ) -> bool:
         master_user_password = resource.Properties.get("MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
         resource_type = resource.Type.replace("AWS::RDS::DB", "")
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
             self.add_failure_to_result(
-                result, self.REASON_DEFAULT.format(resource_type, logical_id), resource_ids={logical_id}
+                result,
+                self.REASON_DEFAULT.format(resource_type, logical_id),
+                resource_ids={logical_id},
+                context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
             )
             return True
         elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
             self.add_failure_to_result(
-                result, self.REASON_MISSING_NOECHO.format(resource_type, logical_id), resource_ids={logical_id},
+                result,
+                self.REASON_MISSING_NOECHO.format(resource_type, logical_id),
+                resource_ids={logical_id},
+                context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
             )
             return True
 

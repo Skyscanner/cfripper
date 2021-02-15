@@ -22,10 +22,6 @@ logger = logging.getLogger(__file__)
 
 
 class GenericWildcardPrincipalRule(PrincipalCheckingRule):
-    """
-    Checks for wildcard principals in resources.
-    """
-
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
     GRANULARITY = RuleGranularity.RESOURCE
 
@@ -36,16 +32,18 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
-                self.check_for_wildcards(result, logical_id, resource.Properties.PolicyDocument)
+                self.check_for_wildcards(result, logical_id, resource.Properties.PolicyDocument, extras)
             elif isinstance(resource, (IAMRole, IAMUser)):
                 if isinstance(resource, IAMRole):
-                    self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument)
+                    self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument, extras)
                 if resource.Properties and resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
-                        self.check_for_wildcards(result, logical_id, policy.PolicyDocument)
+                        self.check_for_wildcards(result, logical_id, policy.PolicyDocument, extras)
         return result
 
-    def check_for_wildcards(self, result: Result, logical_id: str, resource: PolicyDocument):
+    def check_for_wildcards(
+        self, result: Result, logical_id: str, resource: PolicyDocument, extras: Optional[Dict] = None
+    ):
         for statement in resource._statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
@@ -68,6 +66,15 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
                             resource_ids={logical_id},
+                            context={
+                                "config": self._config,
+                                "extras": extras,
+                                "logical_id": logical_id,
+                                "resource": resource,
+                                "statement": statement,
+                                "principal": principal,
+                                "account_id": account_id,
+                            },
                         )
 
     def resource_is_whitelisted(self, logical_id):
@@ -86,6 +93,17 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Fix:
         Where possible, restrict the access to only the required resources.
         For example, instead of `Principal: "*"`, include a list of the roles that need access.
+
+    Filters context:
+        | Parameter   | Type               | Description                                                    |
+        |:-----------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`     | str                | `config` variable available inside the rule                    |
+        |`extras`     | str                | `extras` variable available inside the rule                    |
+        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
+        |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
+        |`principal`  | str                | AWS Principal being checked found in the statement             |
+        |`account_id` | str                | Account ID found in the principal                              |
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
@@ -110,6 +128,17 @@ class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Fix:
         Where possible, restrict the access to only the required resources.
         For example, instead of `Principal: "*"`, include a list of the roles that need access.
+
+    Filters context:
+        | Parameter   | Type               | Description                                                    |
+        |:-----------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`     | str                | `config` variable available inside the rule                    |
+        |`extras`     | str                | `extras` variable available inside the rule                    |
+        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
+        |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
+        |`principal`  | str                | AWS Principal being checked found in the statement             |
+        |`account_id` | str                | Account ID found in the principal                              |
     """
 
     REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"

@@ -89,3 +89,9 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
     )
     assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
     assert result.failed_rules[1].reason == "RDS Instance password parameter missing NoEcho for BadDb33."
+
+
+def test_rule_supports_filter_config(bad_template_clusters_with_bad_instances, default_allow_all_config):
+    rule = HardcodedRDSPasswordRule(default_allow_all_config)
+    result = rule.invoke(bad_template_clusters_with_bad_instances)
+    assert result.valid

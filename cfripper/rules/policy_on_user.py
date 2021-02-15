@@ -60,6 +60,14 @@ class PolicyOnUserRule(Rule):
           }
         }
         ```
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `IAMPolicy`                      | Resource that is being addressed                               |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -69,5 +77,10 @@ class PolicyOnUserRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMPolicy) and resource.Properties.Users:
-                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                )
         return result

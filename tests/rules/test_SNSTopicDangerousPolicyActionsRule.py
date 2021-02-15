@@ -23,3 +23,9 @@ def test_sns_dangerous_policy_actions(sqs_policy):
         result.failed_rules[0].reason == "SNS Topic policy mysnspolicyA should not not include the following dangerous "
         "actions: ['sns:AddPermission', 'sns:RemovePermission', 'sns:TagResource', 'sns:UntagResource']"
     )
+
+
+def test_rule_supports_filter_config(sqs_policy, default_allow_all_config):
+    rule = SNSTopicDangerousPolicyActionsRule(default_allow_all_config)
+    result = rule.invoke(sqs_policy)
+    assert result.valid

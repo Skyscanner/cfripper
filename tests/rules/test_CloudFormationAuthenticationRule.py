@@ -46,3 +46,9 @@ def test_rule_ignores_where_auth_not_mentioned(neutral_template):
     assert result.valid
     assert len(result.failed_rules) == 0
     assert len(result.failed_monitored_rules) == 0
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = CloudFormationAuthenticationRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid
