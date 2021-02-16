@@ -32,3 +32,9 @@ def test_failures_are_raised(bad_template):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "FullWildcardPrincipalRule"
     assert result.failed_rules[0].reason == "PolicyA should not allow wildcards in principals (principal: '*')"
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = FullWildcardPrincipalRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid

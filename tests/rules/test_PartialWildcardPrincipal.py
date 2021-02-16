@@ -74,3 +74,9 @@ def test_aws_elb_allow_template(aws_elb_allow_template):
     rule = PartialWildcardPrincipalRule(None)
     result = rule.invoke(aws_elb_allow_template)
     assert result.valid
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = PartialWildcardPrincipalRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid

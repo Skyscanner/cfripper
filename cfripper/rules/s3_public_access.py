@@ -22,6 +22,15 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
     Fix:
         Unless the bucket is hosting static content and needs to be accessed publicly,
         these bucket policies should be locked down.
+
+    Filters context:
+        | Parameter     | Type               | Description                                                    |
+        |:-------------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`       | str                | `config` variable available inside the rule                    |
+        |`extras`       | str                | `extras` variable available inside the rule                    |
+        |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`     | `S3BucketPolicy`   | Resource that is being addressed                               |
+        |`bucket_name`  | str                | Name of the S3 bucket being analysed                           |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -38,7 +47,18 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                     bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
                 bucket = cfmodel.Resources.get(bucket_name)
                 if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
-                    self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                    self.add_failure_to_result(
+                        result,
+                        self.REASON.format(logical_id),
+                        resource_ids={logical_id},
+                        context={
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                            "bucket_name": bucket_name,
+                        },
+                    )
         return result
 
 
@@ -52,6 +72,14 @@ class S3BucketPublicReadWriteAclRule(Rule):
 
     Fix:
         Remove any configuration that looks like `"AccessControl": "PublicReadWrite"` from your S3 bucket policy.
+
+    Filters context:
+        | Parameter     | Type               | Description                                                    |
+        |:-------------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`       | str                | `config` variable available inside the rule                    |
+        |`extras`       | str                | `extras` variable available inside the rule                    |
+        |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`     | `Resource`         | S3 Bucket that is being addressed                              |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -66,5 +94,10 @@ class S3BucketPublicReadWriteAclRule(Rule):
                 and hasattr(resource, "Properties")
                 and resource.Properties.get("AccessControl") == "PublicReadWrite"
             ):
-                self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                )
         return result

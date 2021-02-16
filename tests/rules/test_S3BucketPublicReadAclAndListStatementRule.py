@@ -23,3 +23,9 @@ def test_s3_read_plus_list(s3_read_plus_list):
         == "S3 Bucket S3BucketPolicy should not have a public read acl and list bucket statement"
     )
     assert result.failed_rules[0].rule_mode == RuleMode.BLOCKING
+
+
+def test_rule_supports_filter_config(s3_read_plus_list, default_allow_all_config):
+    rule = S3BucketPublicReadAclAndListStatementRule(default_allow_all_config)
+    result = rule.invoke(s3_read_plus_list)
+    assert result.valid

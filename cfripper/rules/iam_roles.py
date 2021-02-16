@@ -15,6 +15,16 @@ from cfripper.rules.base_rules import Rule
 class IAMRolesOverprivilegedRule(Rule):
     """
     Rule that checks for wildcards in resources for a set of actions and restricts managed policies.
+
+    Filters context:
+    | Parameter               | Type                             | Description                                                    |
+    |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+    |`config`                 | str                              | `config` variable available inside the rule                    |
+    |`extras`                 | str                              | `extras` variable available inside the rule                    |
+    |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+    |`resource`               | `IAMRole`                        | Resource that is being addressed                               |
+    |`statement`              | `Optional[Statement]`            | Statement being checked found in the Resource                  |
+    |`action`                 | `Optional[str]`                  | Action containing insecure permission with forbidden prefix    |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -23,11 +33,11 @@ class IAMRolesOverprivilegedRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
-                self.check_managed_policies(result, logical_id, resource)
-                self.check_inline_policies(result, logical_id, resource)
+                self.check_managed_policies(result, logical_id, resource, extras)
+                self.check_inline_policies(result, logical_id, resource, extras)
         return result
 
-    def check_managed_policies(self, result: Result, logical_id: str, role: IAMRole):
+    def check_managed_policies(self, result: Result, logical_id: str, role: IAMRole, extras: Optional[Dict] = None):
         """Run the managed policies against a blacklist."""
         if not role.Properties.ManagedPolicyArns:
             return
@@ -38,9 +48,17 @@ class IAMRolesOverprivilegedRule(Rule):
                     result,
                     f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",
                     resource_ids={logical_id},
+                    context={
+                        "config": self._config,
+                        "extras": extras,
+                        "logical_id": logical_id,
+                        "resource": role,
+                        "statement": None,
+                        "action": None,
+                    },
                 )
 
-    def check_inline_policies(self, result: Result, logical_id: str, role: IAMRole):
+    def check_inline_policies(self, result: Result, logical_id: str, role: IAMRole, extras: Optional[Dict] = None):
         """Check conditional and non-conditional inline policies."""
         if not role.Properties.Policies:
             return
@@ -56,6 +74,14 @@ class IAMRolesOverprivilegedRule(Rule):
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
                                     resource_ids={logical_id},
+                                    context={
+                                        "config": self._config,
+                                        "extras": extras,
+                                        "logical_id": logical_id,
+                                        "resource": role,
+                                        "statement": statement,
+                                        "action": action,
+                                    },
                                 )
 
 
@@ -63,6 +89,14 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
     """
     Checks for use of wildcard characters in all IAM Role policies (including `AssumeRolePolicyDocument`)
     and [AWS Managed Policies](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html).
+
+    Filters context:
+        | Parameter           | Type                               | Description                                                    |
+        |:-------------------:|:----------------------------------:|:--------------------------------------------------------------:|
+        |`config`             | str                                | `config` variable available inside the rule                    |
+        |`extras`             | str                                | `extras` variable available inside the rule                    |
+        |`logical_id`         | str                                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`           | `Union[IAMRole, IAMManagedPolicy]` | Resource that is being addressed                               |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -75,7 +109,15 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                 # check AssumeRolePolicyDocument.
                 if resource.Properties.AssumeRolePolicyDocument.allowed_actions_with(REGEX_WILDCARD_POLICY_ACTION):
                     self.add_failure_to_result(
-                        result, self.REASON.format(logical_id, "AssumeRolePolicy"), resource_ids={logical_id},
+                        result,
+                        self.REASON.format(logical_id, "AssumeRolePolicy"),
+                        resource_ids={logical_id},
+                        context={
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                        },
                     )
 
                 # check other policies of the IAM role.
@@ -86,6 +128,12 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                                 result,
                                 self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
                                 resource_ids={logical_id},
+                                context={
+                                    "config": self._config,
+                                    "extras": extras,
+                                    "logical_id": logical_id,
+                                    "resource": resource,
+                                },
                             )
 
             # check AWS::IAM::ManagedPolicy.
@@ -93,6 +141,9 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                 REGEX_WILDCARD_POLICY_ACTION
             ):
                 self.add_failure_to_result(
-                    result, self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"), resource_ids={logical_id},
+                    result,
+                    self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
                 )
         return result

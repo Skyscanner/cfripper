@@ -19,3 +19,9 @@ def test_failures_are_raised(bad_template):
     assert len(result.failed_monitored_rules) == 0
     assert result.failed_rules[0].rule == "S3BucketPublicReadWriteAclRule"
     assert result.failed_rules[0].reason == "S3 Bucket S3Bucket should not have a public read-write acl"
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = S3BucketPublicReadWriteAclRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid

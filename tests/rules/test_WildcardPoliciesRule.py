@@ -75,3 +75,9 @@ def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
     assert len(result.failed_rules) == 1
     assert result.failed_rules[0].rule == "SNSTopicPolicyWildcardActionRule"
     assert result.failed_rules[0].reason == "The SNSTopicPolicy mysnspolicy1 should not allow a `*` action"
+
+
+def test_rule_supports_filter_config(sns_topic_with_wildcards, default_allow_all_config):
+    rule = SNSTopicPolicyWildcardActionRule(default_allow_all_config)
+    result = rule.invoke(sns_topic_with_wildcards)
+    assert result.valid
