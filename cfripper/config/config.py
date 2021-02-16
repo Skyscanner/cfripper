@@ -1,10 +1,11 @@
 import importlib
+import itertools
 import logging
-import os
 import re
 import sys
 from collections import defaultdict
 from io import TextIOWrapper
+from pathlib import Path
 from typing import DefaultDict, Dict, List
 
 from pydantic import BaseModel
@@ -182,11 +183,11 @@ class Config:
     def load_rules_config_file(self, rules_config_file: TextIOWrapper):
         filename = rules_config_file.name
 
-        if not os.path.exists(filename):
+        if not Path(filename).is_file():
             raise RuntimeError(f"{filename} doesn't exist")
 
         try:
-            ext = os.path.splitext(filename)[1]
+            ext = Path(filename).suffix
             module_name = "__rules_config__"
             if ext not in [".py", ".pyc"]:
                 raise RuntimeError("Configuration file should have a valid Python extension.")
@@ -203,19 +204,14 @@ class Config:
             raise
 
     def add_filters_from_dir(self, path: str):
-        if not os.path.exists(path):
+        if not Path(path).is_dir():
             raise RuntimeError(f"{path} doesn't exist")
 
         try:
             module_name = "__rules_config__"
-            dirpath, _, filenames = next(os.walk(path))
-            filenames = sorted(filenames)
+            filenames = sorted(itertools.chain(Path(path).glob("*.py"), Path(path).glob("*.pyc")))
             for filename in filenames:
-                ext = os.path.splitext(filename)[1]
-                if ext not in [".py", ".pyc"]:
-                    continue
-                abs_path = os.path.join(dirpath, filename)
-                spec = importlib.util.spec_from_file_location(module_name, abs_path)
+                spec = importlib.util.spec_from_file_location(module_name, filename.absolute())
                 module = importlib.util.module_from_spec(spec)
                 sys.modules[module_name] = module
                 spec.loader.exec_module(module)

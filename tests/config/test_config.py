@@ -2,6 +2,9 @@ import pytest
 from pydantic import ValidationError
 
 from cfripper.config.config import Config
+from cfripper.rule_processor import RuleProcessor
+from cfripper.rules import DEFAULT_RULES
+from tests.utils import get_cfmodel_from
 
 
 def test_init_with_no_params():
@@ -51,6 +54,11 @@ def mock_rule_to_resource_whitelist():
         },
         "OtherRuleThatUsesResourceWhitelists": {"test_stack": ["resource_3"], "other_stack": ["resource_4"]},
     }
+
+
+@pytest.fixture()
+def template_two_roles_dict():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/iam_root_role_cross_account_two_roles.json").resolve()
 
 
 def test_stack_to_resource_whitelist_normal_behavior(mock_rule_to_resource_whitelist):
@@ -188,6 +196,23 @@ def test_load_rules_config_file_invalid_file(test_files_location):
 
     with pytest.raises(ValidationError):
         config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_invalid.py"))
+
+
+def test_load_filters_work_with_several_rules(template_two_roles_dict, test_files_location):
+    config = Config(
+        rules=["CrossAccountTrustRule", "PartialWildcardPrincipalRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+    )
+    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    config.add_filters_from_dir(f"{test_files_location}/filters")
+    rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_two_roles_dict, config)
+
+    assert not result.valid
+    for rule in result.failed_rules:
+        assert "RootRoleOne" not in rule.resource_ids
 
 
 def test_load_filters_file_invalid_file(test_files_location):

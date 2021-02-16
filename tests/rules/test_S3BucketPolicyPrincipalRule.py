@@ -21,3 +21,9 @@ def test_failures_are_raised(bad_template):
     assert result.failed_rules[0].reason == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234556"
     assert result.failed_rules[1].rule == "S3BucketPolicyPrincipalRule"
     assert result.failed_rules[1].reason == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234557"
+
+
+def test_rule_supports_filter_config(bad_template, default_allow_all_config):
+    rule = S3BucketPolicyPrincipalRule(default_allow_all_config)
+    result = rule.invoke(bad_template)
+    assert result.valid

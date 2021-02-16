@@ -32,6 +32,14 @@ class EBSVolumeHasSSERule(Rule):
             }
         }
         ````
+
+    Filters context:
+        | Parameter               | Type                             | Description                                                    |
+        |:-----------------------:|:--------------------------------:|:--------------------------------------------------------------:|
+        |`config`                 | str                              | `config` variable available inside the rule                    |
+        |`extras`                 | str                              | `extras` variable available inside the rule                    |
+        |`logical_id`             | str                              | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`               | `Resource`                       | EC2 Volume that is being addressed                             |
     """
 
     REASON = "EBS volume {} should have server-side encryption enabled"
@@ -42,5 +50,15 @@ class EBSVolumeHasSSERule(Rule):
         for logical_id, resource in cfmodel.Resources.items():
             if resource.Type == "AWS::EC2::Volume":
                 if resource.Properties.get("Encrypted") != "true":
-                    self.add_failure_to_result(result, self.REASON.format(logical_id), resource_ids={logical_id})
+                    self.add_failure_to_result(
+                        result,
+                        self.REASON.format(logical_id),
+                        resource_ids={logical_id},
+                        context={
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                        },
+                    )
         return result

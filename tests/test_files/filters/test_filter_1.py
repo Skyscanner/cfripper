@@ -10,6 +10,6 @@ FILTERS = [
                 {"eq": [{"ref": "logical_id"}, "RootRoleOne"]},
             ]
         },
-        rules={"CrossAccountTrustRule"},
+        rules={"CrossAccountTrustRule", "PartialWildcardPrincipalRule"},
     )
 ]

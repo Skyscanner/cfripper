@@ -9,6 +9,12 @@ All notable changes to this project will be documented in this file.
 - Implements `pluggy` https://github.com/pytest-dev/pluggy to enable dynamic rule loading.
 - Add support to load filters from external files
 
+## [0.23.3] - 2021-02-11
+### Additions
+- All rules now support filter contexts!
+### Improvements
+- Update `WildcardResourceRule` to allow for certain resources to be excluded.
+
 ## [0.23.2] - 2021-02-04
 ### Bugfix
 - `GenericWildcardPrincipalRule` to ignore account IDs where full or partial wildcard is required in the Principal.

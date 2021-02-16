@@ -22,6 +22,17 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
     Fix:
         All principals connected to S3 Bucket Policies should be known. CFRipper checks that **all** principals meet
         the requirements expected. The list of valid accounts is defined in `valid_principals`, which is set in the config.
+
+    Filters context:
+        | Parameter   | Type               | Description                                                    |
+        |:-----------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`     | str                | `config` variable available inside the rule                    |
+        |`extras`     | str                | `extras` variable available inside the rule                    |
+        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
+        |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
+        |`principal`  | str                | AWS Principal being checked found in the statement             |
+        |`account_id` | str                | Account ID found in the principal                              |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
@@ -46,6 +57,17 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
                         )
                     else:
                         self.add_failure_to_result(
-                            result, self.REASON.format(logical_id, account_id), resource_ids={logical_id},
+                            result,
+                            self.REASON.format(logical_id, account_id),
+                            resource_ids={logical_id},
+                            context={
+                                "config": self._config,
+                                "extras": extras,
+                                "logical_id": logical_id,
+                                "resource": resource,
+                                "statement": statement,
+                                "principal": principal,
+                                "account_id": account_id,
+                            },
                         )
         return result

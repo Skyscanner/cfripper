@@ -42,3 +42,9 @@ def test_sqs_dangerous_policy_actions(sqs_policy):
         == "SQS Queue policy QueuePolicyPublic4 should not not include the following dangerous actions: "
         "['sqs:AddPermission', 'sqs:CreateQueue', 'sqs:DeleteQueue', 'sqs:RemovePermission', 'sqs:TagQueue']"
     )
+
+
+def test_rule_supports_filter_config(sqs_policy, default_allow_all_config):
+    rule = SQSDangerousPolicyActionsRule(default_allow_all_config)
+    result = rule.invoke(sqs_policy)
+    assert result.valid
