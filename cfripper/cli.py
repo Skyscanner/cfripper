@@ -162,7 +162,7 @@ def process_template(
 @click.option(
     "--rules-filters-folder",
     type=click.Path(exists=True, resolve_path=True, readable=True, file_okay=False),
-    help="Loads rules filters files from folder (type: [.py, .pyc])",
+    help="All files in the folder must be of type: [.py, .pyc]",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """
