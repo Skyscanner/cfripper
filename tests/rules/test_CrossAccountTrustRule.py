@@ -2,7 +2,6 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
@@ -114,21 +113,18 @@ def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_r
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "CrossAccountTrustRule": RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
-                            "and": [
-                                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
-                                {"eq": [{"ref": "logical_id"}, "RootRoleOne"]},
-                            ]
-                        },
-                    )
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={
+                    "and": [
+                        {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                        {"eq": [{"ref": "logical_id"}, "RootRoleOne"]},
+                    ]
+                },
+                rules={"CrossAccountTrustRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
@@ -143,6 +139,7 @@ def test_filter_works_as_expected_with_rules_config_file(
 ):
     config = Config(rules=["CrossAccountTrustRule"], aws_account_id="123456789", stack_name="mockstack",)
     config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    config.add_filters_from_dir(f"{test_files_location}/filters")
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_two_roles_dict, config)
@@ -171,13 +168,13 @@ def test_filter_do_not_report_anything(template_two_roles_dict):
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "CrossAccountTrustRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]})
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                rules={"CrossAccountTrustRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
@@ -206,13 +203,13 @@ def test_non_matching_filters_are_reported_normally(template_two_roles_dict, exp
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "CrossAccountTrustRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]})
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
+                rules={"CrossAccountTrustRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)

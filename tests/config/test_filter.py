@@ -2,7 +2,6 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_filter
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
@@ -248,26 +247,23 @@ def test_exist_function_and_property_does_not_exist(template_cross_account_role_
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "CrossAccountTrustRule": RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={
+                    "and": [
+                        {
                             "and": [
-                                {
-                                    "and": [
-                                        {"exists": {"ref": "resource.Properties.RoleName"}},
-                                        {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
-                                    ]
-                                },
-                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                                {"exists": {"ref": "resource.Properties.RoleName"}},
+                                {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
                             ]
                         },
-                    ),
-                ]
-            )
-        },
+                        {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                    ]
+                },
+                rules={"CrossAccountTrustRule"},
+            ),
+        ],
     )
 
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
@@ -281,26 +277,23 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "CrossAccountTrustRule": RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={
+                    "and": [
+                        {
                             "and": [
-                                {
-                                    "and": [
-                                        {"exists": {"ref": "resource.Properties.RoleName"}},
-                                        {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
-                                    ]
-                                },
-                                {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                                {"exists": {"ref": "resource.Properties.RoleName"}},
+                                {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
                             ]
                         },
-                    ),
-                ]
-            )
-        },
+                        {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                    ]
+                },
+                rules={"CrossAccountTrustRule"},
+            ),
+        ],
     )
 
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
@@ -315,7 +308,8 @@ def test_externally_defined_rule_filter(filters, valid, template_security_group_
         rules=["EC2SecurityGroupOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={} if not filters else {"EC2SecurityGroupOpenToWorldRule": RuleConfig(filters=filters)},
+        rules_config={},
+        rules_filters=[] if not filters else filters,
     )
 
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]

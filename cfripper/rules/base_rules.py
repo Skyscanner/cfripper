@@ -6,6 +6,7 @@ from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.resource import Resource
 
 from cfripper.config.config import Config
+from cfripper.config.filter import Filter
 from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure, Result
@@ -24,6 +25,10 @@ class Rule(ABC):
     @property
     def rule_config(self) -> RuleConfig:
         return self._config.get_rule_config(self.__class__.__name__)
+
+    @property
+    def rule_filters(self) -> List[Filter]:
+        return self._config.get_rule_filters(self.__class__.__name__)
 
     @property
     def rule_mode(self) -> RuleMode:
@@ -50,7 +55,7 @@ class Rule(ABC):
     ):
         rule_mode = rule_mode or self.rule_mode
         risk_value = risk_value or self.risk_value
-        for fltr in self.rule_config.filters:
+        for fltr in self.rule_filters:
             try:
                 if fltr(**context):
                     risk_value = fltr.risk_value or risk_value
@@ -82,7 +87,7 @@ class Rule(ABC):
     ):
         rule_mode = rule_mode or self.rule_mode
         risk_value = risk_value or self.risk_value
-        for fltr in self.rule_config.filters:
+        for fltr in self.rule_filters:
             if fltr(**context):
                 risk_value = fltr.risk_value or risk_value
                 rule_mode = fltr.rule_mode or rule_mode

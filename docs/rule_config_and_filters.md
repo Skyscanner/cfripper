@@ -1,10 +1,10 @@
-Allows to overwrite the default behaviour of the rule, such as changing the rule mode and risk value. It accepts a more
-granular configuration using the filter.
-
+## Rule Config
+Allows to overwrite the default behaviour of the rule, such as changing the rule mode and risk value.
+ 
 {{ inline_source('cfripper.config.rule_config.RuleConfig') }}
 
 ## Filters
-
+Accepts a more granular configuration of the rule. 
 When adding a failure or warning it will check if there is a filter that matches the current context and set the new
 risk or mode. Context depends on each rule and is available inside each rule's documentation.
 The object accepts a reason parameter to say why that filter exists.
@@ -16,8 +16,10 @@ The object accepts a reason parameter to say why that filter exists.
 Following the cascade style, takes preference always the last value set following this structure:
 
 ```
-Rule Standard -> Rule Config -> Filter #1 -> ... -> Filter #N
+Rule Standard -> Filter #1 -> ... -> Filter #N
 ```
+
+When loading filters from a folder the order is alphabetical.
 
 ### Implemented filter functions
 
@@ -41,8 +43,7 @@ Rule Standard -> Rule Config -> Filter #1 -> ... -> Filter #N
 
 ### Examples
 
-Disable the rule if the role name is prefixed with `sandbox-` and the principal equals `arn:aws:iam::123456789012:role/test-role`.
-
+Disable the rule `TestRule` if the role name is prefixed with `sandbox-` and the principal equals `arn:aws:iam::123456789012:role/test-role`.
 ```python3
 Filter(
     reason="",
@@ -53,5 +54,8 @@ Filter(
             {"eq": [{"ref": "principal"}, "arn:aws:iam::123456789012:role/test-role"]},
         ]
     },
+    rules={"TestRule"}
 )
 ```
+
+A filter accepts multiple rules.

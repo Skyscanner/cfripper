@@ -5,7 +5,6 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleMode
 from cfripper.rules import DEFAULT_RULES
 
@@ -28,20 +27,16 @@ def default_allow_all_config():
         rules=DEFAULT_RULES,
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            rule: RuleConfig(
-                filters=[
-                    Filter(
-                        rule_mode=RuleMode.WHITELISTED,
-                        eval={
-                            "and": [
-                                {"exists": {"ref": "config.stack_name"}},
-                                {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
-                            ]
-                        },
-                    ),
-                ]
-            )
-            for rule in DEFAULT_RULES
-        },
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={
+                    "and": [
+                        {"exists": {"ref": "config.stack_name"}},
+                        {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
+                    ]
+                },
+                rules=set(DEFAULT_RULES.keys()),
+            ),
+        ],
     )

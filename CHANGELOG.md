@@ -2,8 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.0.0] - 2021-02-??
+### Breaking changes
+- `Filter` include the set of rules in which it is applied.
+- `RuleConfig` only contains `rule_mode` and `risk_value` now.
 ### Improvements
 - Implements `pluggy` https://github.com/pytest-dev/pluggy to enable dynamic rule loading.
+- Add support to load filters from external files
 
 ## [0.23.3] - 2021-02-11
 ### Additions
