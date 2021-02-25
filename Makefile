@@ -1,13 +1,12 @@
 SOURCES = $(shell find . -name "*.py")
 
 clean:
-	rm -f lambda.zip
 	rm -rf package
 
 install:
 	pip install -r requirements.txt
 
-install-dev: install
+install-dev:
 	pip install -e ".[dev]"
 
 install-docs:
@@ -40,17 +39,9 @@ coverage:
 test: lint unit
 
 freeze:
-	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --output-file requirements.txt setup.py
+	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --no-annotate --output-file requirements.txt setup.py
 
 freeze-upgrade:
-	CUSTOM_COMPILE_COMMAND="make freeze-upgrade" pip-compile --no-emit-index-url --upgrade --output-file requirements.txt setup.py
+	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --upgrade --no-annotate --output-file requirements.txt setup.py
 
-lambda.zip: $(SOURCES) Makefile requirements.txt
-	if [ -f lambda.zip ]; then rm lambda.zip; fi
-	if [ -d "./package" ]; then rm -rf package/; fi
-	pip install -t package -r requirements.txt
-	cp -r cfripper package/cfripper
-	cd ./package && zip -rq ../lambda.zip .
-	rm -rf ./package
-
-.PHONY: clean install install-dev format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade
+.PHONY: clean install install-dev install-docs format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade
