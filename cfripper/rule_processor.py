@@ -17,6 +17,9 @@ class RuleProcessor:
     def process_cf_template(self, cfmodel: CFModel, config: Config, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for rule in self.rules:
+            if rule.rule_mode == RuleMode.DISABLED:
+                continue
+
             try:
                 result += rule.invoke(cfmodel, extras)
             except Exception as other_exception:

@@ -63,7 +63,7 @@ class Rule(ABC):
             except Exception:
                 logger.exception(f"Exception raised while evaluating filter for `{fltr.reason}`", extra=context)
 
-        if rule_mode not in (RuleMode.DISABLED, RuleMode.WHITELISTED):
+        if rule_mode != RuleMode.WHITELISTED:
             result.add_failure(
                 rule=type(self).__name__,
                 reason=reason,
@@ -91,7 +91,7 @@ class Rule(ABC):
             if fltr(**context):
                 risk_value = fltr.risk_value or risk_value
                 rule_mode = fltr.rule_mode or rule_mode
-        if rule_mode not in (RuleMode.DISABLED, RuleMode.WHITELISTED):
+        if rule_mode != RuleMode.WHITELISTED:
             warning = Failure(
                 rule=type(self).__name__,
                 reason=reason,
