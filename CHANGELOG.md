@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Breaking changes
 - `Filter` include the set of rules in which it is applied.
 - `RuleConfig` only contains `rule_mode` and `risk_value` now.
-- Removes old whiteling methods in favour of Filters
+- Removes old whitelisting methods in favour of Filters
 ### Improvements
 - Implements `pluggy` https://github.com/pytest-dev/pluggy to enable dynamic rule loading.
 - Add support to load filters from external files
