@@ -1,8 +1,5 @@
 SOURCES = $(shell find . -name "*.py")
 
-clean:
-	rm -rf package
-
 install:
 	pip install -r requirements.txt
 
@@ -44,4 +41,4 @@ freeze:
 freeze-upgrade:
 	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --upgrade --no-annotate --output-file requirements.txt setup.py
 
-.PHONY: clean install install-dev install-docs format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade
+.PHONY: install install-dev install-docs format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade
