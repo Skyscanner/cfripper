@@ -91,23 +91,6 @@ def test_report_format_is_the_one_expected(template_one_role):
     ]
 
 
-def test_resource_whitelisting_works_as_expected(template_two_roles_dict, expected_result_two_roles):
-    mock_rule_to_resource_whitelist = {"CrossAccountTrustRule": {".*": {"RootRoleOne"}}}
-    mock_config = Config(
-        rules=["CrossAccountTrustRule"],
-        aws_account_id="123456789",
-        rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
-        stack_name="mockstack",
-        stack_whitelist={},
-    )
-    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
-    processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_two_roles_dict, mock_config)
-
-    assert not result.valid
-    assert result.failed_rules[0] == expected_result_two_roles[-1]
-
-
 def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_roles):
     config = Config(
         rules=["CrossAccountTrustRule"],
@@ -148,21 +131,6 @@ def test_filter_works_as_expected_with_rules_config_file(
     assert result.failed_rules[0] == expected_result_two_roles[-1]
 
 
-def test_whitelisted_stacks_do_not_report_anything(template_two_roles_dict):
-    mock_stack_whitelist = {"mockstack": ["CrossAccountTrustRule"]}
-    mock_config = Config(
-        rules=["CrossAccountTrustRule"],
-        aws_account_id="123456789",
-        stack_name="mockstack",
-        stack_whitelist=mock_stack_whitelist,
-    )
-    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
-    processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_two_roles_dict, mock_config)
-
-    assert result.valid
-
-
 def test_filter_do_not_report_anything(template_two_roles_dict):
     mock_config = Config(
         rules=["CrossAccountTrustRule"],
@@ -181,41 +149,6 @@ def test_filter_do_not_report_anything(template_two_roles_dict):
     result = processor.process_cf_template(template_two_roles_dict, mock_config)
 
     assert result.valid
-
-
-def test_non_whitelisted_stacks_are_reported_normally(template_two_roles_dict, expected_result_two_roles):
-    mock_stack_whitelist = {"mockstack": ["CrossAccountTrustRule"]}
-    mock_config = Config(
-        rules=["CrossAccountTrustRule"],
-        aws_account_id="123456789",
-        stack_name="anotherstack",
-        stack_whitelist=mock_stack_whitelist,
-    )
-    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
-    processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_two_roles_dict, mock_config)
-    assert not result.valid
-    assert result.failed_rules == expected_result_two_roles
-
-
-def test_non_matching_filters_are_reported_normally(template_two_roles_dict, expected_result_two_roles):
-    mock_config = Config(
-        rules=["CrossAccountTrustRule"],
-        aws_account_id="123456789",
-        stack_name="mockstack",
-        rules_filters=[
-            Filter(
-                rule_mode=RuleMode.WHITELISTED,
-                eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
-                rules={"CrossAccountTrustRule"},
-            )
-        ],
-    )
-    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
-    processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_two_roles_dict, mock_config)
-    assert not result.valid
-    assert result.failed_rules == expected_result_two_roles
 
 
 def test_service_is_not_blocked(template_valid_with_service):

@@ -82,23 +82,3 @@ def test_all_rules_valid():
         if r.RULE_MODE not in ["BLOCKING", "MONITOR", "DEBUG"]:
             assert False
     assert True
-
-
-def test_stack_whitelist_joins_all_whitelisted_matching_stack_names():
-    mock_whitelist = {
-        "stackname": ["S3CrossAccountTrustRule"],
-        "notstackname": ["IAMRolesOverprivilegedRule"],
-        "stackname_withmorethings": ["CrossAccountTrustRule", "ManagedPolicyOnUserRule"],
-    }
-
-    config = Config(
-        project_name="project_mock",
-        service_name="service_mock",
-        stack_name="stackname_withmorethings",
-        stack_whitelist=mock_whitelist,
-        rules=DEFAULT_RULES.keys(),
-    )
-
-    whitelisted_rules = config.get_whitelisted_rules()
-
-    assert set(whitelisted_rules) == {"CrossAccountTrustRule", "ManagedPolicyOnUserRule", "S3CrossAccountTrustRule"}

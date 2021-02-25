@@ -61,7 +61,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: "
                             f"{statement.Condition}"
                         )
-                    elif not self.resource_is_whitelisted(logical_id=logical_id):
+                    else:
                         self.add_failure_to_result(
                             result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
@@ -76,9 +76,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                                 "account_id": account_id,
                             },
                         )
-
-    def resource_is_whitelisted(self, logical_id):
-        return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
 
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
