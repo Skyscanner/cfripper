@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
-import pytest
-
+from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
 
 
