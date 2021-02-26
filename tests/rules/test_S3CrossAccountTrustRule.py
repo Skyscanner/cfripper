@@ -1,8 +1,10 @@
 from pytest import fixture
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules import S3CrossAccountTrustRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @fixture()
@@ -25,12 +27,19 @@ def test_s3_bucket_cross_account(s3_bucket_cross_account):
     result = rule.invoke(s3_bucket_cross_account)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "S3CrossAccountTrustRule"
-    assert (
-        result.failed_rules[0].reason == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with "
-        "arn:aws:iam::987654321:root for an S3 bucket."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::987654321:root for an S3 bucket.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="S3CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicyAccountAccess"},
+            )
+        ],
     )
 
 
@@ -39,12 +48,19 @@ def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
     result = rule.invoke(s3_bucket_cross_account_and_normal)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "S3CrossAccountTrustRule"
-    assert (
-        result.failed_rules[0].reason == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with "
-        "arn:aws:iam::666555444:root for an S3 bucket."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="S3CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicyAccountAccess"},
+            )
+        ],
     )
 
 
@@ -53,12 +69,19 @@ def test_s3_bucket_cross_account_and_normal_with_org_aws_account(s3_bucket_cross
     result = rule.invoke(s3_bucket_cross_account_and_normal)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "S3CrossAccountTrustRule"
-    assert (
-        result.failed_rules[0].reason == "S3BucketPolicyAccountAccess has forbidden cross-account policy allow with "
-        "arn:aws:iam::666555444:root for an S3 bucket."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444:root for an S3 bucket.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="S3CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicyAccountAccess"},
+            )
+        ],
     )
 
 
@@ -67,6 +90,7 @@ def test_s3_bucket_cross_account_for_current_account(s3_bucket_cross_account):
     result = rule.invoke(s3_bucket_cross_account)
 
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_s3_bucket_cross_account_from_aws_service(s3_bucket_cross_account_from_aws_service):
@@ -74,11 +98,12 @@ def test_s3_bucket_cross_account_from_aws_service(s3_bucket_cross_account_from_a
     result = rule.invoke(s3_bucket_cross_account_from_aws_service)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_rule_supports_filter_config(s3_bucket_cross_account_and_normal, default_allow_all_config):
     rule = S3CrossAccountTrustRule(default_allow_all_config)
     result = rule.invoke(s3_bucket_cross_account_and_normal)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

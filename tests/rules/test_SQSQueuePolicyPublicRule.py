@@ -1,8 +1,9 @@
 import pytest
 
-from cfripper.model.enums import RuleRisk
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules import SQSQueuePolicyPublicRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -15,20 +16,52 @@ def test_sqs_policy_public(sqs_policy_public):
     result = rule.invoke(sqs_policy_public)
 
     assert not result.valid
-    assert len(result.failed_rules) == 4
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].risk_value == RuleRisk.HIGH
-    assert result.failed_rules[0].rule == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[0].reason == "SQS Queue policy QueuePolicyPublic1 should not be public"
-    assert result.failed_rules[1].rule == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[1].reason == "SQS Queue policy QueuePolicyPublic2 should not be public"
-    assert result.failed_rules[2].rule == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[2].reason == "SQS Queue policy QueuePolicyPublic3 should not be public"
-    assert result.failed_rules[3].rule == "SQSQueuePolicyPublicRule"
-    assert result.failed_rules[3].reason == "SQS Queue policy QueuePolicyPublic4 should not be public"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="SQS Queue policy QueuePolicyPublic1 should not be public",
+                risk_value=RuleRisk.HIGH,
+                rule="SQSQueuePolicyPublicRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"QueuePolicyPublic1"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="SQS Queue policy QueuePolicyPublic2 should not be public",
+                risk_value=RuleRisk.HIGH,
+                rule="SQSQueuePolicyPublicRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"QueuePolicyPublic2"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="SQS Queue policy QueuePolicyPublic3 should not be public",
+                risk_value=RuleRisk.HIGH,
+                rule="SQSQueuePolicyPublicRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"QueuePolicyPublic3"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="SQS Queue policy QueuePolicyPublic4 should not be public",
+                risk_value=RuleRisk.HIGH,
+                rule="SQSQueuePolicyPublicRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"QueuePolicyPublic4"},
+            ),
+        ],
+    )
 
 
 def test_rule_supports_filter_config(sqs_policy_public, default_allow_all_config):
     rule = SQSQueuePolicyPublicRule(default_allow_all_config)
     result = rule.invoke(sqs_policy_public)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

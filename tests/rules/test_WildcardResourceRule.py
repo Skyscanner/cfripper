@@ -1,6 +1,7 @@
 import pytest
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure
 from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
 from tests.utils import compare_lists_of_failures, get_cfmodel_from
@@ -57,7 +58,7 @@ def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wi
 
     assert result.valid is False
     assert compare_lists_of_failures(
-        result.failed_rules,
+        result.failures,
         [
             Failure(
                 granularity="ACTION",
@@ -91,8 +92,7 @@ def test_kms_key_with_wildcard_resource_not_whitelisted_is_not_flagged(kms_key_w
     result = rule.invoke(kms_key_with_wildcard_policy)
 
     assert result.valid
-    assert result.failed_rules == []
-    assert result.failed_monitored_rules == []
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_exclude_certain_resources_on_rule(iam_policy_with_wildcard_resource_and_wildcard_action):
@@ -104,8 +104,7 @@ def test_exclude_certain_resources_on_rule(iam_policy_with_wildcard_resource_and
     result = rule.invoke(iam_policy_with_wildcard_resource_and_wildcard_action)
 
     assert result.valid
-    assert result.failed_rules == []
-    assert result.failed_monitored_rules == []
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_policy_document_with_wildcard_resource_is_detected(iam_policy_with_wildcard_resource_and_wildcard_action):
@@ -116,7 +115,7 @@ def test_policy_document_with_wildcard_resource_is_detected(iam_policy_with_wild
 
     assert result.valid is False
     assert compare_lists_of_failures(
-        result.failed_rules,
+        result.failures,
         [
             Failure(
                 granularity="ACTION",
@@ -138,16 +137,15 @@ def test_policy_document_with_condition_is_ignored(iam_policy_with_wildcard_reso
     result = rule.invoke(iam_policy_with_wildcard_resource_and_wildcard_action_and_condition)
 
     assert result.valid
-    assert result.failed_monitored_rules == []
     assert compare_lists_of_failures(
-        result.warnings,
+        result.failures,
         [
             Failure(
-                granularity="ACTION",
+                granularity=RuleGranularity.ACTION,
                 reason='"RolePolicy" is using a wildcard resource in "root" allowing all actions',
-                risk_value="MEDIUM",
+                risk_value=RuleRisk.MEDIUM,
                 rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
+                rule_mode=RuleMode.MONITOR,
                 actions={"*"},
                 resource_ids={"RolePolicy"},
             )
@@ -163,7 +161,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
 
     assert result.valid is False
     assert compare_lists_of_failures(
-        result.failed_rules,
+        result.failures,
         [
             Failure(
                 granularity="ACTION",
@@ -680,7 +678,7 @@ def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
 
     assert result.valid is False
     assert compare_lists_of_failures(
-        result.failed_rules,
+        result.failures,
         [
             Failure(
                 granularity="ACTION",
@@ -876,7 +874,7 @@ def test_policy_document_with_wildcard_resource_and_wilcard_action_without_polic
 
     assert result.valid is False
     assert compare_lists_of_failures(
-        result.failed_rules,
+        result.failures,
         [
             Failure(
                 granularity="ACTION",

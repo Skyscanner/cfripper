@@ -2,13 +2,15 @@ from unittest.mock import patch
 
 import pytest
 
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.wildcard_policies import (
     GenericWildcardPolicyRule,
     S3BucketPolicyWildcardActionRule,
     SNSTopicPolicyWildcardActionRule,
     SQSQueuePolicyWildcardActionRule,
 )
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -32,8 +34,7 @@ def test_invoking_general_rule_not_allowed(mock_logger, s3_bucket_with_wildcards
     result = rule.invoke(s3_bucket_with_wildcards)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
     mock_logger.assert_called_once_with("Not running GenericWildcardPolicyRule rule as AWS_RESOURCE is not defined.")
 
@@ -43,10 +44,29 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
     result = rule.invoke(s3_bucket_with_wildcards)
 
     assert not result.valid
-    assert len(result.failed_monitored_rules) == 0
-    assert len(result.failed_rules) == 2
-    assert result.failed_rules[0].rule == "S3BucketPolicyWildcardActionRule"
-    assert result.failed_rules[0].reason == "The S3BucketPolicy S3BucketPolicy should not allow a `*` action"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The S3BucketPolicy S3BucketPolicy should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="S3BucketPolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicy"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The S3BucketPolicy S3BucketPolicy2 should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="S3BucketPolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicy2"},
+            ),
+        ],
+    )
 
 
 def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
@@ -54,16 +74,47 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
     result = rule.invoke(sqs_queue_with_wildcards)
 
     assert not result.valid
-    assert len(result.failed_monitored_rules) == 0
-    assert len(result.failed_rules) == 4
-    assert result.failed_rules[0].rule == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[0].reason == "The SQSQueuePolicy mysqspolicy1 should not allow a `*` action"
-    assert result.failed_rules[1].rule == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[1].reason == "The SQSQueuePolicy mysqspolicy1b should not allow a `*` action"
-    assert result.failed_rules[2].rule == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[2].reason == "The SQSQueuePolicy mysqspolicy1c should not allow a `*` action"
-    assert result.failed_rules[3].rule == "SQSQueuePolicyWildcardActionRule"
-    assert result.failed_rules[3].reason == "The SQSQueuePolicy mysqspolicy1d should not allow a `*` action"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The SQSQueuePolicy mysqspolicy1 should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="SQSQueuePolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"mysqspolicy1"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The SQSQueuePolicy mysqspolicy1b should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="SQSQueuePolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"mysqspolicy1b"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The SQSQueuePolicy mysqspolicy1c should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="SQSQueuePolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"mysqspolicy1c"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The SQSQueuePolicy mysqspolicy1d should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="SQSQueuePolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"mysqspolicy1d"},
+            ),
+        ],
+    )
 
 
 def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
@@ -71,13 +122,25 @@ def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
     result = rule.invoke(sns_topic_with_wildcards)
 
     assert not result.valid
-    assert len(result.failed_monitored_rules) == 0
-    assert len(result.failed_rules) == 1
-    assert result.failed_rules[0].rule == "SNSTopicPolicyWildcardActionRule"
-    assert result.failed_rules[0].reason == "The SNSTopicPolicy mysnspolicy1 should not allow a `*` action"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="The SNSTopicPolicy mysnspolicy1 should not allow a `*` action",
+                risk_value=RuleRisk.MEDIUM,
+                rule="SNSTopicPolicyWildcardActionRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"mysnspolicy1"},
+            )
+        ],
+    )
 
 
 def test_rule_supports_filter_config(sns_topic_with_wildcards, default_allow_all_config):
     rule = SNSTopicPolicyWildcardActionRule(default_allow_all_config)
     result = rule.invoke(sns_topic_with_wildcards)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
