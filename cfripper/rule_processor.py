@@ -4,6 +4,7 @@ from typing import Dict, Optional
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
 
 logger = logging.getLogger(__file__)
