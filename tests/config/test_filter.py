@@ -6,7 +6,7 @@ from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -299,7 +299,9 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 @pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
