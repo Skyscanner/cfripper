@@ -37,7 +37,9 @@ class Result(BaseModel):
     exceptions: List[Exception] = []
     failures: List[Failure] = []
 
-    def get_failures(self, include_rule_modes: Set[RuleMode] = set(), exclude_rule_modes: Set[RuleMode] = set()):
+    def get_failures(
+        self, include_rule_modes: Set[RuleMode] = set(), exclude_rule_modes: Set[RuleMode] = set()
+    ) -> List[Failure]:
         result = []
         for failure in self.failures:
             if (not exclude_rule_modes or failure.rule_mode not in exclude_rule_modes) and (
