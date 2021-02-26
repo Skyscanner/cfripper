@@ -6,6 +6,7 @@ from typing import Dict, List
 from pycfmodel import parse
 from pycfmodel.model.cf_model import CFModel
 
+from cfripper.model.result import Failure
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 
 FIXTURE_ROOT_PATH = Path(__file__).parent / "test_templates"
@@ -33,10 +34,7 @@ def get_cfmodel_from(path: str) -> CFModel:
     return parse(convert_json_or_yaml_to_dict(content))
 
 
-def compare_lists_of_failures(list_1: List, list_2: List) -> bool:
-    def get_reason(item):
-        return item["reason"] if isinstance(item, dict) else item.reason
-
-    return len(list_1) == len(list_2) and sorted(list_1, key=get_reason, reverse=True) == sorted(
-        list_2, key=get_reason, reverse=True
+def compare_lists_of_failures(list_1: List[Failure], list_2: List[Failure]) -> bool:
+    return len(list_1) == len(list_2) and sorted(list_1, key=lambda item: item.reason, reverse=True) == sorted(
+        list_2, key=lambda item: item.reason, reverse=True
     )
