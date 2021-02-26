@@ -2,9 +2,11 @@ import pytest
 from pydantic import ValidationError
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -65,8 +67,65 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
     result = processor.process_cf_template(template_two_roles_dict, config)
 
     assert not result.valid
-    for rule in result.failed_rules:
-        assert "RootRoleOne" not in rule.resource_ids
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                risk_value=RuleRisk.MEDIUM,
+                rule="CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789:user/someuser@bla.com')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789:user/someuser@bla.com')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789:root')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::999999999:role/someuser@bla.com')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789:user/someuser@bla.com')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+            ),
+        ],
+    )
 
 
 def test_load_filters_file_invalid_file(test_files_location):

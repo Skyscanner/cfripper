@@ -1,7 +1,9 @@
 import pytest
 
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -34,13 +36,28 @@ def test_failures_are_raised_for_instances(bad_template_instances):
     result = rule.invoke(bad_template_instances)
 
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "RDS Instance password parameter missing NoEcho for BadDb3."
-    assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
-    assert (
-        result.failed_rules[1].reason == "Default RDS Instance password parameter (readable in plain-text) for BadDb5."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RDS Instance password parameter missing NoEcho for BadDb3.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadDb3"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Default RDS Instance password parameter (readable in plain-text) for BadDb5.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadDb5"},
+            ),
+        ],
     )
 
 
@@ -49,10 +66,20 @@ def test_failures_are_raised_for_clusters(bad_template_clusters):
     result = rule.invoke(bad_template_clusters)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[0].reason == "RDS Cluster password parameter missing NoEcho for BadCluster1."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RDS Cluster password parameter missing NoEcho for BadCluster1.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadCluster1"},
+            )
+        ],
+    )
 
 
 def test_passed_cluster_pw_protected(good_template_clusters_and_instances):
@@ -60,6 +87,7 @@ def test_passed_cluster_pw_protected(good_template_clusters_and_instances):
     result = rule.invoke(good_template_clusters_and_instances)
 
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_failures_are_raised_for_instances_without_protected_clusters(bad_template_good_clusters_with_bad_instances):
@@ -67,11 +95,19 @@ def test_failures_are_raised_for_instances_without_protected_clusters(bad_templa
     result = rule.invoke(bad_template_good_clusters_with_bad_instances)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert (
-        result.failed_rules[0].reason == "Default RDS Instance password parameter (readable in plain-text) for BadDb5."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Default RDS Instance password parameter (readable in plain-text) for BadDb5.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadDb5"},
+            )
+        ],
     )
 
 
@@ -80,18 +116,34 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
     result = rule.invoke(bad_template_clusters_with_bad_instances)
 
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "HardcodedRDSPasswordRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Default RDS Cluster password parameter (readable in plain-text) for BadCluster99."
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Default RDS Cluster password parameter (readable in plain-text) for BadCluster99.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadCluster99"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RDS Instance password parameter missing NoEcho for BadDb33.",
+                risk_value=RuleRisk.MEDIUM,
+                rule="HardcodedRDSPasswordRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"BadDb33"},
+            ),
+        ],
     )
-    assert result.failed_rules[1].rule == "HardcodedRDSPasswordRule"
-    assert result.failed_rules[1].reason == "RDS Instance password parameter missing NoEcho for BadDb33."
 
 
 def test_rule_supports_filter_config(bad_template_clusters_with_bad_instances, default_allow_all_config):
     rule = HardcodedRDSPasswordRule(default_allow_all_config)
     result = rule.invoke(bad_template_clusters_with_bad_instances)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

@@ -9,7 +9,7 @@ from cfripper.config.config import Config
 from cfripper.config.filter import Filter
 from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
-from cfripper.model.result import Failure, Result
+from cfripper.model.result import Result
 
 logger = logging.getLogger(__file__)
 
@@ -73,35 +73,6 @@ class Rule(ABC):
                 actions=actions,
                 granularity=granularity or self.GRANULARITY,
             )
-
-    def add_warning_to_result(
-        self,
-        result: Result,
-        reason: str,
-        granularity: Optional[RuleGranularity] = None,
-        resource_ids: Optional[Set] = None,
-        actions: Optional[Set] = None,
-        risk_value: Optional[RuleRisk] = None,
-        rule_mode: Optional[RuleMode] = None,
-        context: Optional[Dict] = None,
-    ):
-        rule_mode = rule_mode or self.rule_mode
-        risk_value = risk_value or self.risk_value
-        for fltr in self.rule_filters:
-            if fltr(**context):
-                risk_value = fltr.risk_value or risk_value
-                rule_mode = fltr.rule_mode or rule_mode
-        if rule_mode != RuleMode.WHITELISTED:
-            warning = Failure(
-                rule=type(self).__name__,
-                reason=reason,
-                granularity=granularity or self.GRANULARITY,
-                resource_ids=resource_ids,
-                actions=actions,
-                risk_value=risk_value,
-                rule_mode=rule_mode,
-            )
-            result.add_warning(warning)
 
 
 class ResourceSpecificRule(Rule):

@@ -1,11 +1,11 @@
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleMode
-from cfripper.model.result import Failure, Result
+from cfripper.model.result import Result
 
 logger = logging.getLogger(__file__)
 
@@ -35,7 +35,3 @@ class RuleProcessor:
                 )
                 continue
         return result
-
-    @staticmethod
-    def remove_debug_rules(rules: List[Failure]):
-        return [rule for rule in rules if rule.rule_mode != RuleMode.DEBUG]

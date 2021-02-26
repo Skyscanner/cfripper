@@ -9,6 +9,7 @@ from cfripper.rule_processor import RuleProcessor
 from .boto3_client import Boto3Client
 from .config.config import Config
 from .config.logger import setup_logging
+from .model.enums import RuleMode
 from .model.result import Result
 from .rules import DEFAULT_RULES
 
@@ -16,10 +17,10 @@ logger = logging.getLogger(__file__)
 DEFAULT_EXTRA_KEYS_FROM_EVENT = ("account", "event", "project", "region", "stack", "tags")
 
 
-def log_results(project_name, service_name, stack_name, rules, _type, warnings, template_url):
+def log_results(project_name, service_name, stack_name, rules, _type, template_url):
     logger.info(
-        "{}: project - {}, service- {}, stack - {}. {} {} URL: {}".format(
-            _type, project_name, service_name, stack_name, json.dumps(rules), str(warnings), template_url
+        "{}: project - {}, service- {}, stack - {}. {} URL: {}".format(
+            _type, project_name, service_name, stack_name, json.dumps(rules), template_url
         )
     )
 
@@ -31,23 +32,12 @@ def perform_logging(result, config, event):
             config.project_name,
             config.service_name,
             config.stack_name,
-            result.failed_rules,
-            result.warnings,
+            result.failures,
             event.get("stack_template_url", "N/A"),
         )
         logger.info("FAIL: {}; {}; {}".format(config.project_name, config.service_name, config.stack_name))
     else:
         logger.info("PASS: {}; {}; {}".format(config.project_name, config.service_name, config.stack_name))
-    if len(result.failed_monitored_rules) > 0 or len(result.warnings) > 0:
-        log_results(
-            "Failed monitored rules",
-            config.project_name,
-            config.service_name,
-            config.stack_name,
-            result.failed_monitored_rules,
-            result.warnings,
-            event.get("stack_template_url", "N/A"),
-        )
 
 
 def handler(event, context):
@@ -114,14 +104,13 @@ def handler(event, context):
 
     return {
         "valid": result.valid,
-        "reason": ",".join(["{}-{}".format(r.rule, r.reason) for r in result.failed_rules]),
+        "reason": ",".join(
+            [f"{failure.rule}-{failure.reason}" for failure in result.get_failures(exclude_rule_modes={RuleMode.DEBUG})]
+        ),
         "failed_rules": [
-            failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_rules)
+            failure.serializable() for failure in result.get_failures(exclude_rule_modes={RuleMode.DEBUG})
         ],
         "exceptions": [x.args[0] for x in result.exceptions],
-        "warnings": [
-            failure.serializable() for failure in RuleProcessor.remove_debug_rules(rules=result.failed_monitored_rules)
-        ],
     }
 
 

@@ -1,8 +1,10 @@
 import pytest
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.iam_roles import IAMRoleWildcardActionOnPolicyRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -35,11 +37,19 @@ def test_valid_iam_policy_permissions(iam_role_with_wildcard_action):
     result = rule.invoke(iam_role_with_wildcard_action)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
-    assert (
-        result.failed_rules[0].reason == "IAM role WildcardActionRole should not allow a `*` action on its root policy"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="IAM role WildcardActionRole should not allow a `*` action on its root policy",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRoleWildcardActionOnPolicyRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"WildcardActionRole"},
+            )
+        ],
     )
 
 
@@ -48,12 +58,19 @@ def test_valid_iam_policy_trust(iam_role_with_wildcard_action_on_trust):
     result = rule.invoke(iam_role_with_wildcard_action_on_trust)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
-    assert (
-        result.failed_rules[0].reason
-        == "IAM role WildcardActionRole should not allow a `*` action on its AssumeRolePolicy"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="IAM role WildcardActionRole should not allow a `*` action on its AssumeRolePolicy",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRoleWildcardActionOnPolicyRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"WildcardActionRole"},
+            )
+        ],
     )
 
 
@@ -62,12 +79,19 @@ def test_invalid_managed_policy_template(iam_managed_policy_bad_template):
     result = rule.invoke(iam_managed_policy_bad_template)
 
     assert not result.valid
-    assert len(result.failed_monitored_rules) == 0
-    assert len(result.failed_rules) == 1
-    assert result.failed_rules[0].rule == "IAMRoleWildcardActionOnPolicyRule"
-    assert (
-        result.failed_rules[0].reason
-        == "IAM role CreateTestDBPolicy3 should not allow a `*` action on its AWS::IAM::ManagedPolicy"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="IAM role CreateTestDBPolicy3 should not allow a `*` action on its AWS::IAM::ManagedPolicy",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRoleWildcardActionOnPolicyRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"CreateTestDBPolicy3"},
+            )
+        ],
     )
 
 
@@ -76,11 +100,12 @@ def test_valid_iam_role_no_errors(iam_managed_policy_good_template_with_allow_an
     result = rule.invoke(iam_managed_policy_good_template_with_allow_and_deny)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_rule_supports_filter_config(iam_managed_policy_bad_template, default_allow_all_config):
     rule = IAMRoleWildcardActionOnPolicyRule(default_allow_all_config)
     result = rule.invoke(iam_managed_policy_bad_template)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

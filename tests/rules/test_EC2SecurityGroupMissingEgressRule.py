@@ -2,11 +2,12 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES
 from cfripper.rules.ec2_security_group import EC2SecurityGroupMissingEgressRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -26,12 +27,19 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
     result = rule.invoke(single_security_group_one_cidr_ingress)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupMissingEgressRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"sg"},
+            )
+        ],
     )
 
 
@@ -40,8 +48,7 @@ def test_security_group_with_egress(security_group_with_egress):
     result = rule.invoke(security_group_with_egress)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_filter_do_not_report_anything(single_security_group_one_cidr_ingress):
@@ -62,6 +69,7 @@ def test_filter_do_not_report_anything(single_security_group_one_cidr_ingress):
     result = processor.process_cf_template(single_security_group_one_cidr_ingress, mock_config)
 
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_non_matching_filters_are_reported_normally(single_security_group_one_cidr_ingress):
@@ -82,10 +90,17 @@ def test_non_matching_filters_are_reported_normally(single_security_group_one_ci
     result = processor.process_cf_template(single_security_group_one_cidr_ingress, mock_config)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "EC2SecurityGroupMissingEgressRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Missing egress rule in sg means all traffic is allowed outbound. Make this explicit if it is desired configuration",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupMissingEgressRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"sg"},
+            )
+        ],
     )

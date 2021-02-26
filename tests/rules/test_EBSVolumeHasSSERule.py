@@ -1,8 +1,10 @@
 import pytest
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -20,8 +22,7 @@ def test_no_failures_are_raised(good_template):
     result = rule.invoke(good_template)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_failures_are_raised(bad_template):
@@ -29,13 +30,25 @@ def test_failures_are_raised(bad_template):
     result = rule.invoke(bad_template)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "EBSVolumeHasSSERule"
-    assert result.failed_rules[0].reason == "EBS volume TestVolume should have server-side encryption enabled"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="EBS volume TestVolume should have server-side encryption enabled",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EBSVolumeHasSSERule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"TestVolume"},
+            )
+        ],
+    )
 
 
 def test_rule_supports_filter_config(bad_template, default_allow_all_config):
     rule = EBSVolumeHasSSERule(default_allow_all_config)
     result = rule.invoke(bad_template)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

@@ -7,7 +7,7 @@ from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES, KMSKeyCrossAccountTrustRule
 from cfripper.rules.cross_account_trust import CrossAccountTrustRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -52,7 +52,7 @@ def expected_result_two_roles():
             rule_mode=RuleMode.BLOCKING,
             risk_value=RuleRisk.MEDIUM,
             resource_ids={"RootRoleOne"},
-            actions=set(),
+            actions=None,
             granularity=RuleGranularity.RESOURCE,
         ),
         Failure(
@@ -64,7 +64,7 @@ def expected_result_two_roles():
             rule_mode=RuleMode.BLOCKING,
             risk_value=RuleRisk.MEDIUM,
             resource_ids={"RootRoleTwo"},
-            actions=set(),
+            actions=None,
             granularity=RuleGranularity.RESOURCE,
         ),
     ]
@@ -75,20 +75,23 @@ def test_report_format_is_the_one_expected(template_one_role):
     result = rule.invoke(template_one_role)
 
     assert not result.valid
-    assert result.failed_rules == [
-        Failure(
-            rule="CrossAccountTrustRule",
-            reason=(
-                "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/"
-                "someuser@bla.com"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                rule="CrossAccountTrustRule",
+                reason=(
+                    "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/"
+                    "someuser@bla.com"
+                ),
+                rule_mode=RuleMode.BLOCKING,
+                risk_value=RuleRisk.MEDIUM,
+                resource_ids={"RootRole"},
+                actions=None,
+                granularity=RuleGranularity.RESOURCE,
             ),
-            rule_mode=RuleMode.BLOCKING,
-            risk_value=RuleRisk.MEDIUM,
-            resource_ids={"RootRole"},
-            actions=set(),
-            granularity=RuleGranularity.RESOURCE,
-        ),
-    ]
+        ],
+    )
 
 
 def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_roles):
@@ -114,7 +117,7 @@ def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_r
     result = processor.process_cf_template(template_two_roles_dict, config)
 
     assert not result.valid
-    assert result.failed_rules[0] == expected_result_two_roles[-1]
+    assert compare_lists_of_failures(result.failures, expected_result_two_roles[-1:])
 
 
 def test_filter_works_as_expected_with_rules_config_file(
@@ -128,7 +131,7 @@ def test_filter_works_as_expected_with_rules_config_file(
     result = processor.process_cf_template(template_two_roles_dict, config)
 
     assert not result.valid
-    assert result.failed_rules[0] == expected_result_two_roles[-1]
+    assert compare_lists_of_failures(result.failures, expected_result_two_roles[-1:])
 
 
 def test_filter_do_not_report_anything(template_two_roles_dict):
@@ -149,6 +152,7 @@ def test_filter_do_not_report_anything(template_two_roles_dict):
     result = processor.process_cf_template(template_two_roles_dict, mock_config)
 
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_service_is_not_blocked(template_valid_with_service):
@@ -156,8 +160,7 @@ def test_service_is_not_blocked(template_valid_with_service):
     result = rule.invoke(template_valid_with_service)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_canonical_id_is_not_blocked(template_valid_with_canonical_id):
@@ -165,8 +168,7 @@ def test_canonical_id_is_not_blocked(template_valid_with_canonical_id):
     result = rule.invoke(template_valid_with_canonical_id)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_org_accounts_cause_cross_account_issues(template_one_role):
@@ -174,11 +176,19 @@ def test_org_accounts_cause_cross_account_issues(template_one_role):
     result = rule.invoke(template_one_role)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    failed_rule = result.failed_rules[0]
-    assert failed_rule.reason == (
-        "RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRole has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                risk_value=RuleRisk.MEDIUM,
+                rule="CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+            )
+        ],
     )
 
 
@@ -198,11 +208,19 @@ def test_kms_cross_account_failure(principal):
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
     result = rule.invoke(model)
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    failed_rule = result.failed_rules[0]
-    assert failed_rule.reason == (
-        f"KMSKey has forbidden cross-account policy allow with {principal} for an KMS Key Policy"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason=f"KMSKey has forbidden cross-account policy allow with {principal} for an KMS Key Policy",
+                risk_value=RuleRisk.MEDIUM,
+                rule="KMSKeyCrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"KMSKey"},
+            )
+        ],
     )
 
 
@@ -213,7 +231,9 @@ def test_kms_cross_account_success(principal):
     rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
     result = rule.invoke(model)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_sts_valid(template_valid_with_sts):
@@ -221,8 +241,7 @@ def test_sts_valid(template_valid_with_sts):
     result = rule.invoke(template_valid_with_sts)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_sts_failure(template_invalid_with_sts):
@@ -230,9 +249,17 @@ def test_sts_failure(template_invalid_with_sts):
     result = rule.invoke(template_invalid_with_sts)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    failed_rule = result.failed_rules[0]
-    assert failed_rule.reason == (
-        "KmsMasterKey has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an KMS Key Policy"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="KmsMasterKey has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an KMS Key Policy",
+                risk_value=RuleRisk.MEDIUM,
+                rule="KMSKeyCrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"KmsMasterKey"},
+            )
+        ],
     )
