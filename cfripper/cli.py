@@ -12,6 +12,7 @@ from cfripper.__version__ import __version__
 from cfripper.config.config import Config
 from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.exceptions import FileEmptyException
+from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
@@ -59,12 +60,17 @@ def format_result_json(result: Result) -> str:
 
 def format_result_txt(result: Result) -> str:
     result_lines = [f"Valid: {result.valid}"]
-    if result.failed_rules:
+
+    blocking_rules = result.get_failures(include_rule_modes={RuleMode.BLOCKING})
+    if blocking_rules:
         result_lines.append("Issues found:")
-        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
-    if result.failed_monitored_rules:
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in blocking_rules]
+
+    monitoring_rules = result.get_failures(include_rule_modes={RuleMode.MONITOR})
+    if monitoring_rules:
         result_lines.append("Monitored issues found:")
-        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in monitoring_rules]
+
     return "\n".join(result_lines)
 
 
