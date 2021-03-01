@@ -58,7 +58,7 @@ def test_filter_do_not_report_anything(single_security_group_one_cidr_ingress):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]},
                 rules={"EC2SecurityGroupMissingEgressRule"},
             )
@@ -79,7 +79,7 @@ def test_non_matching_filters_are_reported_normally(single_security_group_one_ci
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
                 rules={"EC2SecurityGroupMissingEgressRule"},
             )

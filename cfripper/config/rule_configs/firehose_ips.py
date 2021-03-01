@@ -47,7 +47,7 @@ firehose_ips_rules_config_filter = Filter(
         "Exclude Kinesis Data Firehose IPs to allow access from Amazon Redshift Clusters. "
         "See https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html"
     ),
-    rule_mode=RuleMode.WHITELISTED,
+    rule_mode=RuleMode.ALLOWED,
     eval={"and": [{"exists": {"ref": "ingress_ip"}}, {"in": [{"ref": "ingress_ip"}, FIREHOSE_IPS]}]},
     rules={"EC2SecurityGroupOpenToWorldRule"},
 )

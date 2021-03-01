@@ -80,9 +80,7 @@ def test_filter_do_not_report_anything(filter_eval_object, bad_template):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
-                eval=filter_eval_object,
-                rules={"EC2SecurityGroupIngressOpenToWorldRule"},
+                rule_mode=RuleMode.ALLOWED, eval=filter_eval_object, rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
         ],
     )
@@ -123,7 +121,7 @@ def test_non_matching_filters_are_reported_normally(bad_template):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
                 rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )

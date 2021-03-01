@@ -249,7 +249,7 @@ def test_exist_function_and_property_does_not_exist(template_cross_account_role_
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {
@@ -279,7 +279,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {
