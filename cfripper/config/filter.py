@@ -76,7 +76,7 @@ def build_evaluator(tree: Union[str, int, float, bool, List, Dict], debug: bool 
 
 
 class Filter(BaseModel):
-    debug: Optional[bool] = False
+    debug: bool = False
     reason: str = ""
     eval: Union[Dict, Callable]
     rule_mode: Optional[RuleMode] = None
