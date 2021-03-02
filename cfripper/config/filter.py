@@ -88,4 +88,9 @@ class Filter(BaseModel):
         return build_evaluator(eval, values["debug"])
 
     def __call__(self, **kwargs):
-        return self.eval(kwargs)
+        if self.debug:
+            logger.debug(f"Filter: {self.reason}")
+        result = self.eval(kwargs)
+        if self.debug:
+            logger.debug(f"Filter result: {result}")
+        return result

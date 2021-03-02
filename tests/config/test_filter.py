@@ -316,6 +316,7 @@ def test_debug_filter(template_cross_account_role_with_name, caplog):
         stack_name="mockstack",
         rules_filters=[
             Filter(
+                reason="Test reason",
                 rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
@@ -339,12 +340,14 @@ def test_debug_filter(template_cross_account_role_with_name, caplog):
     processor.process_cf_template(template_cross_account_role_with_name, mock_config)
 
     for line in [
+        "Filter: Test reason",
         "ref(resource.Properties.RoleName) -> prefix-test-root-role",
         "exists(prefix-test-root-role) -> True",
         "ref(resource.Properties.RoleName) -> prefix-test-root-role",
         "regex(^prefix-.*$, prefix-test-root-role) -> True",
         "ref(principal) -> arn:aws:iam::999999999:role/someuser@bla.com",
         "eq(arn:aws:iam::999999999:role/someuser@bla.com, arn:aws:iam::999999999:role/someuser@bla.com) -> True",
+        "Filter result: True"
     ]:
         assert line in caplog.text
 
