@@ -22,7 +22,7 @@ def test_failures_are_raised(bad_template):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234556",
+                reason="S3 Bucket S3BucketPolicy policy has non-allowed principals 1234556",
                 risk_value=RuleRisk.HIGH,
                 rule="S3BucketPolicyPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -31,7 +31,7 @@ def test_failures_are_raised(bad_template):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234557",
+                reason="S3 Bucket S3BucketPolicy policy has non-allowed principals 1234557",
                 risk_value=RuleRisk.HIGH,
                 rule="S3BucketPolicyPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
