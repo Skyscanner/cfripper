@@ -315,7 +315,7 @@ def test_debug_filter(template_cross_account_role_with_name, caplog):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {
