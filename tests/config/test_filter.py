@@ -336,10 +336,16 @@ def test_debug_filter(template_cross_account_role_with_name, caplog):
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
     processor.process_cf_template(template_cross_account_role_with_name, mock_config)
-    assert (
-        "eq: ['arn:aws:iam::999999999:role/someuser@bla.com', 'arn:aws:iam::999999999:role/someuser@bla.com']"
-        in caplog.text
-    )
+
+    for line in [
+        "ref(resource.Properties.RoleName) -> prefix-test-root-role",
+        "exists(prefix-test-root-role) -> True",
+        "ref(resource.Properties.RoleName) -> prefix-test-root-role",
+        "regex(^prefix-.*$, prefix-test-root-role) -> True",
+        "ref(principal) -> arn:aws:iam::999999999:role/someuser@bla.com",
+        "eq(arn:aws:iam::999999999:role/someuser@bla.com, arn:aws:iam::999999999:role/someuser@bla.com) -> True",
+    ]:
+        assert line in caplog.text
 
 
 @pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
