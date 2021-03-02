@@ -63,7 +63,7 @@ def is_resolvable_dict(value: Any) -> bool:
     return isinstance(value, dict) and len(value) == 1 and next(iter(value)) in VALID_FUNCTIONS
 
 
-def build_evaluator(tree: Union[str, int, float, bool, List, Dict], debug: Optional[bool] = False) -> Callable:
+def build_evaluator(tree: Union[str, int, float, bool, List, Dict], debug: bool = False) -> Callable:
     if is_resolvable_dict(tree):
         function_name, nodes = list(tree.items())[0]
         if not isinstance(nodes, list):
