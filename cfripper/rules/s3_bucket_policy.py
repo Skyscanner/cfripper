@@ -14,7 +14,7 @@ logger = logging.getLogger(__file__)
 
 class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
     """
-    Checks for non-whitelisted principals in S3 bucket policies.
+    Checks for non-allowed principals in S3 bucket policies.
 
     Risk:
         This is designed to block unintended access from third party accounts to your buckets.
@@ -37,7 +37,7 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
 
     GRANULARITY = RuleGranularity.RESOURCE
 
-    REASON = "S3 Bucket {} policy has non-whitelisted principals {}"
+    REASON = "S3 Bucket {} policy has non-allowed principals {}"
     RISK_VALUE = RuleRisk.HIGH
     RESOURCE_TYPES = (S3BucketPolicy,)
 

@@ -53,7 +53,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                     # Check if account ID is allowed. `self._get_whitelist_from_config()` used here
                     # to reduce number of false negatives and only allow exemptions for accounts
                     # which belong to AWS Services (such as ELB and ElastiCache).
-                    if account_id in self._get_whitelist_from_config():
+                    if account_id in self._get_allowed_from_config():
                         continue
 
                     if statement.Condition and statement.Condition.dict():

@@ -29,7 +29,7 @@ def default_allow_all_config():
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {"exists": {"ref": "config.stack_name"}},

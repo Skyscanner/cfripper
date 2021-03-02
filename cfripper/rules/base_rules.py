@@ -55,6 +55,8 @@ class Rule(ABC):
     ):
         rule_mode = rule_mode or self.rule_mode
         risk_value = risk_value or self.risk_value
+        granularity = granularity or self.GRANULARITY
+
         for fltr in self.rule_filters:
             try:
                 if fltr(**context):
@@ -63,7 +65,7 @@ class Rule(ABC):
             except Exception:
                 logger.exception(f"Exception raised while evaluating filter for `{fltr.reason}`", extra=context)
 
-        if rule_mode != RuleMode.WHITELISTED:
+        if rule_mode != RuleMode.ALLOWED:
             result.add_failure(
                 rule=type(self).__name__,
                 reason=reason,
@@ -71,7 +73,7 @@ class Rule(ABC):
                 risk_value=risk_value,
                 resource_ids=resource_ids,
                 actions=actions,
-                granularity=granularity or self.GRANULARITY,
+                granularity=granularity,
             )
 
 
@@ -120,12 +122,12 @@ class PrincipalCheckingRule(Rule, ABC):
     When using `valid_principals`, make sure the scope of accounts allowed is not too large.
     It might be the case that the account the stack is being deployed in is in this set.
     This could raise false negatives in rules. If a rule should only be exempt for AWS Service
-    IDs, such as ELB and ElastiCache, consider using `_get_whitelist_from_config()` directly.
+    IDs, such as ELB and ElastiCache, consider using `_get_allowed_from_config()` directly.
     """
 
     _valid_principals = None
 
-    def _get_whitelist_from_config(self, services: List[str] = None) -> Set[str]:
+    def _get_allowed_from_config(self, services: List[str] = None) -> Set[str]:
         if services is None:
             services = self._config.aws_service_accounts.keys()
 
@@ -139,7 +141,7 @@ class PrincipalCheckingRule(Rule, ABC):
         if self._valid_principals is None:
             self._valid_principals = {
                 *self._config.aws_principals,
-                *self._get_whitelist_from_config(),
+                *self._get_allowed_from_config(),
             }
             if self._config.aws_account_id:
                 self._valid_principals.add(self._config.aws_account_id)
