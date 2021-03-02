@@ -7,7 +7,7 @@ RULES_CONFIG = [
     RuleConfig(
         filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {"eq": [{"ref": "config.stack_name"}, "mockstack"]},

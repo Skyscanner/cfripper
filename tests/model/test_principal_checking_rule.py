@@ -121,4 +121,4 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
     ],
 )
 def test_get_whitelist_from_config(rule, params, expected_output):
-    assert rule._get_whitelist_from_config(params) == expected_output
+    assert rule._get_allowed_from_config(params) == expected_output

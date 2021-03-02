@@ -6,7 +6,7 @@ class RuleMode(str, Enum):
     BLOCKING = "BLOCKING"
     MONITOR = "MONITOR"
     DEBUG = "DEBUG"
-    WHITELISTED = "WHITELISTED"
+    ALLOWED = "ALLOWED"
     DISABLED = "DISABLED"
 
 

@@ -161,7 +161,7 @@ def test_filter_do_not_report_anything(invalid_security_group_range):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
@@ -187,7 +187,7 @@ def test_non_matching_filters_are_reported_normally(invalid_security_group_range
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
                 rules={"EC2SecurityGroupOpenToWorldRule"},
             )

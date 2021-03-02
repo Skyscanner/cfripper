@@ -101,7 +101,7 @@ def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_r
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
                         {"eq": [{"ref": "config.stack_name"}, "mockstack"]},
@@ -141,7 +141,7 @@ def test_filter_do_not_report_anything(template_two_roles_dict):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.WHITELISTED,
+                rule_mode=RuleMode.ALLOWED,
                 eval={"eq": [{"ref": "config.stack_name"}, "mockstack"]},
                 rules={"CrossAccountTrustRule"},
             )
