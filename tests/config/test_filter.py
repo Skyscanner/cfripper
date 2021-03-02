@@ -1,7 +1,9 @@
+import logging
+
 import pytest
 
 from cfripper.config.config import Config
-from cfripper.config.filter import Filter
+from cfripper.config.filter import VALID_FUNCTIONS, Filter, get_implemented_filter_function
 from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_filter
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
@@ -304,7 +306,9 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     assert compare_lists_of_failures(result.failures, [])
 
 
-def test_debug_filter(template_cross_account_role_with_name):
+def test_debug_filter(template_cross_account_role_with_name, caplog):
+    logging.disable(logging.NOTSET)
+    caplog.set_level(logging.DEBUG)
     mock_config = Config(
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
@@ -331,10 +335,11 @@ def test_debug_filter(template_cross_account_role_with_name):
 
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
-
-    assert result.valid
-    assert compare_lists_of_failures(result.failures, [])
+    processor.process_cf_template(template_cross_account_role_with_name, mock_config)
+    assert (
+        "eq: ['arn:aws:iam::999999999:role/someuser@bla.com', 'arn:aws:iam::999999999:role/someuser@bla.com']"
+        in caplog.text
+    )
 
 
 @pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
@@ -351,3 +356,9 @@ def test_externally_defined_rule_filter(filters, valid, template_security_group_
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_security_group_firehose_ips, mock_config)
     assert result.valid == valid
+
+
+def test_valid_filter_functions():
+    for function in VALID_FUNCTIONS:
+        get_implemented_filter_function(function, debug=False)
+    # assert no Exception raised

@@ -1,23 +1,43 @@
+import logging
 import re
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from pydantic import BaseModel, validator
 from pydash.objects import get
 
-from cfripper.config.filter_debug_functions import IMPLEMENTED_FILTER_FUNCTIONS_DEBUG
 from cfripper.model.enums import RuleMode, RuleRisk
 
+VALID_FUNCTIONS = [
+    "eq",
+    "ne",
+    "lt",
+    "gt",
+    "le",
+    "ge",
+    "not",
+    "or",
+    "and",
+    "in",
+    "regex",
+    "regex:ignorecase",
+    "exists",
+    "empty",
+    "ref",
+]
 
-def get_implemented_filter_functions(function_name: str, debug:bool) -> Callable:
+logger = logging.getLogger(__file__)
+
+
+def get_implemented_filter_function(function_name: str, debug: bool) -> Callable:
     def param_resolver(f):
         def wrap(*args, **kwargs):
             calculated_parameters = [arg(kwargs) for arg in args]
             if debug:
-                print(f"-----------------{function_name}: {calculated_parameters}")
-                print(f"-----------------{function_name}: {kwargs}")
+                logger.debug(f"{function_name}: {calculated_parameters}\n{kwargs}")
             return f(*calculated_parameters, **kwargs)
 
         return wrap
+
     implemented_filter_functions = {
         "eq": param_resolver(lambda a, b, **kwargs: a == b),
         "ne": param_resolver(lambda a, b, **kwargs: a != b),
@@ -39,8 +59,7 @@ def get_implemented_filter_functions(function_name: str, debug:bool) -> Callable
 
 
 def is_resolvable_dict(value: Any) -> bool:
-    filter_functions = IMPLEMENTED_FILTER_FUNCTIONS_DEBUG
-    return isinstance(value, dict) and len(value) == 1 and next(iter(value)) in filter_functions
+    return isinstance(value, dict) and len(value) == 1 and next(iter(value)) in VALID_FUNCTIONS
 
 
 def build_evaluator(tree: Union[str, int, float, bool, List, Dict], debug: Optional[bool] = False) -> Callable:
@@ -49,7 +68,7 @@ def build_evaluator(tree: Union[str, int, float, bool, List, Dict], debug: Optio
         if not isinstance(nodes, list):
             nodes = [nodes]
         nodes = [build_evaluator(node, debug) for node in nodes]
-        function_resolver = get_implemented_filter_functions(function_name, debug)
+        function_resolver = get_implemented_filter_function(function_name, debug)
         return lambda kwargs: function_resolver(*nodes, **kwargs)
 
     return lambda kwargs: tree
