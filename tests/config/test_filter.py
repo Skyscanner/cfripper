@@ -1,4 +1,5 @@
 import logging
+from typing import Callable
 
 import pytest
 
@@ -363,8 +364,6 @@ def test_externally_defined_rule_filter(filters, valid, template_security_group_
     result = processor.process_cf_template(template_security_group_firehose_ips, mock_config)
     assert result.valid == valid
 
-
-def test_valid_filter_functions():
-    for function in VALID_FUNCTIONS:
-        get_implemented_filter_function(function, debug=False)
-    # assert no Exception raised
+@pytest.mark.parametrize("function_name", VALID_FUNCTIONS)
+def test_valid_filter_functions(function_name):
+    assert isinstance(get_implemented_filter_function(function_name, debug=False), Callable)
