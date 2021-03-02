@@ -347,7 +347,7 @@ def test_debug_filter(template_cross_account_role_with_name, caplog):
         "regex(^prefix-.*$, prefix-test-root-role) -> True",
         "ref(principal) -> arn:aws:iam::999999999:role/someuser@bla.com",
         "eq(arn:aws:iam::999999999:role/someuser@bla.com, arn:aws:iam::999999999:role/someuser@bla.com) -> True",
-        "Filter result: True"
+        "Filter result: True",
     ]:
         assert line in caplog.text
 
@@ -366,6 +366,7 @@ def test_externally_defined_rule_filter(filters, valid, template_security_group_
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_security_group_firehose_ips, mock_config)
     assert result.valid == valid
+
 
 @pytest.mark.parametrize("function_name", VALID_FUNCTIONS)
 def test_valid_filter_functions(function_name):
