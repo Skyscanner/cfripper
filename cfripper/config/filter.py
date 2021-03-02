@@ -32,9 +32,13 @@ def get_implemented_filter_function(function_name: str, debug: bool) -> Callable
     def param_resolver(f):
         def wrap(*args, **kwargs):
             calculated_parameters = [arg(kwargs) for arg in args]
+                # print(f"{function_name}: {calculated_parameters}\n")
+                # print(f"* {function_name}({', '.join(str(x) for x in calculated_parameters)})")
+
+            result = f(*calculated_parameters, **kwargs)
             if debug:
-                logger.debug(f"{function_name}: {calculated_parameters}\n{kwargs}")
-            return f(*calculated_parameters, **kwargs)
+                print(f"{function_name}({', '.join(str(x) for x in calculated_parameters)}) -> {result}")
+            return result
 
         return wrap
 
