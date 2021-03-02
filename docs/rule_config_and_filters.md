@@ -58,7 +58,7 @@ Filter(
 )
 ```
 
-A filter accepts multiple rules. Additionally the `Filter` class accepts an optiona debug flag parameter. If enabled, it will log every iteration of the filter evaluation.
+A filter accepts multiple rules. Additionally the `Filter` class accepts an optiona debug flag parameter. If enabled, it will log every iteration of the filter evaluation, except for `or` and `and` operations.
 ```python3
 Filter(
     ...
