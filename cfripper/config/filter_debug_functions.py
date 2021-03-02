@@ -9,7 +9,10 @@ logger = logging.getLogger(__file__)
 # Copy of the same function in filter.py to avoid circular dependency
 def param_resolver(f):
     def wrap(*args, **kwargs):
-        return f(*(arg(kwargs) for arg in args), **kwargs)
+        calculated_parameters = [arg(kwargs) for arg in args]
+        print(f"-----------------{f.__name__}: {calculated_parameters}")
+        print(f"-----------------{f.__name__}: {kwargs}")
+        return f(*calculated_parameters, **kwargs)
 
     return wrap
 

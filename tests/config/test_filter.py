@@ -304,6 +304,39 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     assert compare_lists_of_failures(result.failures, [])
 
 
+def test_debug_filter(template_cross_account_role_with_name):
+    mock_config = Config(
+        rules=["CrossAccountTrustRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.WHITELISTED,
+                eval={
+                    "and": [
+                        {
+                            "and": [
+                                {"exists": {"ref": "resource.Properties.RoleName"}},
+                                {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
+                            ]
+                        },
+                        {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                    ]
+                },
+                rules={"CrossAccountTrustRule"},
+                debug=True,
+            ),
+        ],
+    )
+
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
 @pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
 def test_externally_defined_rule_filter(filters, valid, template_security_group_firehose_ips):
     mock_config = Config(
