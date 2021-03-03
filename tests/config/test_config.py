@@ -27,7 +27,7 @@ def test_init_with_nonexistent_params():
 
 
 def test_load_rules_config_file_success(test_files_location):
-    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
     config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
     config.add_filters_from_dir(f"{test_files_location}/filters")
@@ -39,7 +39,7 @@ def test_load_rules_config_file_success(test_files_location):
 
 
 def test_load_rules_config_file_no_file(test_files_location):
-    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(FileNotFoundError):
@@ -47,7 +47,7 @@ def test_load_rules_config_file_no_file(test_files_location):
 
 
 def test_load_rules_config_file_invalid_file(test_files_location):
-    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(ValidationError):
@@ -129,7 +129,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
 
 
 def test_load_filters_file_invalid_file(test_files_location):
-    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
+    mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(ValidationError):
