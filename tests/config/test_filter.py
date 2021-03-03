@@ -1,7 +1,10 @@
+import logging
+from typing import Callable
+
 import pytest
 
 from cfripper.config.config import Config
-from cfripper.config.filter import Filter
+from cfripper.config.filter import VALID_FUNCTIONS, Filter, get_implemented_filter_function
 from cfripper.config.rule_configs.firehose_ips import firehose_ips_rules_config_filter
 from cfripper.model.enums import RuleMode
 from cfripper.rule_processor import RuleProcessor
@@ -304,6 +307,51 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     assert compare_lists_of_failures(result.failures, [])
 
 
+def test_debug_filter(template_cross_account_role_with_name, caplog):
+    logging.disable(logging.NOTSET)
+    caplog.set_level(logging.DEBUG)
+    mock_config = Config(
+        rules=["CrossAccountTrustRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+        rules_filters=[
+            Filter(
+                reason="Test reason",
+                rule_mode=RuleMode.ALLOWED,
+                eval={
+                    "and": [
+                        {
+                            "and": [
+                                {"exists": {"ref": "resource.Properties.RoleName"}},
+                                {"regex": ["^prefix-.*$", {"ref": "resource.Properties.RoleName"}]},
+                            ]
+                        },
+                        {"eq": [{"ref": "principal"}, "arn:aws:iam::999999999:role/someuser@bla.com"]},
+                    ]
+                },
+                rules={"CrossAccountTrustRule"},
+                debug=True,
+            ),
+        ],
+    )
+
+    rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
+    processor = RuleProcessor(*rules)
+    processor.process_cf_template(template_cross_account_role_with_name, mock_config)
+
+    for line in [
+        "Filter: Test reason",
+        "ref(resource.Properties.RoleName) -> prefix-test-root-role",
+        "exists(prefix-test-root-role) -> True",
+        "ref(resource.Properties.RoleName) -> prefix-test-root-role",
+        "regex(^prefix-.*$, prefix-test-root-role) -> True",
+        "ref(principal) -> arn:aws:iam::999999999:role/someuser@bla.com",
+        "eq(arn:aws:iam::999999999:role/someuser@bla.com, arn:aws:iam::999999999:role/someuser@bla.com) -> True",
+        "Filter result: True",
+    ]:
+        assert line in caplog.text
+
+
 @pytest.mark.parametrize("filters, valid", [(None, False), ([firehose_ips_rules_config_filter], True)])
 def test_externally_defined_rule_filter(filters, valid, template_security_group_firehose_ips):
     mock_config = Config(
@@ -318,3 +366,8 @@ def test_externally_defined_rule_filter(filters, valid, template_security_group_
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(template_security_group_firehose_ips, mock_config)
     assert result.valid == valid
+
+
+@pytest.mark.parametrize("function_name", VALID_FUNCTIONS)
+def test_valid_filter_functions(function_name):
+    assert isinstance(get_implemented_filter_function(function_name, debug=False), Callable)
