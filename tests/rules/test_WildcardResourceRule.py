@@ -52,7 +52,7 @@ def user_and_policy_with_wildcard_resource():
 
 def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wildcard_resource):
     rule = WildcardResourceRule(None)
-    rule._config.stack_name = "not_whitelisted_stack"
+    rule._config.stack_name = "not_allowed_stack"
     rule.all_cf_actions = set()
     result = rule.invoke(user_with_wildcard_resource)
 
@@ -82,7 +82,7 @@ def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wi
     )
 
 
-def test_kms_key_with_wildcard_resource_not_whitelisted_is_not_flagged(kms_key_with_wildcard_policy):
+def test_kms_key_with_wildcard_resource_not_allowed_is_not_flagged(kms_key_with_wildcard_policy):
     # When KMS Key policies use * in the resource, that * will only apply this policy to the KMS Key being created
     # so we must not flag this
     # Source: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html

@@ -111,7 +111,7 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to escalate privileges.
 
     Fix:
-        If cross account permissions are required, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:
@@ -139,7 +139,7 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to access/modify content of the bucket.
 
     Fix:
-        If cross account permissions are required for S3 access, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required for S3 access, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:
@@ -167,7 +167,7 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to read/modify the secrets.
 
     Fix:
-        If cross account permissions are required for KMS access, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required for KMS access, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:

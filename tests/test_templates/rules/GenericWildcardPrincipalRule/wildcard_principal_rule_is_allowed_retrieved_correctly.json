@@ -11,9 +11,9 @@
       "resource_2",
       "another_resource"
     ],
-    "stack_without_whitelisted_resources": []
+    "stack_without_allowed_resources": []
   },
-  "OtherRuleThatUsesResourceWhitelists": {
+  "OtherRuleThatUsesResourceAllowlist": {
     "test_stack": [
       "resource_3"
     ],

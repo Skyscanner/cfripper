@@ -17,7 +17,7 @@ def get_templates() -> List[str]:
         for file_path in f:
             filename, file_extension = os.path.splitext(file_path)
             if file_extension in [".json", ".yml", ".yaml"] and filename not in [
-                "wildcard_principal_rule_is_whitelisted_retrieved_correctly"
+                "wildcard_principal_rule_is_allowed_retrieved_correctly"
             ]:
                 yield os.path.join(r, file_path)
 
