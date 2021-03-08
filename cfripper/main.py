@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pycfmodel
 
@@ -66,7 +66,9 @@ def handler(event, context):
     if not event.get("stack_template_url") and not event.get("stack", {}).get("name"):
         raise ValueError("Invalid event type: no parameter 'stack_template_url' or 'stack::name' in request.")
 
-    template = get_template(event)
+    boto3_client = get_boto3_client(event)
+    template = get_template(boto3_client, event)
+    aws_exports = get_exports(boto3_client)
     extras = get_extras(event)
 
     if not template:
@@ -95,8 +97,7 @@ def handler(event, context):
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
 
-    # TODO get AWS variables/parameters and pass them to resolve
-    cfmodel = pycfmodel.parse(template).resolve()
+    cfmodel = pycfmodel.parse(template).resolve(extra_params=aws_exports)
 
     result = processor.process_cf_template(cfmodel=cfmodel, config=config, extras=extras)
 
@@ -118,7 +119,7 @@ def get_extras(event) -> Dict[str, Any]:
     return {k: v for k, v in event.items() if k in DEFAULT_EXTRA_KEYS_FROM_EVENT}
 
 
-def get_template(event):
+def get_boto3_client(event) -> Optional[Boto3Client]:
     try:
         account_id = event.get("account", {}).get("id")
         region = event.get("region")
@@ -127,8 +128,15 @@ def get_template(event):
     except Exception:
         boto3_client = None
         logger.exception("Could not create Boto3 Cloudformation Client...")
+    return boto3_client
+
+
+def get_template(boto3_client: Boto3Client, event) -> Optional[Dict]:
     template = None
     if boto3_client:
+        account_id = event.get("account", {}).get("id")
+        region = event.get("region")
+        stack_name = event.get("stack", {}).get("name")
         try:
             if event.get("stack_template_url"):
                 template = boto3_client.download_template_to_dictionary(event["stack_template_url"])
@@ -145,3 +153,7 @@ def get_template(event):
             except Exception:
                 logger.exception(f"Error calling get_template for: {stack_name} on {account_id} - {region}")
     return template
+
+
+def get_exports(boto3_client: Boto3Client) -> Dict[str, str]:
+    return boto3_client.get_exports() if boto3_client else {}
