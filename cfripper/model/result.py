@@ -1,4 +1,4 @@
-from typing import List, Optional, Set
+from typing import Collection, List, Optional
 
 from pydantic import BaseModel, Extra
 
@@ -38,7 +38,9 @@ class Result(BaseModel):
     failures: List[Failure] = []
 
     def get_failures(
-        self, include_rule_modes: Set[RuleMode] = set(), exclude_rule_modes: Set[RuleMode] = set()
+        self,
+        include_rule_modes: Optional[Collection[RuleMode]] = None,
+        exclude_rule_modes: Optional[Collection[RuleMode]] = None,
     ) -> List[Failure]:
         result = []
         for failure in self.failures:
