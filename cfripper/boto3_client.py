@@ -76,3 +76,11 @@ class Boto3Client:
         file_contents = response["Body"].read().decode("utf-8")
 
         return convert_json_or_yaml_to_dict(file_contents)
+
+    def get_exports(self) -> Dict[str, str]:
+        client = self.session.client("cloudformation", region_name=self.region)
+        try:
+            return {export["Name"]: export["Value"] for export in client.list_exports()["Exports"]}
+        except Exception:
+            logger.exception(f"Could not get AWS Export values! ({self.account_id} - {self.region})")
+            return {}

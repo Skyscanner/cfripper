@@ -25,11 +25,11 @@ def test_correct_event():
 
     mock_created_s3_adapter_object = Mock()
     mock_created_s3_adapter_object.download_template_to_dictionary.return_value = {"Resources": {}}
+    mock_created_s3_adapter_object.get_exports.return_value = {"VpcId": "vpc-123-abc"}
     mock_boto3_adapter = Mock(return_value=mock_created_s3_adapter_object)
 
     mock_created_boto3_client_object = Mock()
     mock_created_boto3_client_object.get_template.return_value = {"Resources": {}}
-    mock_created_boto3_client_object.compare_outputs.return_value = {}
     mock_boto3_client = Mock(return_value=mock_created_boto3_client_object)
 
     mock_created_rule_processor_object = Mock(spec=RuleProcessor)
