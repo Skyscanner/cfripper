@@ -20,6 +20,7 @@ nav:
   - Default rules: rules.md
   - Writing your own rules: plugin.md
   - Rule Config: rule_config.md
+  - Examples: examples.md
   - Changelog: changelog.md
   - Contributing: contributing.md
   - Code of conduct: code_of_conduct.md
