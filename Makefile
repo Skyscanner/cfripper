@@ -10,8 +10,8 @@ install-docs:
 	pip install -e ".[dev,docs]"
 
 format:
-	isort --recursive .
-	black .
+	isort --recursive cfripper/ tests/ examples/
+	black cfripper/ tests/ examples/
 
 lint: isort-lint black-lint flake8-lint
 
@@ -19,10 +19,10 @@ isort-lint:
 	isort --check-only --recursive .
 
 black-lint:
-	black --check .
+	black --check cfripper/ tests/ examples/
 
 flake8-lint:
-	flake8 cfripper/ tests/
+	flake8 cfripper/ tests/ examples/
 
 unit:
 	pytest -svvv tests
