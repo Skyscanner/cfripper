@@ -1,10 +1,10 @@
 import logging
 
 import pycfmodel
+
 from cfripper.config.config import Config
 from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.rule_processor import RuleProcessor
-
 
 logger = logging.getLogger(__name__)
 
@@ -44,16 +44,16 @@ def handler(event, context):
 
         processor = RuleProcessor(*[rule(config) for rule in config.rules.values()])
 
-        cfmodel = pycfmodel.parse(event.get("stack", {}).get("template", {})).resolve(extra_params=extract_params_from_event(event))
-        result = processor.process_cf_template(cfmodel=cfmodel, config=config, extras=extras)
+        cfmodel = pycfmodel.parse(event.get("stack", {}).get("template", {})).resolve(
+            extra_params=event.get("stack", {}).get("parameters", {})
+        )
+        result = processor.process_cf_template(cfmodel=cfmodel, config=config)
 
         return {
-                "valid": result.valid,
-                "failures": [
-                    failure.serializable() for failure in result.get_failures()
-                ],
-                "exceptions": [x.args[0] for x in result.exceptions],
-            }
+            "valid": result.valid,
+            "failures": [failure.serializable() for failure in result.get_failures()],
+            "exceptions": [x.args[0] for x in result.exceptions],
+        }
     except Exception:
         logger.exception("Error while running lambda")
         raise
