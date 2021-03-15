@@ -19,7 +19,7 @@ nav:
   - CLI: cli.md
   - Default rules: rules.md
   - Writing your own rules: plugin.md
-  - Rule Config: rule_config.md
+  - Rule Config: rule_config_and_filters.md
   - Examples: examples.md
   - Changelog: changelog.md
   - Contributing: contributing.md

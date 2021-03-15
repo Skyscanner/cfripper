@@ -1,10 +1,10 @@
-## Sample pipeline with CFripper
+## Sample pipeline with CFRipper
 
-CFripper is a Python tool that aims to prevent vulnerabilities from getting to production infrastructure through vulnerable CloudFormation scripts. As with the other security tools that we use at Skyscanner, CFripper is part of the CI/CD pipeline. It runs just before a CloudFormation stack is deployed or updated and if the CloudFormation script fails to pass the security check it fails the deployment and notifies the team that owns the stack. This is an example of how you might set up CFripper as an AWS Lambda:
-![CFripperPipeline](img/cfripper.png)
+As with the other security tools that we use at Skyscanner, CFRipper is part of the CI/CD pipeline. It runs just before a CloudFormation stack is deployed or updated and if the CloudFormation script fails to pass the security check it fails the deployment and notifies the team that owns the stack. This is an example of how you might set up CFRipper as an AWS Lambda:
+![CFRipperPipeline](img/cfripper.png)
 
-Another approach that we use at Skyscanner is the Infrastructure as Code pipeline. Code is built and tested using drone and then our internal CD tool deals with calling CFripper to validate the script and then trigger the deployment of the infrastructure provided that the CloudFormation script is valid:
-![CFripperPipeline](img/cfripper2.png)
+Another approach that we use at Skyscanner is the Infrastructure as Code pipeline. Code is built and tested using drone and then our internal CD tool deals with calling CFRipper to validate the script and then trigger the deployment of the infrastructure provided that the CloudFormation script is valid:
+![CFRipperPipeline](img/cfripper2.png)
 
 ```python
 import logging

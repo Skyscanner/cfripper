@@ -1,11 +1,11 @@
 <img src="img/logo.png" width="200">
 
-# CFripper
+# CFRipper
 
 [![Build Status](https://travis-ci.org/Skyscanner/cfripper.svg?branch=master)](https://travis-ci.org/Skyscanner/cfripper)
 [![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
 
-Lambda function to "rip apart" a CloudFormation template and check it for security compliance.
+CFRipper is a Python tool that aims to prevent vulnerabilities from getting to production infrastructure through vulnerable CloudFormation scripts. 
 
 ## Developing
 
