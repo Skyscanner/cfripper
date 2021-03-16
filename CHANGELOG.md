@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2021-02-??
+## [1.0.0] - 2021-03-16
 ### Breaking changes
 - `Filter` include the set of rules in which it is applied.
 - `RuleConfig` only contains `rule_mode` and `risk_value` now.
