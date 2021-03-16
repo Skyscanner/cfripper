@@ -6,11 +6,11 @@ from pytest import fixture, mark
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
-from cfripper.config.rule_config import RuleConfig
-from cfripper.model.enums import RuleMode
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
 from cfripper.rules import DEFAULT_RULES, EC2SecurityGroupIngressOpenToWorldRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @fixture()
@@ -28,24 +28,37 @@ def test_failures_are_raised(bad_template):
     result = rule.invoke(bad_template)
 
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "EC2SecurityGroupIngressOpenToWorldRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Port(s) 46 open to public IPs: (11.0.0.0/8) in security group 'securityGroupIngress1'"
-    )
-    assert result.failed_rules[1].rule == "EC2SecurityGroupIngressOpenToWorldRule"
-    assert (
-        result.failed_rules[1].reason
-        == "Port(s) 46 open to public IPs: (::/0) in security group 'securityGroupIngress2'"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Port(s) 46 open to public IPs: (11.0.0.0/8) in security group 'securityGroupIngress1'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupIngressOpenToWorldRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"securityGroupIngress1"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Port(s) 46 open to public IPs: (::/0) in security group 'securityGroupIngress2'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupIngressOpenToWorldRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"securityGroupIngress2"},
+            ),
+        ],
     )
 
 
 def test_valid_security_group_ingress(good_template):
     rule = EC2SecurityGroupIngressOpenToWorldRule(Config())
     result = rule.invoke(good_template)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 @mark.parametrize(
@@ -65,17 +78,18 @@ def test_filter_do_not_report_anything(filter_eval_object, bad_template):
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[Filter(rule_mode=RuleMode.WHITELISTED, eval=filter_eval_object)],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.ALLOWED, eval=filter_eval_object, rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(bad_template, mock_config)
 
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 @mock.patch("cfripper.rules.base_rules.Rule.add_failure_to_result")
@@ -105,27 +119,38 @@ def test_non_matching_filters_are_reported_normally(bad_template):
         rules=["EC2SecurityGroupIngressOpenToWorldRule"],
         aws_account_id="123456789",
         stack_name="mockstack",
-        rules_config={
-            "EC2SecurityGroupIngressOpenToWorldRule": RuleConfig(
-                filters=[
-                    Filter(rule_mode=RuleMode.WHITELISTED, eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]})
-                ],
+        rules_filters=[
+            Filter(
+                rule_mode=RuleMode.ALLOWED,
+                eval={"eq": [{"ref": "config.stack_name"}, "anotherstack"]},
+                rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
-        },
+        ],
     )
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
     processor = RuleProcessor(*rules)
     result = processor.process_cf_template(bad_template, mock_config)
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "EC2SecurityGroupIngressOpenToWorldRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Port(s) 46 open to public IPs: (11.0.0.0/8) in security group 'securityGroupIngress1'"
-    )
-    assert result.failed_rules[1].rule == "EC2SecurityGroupIngressOpenToWorldRule"
-    assert (
-        result.failed_rules[1].reason
-        == "Port(s) 46 open to public IPs: (::/0) in security group 'securityGroupIngress2'"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Port(s) 46 open to public IPs: (11.0.0.0/8) in security group 'securityGroupIngress1'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupIngressOpenToWorldRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"securityGroupIngress1"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Port(s) 46 open to public IPs: (::/0) in security group 'securityGroupIngress2'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupIngressOpenToWorldRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"securityGroupIngress2"},
+            ),
+        ],
     )

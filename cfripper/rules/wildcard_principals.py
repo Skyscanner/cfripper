@@ -50,10 +50,10 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                     account_id_match = self.IAM_PATTERN.match(principal)
                     account_id = account_id_match.group(1) if account_id_match else None
 
-                    # Check if account ID is allowed. `self._get_whitelist_from_config()` used here
+                    # Check if account ID is allowed. `self._get_allowed_from_config()` used here
                     # to reduce number of false negatives and only allow exemptions for accounts
                     # which belong to AWS Services (such as ELB and ElastiCache).
-                    if account_id in self._get_whitelist_from_config():
+                    if account_id in self._get_allowed_from_config():
                         continue
 
                     if statement.Condition and statement.Condition.dict():
@@ -61,7 +61,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: "
                             f"{statement.Condition}"
                         )
-                    elif not self.resource_is_whitelisted(logical_id=logical_id):
+                    else:
                         self.add_failure_to_result(
                             result,
                             self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
@@ -76,9 +76,6 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                                 "account_id": account_id,
                             },
                         )
-
-    def resource_is_whitelisted(self, logical_id):
-        return logical_id in self._config.get_whitelisted_resources(type(self).__name__)
 
 
 class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):

@@ -2,18 +2,14 @@ from cfripper.config.filter import Filter
 from cfripper.model.enums import RuleMode
 
 """
-To use this RuleConfig, or any RuleConfig, make sure to include it in the `Config` instantiation.
+To use this Filter, or any Filter, make sure to include it in the `Config` instantiation.
 
 ```python
-RULES_CONFIG = {
-    "EC2SecurityGroupOpenToWorldRule": RuleConfig(
-        filters=[firehose_ips_rules_config_filter]
-    )
-}
+FILTERS = [firehose_ips_rules_config_filter]
 
 config = Config(
     ...
-    rules_config=RULES_CONFIG,
+    rules_filters=FILTERS,
 )
 ```
 """
@@ -51,6 +47,7 @@ firehose_ips_rules_config_filter = Filter(
         "Exclude Kinesis Data Firehose IPs to allow access from Amazon Redshift Clusters. "
         "See https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html"
     ),
-    rule_mode=RuleMode.WHITELISTED,
+    rule_mode=RuleMode.ALLOWED,
     eval={"and": [{"exists": {"ref": "ingress_ip"}}, {"in": [{"ref": "ingress_ip"}, FIREHOSE_IPS]}]},
+    rules={"EC2SecurityGroupOpenToWorldRule"},
 )

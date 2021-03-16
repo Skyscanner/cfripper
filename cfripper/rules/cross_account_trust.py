@@ -37,7 +37,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
     @property
     def valid_principals(self) -> Set[str]:
         if self._valid_principals is None:
-            self._valid_principals = self._get_whitelist_from_config()
+            self._valid_principals = self._get_allowed_from_config()
             if self._config.aws_account_id:
                 self._valid_principals.add(self._config.aws_account_id)
         return self._valid_principals
@@ -68,7 +68,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                 filters_available_context["principal"] = principal
                 filters_available_context["account_id"] = account_id
                 if (
-                    # checks if principal is a canonical id and is whitelisted
+                    # checks if principal is a canonical id and is allowed
                     principal not in self.valid_principals
                     # if it wasn't a canonical id and contains a valid account id
                     and account_id not in self.valid_principals
@@ -111,7 +111,7 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to escalate privileges.
 
     Fix:
-        If cross account permissions are required, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:
@@ -139,7 +139,7 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to access/modify content of the bucket.
 
     Fix:
-        If cross account permissions are required for S3 access, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required for S3 access, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:
@@ -167,7 +167,7 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
         It might allow other AWS identities to read/modify the secrets.
 
     Fix:
-        If cross account permissions are required for KMS access, the stack should be added to the whitelist for this rule.
+        If cross account permissions are required for KMS access, the stack should be added to the allowlist for this rule.
         Otherwise, the access should be removed from the CloudFormation definition.
 
     Filters context:

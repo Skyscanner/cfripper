@@ -68,6 +68,15 @@ Analysing tests/test_templates/config/security_group_firehose_ips.json...
 Valid: True
 ```
 
+### Using rules filters files
+
+```bash
+$ cfripper tests/test_templates/config/security_group_firehose_ips.json --rules-filters-folder cfripper/config/rule_configs/
+example_rules_config_for_cli.py loaded
+Analysing tests/test_templates/config/security_group_firehose_ips.json...
+Valid: True
+```
+
 ### Exit Codes
 
 ```python

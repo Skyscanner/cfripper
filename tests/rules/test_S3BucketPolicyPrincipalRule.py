@@ -1,8 +1,10 @@
 from pytest import fixture
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules import S3BucketPolicyPrincipalRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @fixture()
@@ -15,15 +17,34 @@ def test_failures_are_raised(bad_template):
     result = rule.invoke(bad_template)
 
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "S3BucketPolicyPrincipalRule"
-    assert result.failed_rules[0].reason == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234556"
-    assert result.failed_rules[1].rule == "S3BucketPolicyPrincipalRule"
-    assert result.failed_rules[1].reason == "S3 Bucket S3BucketPolicy policy has non-whitelisted principals 1234557"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="S3 Bucket S3BucketPolicy policy has non-allowed principals 1234556",
+                risk_value=RuleRisk.HIGH,
+                rule="S3BucketPolicyPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicy"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="S3 Bucket S3BucketPolicy policy has non-allowed principals 1234557",
+                risk_value=RuleRisk.HIGH,
+                rule="S3BucketPolicyPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"S3BucketPolicy"},
+            ),
+        ],
+    )
 
 
 def test_rule_supports_filter_config(bad_template, default_allow_all_config):
     rule = S3BucketPolicyPrincipalRule(default_allow_all_config)
     result = rule.invoke(bad_template)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

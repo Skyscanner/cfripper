@@ -1,8 +1,10 @@
 import pytest
 from pycfmodel.model.cf_model import CFModel
 
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -42,8 +44,7 @@ def test_with_valid_role_inline_policy(valid_role_inline_policy):
     result = rule.invoke(valid_role_inline_policy)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
@@ -51,12 +52,19 @@ def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
     result = rule.invoke(invalid_role_inline_policy)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRolesOverprivilegedRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+            )
+        ],
     )
 
 
@@ -65,12 +73,19 @@ def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_p
     result = rule.invoke(invalid_role_inline_policy_resource_as_array)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Role 'RootRole' contains an insecure permission 'ec2:DeleteInternetGateway' in policy 'not_so_chill_policy'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRolesOverprivilegedRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+            )
+        ],
     )
 
 
@@ -79,8 +94,7 @@ def test_with_valid_role_managed_policy(valid_role_managed_policy):
     result = rule.invoke(valid_role_managed_policy)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
@@ -88,12 +102,19 @@ def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
     result = rule.invoke(invalid_role_managed_policy)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Role RootRole has forbidden Managed Policy arn:aws:iam::aws:policy/AdministratorAccess",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRolesOverprivilegedRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+            )
+        ],
     )
 
 
@@ -102,16 +123,25 @@ def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if)
     result = rule.invoke(invalid_role_inline_policy_fn_if)
 
     assert not result.valid
-    assert len(result.failed_rules) == 1
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "IAMRolesOverprivilegedRule"
-    assert (
-        result.failed_rules[0].reason
-        == "Role 'RootRole' contains an insecure permission 'ec2:DeleteVpc' in policy 'ProdCredentialStoreAccessPolicy'"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Role 'RootRole' contains an insecure permission 'ec2:DeleteVpc' in policy 'ProdCredentialStoreAccessPolicy'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="IAMRolesOverprivilegedRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+            )
+        ],
     )
 
 
 def test_rule_supports_filter_config(invalid_role_managed_policy, default_allow_all_config):
     rule = IAMRolesOverprivilegedRule(default_allow_all_config)
     result = rule.invoke(invalid_role_managed_policy)
+
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

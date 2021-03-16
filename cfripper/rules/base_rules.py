@@ -6,9 +6,10 @@ from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.resource import Resource
 
 from cfripper.config.config import Config
+from cfripper.config.filter import Filter
 from cfripper.config.rule_config import RuleConfig
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
-from cfripper.model.result import Failure, Result
+from cfripper.model.result import Result
 
 logger = logging.getLogger(__file__)
 
@@ -24,6 +25,10 @@ class Rule(ABC):
     @property
     def rule_config(self) -> RuleConfig:
         return self._config.get_rule_config(self.__class__.__name__)
+
+    @property
+    def rule_filters(self) -> List[Filter]:
+        return self._config.get_rule_filters(self.__class__.__name__)
 
     @property
     def rule_mode(self) -> RuleMode:
@@ -50,7 +55,9 @@ class Rule(ABC):
     ):
         rule_mode = rule_mode or self.rule_mode
         risk_value = risk_value or self.risk_value
-        for fltr in self.rule_config.filters:
+        granularity = granularity or self.GRANULARITY
+
+        for fltr in self.rule_filters:
             try:
                 if fltr(**context):
                     risk_value = fltr.risk_value or risk_value
@@ -58,7 +65,7 @@ class Rule(ABC):
             except Exception:
                 logger.exception(f"Exception raised while evaluating filter for `{fltr.reason}`", extra=context)
 
-        if rule_mode not in (RuleMode.DISABLED, RuleMode.WHITELISTED):
+        if rule_mode != RuleMode.ALLOWED:
             result.add_failure(
                 rule=type(self).__name__,
                 reason=reason,
@@ -66,37 +73,8 @@ class Rule(ABC):
                 risk_value=risk_value,
                 resource_ids=resource_ids,
                 actions=actions,
-                granularity=granularity or self.GRANULARITY,
+                granularity=granularity,
             )
-
-    def add_warning_to_result(
-        self,
-        result: Result,
-        reason: str,
-        granularity: Optional[RuleGranularity] = None,
-        resource_ids: Optional[Set] = None,
-        actions: Optional[Set] = None,
-        risk_value: Optional[RuleRisk] = None,
-        rule_mode: Optional[RuleMode] = None,
-        context: Optional[Dict] = None,
-    ):
-        rule_mode = rule_mode or self.rule_mode
-        risk_value = risk_value or self.risk_value
-        for fltr in self.rule_config.filters:
-            if fltr(**context):
-                risk_value = fltr.risk_value or risk_value
-                rule_mode = fltr.rule_mode or rule_mode
-        if rule_mode not in (RuleMode.DISABLED, RuleMode.WHITELISTED):
-            warning = Failure(
-                rule=type(self).__name__,
-                reason=reason,
-                granularity=granularity or self.GRANULARITY,
-                resource_ids=resource_ids,
-                actions=actions,
-                risk_value=risk_value,
-                rule_mode=rule_mode,
-            )
-            result.add_warning(warning)
 
 
 class ResourceSpecificRule(Rule):
@@ -144,12 +122,12 @@ class PrincipalCheckingRule(Rule, ABC):
     When using `valid_principals`, make sure the scope of accounts allowed is not too large.
     It might be the case that the account the stack is being deployed in is in this set.
     This could raise false negatives in rules. If a rule should only be exempt for AWS Service
-    IDs, such as ELB and ElastiCache, consider using `_get_whitelist_from_config()` directly.
+    IDs, such as ELB and ElastiCache, consider using `_get_allowed_from_config()` directly.
     """
 
     _valid_principals = None
 
-    def _get_whitelist_from_config(self, services: List[str] = None) -> Set[str]:
+    def _get_allowed_from_config(self, services: List[str] = None) -> Set[str]:
         if services is None:
             services = self._config.aws_service_accounts.keys()
 
@@ -163,7 +141,7 @@ class PrincipalCheckingRule(Rule, ABC):
         if self._valid_principals is None:
             self._valid_principals = {
                 *self._config.aws_principals,
-                *self._get_whitelist_from_config(),
+                *self._get_allowed_from_config(),
             }
             if self._config.aws_account_id:
                 self._valid_principals.add(self._config.aws_account_id)

@@ -4,39 +4,20 @@
 #
 #    make freeze
 #
-boto3==1.16.25
-    # via cfripper (setup.py)
-botocore==1.19.25
-    # via
-    #   boto3
-    #   s3transfer
+boto3==1.17.15
+botocore==1.20.15
 cfn-flip==1.2.3
-    # via cfripper (setup.py)
 click==7.1.2
-    # via
-    #   cfn-flip
-    #   cfripper (setup.py)
+importlib-metadata==3.7.0
 jmespath==0.10.0
-    # via
-    #   boto3
-    #   botocore
-pycfmodel==0.8.2
-    # via cfripper (setup.py)
-pydantic==1.7.2
-    # via pycfmodel
+pluggy==0.13.1
+pycfmodel==0.8.3
+pydantic==1.7.3
 pydash==4.7.6
-    # via cfripper (setup.py)
 python-dateutil==2.8.1
-    # via botocore
-pyyaml==5.3.1
-    # via
-    #   cfn-flip
-    #   cfripper (setup.py)
-s3transfer==0.3.3
-    # via boto3
+pyyaml==5.4.1
+s3transfer==0.3.4
 six==1.15.0
-    # via
-    #   cfn-flip
-    #   python-dateutil
-urllib3==1.26.2
-    # via botocore
+typing-extensions==3.7.4.3
+urllib3==1.26.3
+zipp==3.4.0

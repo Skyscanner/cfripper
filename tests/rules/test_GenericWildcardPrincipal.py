@@ -1,8 +1,10 @@
 import pytest
 
 from cfripper.config.config import Config
+from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
+from cfripper.model.result import Failure
 from cfripper.rules.wildcard_principals import GenericWildcardPrincipalRule
-from tests.utils import get_cfmodel_from
+from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @pytest.fixture()
@@ -20,8 +22,7 @@ def test_no_failures_are_raised(good_template):
     result = rule.invoke(good_template)
 
     assert result.valid
-    assert len(result.failed_rules) == 0
-    assert len(result.failed_monitored_rules) == 0
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_failures_are_raised(bad_template):
@@ -29,45 +30,29 @@ def test_failures_are_raised(bad_template):
     result = rule.invoke(bad_template)
 
     assert not result.valid
-    assert len(result.failed_rules) == 2
-    assert len(result.failed_monitored_rules) == 0
-    assert result.failed_rules[0].rule == "GenericWildcardPrincipalRule"
-    assert (
-        result.failed_rules[0].reason == "PolicyA should not allow wildcard in principals or account-wide principals "
-        "(principal: 'somewhatrestricted:*')"
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="PolicyA should not allow wildcard in principals or account-wide principals (principal: 'somewhatrestricted:*')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="GenericWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"PolicyA"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="PolicyA should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123445:*')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="GenericWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"PolicyA"},
+            ),
+        ],
     )
-    assert result.failed_rules[1].rule == "GenericWildcardPrincipalRule"
-    assert (
-        result.failed_rules[1].reason == "PolicyA should not allow wildcard in principals or account-wide principals "
-        "(principal: 'arn:aws:iam::123445:*')"
-    )
-
-
-@pytest.fixture
-def mock_rule_to_resource_whitelist():
-    return {
-        "GenericWildcardPrincipalRule": {
-            "test_*": ["resource_5"],
-            "test_stack": ["resource_1", "another_resource"],
-            "other_stack": ["resource_2", "another_resource"],
-            "stack_without_whitelisted_resources": [],
-        },
-        "OtherRuleThatUsesResourceWhitelists": {"test_stack": ["resource_3"], "other_stack": ["resource_4"]},
-    }
-
-
-def test_wildcard_principal_rule_is_whitelisted_retrieved_correctly(mock_rule_to_resource_whitelist):
-    mock_rules = ["RuleThatUsesResourceWhitelists", "SecurityGroupOpenToWorldRule"]
-    config = Config(
-        stack_name="test_stack",
-        rules=mock_rules,
-        stack_whitelist={},
-        rule_to_resource_whitelist=mock_rule_to_resource_whitelist,
-    )
-
-    wildcard_principal_rule = GenericWildcardPrincipalRule(config=config)
-
-    assert wildcard_principal_rule.resource_is_whitelisted(logical_id="resource_1") is True
 
 
 def test_generic_wildcard_ignores_kms():
@@ -77,3 +62,4 @@ def test_generic_wildcard_ignores_kms():
     )
     result = rule.invoke(model)
     assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

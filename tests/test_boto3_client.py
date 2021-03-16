@@ -1,9 +1,10 @@
+import json
 from unittest.mock import patch
 
 import boto3
 import pytest
 from botocore.exceptions import ClientError
-from moto import mock_s3, mock_sts
+from moto import mock_cloudformation, mock_s3, mock_sts
 
 from cfripper.boto3_client import Boto3Client
 from cfripper.model.utils import InvalidURLException, convert_json_or_yaml_to_dict
@@ -184,3 +185,29 @@ def test_urlencoded_url(s3_bucket, boto3_client):
         f"https://s3-eu-west-1.amazonaws.com/{TEST_BUCKET_NAME}/{expected_filename}"
     )
     assert result["hello"] == "this is valid json"
+
+
+@mock_cloudformation
+def test_export_values(boto3_client: Boto3Client):
+    cf_client = boto3_client.session.client("cloudformation", "eu-west-1")
+    cf_client.create_stack(
+        StackName="Test-Stack",
+        TemplateBody=json.dumps(
+            {
+                "AWSTemplateFormatVersion": "2010-09-09",
+                "Resources": {"MyQueue": {"Type": "AWS::SQS::Queue", "Properties": {}}},
+                "Outputs": {
+                    "QueueARN": {
+                        "Description": "ARN of newly created SQS Queue",
+                        "Value": {"Fn::GetAtt": ["MyQueue", "Arn"]},
+                        "Export": {"Name": "MainQueue"},
+                    },
+                },
+            }
+        ),
+    )
+
+    # actual suffix changes between tests
+    export_values = boto3_client.get_exports()
+    assert len(export_values) == 1
+    assert "arn:aws:sqs:eu-west-1:123456789012:Test-Stack-MyQueue-" in export_values["MainQueue"]

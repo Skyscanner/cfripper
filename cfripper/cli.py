@@ -10,11 +10,12 @@ from pycfmodel.model.cf_model import CFModel
 
 from cfripper.__version__ import __version__
 from cfripper.config.config import Config
+from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.exceptions import FileEmptyException
+from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
-from cfripper.rules import DEFAULT_RULES
 
 LOGGING_LEVELS = {
     "ERROR": logging.ERROR,
@@ -28,11 +29,16 @@ def setup_logging(level: str) -> None:
     logging.basicConfig(level=LOGGING_LEVELS[level], format="%(message)s")
 
 
-def init_cfripper(rules_config_file: Optional[TextIOWrapper]) -> Tuple[Config, RuleProcessor]:
-    config = Config(rules=DEFAULT_RULES.keys())
+def init_cfripper(
+    rules_config_file: Optional[TextIOWrapper], rules_filters_folder: Optional[str]
+) -> Tuple[Config, RuleProcessor]:
+    rules = get_all_rules()
+    config = Config(rules=rules.keys())
     if rules_config_file:
         config.load_rules_config_file(rules_config_file)
-    rule_processor = RuleProcessor(*[DEFAULT_RULES.get(rule)(config) for rule in config.rules])
+    if rules_filters_folder:
+        config.add_filters_from_dir(rules_filters_folder)
+    rule_processor = RuleProcessor(*[rules.get(rule)(config) for rule in config.rules])
     return config, rule_processor
 
 
@@ -54,12 +60,17 @@ def format_result_json(result: Result) -> str:
 
 def format_result_txt(result: Result) -> str:
     result_lines = [f"Valid: {result.valid}"]
-    if result.failed_rules:
+
+    blocking_rules = result.get_failures(include_rule_modes={RuleMode.BLOCKING})
+    if blocking_rules:
         result_lines.append("Issues found:")
-        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_rules]
-    if result.failed_monitored_rules:
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in blocking_rules]
+
+    monitoring_rules = result.get_failures(include_rule_modes={RuleMode.MONITOR})
+    if monitoring_rules:
         result_lines.append("Monitored issues found:")
-        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in result.failed_monitored_rules]
+        [result_lines.append(f"\t- {r.rule}: {r.reason}") for r in monitoring_rules]
+
     return "\n".join(result_lines)
 
 
@@ -93,6 +104,7 @@ def process_template(
     output_folder: Optional[str],
     output_format: str,
     rules_config_file: Optional[TextIOWrapper],
+    rules_filters_folder: Optional[str],
 ) -> bool:
     logging.info(f"Analysing {template.name}...")
 
@@ -100,7 +112,7 @@ def process_template(
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
 
-    config, rule_processor = init_cfripper(rules_config_file)
+    config, rule_processor = init_cfripper(rules_config_file, rules_filters_folder)
 
     result = analyse_template(cfmodel, rule_processor, config)
 
@@ -152,6 +164,11 @@ def process_template(
 )
 @click.option(
     "--rules-config-file", type=click.File("r"), help="Loads rules configuration file (type: [.py, .pyc])",
+)
+@click.option(
+    "--rules-filters-folder",
+    type=click.Path(exists=True, resolve_path=True, readable=True, file_okay=False),
+    help="All files in the folder must be of type: [.py, .pyc]",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """

@@ -16,7 +16,7 @@ class PrivilegeEscalationRule(BaseDangerousPolicyActions):
 
     Fix:
         Unless strictly necessary, do not use actions in the IAM action blacklist. CloudFormation files that do require
-        these actions should be added to the whitelist.
+        these actions should be added to the allowlist.
 
     {BaseDangerousPolicyActions.DEFAULT_FILTERS_CONTEXT}
     """

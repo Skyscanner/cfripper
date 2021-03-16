@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2021-03-16
+### Breaking changes
+- `Filter` include the set of rules in which it is applied.
+- `RuleConfig` only contains `rule_mode` and `risk_value` now.
+- Removes old whitelisting methods in favour of Filters
+- Rename `RuleMode.WHITELISTED` to `RuleMode.ALLOWED`, and all `whitelist` word in strings.
+- Add debug flag to `Filter` class.
+### Improvements
+- Implements `pluggy` https://github.com/pytest-dev/pluggy to enable dynamic rule loading.
+- Add support to load filters from external files
+
 ## [0.23.3] - 2021-02-11
 ### Additions
 - All rules now support filter contexts!

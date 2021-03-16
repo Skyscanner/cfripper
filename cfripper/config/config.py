@@ -1,18 +1,18 @@
 import importlib
+import itertools
 import logging
-import os
-import re
 import sys
+from collections import defaultdict
 from io import TextIOWrapper
-from typing import Dict, List
+from pathlib import Path
+from typing import DefaultDict, Dict, List
 
 from pydantic import BaseModel
 
+from cfripper.config.constants import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
+
+from .filter import Filter
 from .rule_config import RuleConfig
-from .whitelist import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
-from .whitelist import rule_to_action_whitelist as default_rule_to_action_whitelist
-from .whitelist import rule_to_resource_whitelist as default_rule_to_resource_whitelist
-from .whitelist import stack_whitelist as default_stack_whitelist
 
 logger = logging.getLogger(__file__)
 
@@ -92,10 +92,8 @@ class Config:
         aws_user_agent=None,
         aws_principals=None,
         aws_service_accounts=None,
-        stack_whitelist=None,
-        rule_to_action_whitelist=None,
-        rule_to_resource_whitelist=None,
         rules_config=None,
+        rules_filters=None,
     ):
         self.project_name = project_name
         self.service_name = service_name
@@ -107,13 +105,6 @@ class Config:
         self.aws_account_name = aws_account_name
         self.aws_account_id = aws_account_id
         self.aws_user_agent = aws_user_agent
-        self.rule_to_action_whitelist = (
-            rule_to_action_whitelist if rule_to_action_whitelist is not None else default_rule_to_action_whitelist
-        )
-        self.rule_to_resource_whitelist = (
-            rule_to_resource_whitelist if rule_to_resource_whitelist is not None else default_rule_to_resource_whitelist
-        )
-        self.stack_whitelist = stack_whitelist if stack_whitelist is not None else default_stack_whitelist
         if aws_service_accounts is None:
             self.aws_service_accounts = {
                 "elb_logs_account_ids": AWS_ELB_LOGS_ACCOUNT_IDS,
@@ -121,11 +112,6 @@ class Config:
             }
         else:
             self.aws_service_accounts = aws_service_accounts
-
-        if self.stack_name:
-            whitelisted_rules = self.get_whitelisted_rules()
-            # set difference to get a list of allowed rules to be ran for this stack
-            self.rules = list(set(self.rules) - set(whitelisted_rules))
 
         self.allowed_world_open_ports = list(self.DEFAULT_ALLOWED_WORLD_OPEN_PORTS)
 
@@ -135,7 +121,11 @@ class Config:
 
         # Set up a string list of allowed principals. If kept empty it will allow any AWS principal
         self.aws_principals = aws_principals if aws_principals is not None else []
+
         self.rules_config = rules_config if rules_config is not None else {}
+        self.rules_filters: DefaultDict[str, List[Filter]] = defaultdict(list)
+        if rules_filters:
+            self.add_filters(rules_filters)
 
     def get_rule_config(self, rule_name: str) -> RuleConfig:
         rule_config = self.rules_config.get(rule_name)
@@ -145,38 +135,17 @@ class Config:
             return rule_config
         return RuleConfig(**rule_config)
 
-    def get_whitelisted_actions(self, rule_name: str) -> List[str]:
-        allowed_actions = []
-        for k, v in self.rule_to_action_whitelist.get(rule_name, {}).items():
-            if re.match(k, self.stack_name):
-                allowed_actions += v
-
-        return allowed_actions
-
-    def get_whitelisted_resources(self, rule_name: str) -> List[str]:
-        allowed_resources = []
-        for k, v in self.rule_to_resource_whitelist.get(rule_name, {}).items():
-            if re.match(k, self.stack_name):
-                allowed_resources += v
-
-        return allowed_resources
-
-    def get_whitelisted_rules(self) -> List[str]:
-        whitelisted_rules = []
-        for k, v in self.stack_whitelist.items():
-            if re.match(k, self.stack_name):
-                whitelisted_rules += v
-
-        return whitelisted_rules
+    def get_rule_filters(self, rule_name: str) -> List[Filter]:
+        return self.rules_filters.get(rule_name, [])
 
     def load_rules_config_file(self, rules_config_file: TextIOWrapper):
         filename = rules_config_file.name
 
-        if not os.path.exists(filename):
+        if not Path(filename).is_file():
             raise RuntimeError(f"{filename} doesn't exist")
 
         try:
-            ext = os.path.splitext(filename)[1]
+            ext = Path(filename).suffix
             module_name = "__rules_config__"
             if ext not in [".py", ".pyc"]:
                 raise RuntimeError("Configuration file should have a valid Python extension.")
@@ -192,6 +161,38 @@ class Config:
             logger.exception(f"Failed to read config file: {filename}")
             raise
 
+    def add_filters_from_dir(self, path: str):
+        if not Path(path).is_dir():
+            raise RuntimeError(f"{path} doesn't exist")
+
+        try:
+            module_name = "__rules_config__"
+            filenames = sorted(itertools.chain(Path(path).glob("*.py"), Path(path).glob("*.pyc")))
+            for filename in filenames:
+                spec = importlib.util.spec_from_file_location(module_name, filename.absolute())
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = module
+                spec.loader.exec_module(module)
+                filters = vars(module).get("FILTERS")
+                if not filters:
+                    continue
+                # Validate filters format
+                RulesFiltersMapping(__root__=filters)
+                self.add_filters(filters=filters)
+                logger.info(f"{filename} loaded")
+        except Exception:
+            logger.exception(f"Failed to read files in path: {path}")
+            raise
+
+    def add_filters(self, filters: List[Filter]):
+        for filter in filters:
+            for rule in filter.rules:
+                self.rules_filters[rule].append(filter)
+
 
 class RulesConfigMapping(BaseModel):
     __root__: Dict[str, RuleConfig]
+
+
+class RulesFiltersMapping(BaseModel):
+    __root__: List[Filter]
