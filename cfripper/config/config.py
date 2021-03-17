@@ -179,7 +179,7 @@ class Config:
                 # Validate filters format
                 RulesFiltersMapping(__root__=filters)
                 self.add_filters(filters=filters)
-                logger.info(f"{filename} loaded")
+                logger.debug(f"{filename} loaded")
         except Exception:
             logger.exception(f"Failed to read files in path: {path}")
             raise
