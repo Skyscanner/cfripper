@@ -1,9 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.1] - 2021-03-17
+## [1.0.1] - 2021-03-25
 ### Improvements
 - Decrease logging level when loading external filters
+- Decrease logging level on known AWS errors such as AccessDenied when listing exports and
+throttling errors on getting a template from AWS CloudFormation.
 
 ## [1.0.0] - 2021-03-16
 ### Breaking changes

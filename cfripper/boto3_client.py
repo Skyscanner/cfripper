@@ -51,9 +51,12 @@ class Boto3Client:
             except ClientError as e:
                 if e.response["Error"]["Code"] == "ValidationError":
                     logger.exception(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
+                elif e.response["Error"]["Code"] == "Throttling":
+                    logger.warning(f"AWS Throttling: {self.stack_id} on {self.account_id} - {self.region}")
+                    sleep(i)
                 else:
                     logger.exception(
-                        "Unexpected error occured when getting stack template for:"
+                        "Unexpected error occurred when getting stack template for:"
                         f" {self.stack_id} on {self.account_id} - {self.region}"
                     )
             i += 1
@@ -81,6 +84,13 @@ class Boto3Client:
         client = self.session.client("cloudformation", region_name=self.region)
         try:
             return {export["Name"]: export["Value"] for export in client.list_exports()["Exports"]}
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "AccessDenied":
+                logger.warning(f"Access Denied for obtaining AWS Export values! ({self.account_id} - {self.region})")
+            else:
+                logger.exception(
+                    f"Unhandled ClientError getting AWS Export values! ({self.account_id} - {self.region})"
+                )
         except Exception:
-            logger.exception(f"Could not get AWS Export values! ({self.account_id} - {self.region})")
-            return {}
+            logger.exception(f"Unknown exception getting AWS Export values! ({self.account_id} - {self.region})")
+        return {}
