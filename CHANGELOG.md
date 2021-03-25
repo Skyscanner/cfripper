@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2021-03-25
+### Improvements
+- Handle AWS throttling errors when listing exports for a given account and region
+- Make `exports` a property of `Boto3Client`. This will cache the results from `list_exports` for the lifetime
+of the `Boto3Client` object. This may be preferable to repeated calls to `get_exports()`, but this depends on
+the usage of the client.
+- If we get a throttling error, we actually sleep for some time before retrying (before we were sleeping for 0 seconds)
+
 ## [1.0.1] - 2021-03-25
 ### Improvements
 - Decrease logging level when loading external filters
