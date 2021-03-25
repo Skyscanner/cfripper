@@ -14,12 +14,6 @@ logger = logging.getLogger(__file__)
 class Boto3Client:
     N_RETRIES = 5
 
-    @property
-    def exports(self) -> Dict[str, str]:
-        if self._exports is None:
-            self._exports = self.get_exports()
-        return self._exports
-
     def __init__(self, account_id, region, stack_id):
         if not account_id or not region or not stack_id:
             raise Exception(f"Missing account_id or region: (Account: {account_id} - Region: {region})")
@@ -39,7 +33,6 @@ class Boto3Client:
         self.account_id = account_id
         self.region = region
         self.stack_id = stack_id
-        self._exports = None
 
     def get_template(self) -> Optional[Dict]:
         client = self.session.client("cloudformation", region_name=self.region)

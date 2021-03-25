@@ -281,7 +281,7 @@ def test_get_exports(
 ):
     with patch.object(boto3_client, "session") as session_mock:
         session_mock.client().list_exports().get.side_effect = aws_responses
-        exports = boto3_client.exports
+        exports = boto3_client.get_exports()
         assert exports == expected_exports
     assert patched_logger_warning.mock_calls == mocked_warning_logs
     assert patched_exceptions.mock_calls == mocked_exceptions
@@ -308,6 +308,6 @@ def test_export_values(boto3_client: Boto3Client):
     )
 
     # actual suffix changes between tests
-    export_values = boto3_client.exports
+    export_values = boto3_client.get_exports()
     assert len(export_values) == 1
     assert "arn:aws:sqs:eu-west-1:123456789012:Test-Stack-MyQueue-" in export_values["MainQueue"]
