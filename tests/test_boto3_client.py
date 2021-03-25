@@ -1,5 +1,5 @@
 import json
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 import boto3
 import pytest
@@ -9,6 +9,8 @@ from moto import mock_cloudformation, mock_s3, mock_sts
 from cfripper.boto3_client import Boto3Client
 from cfripper.model.utils import InvalidURLException, convert_json_or_yaml_to_dict
 
+CLIENT_ERROR_THROTTLING = ClientError({"Error": {"Code": "Throttling"}}, "get_template")
+CLIENT_ERROR_VALIDATION = ClientError({"Error": {"Code": "ValidationError"}}, "get_template")
 DUMMY_CLIENT_ERROR = ClientError({"Error": {"Code": "Exception"}}, "get_template")
 
 TEST_BUCKET_NAME = "megabucket"
@@ -28,20 +30,68 @@ def boto3_client():
 
 
 @pytest.mark.parametrize(
-    "aws_responses, expected_template",
+    "aws_responses, expected_template, mocked_info_logs, mocked_warning_logs, mocked_exceptions",
     [
-        ([{"A": "a"}], {"A": "a"}),
-        ([DUMMY_CLIENT_ERROR] * 10, None),
-        ([DUMMY_CLIENT_ERROR, {"A": "a"}], {"A": "a"}),
-        (['{"A": "a"}'], {"A": "a"}),
-        (["A: a"], {"A": "a"}),
+        ([{"A": "a"}], {"A": "a"}, [call("Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #0")], [], []),
+        (
+            [None, {"A": "a"}],
+            {"A": "a"},
+            [call(f"Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #{i}") for i in range(2)],
+            [call("No template body found for stack: stack-id on 123456789 - eu-west-1")],
+            [],
+        ),
+        (
+            [CLIENT_ERROR_VALIDATION] * 10,
+            None,
+            [call(f"Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #{i}") for i in range(5)],
+            [],
+            [call("There is no stack: stack-id on 123456789 - eu-west-1") for _ in range(5)],
+        ),
+        (
+            [CLIENT_ERROR_THROTTLING, {"A": "a"}],
+            {"A": "a"},
+            [call(f"Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #{i}") for i in range(2)],
+            [call("AWS Throttling: stack-id on 123456789 - eu-west-1")],
+            [],
+        ),
+        (
+            [DUMMY_CLIENT_ERROR, {"A": "a"}],
+            {"A": "a"},
+            [call(f"Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #{i}") for i in range(2)],
+            [],
+            [call("Unexpected error occurred when getting stack template for: stack-id on 123456789 - eu-west-1")],
+        ),
+        (
+            ['{"A": "a"}'],
+            {"A": "a"},
+            [call("Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #0")],
+            [],
+            [],
+        ),
+        (["A: a"], {"A": "a"}, [call("Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #0")], [], []),
     ],
 )
-def test_get_template(aws_responses, expected_template, boto3_client):
+@patch("logging.Logger.info")
+@patch("logging.Logger.warning")
+@patch("logging.Logger.exception")
+def test_get_template(
+    patched_exceptions,
+    patched_logger_warning,
+    patched_logger_info,
+    aws_responses,
+    expected_template,
+    mocked_info_logs,
+    mocked_warning_logs,
+    mocked_exceptions,
+    boto3_client,
+):
     with patch.object(boto3_client, "session") as session_mock:
         session_mock.client().get_template().get.side_effect = aws_responses
         template = boto3_client.get_template()
         assert template == expected_template
+    assert patched_logger_info.mock_calls == mocked_info_logs
+    assert patched_logger_warning.mock_calls == mocked_warning_logs
+    assert patched_exceptions.mock_calls == mocked_exceptions
 
 
 def test_valid_json(s3_bucket, boto3_client):
