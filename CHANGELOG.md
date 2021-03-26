@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2021-03-25
+### Improvements
+- Handle AWS throttling errors when listing exports for a given account and region
+- If we get a throttling error, we actually sleep for some time before retrying (before we were sleeping for 0 seconds)
+
 ## [1.0.1] - 2021-03-25
 ### Improvements
 - Decrease logging level when loading external filters

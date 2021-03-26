@@ -47,13 +47,14 @@ class Boto3Client:
                     logger.warning(
                         f"No template body found for stack: {self.stack_id} on {self.account_id} - {self.region}"
                     )
-                    sleep(i)
+                    sleep((i + 1) * 2)
             except ClientError as e:
                 if e.response["Error"]["Code"] == "ValidationError":
                     logger.exception(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
+                    return stack_content
                 elif e.response["Error"]["Code"] == "Throttling":
                     logger.warning(f"AWS Throttling: {self.stack_id} on {self.account_id} - {self.region}")
-                    sleep(i)
+                    sleep((i + 1) * 2)
                 else:
                     logger.exception(
                         "Unexpected error occurred when getting stack template for:"
@@ -82,15 +83,25 @@ class Boto3Client:
 
     def get_exports(self) -> Dict[str, str]:
         client = self.session.client("cloudformation", region_name=self.region)
-        try:
-            return {export["Name"]: export["Value"] for export in client.list_exports()["Exports"]}
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "AccessDenied":
-                logger.warning(f"Access Denied for obtaining AWS Export values! ({self.account_id} - {self.region})")
-            else:
-                logger.exception(
-                    f"Unhandled ClientError getting AWS Export values! ({self.account_id} - {self.region})"
-                )
-        except Exception:
-            logger.exception(f"Unknown exception getting AWS Export values! ({self.account_id} - {self.region})")
-        return {}
+        export_values = {}
+        i = 0
+        while not export_values and i < self.N_RETRIES:
+            try:
+                export_values = {export["Name"]: export["Value"] for export in client.list_exports().get("Exports", [])}
+            except ClientError as e:
+                if e.response["Error"]["Code"] == "AccessDenied":
+                    logger.warning(
+                        f"Access Denied for obtaining AWS Export values! ({self.account_id} - {self.region})"
+                    )
+                    return export_values
+                elif e.response["Error"]["Code"] == "Throttling":
+                    logger.warning(f"AWS Throttling: {self.stack_id} on {self.account_id} - {self.region}")
+                    sleep((i + 1) * 2)
+                else:
+                    logger.exception(
+                        f"Unhandled ClientError getting AWS Export values! ({self.account_id} - {self.region})"
+                    )
+            except Exception:
+                logger.exception(f"Unknown exception getting AWS Export values! ({self.account_id} - {self.region})")
+            i += 1
+        return export_values

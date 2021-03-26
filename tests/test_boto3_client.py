@@ -9,6 +9,7 @@ from moto import mock_cloudformation, mock_s3, mock_sts
 from cfripper.boto3_client import Boto3Client
 from cfripper.model.utils import InvalidURLException, convert_json_or_yaml_to_dict
 
+CLIENT_ERROR_ACCESS_DENIED = ClientError({"Error": {"Code": "AccessDenied"}}, "list_exports")
 CLIENT_ERROR_THROTTLING = ClientError({"Error": {"Code": "Throttling"}}, "get_template")
 CLIENT_ERROR_VALIDATION = ClientError({"Error": {"Code": "ValidationError"}}, "get_template")
 DUMMY_CLIENT_ERROR = ClientError({"Error": {"Code": "Exception"}}, "get_template")
@@ -41,11 +42,11 @@ def boto3_client():
             [],
         ),
         (
-            [CLIENT_ERROR_VALIDATION] * 10,
+            [CLIENT_ERROR_VALIDATION],
             None,
-            [call(f"Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #{i}") for i in range(5)],
+            [call("Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #0")],
             [],
-            [call("There is no stack: stack-id on 123456789 - eu-west-1") for _ in range(5)],
+            [call("There is no stack: stack-id on 123456789 - eu-west-1")],
         ),
         (
             [CLIENT_ERROR_THROTTLING, {"A": "a"}],
@@ -235,6 +236,55 @@ def test_urlencoded_url(s3_bucket, boto3_client):
         f"https://s3-eu-west-1.amazonaws.com/{TEST_BUCKET_NAME}/{expected_filename}"
     )
     assert result["hello"] == "this is valid json"
+
+
+@pytest.mark.parametrize(
+    "aws_responses, expected_exports, mocked_warning_logs, mocked_exceptions",
+    [
+        ([[{"Name": "A", "Value": "a"}]], {"A": "a"}, [], [],),
+        (
+            [[{"Foo": "Bar"}], [{"Name": "A", "Value": "a"}]],
+            {"A": "a"},
+            [],
+            [call("Unknown exception getting AWS Export values! (123456789 - eu-west-1)")],
+        ),
+        (
+            [CLIENT_ERROR_ACCESS_DENIED],
+            {},
+            [call("Access Denied for obtaining AWS Export values! (123456789 - eu-west-1)")],
+            [],
+        ),
+        (
+            [CLIENT_ERROR_THROTTLING, [{"Name": "A", "Value": "a"}]],
+            {"A": "a"},
+            [call("AWS Throttling: stack-id on 123456789 - eu-west-1")],
+            [],
+        ),
+        (
+            [DUMMY_CLIENT_ERROR, [{"Name": "A", "Value": "a"}]],
+            {"A": "a"},
+            [],
+            [call("Unhandled ClientError getting AWS Export values! (123456789 - eu-west-1)")],
+        ),
+    ],
+)
+@patch("logging.Logger.warning")
+@patch("logging.Logger.exception")
+def test_get_exports(
+    patched_exceptions,
+    patched_logger_warning,
+    aws_responses,
+    expected_exports,
+    mocked_warning_logs,
+    mocked_exceptions,
+    boto3_client,
+):
+    with patch.object(boto3_client, "session") as session_mock:
+        session_mock.client().list_exports().get.side_effect = aws_responses
+        exports = boto3_client.get_exports()
+        assert exports == expected_exports
+    assert patched_logger_warning.mock_calls == mocked_warning_logs
+    assert patched_exceptions.mock_calls == mocked_exceptions
 
 
 @mock_cloudformation
