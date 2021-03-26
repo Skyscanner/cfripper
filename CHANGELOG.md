@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2021-03-26
+### Improvements
+- Downgrade logging severity from exception to warning when there is no stack in AWS
+
 ## [1.0.2] - 2021-03-25
 ### Improvements
 - Handle AWS throttling errors when listing exports for a given account and region
