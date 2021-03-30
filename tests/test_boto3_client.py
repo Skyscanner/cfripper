@@ -45,8 +45,8 @@ def boto3_client():
             [CLIENT_ERROR_VALIDATION],
             None,
             [call("Stack: stack-id on 123456789 - eu-west-1 get_template Attempt #0")],
-            [],
             [call("There is no stack: stack-id on 123456789 - eu-west-1")],
+            [],
         ),
         (
             [CLIENT_ERROR_THROTTLING, {"A": "a"}],

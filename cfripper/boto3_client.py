@@ -50,7 +50,7 @@ class Boto3Client:
                     sleep((i + 1) * 2)
             except ClientError as e:
                 if e.response["Error"]["Code"] == "ValidationError":
-                    logger.exception(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
+                    logger.warning(f"There is no stack: {self.stack_id} on {self.account_id} - {self.region}")
                     return stack_content
                 elif e.response["Error"]["Code"] == "Throttling":
                     logger.warning(f"AWS Throttling: {self.stack_id} on {self.account_id} - {self.region}")
