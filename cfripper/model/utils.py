@@ -65,7 +65,7 @@ def extract_bucket_name_and_path_from_url(url):
     return bucket_name, path
 
 
-def convert_json_or_yaml_to_dict(file_content):
+def convert_json_or_yaml_to_dict(file_content, stack_id: Optional[str] = None):
     with suppress(ValueError):
         return json.loads(file_content)
 
@@ -74,9 +74,9 @@ def convert_json_or_yaml_to_dict(file_content):
         file_content = to_json(file_content)
         return json.loads(file_content)
     except yaml.YAMLError:
-        logger.exception("Could not convert YAML to JSON template")
+        logger.exception(f"Could not convert YAML to JSON template for {stack_id}")
     except ValueError:
-        logger.exception("Could not parse JSON template")
+        logger.exception(f"Could not parse JSON template for {stack_id}")
 
     return None
 
