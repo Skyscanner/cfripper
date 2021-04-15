@@ -128,6 +128,13 @@ def test_valid_yaml_as_bytes():
     assert result["hello"] == "this is valid"
 
 
+@patch("logging.Logger.exception")
+def test_invalid_yaml_as_bytes(patched_logger):
+    result = convert_json_or_yaml_to_dict(bytes("Abc: g\nh:f", "utf8"), "bad-stack")
+    assert result is None
+    patched_logger.assert_called_once_with("Could not parse JSON template for bad-stack")
+
+
 def test_valid_yaml_with_cf_shorthand_ref(s3_bucket, boto3_client):
     filename = "myexamplestack.yml"
     yaml_content = """

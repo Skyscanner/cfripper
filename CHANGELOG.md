@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2021-04-01
+### Improvements
+- Add `stack_id` to log output when failing to convert a YML template to JSON.
+
 ## [1.0.3] - 2021-03-26
 ### Improvements
 - Downgrade logging severity from exception to warning when there is no stack in AWS
