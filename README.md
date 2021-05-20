@@ -1,4 +1,6 @@
+<p align="center">
 <img src="docs/img/logo.png" width="200">
+</p>
 
 # CFRipper
 
