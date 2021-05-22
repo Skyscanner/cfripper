@@ -83,28 +83,21 @@
         },
         "PolicyDocument": {
           "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "AllowAccessFromSandbox",
-              "Action": [
-                "s3:PutObject"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "",
-                [
-                  "arn:aws:s3:::",
-                  "S3Bucket",
-                  "/*"
-                ]
-              ],
-              "Principal": {
-                "AWS": [
-                  "arn:aws:iam::987654321:root"
-                ]
-              }
+          "Statement": {
+            "Sid": "AllowAccessFromSandbox",
+            "Action": [
+              "s3:PutObject"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+              "arn:aws:s3:::S3Bucket/*"
+            ],
+            "Principal": {
+              "AWS": [
+                "arn:aws:iam::987654321:root"
+              ]
             }
-          ]
+          }
         }
       }
     }
