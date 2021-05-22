@@ -1,4 +1,6 @@
-SOURCES = $(shell find . -name "*.py")
+SOURCE_DIRS = cfripper tests docs
+SOURCE_FILES = setup.py
+SOURCE_ALL = $(SOURCE_DIRS) $(SOURCE_FILES)
 
 install:
 	pip install -r requirements.txt
@@ -10,19 +12,19 @@ install-docs:
 	pip install -e ".[dev,docs]"
 
 format:
-	isort --recursive .
-	black .
+	isort --recursive $(SOURCE_ALL)
+	black $(SOURCE_ALL)
 
 lint: isort-lint black-lint flake8-lint
 
 isort-lint:
-	isort --check-only --recursive .
+	isort --check-only --recursive $(SOURCE_ALL)
 
 black-lint:
-	black --check .
+	black --check $(SOURCE_ALL)
 
 flake8-lint:
-	flake8 cfripper/ tests/
+	flake8 $(SOURCE_ALL)
 
 unit:
 	pytest -svvv tests
