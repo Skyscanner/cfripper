@@ -17,6 +17,8 @@ def template_two_roles_dict():
 def test_init_with_no_params():
     config = Config()
     assert config.rules is None
+    assert config.aws_account_id is None
+    assert config.aws_principals == []
 
 
 def test_init_with_nonexistent_params():
@@ -24,6 +26,16 @@ def test_init_with_nonexistent_params():
     config = Config(project_name="MISSING", service_name="MISSING", stack_name="MISSING", rules=default_rules)
 
     assert set(config.rules) == set(default_rules)
+
+
+def test_init_with_existent_params():
+    expected_aws_account_id = "123456789012"
+    expected_aws_principals = ["234567890123", "345678901234"]
+
+    config = Config(aws_account_id=expected_aws_account_id, aws_principals=expected_aws_principals)
+
+    assert config.aws_account_id == expected_aws_account_id
+    assert config.aws_principals == expected_aws_principals
 
 
 def test_load_rules_config_file_success(test_files_location):
