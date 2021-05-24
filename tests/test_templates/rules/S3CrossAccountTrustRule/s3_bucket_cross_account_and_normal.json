@@ -83,7 +83,7 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "AWS": "arn:aws:iam::123456789:role/some-role/some-sub-role"
+                "AWS": "arn:aws:iam::123456789012:role/some-role/some-sub-role"
               },
               "Action": "s3:DeleteObjectVersion",
               "Resource": "arn:aws:s3:::company-prod-a-bucket-of-some-sort/*"
@@ -92,10 +92,10 @@
               "Effect": "Deny",
               "NotPrincipal": {
                 "AWS": [
-                  "arn:aws:sts::123456789:assumed-role/employee/employee-a",
-                  "arn:aws:iam::123456789:root",
-                  "arn:aws:sts::123456789:assumed-role/employee/employee-b",
-                  "arn:aws:iam::123456789:role/some-role/some-sub-role"
+                  "arn:aws:sts::123456789012:assumed-role/employee/employee-a",
+                  "arn:aws:iam::123456789012:root",
+                  "arn:aws:sts::123456789012:assumed-role/employee/employee-b",
+                  "arn:aws:iam::123456789012:role/some-role/some-sub-role"
                 ]
               },
               "Action": "s3:DeleteObjectVersion",
@@ -104,7 +104,7 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "AWS": "arn:aws:iam::123456789:role/some-role/some-sub-role"
+                "AWS": "arn:aws:iam::123456789012:role/some-role/some-sub-role"
               },
               "Action": [
                 "s3:DeleteObject",
@@ -116,8 +116,8 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": [
-                  "arn:aws:iam::123456789:role/some-role/some-other-sub-role",
-                  "arn:aws:iam::666555444:root"
+                  "arn:aws:iam::123456789012:role/some-role/some-other-sub-role",
+                  "arn:aws:iam::666555444333:root"
                 ]
               },
               "Action": [
@@ -133,8 +133,8 @@
               "Effect": "Deny",
               "Principal": {
                 "AWS": [
-                  "arn:aws:iam::123456789:role/some-role/some-other-sub-role",
-                  "arn:aws:iam::666555444:root"
+                  "arn:aws:iam::123456789012:role/some-role/some-other-sub-role",
+                  "arn:aws:iam::666555444333:root"
                 ]
               },
               "Action": [

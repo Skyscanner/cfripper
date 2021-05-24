@@ -1,8 +1,9 @@
 import logging
+import re
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import click
 import pycfmodel
@@ -30,10 +31,13 @@ def setup_logging(level: str) -> None:
 
 
 def init_cfripper(
-    rules_config_file: Optional[TextIOWrapper], rules_filters_folder: Optional[str]
+    rules_config_file: Optional[TextIOWrapper],
+    rules_filters_folder: Optional[str],
+    aws_account_id: Optional[str],
+    aws_principals: Optional[List[str]],
 ) -> Tuple[Config, RuleProcessor]:
     rules = get_all_rules()
-    config = Config(rules=rules.keys())
+    config = Config(rules=rules.keys(), aws_account_id=aws_account_id, aws_principals=aws_principals)
     if rules_config_file:
         config.load_rules_config_file(rules_config_file)
     if rules_filters_folder:
@@ -105,6 +109,8 @@ def process_template(
     output_format: str,
     rules_config_file: Optional[TextIOWrapper],
     rules_filters_folder: Optional[str],
+    aws_account_id: Optional[str],
+    aws_principals: Optional[List[str]],
 ) -> bool:
     logging.info(f"Analysing {template.name}...")
 
@@ -112,7 +118,7 @@ def process_template(
     if resolve:
         cfmodel = cfmodel.resolve(resolve_parameters)
 
-    config, rule_processor = init_cfripper(rules_config_file, rules_filters_folder)
+    config, rule_processor = init_cfripper(rules_config_file, rules_filters_folder, aws_account_id, aws_principals)
 
     result = analyse_template(cfmodel, rule_processor, config)
 
@@ -121,6 +127,21 @@ def process_template(
     output_handling(template.name, formatted_result, output_format, output_folder)
 
     return result.valid
+
+
+def validate_aws_account_id(ctx: click.Context, param: str, value: str) -> Optional[str]:
+    if value in [None, ""]:
+        return None
+    if re.match("^[0-9]{12}$", str(value)):
+        return str(value)
+    else:
+        raise click.BadParameter("AWS Account ID needs to be 12 digits – are you missing 0 prefixes?")
+
+
+def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optional[List[str]]:
+    if value in [None, ""]:
+        return None
+    return str(value).split(",")
 
 
 @click.command()
@@ -169,6 +190,19 @@ def process_template(
     "--rules-filters-folder",
     type=click.Path(exists=True, resolve_path=True, readable=True, file_okay=False),
     help="All files in the folder must be of type: [.py, .pyc]",
+)
+@click.option(
+    "--aws-account-id",
+    type=click.STRING,
+    callback=validate_aws_account_id,
+    help="A 12-digit AWS account number eg. 123456789012",
+)
+@click.option(
+    "--aws-principals",
+    type=click.STRING,
+    callback=validate_aws_principals,
+    help="A comma separated list of AWS principals eg. arn:aws:iam::123456789012:root,234567890123,"
+    "arn:aws:iam::111222333444:user/user-name",
 )
 def cli(templates, logging_level, resolve_parameters, **kwargs):
     """
