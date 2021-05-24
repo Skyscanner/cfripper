@@ -1,3 +1,4 @@
+import pydantic
 import pytest
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
@@ -28,13 +29,6 @@ def iam_policy_with_wildcard_resource_and_wildcard_action():
 def iam_policy_with_wildcard_resource_without_policy_name():
     return get_cfmodel_from(
         "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_without_policy_name.json"
-    ).resolve()
-
-
-@pytest.fixture()
-def iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name():
-    return get_cfmodel_from(
-        "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name.json"
     ).resolve()
 
 
@@ -864,26 +858,8 @@ def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
     )
 
 
-def test_policy_document_with_wildcard_resource_and_wilcard_action_without_policy_name_is_detected(
-    iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name,
-):
-    rule = WildcardResourceRule(None)
-    rule._config.stack_name = "stack3"
-    rule.all_cf_actions = set()
-    result = rule.invoke(iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name)
-
-    assert result.valid is False
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource allowing all actions',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"*"},
-                resource_ids={"RolePolicy"},
-            )
-        ],
-    )
+def test_policy_document_with_wildcard_resource_and_wildcard_action_without_policy_name_is_detected():
+    with pytest.raises(pydantic.ValidationError):
+        get_cfmodel_from(
+            "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name.json"
+        )
