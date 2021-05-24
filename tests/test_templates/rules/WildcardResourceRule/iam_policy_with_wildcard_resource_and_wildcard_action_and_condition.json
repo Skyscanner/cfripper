@@ -12,10 +12,9 @@
               "Action": "*",
               "Resource": "*",
               "Condition": {
-                "Fn::Equals" : [
-                   {"Ref" : "EnvironmentType"},
-                   "prod"
-                ]
+                "StringEquals" : {
+                   "condition:key": "condition-value"
+                }
               }
             }
           ]
