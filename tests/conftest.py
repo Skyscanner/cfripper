@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import pytest
+from pycfmodel.model.resources.generic_resource import GenericResource
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
@@ -14,6 +15,11 @@ def default_session_fixture(request):
     """Logging disabled when running tests."""
 
     logging.disable(logging.CRITICAL)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def disallow_allowing_typed_generic_resources():
+    GenericResource.ALLOW_EXISTING_TYPES = False
 
 
 @pytest.fixture
