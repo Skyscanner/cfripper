@@ -1,3 +1,4 @@
+import pydantic
 import pytest
 from pycfmodel.model.resources.iam_policy import IAMPolicy
 
@@ -21,20 +22,6 @@ def kms_key_with_wildcard_policy():
 def iam_policy_with_wildcard_resource_and_wildcard_action():
     return get_cfmodel_from(
         "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wildcard_action.json"
-    ).resolve()
-
-
-@pytest.fixture()
-def iam_policy_with_wildcard_resource_without_policy_name():
-    return get_cfmodel_from(
-        "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_without_policy_name.json"
-    ).resolve()
-
-
-@pytest.fixture()
-def iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name():
-    return get_cfmodel_from(
-        "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name.json"
     ).resolve()
 
 
@@ -668,222 +655,13 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
     )
 
 
-def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
-    iam_policy_with_wildcard_resource_without_policy_name,
-):
-    rule = WildcardResourceRule(None)
-    rule._config.stack_name = "stack3"
-    rule.all_cf_actions = set()
-    result = rule.invoke(iam_policy_with_wildcard_resource_without_policy_name)
-
-    assert result.valid is False
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:AddPermission"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ChangeMessageVisibility"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ChangeMessageVisibilityBatch"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:CreateQueue"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:DeleteMessage"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:DeleteMessageBatch"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:DeleteQueue"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:GetQueueAttributes"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:GetQueueUrl"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ListDeadLetterSourceQueues"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ListQueueTags"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ListQueues"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:PurgeQueue"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:ReceiveMessage"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:RemovePermission"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:SendMessage"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:SendMessageBatch"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:SetQueueAttributes"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:TagQueue"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource for "sqs:UntagQueue"',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"sqs:*"},
-                resource_ids={"RolePolicy"},
-            ),
-        ],
-    )
+def test_policy_document_with_wildcard_resource_without_policy_name_is_detected():
+    with pytest.raises(pydantic.ValidationError):
+        get_cfmodel_from("rules/WildcardResourceRule/iam_policy_with_wildcard_resource_without_policy_name.json")
 
 
-def test_policy_document_with_wildcard_resource_and_wilcard_action_without_policy_name_is_detected(
-    iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name,
-):
-    rule = WildcardResourceRule(None)
-    rule._config.stack_name = "stack3"
-    rule.all_cf_actions = set()
-    result = rule.invoke(iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name)
-
-    assert result.valid is False
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource allowing all actions',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"*"},
-                resource_ids={"RolePolicy"},
-            )
-        ],
-    )
+def test_policy_document_with_wildcard_resource_and_wildcard_action_without_policy_name_is_detected():
+    with pytest.raises(pydantic.ValidationError):
+        get_cfmodel_from(
+            "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name.json"
+        )
