@@ -1,9 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.4] - 2021-04-01
+## [1.0.4] - 2021-06-03
 ### Improvements
 - Add `stack_id` to log output when failing to convert a YML template to JSON.
+- Various minor test improvements
+- Added CLI args for aws account id and aws principals
+- Fix an issue in `S3BucketPublicReadAclAndListStatementRule` where it could crash if the model was unresolved
+- Center logo (thanks @lpmi-13)
+- Run tests in python 3.9 
 
 ## [1.0.3] - 2021-03-26
 ### Improvements
