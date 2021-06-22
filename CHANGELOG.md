@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2021-06-23
+### Improvements
+- Bump `pycfmodel` to `0.10.0`. Other dependencies also updated.
+
 ## [1.0.4] - 2021-06-03
 ### Improvements
 - Add `stack_id` to log output when failing to convert a YML template to JSON.
