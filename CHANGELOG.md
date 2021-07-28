@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2021-07-28
+### Improvements
+- Add EKS permissions that accept wildcard resource only
+
 ## [1.0.4] - 2021-06-03
 ### Improvements
 - Add `stack_id` to log output when failing to convert a YML template to JSON.
