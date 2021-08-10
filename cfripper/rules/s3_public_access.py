@@ -1,4 +1,4 @@
-__all__ = ["S3BucketPublicReadAclAndListStatementRule", "S3BucketPublicReadWriteAclRule"]
+__all__ = ["S3BucketPublicReadAclAndListStatementRule", "S3BucketPublicReadWriteAclRule", "S3BucketPublicReadAclRule"]
 
 import logging
 import re
@@ -98,6 +98,43 @@ class S3BucketPublicReadWriteAclRule(Rule):
                 and hasattr(resource, "Properties")
                 and resource.Properties.get("AccessControl") == "PublicReadWrite"
             ):
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                )
+        return result
+
+
+class S3BucketPublicReadAclRule(Rule):
+    """
+    Checks if any S3 bucket policy has access control set to `PublicRead`.
+
+    Risk:
+        Unless the bucket is hosting static content, S3 buckets should not have Public Read available on a bucket.
+        This allows anyone to read any objects to your S3 bucket.
+
+    Fix:
+        Remove any configuration that looks like `"AccessControl": "PublicRead"` from your S3 bucket policy.
+
+    Filters context:
+        | Parameter     | Type               | Description                                                    |
+        |:-------------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`       | str                | `config` variable available inside the rule                    |
+        |`extras`       | str                | `extras` variable available inside the rule                    |
+        |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`     | `Resource`         | S3 Bucket that is being addressed                              |
+    """
+
+    GRANULARITY = RuleGranularity.RESOURCE
+    REASON = "S3 Bucket {} should not have a public-read acl"
+    RISK_VALUE = RuleRisk.HIGH
+
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.resources_filtered_by_type(("AWS::S3::Bucket",)).items():
+            if hasattr(resource, "Properties") and resource.Properties.get("AccessControl") == "PublicRead":
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(logical_id),
