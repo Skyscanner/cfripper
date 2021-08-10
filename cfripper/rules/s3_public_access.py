@@ -133,12 +133,8 @@ class S3BucketPublicReadAclRule(Rule):
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if (
-                resource.Type == "AWS::S3::Bucket"
-                and hasattr(resource, "Properties")
-                and resource.Properties.get("AccessControl") == "PublicRead"
-            ):
+        for logical_id, resource in cfmodel.resources_filtered_by_type(("AWS::S3::Bucket",)).items():
+            if hasattr(resource, "Properties") and resource.Properties.get("AccessControl") == "PublicRead":
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(logical_id),
