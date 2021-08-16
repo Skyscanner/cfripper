@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2021-08-16
+### Improvements
+- Add `KMSKeyEnabledKeyRotation` rule
+- Bump `pycfmodel` to `0.10.4`
+
 ## [1.0.6] - 2021-07-28
 ### Improvements
 - Add `S3BucketPublicReadAclRule` rule

@@ -15,6 +15,7 @@ from cfripper.rules.ec2_security_group import (
 )
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
+from cfripper.rules.kms_key_rotation_enabled import KMSKeyEnabledKeyRotation
 from cfripper.rules.kms_key_wildcard_principal import KMSKeyWildcardPrincipalRule
 from cfripper.rules.managed_policy_on_user import ManagedPolicyOnUserRule
 from cfripper.rules.policy_on_user import PolicyOnUserRule
@@ -54,6 +55,7 @@ DEFAULT_RULES = {
         IAMRoleWildcardActionOnPolicyRule,
         KMSKeyCrossAccountTrustRule,
         KMSKeyWildcardPrincipalRule,
+        KMSKeyEnabledKeyRotation,
         ManagedPolicyOnUserRule,
         PartialWildcardPrincipalRule,
         PolicyOnUserRule,
