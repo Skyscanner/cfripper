@@ -29,7 +29,7 @@ class KMSKeyEnabledKeyRotation(Rule):
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "KMS Key {} should have the key rotation enabled"
+    REASON = "KMS Key {} should have the key rotation enabled for symmetric keys"
     RISK_VALUE = RuleRisk.HIGH
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:

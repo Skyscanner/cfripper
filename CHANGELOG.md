@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.7] - 2021-00-16
+## [1.0.7] - 2021-08-16
 ### Improvements
 - Add `KMSKeyEnabledKeyRotation` rule
 - Bump `pycfmodel` to `0.10.4`

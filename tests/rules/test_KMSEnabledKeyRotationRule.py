@@ -1,13 +1,11 @@
 import pytest
-from _pytest.fixtures import fixture
+from pytest import fixture
 
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure
 from cfripper.rules import KMSKeyEnabledKeyRotation
 from tests.utils import compare_lists_of_failures, get_cfmodel_from
-
-# from pytest import fixture
 
 
 @fixture()
@@ -33,7 +31,7 @@ def test_failures_are_raised(bad_template_path):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="KMS Key KMSKey should have the key rotation enabled",
+                reason="KMS Key KMSKey should have the key rotation enabled for symmetric keys",
                 risk_value=RuleRisk.HIGH,
                 rule="KMSKeyEnabledKeyRotation",
                 rule_mode=RuleMode.BLOCKING,
