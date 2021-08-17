@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2021-08-18
+### Improvements
+- Add `S3LifecycleConfiguraton` rule
+
 ## [1.0.7] - 2021-08-16
 ### Improvements
 - Add `KMSKeyEnabledKeyRotation` rule
