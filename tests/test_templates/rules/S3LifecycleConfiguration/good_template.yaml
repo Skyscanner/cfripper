@@ -1,0 +1,17 @@
+Resources:
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "foo"
+      AccessControl: BucketOwnerFullControl
+      LifecycleConfiguration:
+        Rules:
+          - Status: Enabled
+            Prefix: logs/
+            ExpirationInDays: !Ref LogsExpirationInDays
+          - Status: Enabled
+            Prefix: output/
+            ExpirationInDays: !Ref ModelsExpirationInDays
+          - AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+            Status: Enabled

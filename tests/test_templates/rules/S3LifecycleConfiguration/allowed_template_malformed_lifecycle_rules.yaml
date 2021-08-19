@@ -1,0 +1,10 @@
+Resources:
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "foo"
+      AccessControl: BucketOwnerFullControl
+      LifecycleConfiguration:
+        # This is not valid for LifecycleConfiguration, but CFRipper will not parse it right now.
+        - aa
+        - bb
