@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2021-09-09
+### Improvements
+- `WildCardResourceRule` is now triggered by resources that only limit by service (ex: `arn:aws:s3:::*`)
+
 ## [1.0.8] - 2021-08-18
 ### Improvements
 - Add `S3LifecycleConfiguraton` rule
