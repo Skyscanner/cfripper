@@ -34,9 +34,7 @@ def iam_policy_with_wildcard_resource_and_wildcard_action_and_condition():
 
 @pytest.fixture()
 def policy_with_s3_wildcard_and_all_buckets():
-    model = get_cfmodel_from(
-        "rules/WildcardResourceRule/policy_with_s3_wildcard_and_all_buckets.json"
-    )
+    model = get_cfmodel_from("rules/WildcardResourceRule/policy_with_s3_wildcard_and_all_buckets.json")
     return model.resolve()
 
 
@@ -670,20 +668,19 @@ def test_policy_s3_wildcard_and_all_buckets(policy_with_s3_wildcard_and_all_buck
     result = rule.invoke(policy_with_s3_wildcard_and_all_buckets)
 
     assert result.valid is False
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity="ACTION",
-                reason='"RolePolicy" is using a wildcard resource in "root" allowing all actions',
-                risk_value="MEDIUM",
-                rule="WildcardResourceRule",
-                rule_mode="BLOCKING",
-                actions={"*"},
-                resource_ids={"RolePolicy"},
-            )
-        ],
+    assert (
+        Failure(
+            granularity="ACTION",
+            reason='"RolePolicy" is using a wildcard resource in "Policy for something." for "s3:PutObject"',
+            risk_value="MEDIUM",
+            rule="WildcardResourceRule",
+            rule_mode="BLOCKING",
+            actions={"s3:*"},
+            resource_ids={"RolePolicy"},
+        )
+        in result.failures
     )
+    assert 100 < len(result.failures)
 
 
 def test_policy_document_with_wildcard_resource_without_policy_name_is_detected():

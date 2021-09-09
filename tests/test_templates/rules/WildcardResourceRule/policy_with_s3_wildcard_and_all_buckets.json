@@ -3,6 +3,7 @@
     "RolePolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
+        "PolicyName": "Policy for something.",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
