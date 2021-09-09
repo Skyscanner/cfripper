@@ -12,7 +12,7 @@ from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.resource import Resource
 
 from cfripper.cloudformation_actions_only_accepts_wildcard import CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD
-from cfripper.config.regex import REGEX_IS_STAR
+from cfripper.config.regex import REGEX_IS_STAR, REGEX_WILDCARD_ARN
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import ResourceSpecificRule
@@ -67,7 +67,10 @@ class WildcardResourceRule(ResourceSpecificRule):
     def _check_policy_document(
         self, result: Result, logical_id: str, policy_document: PolicyDocument, policy_name: Optional[str], extras: Dict
     ):
-        for statement in policy_document.statements_with(REGEX_IS_STAR):
+        statements_to_review = policy_document.statements_with(REGEX_IS_STAR) + policy_document.statements_with(
+            REGEX_WILDCARD_ARN
+        )
+        for statement in statements_to_review:
             self._check_statement(result, logical_id, policy_name, statement, extras=extras)
 
     def _check_statement(

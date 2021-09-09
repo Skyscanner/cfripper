@@ -78,6 +78,21 @@ Invalid:
 """
 REGEX_ARN = re.compile(r"^arn:aws:(\w+):(\w*):(\d*):(.+)$")
 
+
+"""
+Check for arns that allow the full aws service range in a particular service
+Valid:
+- arn:aws:s3:::*
+- arn:aws:iam:*:*:*
+- arn:aws:*:::*
+Invalid:
+- potato
+- arn:aws:s3:::my_corporate_bucket
+- arn:aws:iam::437628376:root
+"""
+REGEX_WILDCARD_ARN = re.compile(r"^arn:aws:([*\w]+):(\*)?:(\*)?:([*?]+)$")
+
+
 """
 Check for iam arns
 It has 2 groups. The first one for account id, the last one for resource id
