@@ -9,6 +9,7 @@ from cfripper.config.regex import (
     REGEX_IAM_ARN,
     REGEX_IS_STAR,
     REGEX_STS_ARN,
+    REGEX_WILDCARD_ARN,
     REGEX_WILDCARD_POLICY_ACTION,
 )
 
@@ -47,6 +48,11 @@ from cfripper.config.regex import (
         (REGEX_ARN, "arn:aws:iam::437628376:root", True),
         (REGEX_ARN, "arn:aws:s3:::my_corporate_bucket", True),
         (REGEX_ARN, "potato", False),
+        (REGEX_WILDCARD_ARN, "arn:aws:s3:::*", True),
+        (REGEX_WILDCARD_ARN, "arn:aws:iam:*:*:*", True),
+        (REGEX_WILDCARD_ARN, "arn:aws:*:::*", True),
+        (REGEX_WILDCARD_ARN, "arn:aws:s3:::my_corporate_bucket", False),
+        (REGEX_WILDCARD_ARN, "arn:aws:iam::437628376:root", False),
         (REGEX_IAM_ARN, "arn:aws:iam::437628376:not-root", True),
         (REGEX_IAM_ARN, "arn:aws:iam::437628376:root", True),
         (REGEX_IAM_ARN, "arn:aws:s3:::my_corporate_bucket", False),

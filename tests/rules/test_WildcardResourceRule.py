@@ -33,6 +33,12 @@ def iam_policy_with_wildcard_resource_and_wildcard_action_and_condition():
 
 
 @pytest.fixture()
+def policy_with_s3_wildcard_and_all_buckets():
+    model = get_cfmodel_from("rules/WildcardResourceRule/policy_with_s3_wildcard_and_all_buckets.json")
+    return model.resolve()
+
+
+@pytest.fixture()
 def user_and_policy_with_wildcard_resource():
     return get_cfmodel_from("rules/WildcardResourceRule/multiple_resources_with_wildcard_resources.json").resolve()
 
@@ -653,6 +659,28 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
             ),
         ],
     )
+
+
+def test_policy_s3_wildcard_and_all_buckets(policy_with_s3_wildcard_and_all_buckets):
+    rule = WildcardResourceRule(None)
+    rule._config.stack_name = "stack3"
+    rule.all_cf_actions = set()
+    result = rule.invoke(policy_with_s3_wildcard_and_all_buckets)
+
+    assert result.valid is False
+    assert (
+        Failure(
+            granularity="ACTION",
+            reason='"RolePolicy" is using a wildcard resource in "Policy for something." for "s3:PutObject"',
+            risk_value="MEDIUM",
+            rule="WildcardResourceRule",
+            rule_mode="BLOCKING",
+            actions={"s3:*"},
+            resource_ids={"RolePolicy"},
+        )
+        in result.failures
+    )
+    assert 100 < len(result.failures)
 
 
 def test_policy_document_with_wildcard_resource_without_policy_name_is_detected():

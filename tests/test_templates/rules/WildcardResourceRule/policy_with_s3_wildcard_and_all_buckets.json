@@ -1,0 +1,25 @@
+{
+  "Resources": {
+    "RolePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "Policy for something.",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:*",
+              "Resource": "arn:aws:s3:::*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "RootRole"
+          }
+        ]
+      }
+    }
+  }
+}
