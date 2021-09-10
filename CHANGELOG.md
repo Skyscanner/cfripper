@@ -1,8 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.9] - 2021-09-09
+## [1.0.9] - 2021-09-10
 ### Improvements
+- Update valid AWS Account IDs that might be included as principals on policies.
+- This list now covers ELB Logs, CloudTrail Logs, Redshift Audit, and ElastiCache backups.
 - `WildCardResourceRule` is now triggered by resources that only limit by service (ex: `arn:aws:s3:::*`)
 
 ## [1.0.8] - 2021-08-18

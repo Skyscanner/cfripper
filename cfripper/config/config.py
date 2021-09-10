@@ -9,7 +9,12 @@ from typing import DefaultDict, Dict, List
 
 from pydantic import BaseModel
 
-from cfripper.config.constants import AWS_ELASTICACHE_BACKUP_CANONICAL_IDS, AWS_ELB_LOGS_ACCOUNT_IDS
+from cfripper.config.constants import (
+    AWS_CLOUDTRAIL_ACCOUNT_IDS,
+    AWS_ELASTICACHE_BACKUP_CANONICAL_IDS,
+    AWS_ELB_LOGS_ACCOUNT_IDS,
+    AWS_REDSHIFT_AUDIT_ACCOUNT_IDS,
+)
 
 from .filter import Filter
 from .rule_config import RuleConfig
@@ -107,8 +112,10 @@ class Config:
         self.aws_user_agent = aws_user_agent
         if aws_service_accounts is None:
             self.aws_service_accounts = {
-                "elb_logs_account_ids": AWS_ELB_LOGS_ACCOUNT_IDS,
+                "cloudtrail_account_ids": AWS_CLOUDTRAIL_ACCOUNT_IDS,
                 "elasticache_backup_canonical_ids": AWS_ELASTICACHE_BACKUP_CANONICAL_IDS,
+                "elb_logs_account_ids": AWS_ELB_LOGS_ACCOUNT_IDS,
+                "redshift_audit_account_ids": AWS_REDSHIFT_AUDIT_ACCOUNT_IDS,
             }
         else:
             self.aws_service_accounts = aws_service_accounts
