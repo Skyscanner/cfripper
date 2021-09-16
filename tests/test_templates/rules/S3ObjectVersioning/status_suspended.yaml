@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  VersionBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      VersioningConfiguration:
+        Status: Suspended
+      ReplicationConfiguration:
+        Role: "arn:aws:iam::123456789012:role/replication_role"
+        Rules:
+          - Id: MyRule1
+            Status: Enabled
+            Prefix: MyPrefix
+            Destination:
+              Bucket: "arn:aws:s3:::my-replication-bucket"
+              StorageClass: STANDARD
+          - Status: Enabled
+            Prefix: MyOtherPrefix
+            Destination:
+              Bucket: "arn:aws:s3:::my-replication-bucket"
