@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.10] - 2021-09-XX
+## [1.1.0] - 2021-09-XX
 ### Improvements
 - Add `S3ObjectVersioning` rule
 
