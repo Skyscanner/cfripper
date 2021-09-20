@@ -2,14 +2,14 @@ __all__ = ["S3ObjectVersioningRule"]
 
 from typing import Dict, Optional
 
-from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.s3_bucket import S3Bucket
 
 from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
-from cfripper.rules.base_rules import Rule
+from cfripper.rules.base_rules import ResourceSpecificRule
 
 
-class S3ObjectVersioningRule(Rule):
+class S3ObjectVersioningRule(ResourceSpecificRule):
     """
     Checks if the S3 bucket has object versioning enabled or not.
 
@@ -40,28 +40,23 @@ class S3ObjectVersioningRule(Rule):
         |`config`       | str                | `config` variable available inside the rule                    |
         |`extras`       | str                | `extras` variable available inside the rule                    |
         |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
-        |`resource`     | `S3BucketPolicy`   | Resource that is being addressed                               |
-        |`bucket_name`  | str                | Name of the S3 bucket being analysed                           |
+        |`resource`     | `S3Bucket`         | Resource that is being addressed                               |
     """
 
     ENABLED_STATUS = "Enabled"
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} is required to have object versioning enabled"
+    RESOURCE_TYPES = (S3Bucket,)
     RISK_VALUE = RuleRisk.LOW
-    SUSPENDED_STATUS = "Suspended"
 
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+    def resource_invoke(self, resource: S3Bucket, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.resources_filtered_by_type(("AWS::S3::Bucket",)).items():
-            if (
-                hasattr(resource, "Properties")
-                and resource.Properties.get("VersioningConfiguration", {}).get("Status", self.SUSPENDED_STATUS)
-                != self.ENABLED_STATUS
-            ):
-                self.add_failure_to_result(
-                    result,
-                    self.REASON.format(logical_id),
-                    resource_ids={logical_id},
-                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
-                )
+        version_configuration = resource.Properties.VersioningConfiguration
+        if version_configuration is None or version_configuration.get("Status") != self.ENABLED_STATUS:
+            self.add_failure_to_result(
+                result,
+                self.REASON.format(logical_id),
+                resource_ids={logical_id},
+                context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+            )
         return result

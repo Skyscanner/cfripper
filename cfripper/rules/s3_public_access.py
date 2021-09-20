@@ -5,11 +5,12 @@ import re
 from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.s3_bucket import S3Bucket
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 
 from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
-from cfripper.rules.base_rules import Rule
+from cfripper.rules.base_rules import ResourceSpecificRule, Rule
 
 logger = logging.getLogger(__file__)
 
@@ -50,7 +51,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                     bucket_name = bucket_name[len("UNDEFINED_PARAM_") :]
 
                 bucket = cfmodel.Resources.get(bucket_name)
-                if bucket and bucket.Properties.get("AccessControl") == "PublicRead":
+                if bucket and bucket.Properties.AccessControl == "PublicRead":
                     self.add_failure_to_result(
                         result,
                         self.REASON.format(logical_id),
@@ -66,7 +67,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
         return result
 
 
-class S3BucketPublicReadWriteAclRule(Rule):
+class S3BucketPublicReadWriteAclRule(ResourceSpecificRule):
     """
     Checks if any S3 bucket policy has access control set to `PublicReadWrite`.
 
@@ -83,31 +84,27 @@ class S3BucketPublicReadWriteAclRule(Rule):
         |`config`       | str                | `config` variable available inside the rule                    |
         |`extras`       | str                | `extras` variable available inside the rule                    |
         |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
-        |`resource`     | `Resource`         | S3 Bucket that is being addressed                              |
+        |`resource`     | `S3Bucket`         | S3 Bucket that is being addressed                              |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public read-write acl"
+    RESOURCE_TYPES = (S3Bucket,)
     RISK_VALUE = RuleRisk.HIGH
 
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+    def resource_invoke(self, resource: S3Bucket, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if (
-                resource.Type == "AWS::S3::Bucket"
-                and hasattr(resource, "Properties")
-                and resource.Properties.get("AccessControl") == "PublicReadWrite"
-            ):
-                self.add_failure_to_result(
-                    result,
-                    self.REASON.format(logical_id),
-                    resource_ids={logical_id},
-                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
-                )
+        if resource.Properties.AccessControl == "PublicReadWrite":
+            self.add_failure_to_result(
+                result,
+                self.REASON.format(logical_id),
+                resource_ids={logical_id},
+                context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+            )
         return result
 
 
-class S3BucketPublicReadAclRule(Rule):
+class S3BucketPublicReadAclRule(ResourceSpecificRule):
     """
     Checks if any S3 bucket policy has access control set to `PublicRead`.
 
@@ -124,21 +121,21 @@ class S3BucketPublicReadAclRule(Rule):
         |`config`       | str                | `config` variable available inside the rule                    |
         |`extras`       | str                | `extras` variable available inside the rule                    |
         |`logical_id`   | str                | ID used in Cloudformation to refer the resource being analysed |
-        |`resource`     | `Resource`         | S3 Bucket that is being addressed                              |
+        |`resource`     | `S3Bucket`         | S3 Bucket that is being addressed                              |
     """
 
     GRANULARITY = RuleGranularity.RESOURCE
     REASON = "S3 Bucket {} should not have a public-read acl"
+    RESOURCE_TYPES = (S3Bucket,)
     RISK_VALUE = RuleRisk.HIGH
 
-    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+    def resource_invoke(self, resource: S3Bucket, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.resources_filtered_by_type(("AWS::S3::Bucket",)).items():
-            if hasattr(resource, "Properties") and resource.Properties.get("AccessControl") == "PublicRead":
-                self.add_failure_to_result(
-                    result,
-                    self.REASON.format(logical_id),
-                    resource_ids={logical_id},
-                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
-                )
+        if resource.Properties.AccessControl == "PublicRead":
+            self.add_failure_to_result(
+                result,
+                self.REASON.format(logical_id),
+                resource_ids={logical_id},
+                context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+            )
         return result
