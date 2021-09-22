@@ -1,4 +1,4 @@
-__all__ = ["S3LifecycleConfigurationRule"]
+__all__ = ["S3ObjectVersioningRule"]
 
 from typing import Dict, Optional
 
@@ -9,30 +9,28 @@ from cfripper.model.result import Result
 from cfripper.rules.base_rules import ResourceSpecificRule
 
 
-class S3LifecycleConfigurationRule(ResourceSpecificRule):
+class S3ObjectVersioningRule(ResourceSpecificRule):
     """
-    Checks for the presence of `LifecycleConfiguration` on S3 buckets.
-    These rules can help with security, compliance, and reduce AWS Costs. The rule does not
-    check the specific rules contained with the `LifecycleConfiguration` key.
+    Checks if the S3 bucket has object versioning enabled or not.
+
+    Risk:
+        Not having this property enabled could make the bucket more vulnerable to ransomware attacks.
+        Bucket versioning allows the automatic creation of multiple versions of an object.
+        When an object is deleted with versioning turned on, it is only marked as deleted but is still retrievable.
 
     Fix:
-        Add `LifecycleConfiguration` property to the S3 Bucket as defined in
-        https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-lifecycleconfig.html.
+        Add `VersioningConfiguration` property with the value `Enabled` to bucket as defined in the
+        [AWS documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-versioningconfig.html).
 
     Code for fix:
-        An example rule is included within the configuration.
-
         ````yml
         Resources:
           S3Bucket:
             Type: AWS::S3::Bucket
             Properties:
               ...
-              LifecycleConfiguration:
-                Rules:
-                  - Status: Enabled
-                    Prefix: logs/
-                    ExpirationInDays: 7
+              VersioningConfiguration:
+                Status: Enabled
               ...
         ````
 
@@ -45,14 +43,16 @@ class S3LifecycleConfigurationRule(ResourceSpecificRule):
         |`resource`     | `S3Bucket`         | Resource that is being addressed                               |
     """
 
+    ENABLED_STATUS = "Enabled"
     GRANULARITY = RuleGranularity.RESOURCE
-    REASON = "S3 Bucket {} is required to contain a LifecycleConfiguration property"
+    REASON = "S3 Bucket {} is required to have object versioning enabled"
     RESOURCE_TYPES = (S3Bucket,)
     RISK_VALUE = RuleRisk.LOW
 
     def resource_invoke(self, resource: S3Bucket, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        if not resource.Properties.LifecycleConfiguration:
+        version_configuration = resource.Properties.VersioningConfiguration
+        if version_configuration is None or version_configuration.get("Status") != self.ENABLED_STATUS:
             self.add_failure_to_result(
                 result,
                 self.REASON.format(logical_id),

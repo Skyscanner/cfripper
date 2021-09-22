@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2021-09-XX
+### Improvements
+- Add `S3ObjectVersioning` rule
+- Update `pycfmodel` to `0.11.0`
+  - This includes model support for S3 Buckets. Rules against these resources have been updated (alongside tests).
+
 ## [1.0.9] - 2021-09-10
 ### Improvements
 - Update valid AWS Account IDs that might be included as principals on policies.

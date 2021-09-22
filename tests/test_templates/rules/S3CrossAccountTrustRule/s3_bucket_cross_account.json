@@ -4,10 +4,7 @@
     "AWSAccount": {
       "Default": "sandbox",
       "Description": "Which AWS Account?",
-      "AllowedValues": [
-        "sandbox",
-        "prod"
-      ],
+      "AllowedValues": ["sandbox", "prod"],
       "Type": "String"
     },
     "ProjectName": {
@@ -40,26 +37,8 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "AccessControl": "PublicRead",
-        "BucketName": [
-          "-",
-          [
-            "company",
-            "AWSAccount",
-            "BucketPostFix"
-          ]
-        ],
+        "BucketName": "test",
         "Tags": [
-          {
-            "Key": "Name",
-            "Value": [
-              "-",
-              [
-                "company",
-                "AWSAccount",
-                "BucketPostFix"
-              ]
-            ]
-          },
           {
             "Key": "Project",
             "Value": "ProjectName"
@@ -85,17 +64,11 @@
           "Version": "2012-10-17",
           "Statement": {
             "Sid": "AllowAccessFromSandbox",
-            "Action": [
-              "s3:PutObject"
-            ],
+            "Action": ["s3:PutObject"],
             "Effect": "Allow",
-            "Resource": [
-              "arn:aws:s3:::S3Bucket/*"
-            ],
+            "Resource": ["arn:aws:s3:::S3Bucket/*"],
             "Principal": {
-              "AWS": [
-                "arn:aws:iam::987654321:root"
-              ]
+              "AWS": ["arn:aws:iam::987654321:root"]
             }
           }
         }

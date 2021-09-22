@@ -22,6 +22,7 @@ from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_lifecycle_configuration import S3LifecycleConfigurationRule
+from cfripper.rules.s3_object_versioning import S3ObjectVersioningRule
 from cfripper.rules.s3_public_access import (
     S3BucketPublicReadAclAndListStatementRule,
     S3BucketPublicReadAclRule,
@@ -68,6 +69,7 @@ DEFAULT_RULES = {
         S3BucketPublicReadWriteAclRule,
         S3BucketPublicReadAclRule,
         S3CrossAccountTrustRule,
+        S3ObjectVersioningRule,
         SNSTopicDangerousPolicyActionsRule,
         SNSTopicPolicyNotPrincipalRule,
         SNSTopicPolicyWildcardActionRule,
