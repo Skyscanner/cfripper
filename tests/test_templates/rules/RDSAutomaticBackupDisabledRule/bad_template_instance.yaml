@@ -1,0 +1,14 @@
+Resources:
+  MyRDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: 100
+      BackupRetentionPeriod: 0
+      CopyTagsToSnapshot: True
+      DBInstanceClass: "db.m4.large"
+      DatabaseName: "TestDatabase"
+      DeletionProtection: True
+      Engine: mysql
+      MasterUsername: "ab"
+      MasterUserPassword: "cd"
+      Port: 1234

@@ -1,0 +1,12 @@
+Resources:
+  MyRDS:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      BackupRetentionPeriod: 14
+      CopyTagsToSnapshot: True
+      DatabaseName: "TestDatabase"
+      DeletionProtection: True
+      Engine: aurora-postgresql
+      MasterUsername: "ab"
+      MasterUserPassword: "cd"
+      Port: 1234
