@@ -13,6 +13,7 @@ Resources:
             Principal:
               AWS:
                 - "arn:aws:iam::123456789012:root"
+                - "987654321012"
             Action: s3:PutObject
             Resource: !Sub
               - "arn:aws:s3:::${BucketName}/*"

@@ -13,7 +13,7 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL
+from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL, REGEX_PARTIAL_WILDCARD_PRINCIPAL
 from cfripper.model.enums import RuleGranularity, RuleRisk
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import PrincipalCheckingRule
@@ -22,11 +22,12 @@ logger = logging.getLogger(__file__)
 
 
 class GenericWildcardPrincipalRule(PrincipalCheckingRule):
-    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
+    REASON_WILDCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
     GRANULARITY = RuleGranularity.RESOURCE
 
+    AWS_ACCOUNT_ID_PATTERN = re.compile(r"^(\d{12})$")
     IAM_PATTERN = re.compile(r"arn:aws:iam::(\d*|\*):.*")
-    FULL_REGEX = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::(\d*|\*):.*)$")
+    FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
@@ -47,7 +48,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         for statement in resource._statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
-                    account_id_match = self.IAM_PATTERN.match(principal)
+                    account_id_match = self.IAM_PATTERN.match(principal) or self.AWS_ACCOUNT_ID_PATTERN.match(principal)
                     account_id = account_id_match.group(1) if account_id_match else None
 
                     # Check if account ID is allowed. `self._get_allowed_from_config()` used here
@@ -64,7 +65,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                     else:
                         self.add_failure_to_result(
                             result,
-                            self.REASON_WILCARD_PRINCIPAL.format(logical_id, principal),
+                            self.REASON_WILDCARD_PRINCIPAL.format(logical_id, principal),
                             resource_ids={logical_id},
                             context={
                                 "config": self._config,
@@ -103,16 +104,11 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
         |`account_id` | str                | Account ID found in the principal                              |
     """
 
-    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
-
+    REASON_WILDCARD_PRINCIPAL = (
+        "{} should not allow wildcard in principals or account-wide principals (principal: '{}')"
+    )
     RISK_VALUE = RuleRisk.MEDIUM
-    """
-    Will catch:
-
-    - Principal: arn:aws:iam:12345:12345*
-
-    """
-    FULL_REGEX = re.compile(r"^arn:aws:iam::.*:(.*\*|root)$")
+    FULL_REGEX = REGEX_PARTIAL_WILDCARD_PRINCIPAL
 
 
 class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
@@ -138,8 +134,4 @@ class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
         |`account_id` | str                | Account ID found in the principal                              |
     """
 
-    REASON_WILCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
-
     RISK_VALUE = RuleRisk.HIGH
-
-    FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL
