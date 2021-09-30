@@ -83,7 +83,16 @@ def test_failures_for_correct_account_ids(intra_account_root_access):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"AccLoadBalancerAccessLogBucketPolicy"},
-            )
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="AccLoadBalancerAccessLogBucketPolicy should not allow wildcard in principals or account-wide principals (principal: '987654321012')",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"AccLoadBalancerAccessLogBucketPolicy"},
+            ),
         ],
     )
 

@@ -25,6 +25,20 @@ Invalid:
 REGEX_FULL_WILDCARD_PRINCIPAL = re.compile(r"^((\w*:){0,1}\*|arn:aws:iam::\*:.*)$")
 
 """
+Check for use of wildcard or account-wide principals.
+Valid:
+- arn:aws:iam::123456789012:*
+- arn:aws:iam::123456789012:service-*
+- arn:aws:iam::123456789012:root
+- 123456789012
+Invalid:
+- *
+- potato
+- arn:aws:iam::123456789012:*not-root
+"""
+REGEX_PARTIAL_WILDCARD_PRINCIPAL = re.compile(r"^\d{12}|arn:aws:iam::.*:(.*\*|root)$")
+
+"""
 Check for use of wildcard, when applied to the specific elements of an Action.
 For example, sts:AssumeRole* or sts:*. This regex is not checking for use of `*` on its own.
 Valid:

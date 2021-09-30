@@ -1,7 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2021-09-XX
+## [1.1.1] - 2021-09-30
+### Fixes
+- Add a fix to the `PartialWildcardPrincipal` rule to be able to detect policies where whole account access is specified via just the account ID.
+- For example, if the Principal was defined as `Principal: AWS: 123456789012` as opposed to `Principal: AWS: arn:aws:iam::123456789012:root`.
+  - These are identical: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html
+
+## [1.1.0] - 2021-09-22
 ### Improvements
 - Add `S3ObjectVersioning` rule
 - Update `pycfmodel` to `0.11.0`
