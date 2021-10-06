@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2021-10-06
+### Fixes
+- Add a fix to the `KMSKeyEnabledKeyRotation` rule to be able to detect the `EnableKeyRotation` property properly.
+
 ## [1.1.1] - 2021-09-30
 ### Fixes
 - Add a fix to the `PartialWildcardPrincipal` rule to be able to detect policies where whole account access is specified via just the account ID.
