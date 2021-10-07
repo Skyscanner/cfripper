@@ -34,9 +34,9 @@ class KMSKeyEnabledKeyRotation(Rule):
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.resources_filtered_by_type(("AWS::KMS::Key")).items():
-            if not hasattr(resource, "KeySpec") or resource.Properties.get("KeySpec") == "SYMMETRIC_DEFAULT":
-                if not hasattr(resource, "EnableKeyRotation") or resource.Properties.get("EnableKeyRotation") is False:
+        for logical_id, resource in cfmodel.resources_filtered_by_type("AWS::KMS::Key").items():
+            if not resource.Properties.KeySpec or resource.Properties.KeySpec == "SYMMETRIC_DEFAULT":
+                if not resource.Properties.EnableKeyRotation or resource.Properties.EnableKeyRotation is False:
                     self.add_failure_to_result(
                         result,
                         self.REASON.format(logical_id),
