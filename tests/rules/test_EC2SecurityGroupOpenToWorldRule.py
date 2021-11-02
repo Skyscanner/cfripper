@@ -2,6 +2,9 @@ import pytest
 
 from cfripper.config.config import Config
 from cfripper.config.filter import Filter
+from cfripper.config.rule_configs.allow_http_ports_open_to_world import (
+    allow_http_ports_open_to_world_rules_config_filter,
+)
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 from cfripper.model.result import Failure
 from cfripper.rule_processor import RuleProcessor
@@ -76,7 +79,14 @@ def test_valid_security_group_not_slash0(valid_security_group_not_slash0):
 
 
 def test_valid_security_group_port80(valid_security_group_port80):
-    rule = EC2SecurityGroupOpenToWorldRule(None)
+    rule = EC2SecurityGroupOpenToWorldRule(
+        Config(
+            rules=["EC2SecurityGroupOpenToWorldRule"],
+            aws_account_id="123456789",
+            stack_name="mockstack",
+            rules_filters=[allow_http_ports_open_to_world_rules_config_filter],
+        )
+    )
     result = rule.invoke(valid_security_group_port80)
 
     assert result.valid
@@ -84,7 +94,14 @@ def test_valid_security_group_port80(valid_security_group_port80):
 
 
 def test_valid_security_group_port443(valid_security_group_port443):
-    rule = EC2SecurityGroupOpenToWorldRule(None)
+    rule = EC2SecurityGroupOpenToWorldRule(
+        Config(
+            rules=["EC2SecurityGroupOpenToWorldRule"],
+            aws_account_id="123456789",
+            stack_name="mockstack",
+            rules_filters=[allow_http_ports_open_to_world_rules_config_filter],
+        )
+    )
     result = rule.invoke(valid_security_group_port443)
 
     assert result.valid
@@ -122,7 +139,7 @@ def test_invalid_security_group_range(invalid_security_group_range):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="Port(s) 0-79, 81-100 open to public IPs: (11.0.0.0/8) in security group 'SecurityGroup'",
+                reason="Port(s) 0-100 open to public IPs: (11.0.0.0/8) in security group 'SecurityGroup'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="EC2SecurityGroupOpenToWorldRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -203,7 +220,7 @@ def test_non_matching_filters_are_reported_normally(invalid_security_group_range
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="Port(s) 0-79, 81-100 open to public IPs: (11.0.0.0/8) in security group 'SecurityGroup'",
+                reason="Port(s) 0-100 open to public IPs: (11.0.0.0/8) in security group 'SecurityGroup'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="EC2SecurityGroupOpenToWorldRule",
                 rule_mode=RuleMode.BLOCKING,

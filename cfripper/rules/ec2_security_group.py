@@ -37,7 +37,7 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
     ):
         if self.non_compliant_ip_range(ingress=ingress):
             open_ports = list(range(ingress.FromPort, ingress.ToPort + 1))
-            non_allowed_open_ports = sorted(set(open_ports) - set(self._config.allowed_world_open_ports))
+            non_allowed_open_ports = sorted(set(open_ports))
 
             if non_allowed_open_ports:
                 ip_range = ingress.CidrIp or ingress.CidrIpv6
