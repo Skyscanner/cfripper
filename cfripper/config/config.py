@@ -23,7 +23,6 @@ logger = logging.getLogger(__file__)
 
 
 class Config:
-    DEFAULT_ALLOWED_WORLD_OPEN_PORTS = [80, 443]
     DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS = [
         "arn:aws:iam::aws:policy/AdministratorAccess",
         "arn:aws:iam::aws:policy/IAMFullAccess",
@@ -119,8 +118,6 @@ class Config:
             }
         else:
             self.aws_service_accounts = aws_service_accounts
-
-        self.allowed_world_open_ports = list(self.DEFAULT_ALLOWED_WORLD_OPEN_PORTS)
 
         self.forbidden_managed_policy_arns = list(self.DEFAULT_FORBIDDEN_MANAGED_POLICY_ARNS)
 
