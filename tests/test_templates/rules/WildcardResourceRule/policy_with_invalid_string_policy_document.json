@@ -3,7 +3,7 @@
     "GuardDutyResourcePolicy": {
       "Type": "AWS::Something::Broken",
       "Properties": {
-        "PolicyName": "something-broker",
+        "PolicyName": "something-broken",
         "PolicyDocument": "FOOBARFOOBAR"
       }
     }
