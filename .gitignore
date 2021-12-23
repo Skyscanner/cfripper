@@ -71,3 +71,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Snyk Code
+.dccache
