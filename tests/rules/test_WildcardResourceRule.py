@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pydantic
 import pytest
 from pycfmodel.model.resources.iam_policy import IAMPolicy
@@ -41,6 +43,16 @@ def policy_with_s3_wildcard_and_all_buckets():
 @pytest.fixture()
 def user_and_policy_with_wildcard_resource():
     return get_cfmodel_from("rules/WildcardResourceRule/multiple_resources_with_wildcard_resources.json").resolve()
+
+
+@pytest.fixture()
+def policy_with_string_policy_document():
+    return get_cfmodel_from("rules/WildcardResourceRule/policy_with_string_policy_document.json").resolve()
+
+
+@pytest.fixture()
+def policy_with_invalid_string_policy_document():
+    return get_cfmodel_from("rules/WildcardResourceRule/policy_with_invalid_string_policy_document.json").resolve()
 
 
 def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wildcard_resource):
@@ -681,6 +693,37 @@ def test_policy_s3_wildcard_and_all_buckets(policy_with_s3_wildcard_and_all_buck
         in result.failures
     )
     assert 100 < len(result.failures)
+
+
+def test_policy_with_string_policy_document(policy_with_string_policy_document):
+    rule = WildcardResourceRule(None)
+    rule.all_cf_actions = set()
+    result = rule.invoke(policy_with_string_policy_document)
+
+    assert result.valid is False
+    assert result.failures == [
+        Failure(
+            granularity="ACTION",
+            reason='"GuardDutyResourcePolicy" is using a wildcard resource for "logs:CreateLogStream"',
+            risk_value="MEDIUM",
+            rule="WildcardResourceRule",
+            rule_mode="BLOCKING",
+            actions={"logs:CreateLogStream"},
+            resource_ids={"GuardDutyResourcePolicy"},
+        )
+    ]
+
+
+@patch("logging.Logger.warning")
+def test_policy_with_invalid_string_policy_document(patched_logger, policy_with_invalid_string_policy_document):
+    rule = WildcardResourceRule(None)
+    rule.all_cf_actions = set()
+    result = rule.invoke(policy_with_invalid_string_policy_document)
+
+    assert result.valid is True
+    patched_logger.assert_called_with(
+        "Could not process the PolicyDocument FOOBARFOOBAR on GuardDutyResourcePolicy", stack_info=True
+    )
 
 
 def test_policy_document_with_wildcard_resource_without_policy_name_is_detected():

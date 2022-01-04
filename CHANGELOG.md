@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2021-12-24
+### Fixes
+- The `WildcardResourceRule` would fail if it received a policy document that was a string. It was expecting all policy documents to be a dictionary. Some AWS services allow for string policies though (e.g. `AWS::Logs::ResourcePolicy`). The rule has been updated to handle string policies by attempting to convert it to a dictionary.
+
 ## [1.2.0] - 2021-11-03
 ### Updates
 - The rules `EC2SecurityGroupOpenToWorldRule` and `EC2SecurityGroupIngressOpenToWorldRule` were by default allowing ports 80 and 443. This has now been migrated to use a filter object, that can be optionally applied. See the README for further details. This means if the filter is not applied, Security Groups open to the world on ports 80 and 443 will start failing in CFRipper.

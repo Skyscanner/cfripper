@@ -1,0 +1,11 @@
+{
+  "Resources": {
+    "GuardDutyResourcePolicy": {
+      "Type": "AWS::Logs::ResourcePolicy",
+      "Properties": {
+        "PolicyName": "guardduty-resourcepolicy",
+        "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"GDAllowLogs\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"events.amazonaws.com\",\"delivery.logs.amazonaws.com\"]},\"Action\":[\"logs:CreateLogStream\"],\"Resource\":\"*\"}]}"
+      }
+    }
+  }
+}

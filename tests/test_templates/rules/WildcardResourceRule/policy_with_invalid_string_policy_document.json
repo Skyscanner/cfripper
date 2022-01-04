@@ -1,0 +1,11 @@
+{
+  "Resources": {
+    "GuardDutyResourcePolicy": {
+      "Type": "AWS::Something::Broken",
+      "Properties": {
+        "PolicyName": "something-broken",
+        "PolicyDocument": "FOOBARFOOBAR"
+      }
+    }
+  }
+}
