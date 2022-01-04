@@ -722,7 +722,7 @@ def test_policy_with_invalid_string_policy_document(patched_logger, policy_with_
 
     assert result.valid is True
     patched_logger.assert_called_with(
-        "Could not process the PolicyDocument FOOBARFOOBAR on GuardDutyResourcePolicy: Expecting value: line 1 column 1 (char 0)."
+        "Could not process the PolicyDocument FOOBARFOOBAR on GuardDutyResourcePolicy", stack_info=True
     )
 
 

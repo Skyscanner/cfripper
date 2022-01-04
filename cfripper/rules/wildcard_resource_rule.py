@@ -70,8 +70,10 @@ class WildcardResourceRule(ResourceSpecificRule):
                         self._check_policy_document(
                             result, logical_id, PolicyDocument(**formatted_policy_document), None, extras
                         )
-                    except Exception as e:
-                        logger.warning(f"Could not process the PolicyDocument {policy_document} on {logical_id}: {e}.")
+                    except Exception:
+                        logger.warning(
+                            f"Could not process the PolicyDocument {policy_document} on {logical_id}", stack_info=True
+                        )
 
         return result
 
