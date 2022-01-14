@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2022-1-17
+### Improvements
+- Add `ElasticsearchDomainCrossAccountTrustRule` and `OpenSearchDomainCrossAccountTrustRule`
+- Bump `pycfmodel` to `0.13.0`
+
 ## [1.2.2] - 2022-1-07
 ### Improvements
 - Bump `pycfmodel` to `0.11.1`
