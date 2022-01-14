@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Testing ES Domain
+
+Resources:
+  TestDomain:
+    Type: AWS::Elasticsearch::Domain
+    Properties:
+      DomainName: "test"
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "Allow full access of the domain"
+            Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::123456789:role/test-role"
+                - "arn:aws:sts::123456789:assumed-role/test-role/session"
+            Action: "es:*"
+            Resource: "arn:aws:es:*:123456789012:domain/test/*"
