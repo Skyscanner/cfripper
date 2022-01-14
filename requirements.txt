@@ -10,7 +10,7 @@ cfn-flip==1.2.3
 click==7.1.2
 jmespath==0.10.0
 pluggy==0.13.1
-pycfmodel==0.11.1
+pycfmodel==0.13.0
 pydantic==1.8.2
 pydash==4.7.6
 python-dateutil==2.8.1
