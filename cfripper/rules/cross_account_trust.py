@@ -1,7 +1,9 @@
 __all__ = [
     "CrossAccountCheckingRule",
     "CrossAccountTrustRule",
+    "ElasticsearchDomainCrossAccountTrustRule",
     "KMSKeyCrossAccountTrustRule",
+    "OpenSearchDomainCrossAccountTrustRule",
     "S3CrossAccountTrustRule",
 ]
 
@@ -10,8 +12,10 @@ from abc import ABC
 from typing import Dict, Optional, Set
 
 from pycfmodel.model.cf_model import CFModel
+from pycfmodel.model.resources.es_domain import ESDomain
 from pycfmodel.model.resources.iam_role import IAMRole
 from pycfmodel.model.resources.kms_key import KMSKey
+from pycfmodel.model.resources.opensearch_domain import OpenSearchDomain
 from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
@@ -185,3 +189,59 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     REASON = "{} has forbidden cross-account policy allow with {} for an KMS Key Policy"
     RESOURCE_TYPE = KMSKey
     PROPERTY_WITH_POLICYDOCUMENT = "KeyPolicy"
+
+
+class ElasticsearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    Checks for Elasticsearch domains that allow cross-account principals to get access.
+
+    Risk:
+        It might allow other AWS identities to read/modify data.
+
+    Fix:
+        If cross account permissions are required for ES domains, the stack should be added to the allowlist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type        | Description                                                    |
+        |:-----------:|:-----------:|:--------------------------------------------------------------:|
+        |`config`     | str         | `config` variable available inside the rule                    |
+        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `ESDomain`  | Resource that is being addressed                               |
+        |`statement`  | `Statement` | Statement being checked found in the Resource                  |
+        |`principal`  | `str`       | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`       | Account ID found in the principal                              |
+    """
+
+    REASON = "{} has forbidden cross-account policy allow with {} for an ES domain policy."
+    RESOURCE_TYPE = ESDomain
+    PROPERTY_WITH_POLICYDOCUMENT = "AccessPolicies"
+
+
+class OpenSearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    Checks for OpenSearch domains that allow cross-account principals to get access.
+
+    Risk:
+        It might allow other AWS identities to read/modify data.
+
+    Fix:
+        If cross account permissions are required for OpenSearch domains, the stack should be added to the allowlist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type               | Description                                                    |
+        |:-----------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`     | str                | `config` variable available inside the rule                    |
+        |`extras`     | str                | `extras` variable available inside the rule                    |
+        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `OpenSearchDomain` | Resource that is being addressed                               |
+        |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
+        |`principal`  | `str`              | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`              | Account ID found in the principal                              |
+    """
+
+    REASON = "{} has forbidden cross-account policy allow with {} for an OpenSearch domain policy."
+    RESOURCE_TYPE = OpenSearchDomain
+    PROPERTY_WITH_POLICYDOCUMENT = "AccessPolicies"
