@@ -4,7 +4,9 @@ from cfripper.rules.cloudformation_authentication import CloudFormationAuthentic
 from cfripper.rules.cross_account_trust import (
     CrossAccountCheckingRule,
     CrossAccountTrustRule,
+    ElasticsearchDomainCrossAccountTrustRule,
     KMSKeyCrossAccountTrustRule,
+    OpenSearchDomainCrossAccountTrustRule,
     S3CrossAccountTrustRule,
 )
 from cfripper.rules.ebs_volume_has_sse import EBSVolumeHasSSERule
@@ -51,6 +53,7 @@ DEFAULT_RULES = {
         EC2SecurityGroupIngressOpenToWorldRule,
         EC2SecurityGroupMissingEgressRule,
         EC2SecurityGroupOpenToWorldRule,
+        ElasticsearchDomainCrossAccountTrustRule,
         FullWildcardPrincipalRule,
         HardcodedRDSPasswordRule,
         IAMRolesOverprivilegedRule,
@@ -59,6 +62,7 @@ DEFAULT_RULES = {
         KMSKeyWildcardPrincipalRule,
         KMSKeyEnabledKeyRotation,
         ManagedPolicyOnUserRule,
+        OpenSearchDomainCrossAccountTrustRule,
         PartialWildcardPrincipalRule,
         PolicyOnUserRule,
         PrivilegeEscalationRule,

@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Testing OpenSearch Domain
+
+Parameters:
+  Principal:
+    Type: String
+
+Resources:
+  TestDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: "test"
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "Allow full access of the domain"
+            Effect: "Allow"
+            Principal:
+              AWS: !Ref Principal
+            Action: "es:*"
+            Resource: "arn:aws:es:*:123456789012:domain/test/*"
