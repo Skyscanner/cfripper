@@ -10,7 +10,7 @@ from cfripper.rules.cross_account_trust import (
     CrossAccountTrustRule,
     ElasticsearchDomainCrossAccountTrustRule,
     KMSKeyCrossAccountTrustRule,
-    OpenSearchDomainCrossAccountTrustRule,
+    OpenSearchDomainCrossAccountTrustRule, CrossAccountCheckingRule,
 )
 from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
@@ -63,6 +63,16 @@ def template_invalid_with_sts_es_domain():
 @pytest.fixture()
 def template_invalid_with_sts_opensearch_domain():
     return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts_opensearch_domain.yml").resolve()
+
+
+@pytest.fixture()
+def template_es_domain_without_access_policies():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_without_access_policies.yml").resolve()
+
+
+@pytest.fixture()
+def template_opensearch_domain_without_access_policies():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/opensearch_domain_without_access_policies.yml").resolve()
 
 
 @pytest.fixture()
@@ -367,6 +377,14 @@ def test_sts_failure_es_domain(template_invalid_with_sts_es_domain):
     )
 
 
+def test_es_domain_without_access_policies(template_es_domain_without_access_policies):
+    rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template_es_domain_without_access_policies)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
 @pytest.mark.parametrize(
     "principal",
     [
@@ -442,3 +460,11 @@ def test_sts_failure_opensearch_domain(template_invalid_with_sts_opensearch_doma
             )
         ],
     )
+
+
+def test_opensearch_domain_without_access_policies(template_opensearch_domain_without_access_policies):
+    rule = OpenSearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template_opensearch_domain_without_access_policies)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])

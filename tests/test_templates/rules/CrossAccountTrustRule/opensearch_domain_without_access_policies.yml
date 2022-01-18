@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Testing OpenSearchService Domain
+
+Parameters:
+  Principal:
+    Type: String
+
+Resources:
+  TestDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: "test"
