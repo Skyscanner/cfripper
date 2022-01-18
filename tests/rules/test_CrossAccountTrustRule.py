@@ -10,7 +10,7 @@ from cfripper.rules.cross_account_trust import (
     CrossAccountTrustRule,
     ElasticsearchDomainCrossAccountTrustRule,
     KMSKeyCrossAccountTrustRule,
-    OpenSearchDomainCrossAccountTrustRule, CrossAccountCheckingRule,
+    OpenSearchDomainCrossAccountTrustRule,
 )
 from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
