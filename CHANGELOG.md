@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2022-1-17
+### Fixes
+- Fixes `CrossAccountCheckingRule` when checking resources without `PROPERTY_WITH_POLICYDOCUMENT`.
+
 ## [1.3.0] - 2022-1-17
 ### Improvements
 - Add `ElasticsearchDomainCrossAccountTrustRule` and `OpenSearchDomainCrossAccountTrustRule`
