@@ -52,15 +52,16 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
             if isinstance(resource, self.RESOURCE_TYPE):
                 properties = resource.Properties
                 policy_document = getattr(properties, self.PROPERTY_WITH_POLICYDOCUMENT)
-                for statement in policy_document._statement_as_list():
-                    filters_available_context = {
-                        "config": self._config,
-                        "extras": extras,
-                        "logical_id": logical_id,
-                        "resource": resource,
-                        "statement": statement,
-                    }
-                    self._do_statement_check(result, logical_id, statement, filters_available_context)
+                if policy_document:
+                    for statement in policy_document._statement_as_list():
+                        filters_available_context = {
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                            "statement": statement,
+                        }
+                        self._do_statement_check(result, logical_id, statement, filters_available_context)
         return result
 
     def _do_statement_check(

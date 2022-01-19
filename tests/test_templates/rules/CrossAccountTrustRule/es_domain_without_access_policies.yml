@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Testing ES Domain
+
+Parameters:
+  Principal:
+    Type: String
+
+Resources:
+  TestDomain:
+    Type: AWS::Elasticsearch::Domain
+    Properties:
+      DomainName: "test"
