@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2022-1-27
+### Updates
+- Stop logging when conditions are ignored in `CrossAccountCheckingRule`, `KMSKeyWildcardPrincipalRule`, `S3BucketPolicyPrincipalRule`, `SQSQueuePolicyPublicRule` and `GenericWildcardPrincipalRule`.
+
 ## [1.3.1] - 2022-1-17
 ### Fixes
 - Fixes `CrossAccountCheckingRule` when checking resources without `PROPERTY_WITH_POLICYDOCUMENT`.
