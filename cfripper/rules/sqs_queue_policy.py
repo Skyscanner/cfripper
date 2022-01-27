@@ -83,10 +83,8 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
             for statement in resource.Properties.PolicyDocument._statement_as_list():
                 if statement.Effect == "Allow" and statement.principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
                     if statement.Condition and statement.Condition.dict():
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} "
-                            f"because there are conditions: {statement.Condition}"
-                        )
+                        # Ignoring condition checks since they will get reviewed in other rules and future improvements
+                        pass
                     else:
                         self.add_failure_to_result(
                             result,
