@@ -1,7 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.3.2] - 2022-1-27
+## [1.3.3] - 2022-2-3
+### Fixes
+- Fix CI, force `pycfmodel` to use version `0.13.0`.
+
+## [1.3.2] - 2022-2-3
 ### Updates
 - Stop logging when conditions are ignored in `CrossAccountCheckingRule`, `KMSKeyWildcardPrincipalRule`, `S3BucketPolicyPrincipalRule`, `SQSQueuePolicyPublicRule` and `GenericWildcardPrincipalRule`.
 
