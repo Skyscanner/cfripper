@@ -81,10 +81,8 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                     and not principal.endswith(".amazonaws.com")
                 ):
                     if statement.Condition and statement.Condition.dict():
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} "
-                            f"because there are conditions: {statement.Condition}"
-                        )
+                        # Ignoring condition checks since they will get reviewed in other rules and future improvements
+                        pass
                     elif not self._config.aws_account_id:
                         logger.warning(
                             f"Not adding {type(self).__name__} failure in {logical_id} "

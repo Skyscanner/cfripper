@@ -51,10 +51,8 @@ class S3BucketPolicyPrincipalRule(PrincipalCheckingRule, ResourceSpecificRule):
                     continue
                 if account_id not in self.valid_principals:
                     if statement.Condition and statement.Condition.dict():
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} "
-                            f"because there are conditions: {statement.Condition}"
-                        )
+                        # Ignoring condition checks since they will get reviewed in other rules and future improvements
+                        pass
                     else:
                         self.add_failure_to_result(
                             result,

@@ -56,12 +56,9 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                     # which belong to AWS Services (such as ELB and ElastiCache).
                     if account_id in self._get_allowed_from_config():
                         continue
-
                     if statement.Condition and statement.Condition.dict():
-                        logger.warning(
-                            f"Not adding {type(self).__name__} failure in {logical_id} because there are conditions: "
-                            f"{statement.Condition}"
-                        )
+                        # Ignoring condition checks since they will get reviewed in other rules and future improvements
+                        continue
                     else:
                         self.add_failure_to_result(
                             result,
