@@ -22,5 +22,3 @@ Resources:
             Action: sts:AssumeRoleWithSAML
             Principal:
               Federated: !Sub "arn:aws:iam::${AWS::AccountId}:saml-provider/saml-provider"
-              Action:
-                - sts:AssumeRole

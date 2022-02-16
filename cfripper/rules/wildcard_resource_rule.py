@@ -1,6 +1,4 @@
-__all__ = [
-    "WildcardResourceRule",
-]
+__all__ = ["WildcardResourceRule"]
 import json
 import logging
 from typing import Dict, Optional
@@ -59,7 +57,11 @@ class WildcardResourceRule(ResourceSpecificRule):
             self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
         elif isinstance(resource, GenericResource):
             if hasattr(resource, "Properties"):
-                policy_document = resource.Properties.get("PolicyDocument")
+                try:
+                    policy_document = resource.Properties.PolicyDocument
+                except AttributeError:
+                    policy_document = None
+
                 if policy_document:
                     try:
                         # PolicyDocument requires a dict. If we receive a string, attempt a conversion to dict.
