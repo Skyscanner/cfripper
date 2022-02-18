@@ -78,10 +78,7 @@ class HardcodedRDSPasswordRule(Rule):
 
         # check each instance with the context of clusters.
         for logical_id, resource in instances_to_check:
-            try:
-                db_cluster_id = resource.Properties.DBClusterIdentifier
-            except AttributeError:
-                db_cluster_id = None
+            db_cluster_id = getattr(resource.Properties, "DBClusterIdentifier", None)
 
             if db_cluster_id and any(cluster_id in db_cluster_id for cluster_id in password_protected_cluster_ids):
                 continue
@@ -92,11 +89,7 @@ class HardcodedRDSPasswordRule(Rule):
     def _failure_added(
         self, result: Result, logical_id: str, resource: GenericResource, extras: Optional[Dict] = None
     ) -> bool:
-        try:
-            master_user_password = resource.Properties.MasterUserPassword
-        except AttributeError:
-            master_user_password = Parameter.NO_ECHO_NO_DEFAULT
-
+        master_user_password = getattr(resource.Properties, "MasterUserPassword", Parameter.NO_ECHO_NO_DEFAULT)
         resource_type = resource.Type.replace("AWS::RDS::DB", "")
         if master_user_password == Parameter.NO_ECHO_WITH_DEFAULT:
             self.add_failure_to_result(

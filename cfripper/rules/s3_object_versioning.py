@@ -51,12 +51,7 @@ class S3ObjectVersioningRule(ResourceSpecificRule):
 
     def resource_invoke(self, resource: S3Bucket, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-
-        try:
-            version_configuration_status = resource.Properties.VersioningConfiguration.Status
-        except AttributeError:
-            version_configuration_status = None
-
+        version_configuration_status = getattr(resource.Properties.VersioningConfiguration, "Status", None)
         if version_configuration_status != self.ENABLED_STATUS:
             self.add_failure_to_result(
                 result,
