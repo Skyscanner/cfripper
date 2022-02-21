@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2022-2-21
+### Fixes
+- Fix CI, updated tests to work with `pycfmodel` latest version which includes the use of the `Generic`.
+### Improvements
+- Bump and fixed required dependency `pycfmodel` to be at least `0.16.2`.
+- Bump several dependencies: 
+  - `boto3` to `1.21.2`
+  - `botocore` to `1.24.2`
+  - `cfn-flip` to `1.3.0`
+  - `pydantic` to `1.9.0`
+  - `python-dateutil` to `2.8.2`
+  - `pyyaml` to `6.0`
+  - `s3transfer` to `0.5.1`
+  - `typing-extensions` to `4.1.1`
+  - `urllib3` to `1.26.8`
+
 ## [1.3.3] - 2022-2-3
 ### Fixes
 - Fix CI, force `pycfmodel` to use version `0.13.0`.

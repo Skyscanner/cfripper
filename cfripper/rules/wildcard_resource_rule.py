@@ -1,6 +1,4 @@
-__all__ = [
-    "WildcardResourceRule",
-]
+__all__ = ["WildcardResourceRule"]
 import json
 import logging
 from typing import Dict, Optional
@@ -58,22 +56,21 @@ class WildcardResourceRule(ResourceSpecificRule):
         elif isinstance(resource, KMSKey):
             self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
         elif isinstance(resource, GenericResource):
-            if hasattr(resource, "Properties"):
-                policy_document = resource.Properties.get("PolicyDocument")
-                if policy_document:
-                    try:
-                        # PolicyDocument requires a dict. If we receive a string, attempt a conversion to dict.
-                        # If this conversion fails, show the appropriate warning and continue.
-                        formatted_policy_document = (
-                            json.loads(policy_document) if isinstance(policy_document, str) else policy_document
-                        )
-                        self._check_policy_document(
-                            result, logical_id, PolicyDocument(**formatted_policy_document), None, extras
-                        )
-                    except Exception:
-                        logger.warning(
-                            f"Could not process the PolicyDocument {policy_document} on {logical_id}", stack_info=True
-                        )
+            policy_document = getattr(resource.Properties, "PolicyDocument", None)
+            if policy_document:
+                try:
+                    # PolicyDocument requires a dict. If we receive a string, attempt a conversion to dict.
+                    # If this conversion fails, show the appropriate warning and continue.
+                    formatted_policy_document = (
+                        json.loads(policy_document) if isinstance(policy_document, str) else policy_document
+                    )
+                    self._check_policy_document(
+                        result, logical_id, PolicyDocument(**formatted_policy_document), None, extras
+                    )
+                except Exception:
+                    logger.warning(
+                        f"Could not process the PolicyDocument {policy_document} on {logical_id}", stack_info=True
+                    )
 
         return result
 
