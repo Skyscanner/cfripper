@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2022-2-24
+### Improvements
+- Bump `pycfmodel` to `0.16.3`
+
 ## [1.4.0] - 2022-2-21
 ### Fixes
 - Fix CI, updated tests to work with `pycfmodel` latest version which includes the use of the `Generic`.
