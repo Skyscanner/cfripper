@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2022-2-24
+### Fixes
+- Fix how `make install-dev` works, it will install dependencies from `make install` first.
+### Improvements
+- Bump dev dependency `moto` from `1.3.13` to `1.3.14`.
+
 ## [1.4.1] - 2022-2-24
 ### Improvements
 - Bump `pycfmodel` to `0.16.3`

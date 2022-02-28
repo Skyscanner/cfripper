@@ -5,7 +5,7 @@ SOURCE_ALL = $(SOURCE_DIRS) $(SOURCE_FILES)
 install:
 	pip install -r requirements.txt
 
-install-dev:
+install-dev: install
 	pip install -e ".[dev]"
 
 install-docs:
