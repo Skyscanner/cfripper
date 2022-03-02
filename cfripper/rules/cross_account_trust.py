@@ -53,7 +53,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                 properties = resource.Properties
                 policy_document = getattr(properties, self.PROPERTY_WITH_POLICYDOCUMENT)
                 if policy_document:
-                    for statement in policy_document._statement_as_list():
+                    for statement in policy_document.statement_as_list():
                         filters_available_context = {
                             "config": self._config,
                             "extras": extras,
