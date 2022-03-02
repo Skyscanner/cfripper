@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.5.0]
 ### Updates
 - Created new `GenericCrossAccountTrustRule` in order to check for CrossAccount issues for not mapped resources.
-- Added documentation regarding the deprecation of `CrossAccountTrustRule`, `S3CrossAccountTrustRule`, `KMSKeyCrossAccountTrustRule`, `ElasticsearchDomainCrossAccountTrustRule` and `OpenSearchDomainCrossAccountTrustRule`.
+- Added documentation regarding the deprecation of `S3CrossAccountTrustRule`, `KMSKeyCrossAccountTrustRule`, `ElasticsearchDomainCrossAccountTrustRule` and `OpenSearchDomainCrossAccountTrustRule`.
 - Covering cases for already mapped models in rules inherited from `CrossAccountCheckingRule` with the new `GenericCrossAccountTrustRule`.
 ### Improvements
 - Bump `pycfmodel` to `0.17.0`

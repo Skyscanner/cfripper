@@ -153,8 +153,6 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
     """
-    To be replaced by GenericCrossAccountTrustRule.
-
     Checks if the trust policy of a role grants permissions to principals from other accounts.
     Do not use whole accounts as principals.
 
