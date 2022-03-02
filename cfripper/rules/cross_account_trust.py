@@ -121,9 +121,9 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type        | Description                                                    |
         |:-----------:|:-----------:|:--------------------------------------------------------------:|
-        |`config`     | str         | `config` variable available inside the rule                    |
-        |`extras`     | str         | `extras` variable available inside the rule                    |
-        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`       | `config` variable available inside the rule                    |
+        |`extras`     | `str`       | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`       | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `IAMRole`   | Resource that is being addressed                               |
         |`statement`  | `Statement` | Statement being checked found in the Resource                  |
         |`principal`  | `str`       | AWS Principal being checked found in the statement             |
@@ -153,6 +153,8 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks if the trust policy of a role grants permissions to principals from other accounts.
     Do not use whole accounts as principals.
 
@@ -166,9 +168,9 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type        | Description                                                    |
         |:-----------:|:-----------:|:--------------------------------------------------------------:|
-        |`config`     | str         | `config` variable available inside the rule                    |
-        |`extras`     | str         | `extras` variable available inside the rule                    |
-        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`       | `config` variable available inside the rule                    |
+        |`extras`     | `str`       | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`       | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `IAMRole`   | Resource that is being addressed                               |
         |`statement`  | `Statement` | Statement being checked found in the Resource                  |
         |`principal`  | `str`       | AWS Principal being checked found in the statement             |
@@ -182,6 +184,8 @@ class CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Check for cross account access in S3 bucket policies. Cross account access by default should not be allowed.
 
     Risk:
@@ -194,9 +198,9 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type             | Description                                                    |
         |:-----------:|:----------------:|:--------------------------------------------------------------:|
-        |`config`     | str              | `config` variable available inside the rule                    |
-        |`extras`     | str              | `extras` variable available inside the rule                    |
-        |`logical_id` | str              | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`            | `config` variable available inside the rule                    |
+        |`extras`     | `str`            | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`            | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `S3BucketPolicy` | Resource that is being addressed                               |
         |`statement`  | `Statement`      | Statement being checked found in the Resource                  |
         |`principal`  | `str`            | AWS Principal being checked found in the statement             |
@@ -210,6 +214,8 @@ class S3CrossAccountTrustRule(CrossAccountCheckingRule):
 
 class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks for KMS keys that allow cross-account principals to get access to the key.
 
     Risk:
@@ -222,9 +228,9 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type        | Description                                                    |
         |:-----------:|:-----------:|:--------------------------------------------------------------:|
-        |`config`     | str         | `config` variable available inside the rule                    |
-        |`extras`     | str         | `extras` variable available inside the rule                    |
-        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`       | `config` variable available inside the rule                    |
+        |`extras`     | `str`       | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`       | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `KMSKey`    | Resource that is being addressed                               |
         |`statement`  | `Statement` | Statement being checked found in the Resource                  |
         |`principal`  | `str`       | AWS Principal being checked found in the statement             |
@@ -238,6 +244,8 @@ class KMSKeyCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class ElasticsearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks for Elasticsearch domains that allow cross-account principals to get access.
 
     Risk:
@@ -250,9 +258,9 @@ class ElasticsearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type        | Description                                                    |
         |:-----------:|:-----------:|:--------------------------------------------------------------:|
-        |`config`     | str         | `config` variable available inside the rule                    |
-        |`extras`     | str         | `extras` variable available inside the rule                    |
-        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`       | `config` variable available inside the rule                    |
+        |`extras`     | `str`       | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`       | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `ESDomain`  | Resource that is being addressed                               |
         |`statement`  | `Statement` | Statement being checked found in the Resource                  |
         |`principal`  | `str`       | AWS Principal being checked found in the statement             |
@@ -266,6 +274,8 @@ class ElasticsearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class OpenSearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks for OpenSearch domains that allow cross-account principals to get access.
 
     Risk:
@@ -278,9 +288,9 @@ class OpenSearchDomainCrossAccountTrustRule(CrossAccountCheckingRule):
     Filters context:
         | Parameter   | Type               | Description                                                    |
         |:-----------:|:------------------:|:--------------------------------------------------------------:|
-        |`config`     | str                | `config` variable available inside the rule                    |
-        |`extras`     | str                | `extras` variable available inside the rule                    |
-        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`              | `config` variable available inside the rule                    |
+        |`extras`     | `str`              | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`              | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `OpenSearchDomain` | Resource that is being addressed                               |
         |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
         |`principal`  | `str`              | AWS Principal being checked found in the statement             |
