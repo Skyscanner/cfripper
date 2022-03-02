@@ -41,7 +41,6 @@ def template_valid_with_sts():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_sts.yml").resolve()
 
 
-@pytest.fixture()
 def template_valid_with_sts_es_domain():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_sts_es_domain.yml").resolve()
 
@@ -55,7 +54,6 @@ def template_invalid_with_sts():
     return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts.yml").resolve()
 
 
-@pytest.fixture()
 def template_invalid_with_sts_es_domain():
     return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts_es_domain.yml").resolve()
 
@@ -64,7 +62,6 @@ def template_invalid_with_sts_opensearch_domain():
     return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts_opensearch_domain.yml").resolve()
 
 
-@pytest.fixture()
 def template_es_domain_without_access_policies():
     return get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_without_access_policies.yml").resolve()
 
@@ -367,40 +364,31 @@ def test_es_domain_cross_account_failure(principal):
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    [
+        "arn:aws:iam::999999999:root",
+        "arn:aws:iam::*:root",
+        "arn:aws:iam::*:*",
+        "arn:aws:iam::*:root*",
+        "arn:aws:iam::*:not-root*",
+        "*",
+    ],
 )
-def test_es_domain_cross_account_success(principal):
-    rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+def test_generic_cross_account_rul_es_domain_cross_account_failure(principal):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_basic.yml").resolve(
         extra_params={"Principal": principal}
     )
     result = rule.invoke(model)
-
-    assert result.valid
-    assert compare_lists_of_failures(result.failures, [])
-
-
-def test_sts_valid_es_domain(template_valid_with_sts_es_domain):
-    rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
-    result = rule.invoke(template_valid_with_sts_es_domain)
-
-    assert result.valid
-    assert compare_lists_of_failures(result.failures, [])
-
-
-def test_sts_failure_es_domain(template_invalid_with_sts_es_domain):
-    rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
-    result = rule.invoke(template_invalid_with_sts_es_domain)
-
     assert not result.valid
     assert compare_lists_of_failures(
         result.failures,
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="TestDomain has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an ES domain policy.",
+                reason=f"TestDomain has forbidden cross-account with {principal}",
                 risk_value=RuleRisk.MEDIUM,
-                rule="ElasticsearchDomainCrossAccountTrustRule",
+                rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestDomain"},
@@ -409,12 +397,88 @@ def test_sts_failure_es_domain(template_invalid_with_sts_es_domain):
     )
 
 
-def test_es_domain_without_access_policies(template_es_domain_without_access_policies):
+@pytest.mark.parametrize(
+    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+)
+def test_es_domain_cross_account_success(principal):
     rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
-    result = rule.invoke(template_es_domain_without_access_policies)
-
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_basic.yml").resolve(
+        extra_params={"Principal": principal}
+    )
+    result = rule.invoke(model)
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
+
+
+@pytest.mark.parametrize(
+    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+)
+def test_generic_cross_account_es_domain_cross_account_success(principal):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_basic.yml").resolve(
+        extra_params={"Principal": principal}
+    )
+    result = rule.invoke(model)
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_es_domain_without_access_policies(), True, []),
+        (template_valid_with_sts_es_domain(), True, []),
+        (
+            template_invalid_with_sts_es_domain(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="TestDomain has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an ES domain policy.",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="ElasticsearchDomainCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"TestDomain"},
+                )
+            ],
+        ),
+    ],
+)
+def test_elasticsearch_domain_cross_account_rule_with_set_principals(template, is_valid, failures):
+    rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
+
+
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_es_domain_without_access_policies(), True, []),
+        (template_valid_with_sts_es_domain(), True, []),
+        (
+            template_invalid_with_sts_es_domain(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="TestDomain has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"TestDomain"},
+                )
+            ],
+        ),
+    ],
+)
+def test_generic_cross_account_rule_for_elasticsearch_domain_with_set_principals(template, is_valid, failures):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
 
 
 @pytest.mark.parametrize(
