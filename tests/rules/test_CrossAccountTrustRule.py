@@ -1,5 +1,3 @@
-from unittest import skip
-
 import pytest
 
 from cfripper.config.config import Config
@@ -288,7 +286,6 @@ def test_kms_cross_account_failure(principal):
     )
 
 
-@skip("in need of pycfmodel 0.17.0")
 @pytest.mark.parametrize(
     "principal",
     [
@@ -371,7 +368,6 @@ def test_kms_key_cross_account_sts(template, is_valid, failures):
     assert compare_lists_of_failures(result.failures, failures)
 
 
-@skip("in need of pycfmodel 0.17.0")
 @pytest.mark.parametrize(
     "template,is_valid,failures",
     [

@@ -124,7 +124,7 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
         |`config`     | `str`       | `config` variable available inside the rule                    |
         |`extras`     | `str`       | `extras` variable available inside the rule                    |
         |`logical_id` | `str`       | ID used in CloudFormation to refer the resource being analysed |
-        |`resource`   | `IAMRole`   | Resource that is being addressed                               |
+        |`resource`   | `Generic`   | Resource that is being addressed                               |
         |`statement`  | `Statement` | Statement being checked found in the Resource                  |
         |`principal`  | `str`       | AWS Principal being checked found in the statement             |
         |`account_id` | `str`       | Account ID found in the principal                              |
