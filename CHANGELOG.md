@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 - Stopped using `_statement_as_list()` when retrieving statements in `CrossAccountCheckingRule` in favor of `statement_as_list()`.
 
-## [1.4.2] - 2022-2-24
+## [1.4.2] - 2022-2-28
 ### Fixes
 - Fix how `make install-dev` works, it will install dependencies from `make install` first.
 ### Improvements
