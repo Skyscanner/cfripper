@@ -2,6 +2,7 @@ __all__ = [
     "CrossAccountCheckingRule",
     "CrossAccountTrustRule",
     "ElasticsearchDomainCrossAccountTrustRule",
+    "GenericCrossAccountTrustRule",
     "KMSKeyCrossAccountTrustRule",
     "OpenSearchDomainCrossAccountTrustRule",
     "S3CrossAccountTrustRule",
@@ -103,6 +104,51 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                             resource_ids={logical_id},
                             context=filters_available_context,
                         )
+
+
+class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
+    """
+    Checks if the trust policy of every resource grants permissions to principals from other accounts.
+    Do not use whole accounts as principals.
+
+    Risk:
+        It might allow other AWS identities to escalate privileges.
+
+    Fix:
+        If cross account permissions are required, the stack should be added to the allowlist for this rule.
+        Otherwise, the access should be removed from the CloudFormation definition.
+
+    Filters context:
+        | Parameter   | Type        | Description                                                    |
+        |:-----------:|:-----------:|:--------------------------------------------------------------:|
+        |`config`     | str         | `config` variable available inside the rule                    |
+        |`extras`     | str         | `extras` variable available inside the rule                    |
+        |`logical_id` | str         | ID used in Cloudformation to refer the resource being analysed |
+        |`resource`   | `IAMRole`   | Resource that is being addressed                               |
+        |`statement`  | `Statement` | Statement being checked found in the Resource                  |
+        |`principal`  | `str`       | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`       | Account ID found in the principal                              |
+    """
+
+    REASON = "{} has forbidden cross-account trust relationship with {}"
+
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.Resources.items():
+            policy_documents = resource.policy_documents
+            if policy_documents:
+                for document in policy_documents:
+                    for statement in document.policy_document.statement_as_list():
+                        filters_available_context = {
+                            "config": self._config,
+                            "extras": extras,
+                            "logical_id": logical_id,
+                            "resource": resource,
+                            "statement": statement,
+                        }
+                        self._do_statement_check(result, logical_id, statement, filters_available_context)
+
+        return result
 
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
