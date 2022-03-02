@@ -1,0 +1,61 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Non existent resource without policies",
+  "Resources": {
+    "NonexistentResource": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value",
+        "Policies": [
+          {
+            "PolicyName": "APolicyName",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::123456789:user/someuser@bla.com",
+                      "arn:aws:iam::123456789:user/someuser@bla.com",
+                      "arn:aws:iam::123456789:root",
+                      "arn:aws:iam::999999999:role/someuser@bla.com",
+                      "arn:aws:iam::123456789:user/someuser@bla.com"
+                    ]
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "NonexistentResourceTwo": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value",
+        "PoliciesOrSimilar": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::123456789:user/someuser@bla.com",
+                      "arn:aws:iam::123456789:user/someuser@bla.com",
+                      "arn:aws:iam::123456789:root",
+                      "arn:aws:iam::999999999:role/someuser@bla.com",
+                      "arn:aws:iam::123456789:user/someuser@bla.com"
+                    ]
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

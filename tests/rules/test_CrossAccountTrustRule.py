@@ -9,6 +9,7 @@ from cfripper.rules import DEFAULT_RULES
 from cfripper.rules.cross_account_trust import (
     CrossAccountTrustRule,
     ElasticsearchDomainCrossAccountTrustRule,
+    GenericCrossAccountTrustRule,
     KMSKeyCrossAccountTrustRule,
     OpenSearchDomainCrossAccountTrustRule,
 )
@@ -73,6 +74,40 @@ def template_es_domain_without_access_policies():
 @pytest.fixture()
 def template_opensearch_domain_without_access_policies():
     return get_cfmodel_from("rules/CrossAccountTrustRule/opensearch_domain_without_access_policies.yml").resolve()
+
+
+def template_generic_resource_no_policies():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/generic_resource_no_policies.json").resolve()
+
+
+def template_two_generic_resources_no_policies():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/generic_resources_no_policies.json").resolve()
+
+
+def template_generic_resource_with_cross_account_policy():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/generic_resource_with_cross_account_policy.json").resolve()
+
+
+def template_generic_resources_with_cross_account_policies():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/generic_resources_with_cross_account_policies.json").resolve()
+
+
+def template_generic_resources_with_mixed_cross_account_policy_and_no_policy():
+    return get_cfmodel_from(
+        "rules/CrossAccountTrustRule/generic_resources_with_mixed_cross_account_policy_and_no_policy.json"
+    ).resolve()
+
+
+def template_invalid_generic_resource():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_generic_resource.json").resolve()
+
+
+def template_invalid_generic_resources():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_generic_resources.json").resolve()
+
+
+def template_mixed_invalid_generic_resources():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/mixed_invalid_generic_resources.json").resolve()
 
 
 @pytest.fixture()
@@ -468,3 +503,139 @@ def test_opensearch_domain_without_access_policies(template_opensearch_domain_wi
 
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
+
+
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_generic_resource_no_policies(), True, []),
+        (template_two_generic_resources_no_policies(), True, []),
+        (
+            template_generic_resource_with_cross_account_policy(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResource has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResource"},
+                )
+            ],
+        ),
+        (
+            template_generic_resources_with_cross_account_policies(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResource has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResource"},
+                ),
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResourceTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResourceTwo"},
+                ),
+            ],
+        ),
+        (
+            template_generic_resources_with_mixed_cross_account_policy_and_no_policy(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResourceTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResourceTwo"},
+                )
+            ],
+        ),
+    ],
+)
+def test_generic_cross_account_trust_rule(template, is_valid, failures):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789"))
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
+
+
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_generic_resource_no_policies(), True, []),
+        (template_two_generic_resources_no_policies(), True, []),
+        (
+            template_invalid_generic_resource(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResource has forbidden cross-account trust relationship with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResource"},
+                )
+            ],
+        ),
+        (
+            template_invalid_generic_resources(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResource has forbidden cross-account trust relationship with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResource"},
+                ),
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResourceSecond has forbidden cross-account trust relationship with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResourceSecond"},
+                ),
+            ],
+        ),
+        (
+            template_mixed_invalid_generic_resources(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NonexistentResourceSecond has forbidden cross-account trust relationship with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NonexistentResourceSecond"},
+                ),
+            ],
+        ),
+    ],
+)
+def test_generic_cross_account_trust_rule_different_principal(template, is_valid, failures):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
