@@ -1,3 +1,5 @@
+from unittest import skip
+
 import pytest
 
 from cfripper.config.config import Config
@@ -36,7 +38,6 @@ def template_valid_with_canonical_id():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_canonical_id.json").resolve()
 
 
-@pytest.fixture()
 def template_valid_with_sts():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_sts.yml").resolve()
 
@@ -49,7 +50,6 @@ def template_valid_with_sts_opensearch_domain():
     return get_cfmodel_from("rules/CrossAccountTrustRule/valid_with_sts_opensearch_domain.yml").resolve()
 
 
-@pytest.fixture()
 def template_invalid_with_sts():
     return get_cfmodel_from("rules/CrossAccountTrustRule/invalid_with_sts.yml").resolve()
 
@@ -288,6 +288,39 @@ def test_kms_cross_account_failure(principal):
     )
 
 
+@skip("in need of pycfmodel 0.17.0")
+@pytest.mark.parametrize(
+    "principal",
+    [
+        "arn:aws:iam::999999999:root",
+        "arn:aws:iam::*:root",
+        "arn:aws:iam::*:*",
+        "arn:aws:iam::*:root*",
+        "arn:aws:iam::*:not-root*",
+        "*",
+    ],
+)
+def test_generic_cross_account_with_kms_key_failure(principal):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
+    result = rule.invoke(model)
+    assert not result.valid
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason=f"KMSKey has forbidden cross-account with {principal}",
+                risk_value=RuleRisk.MEDIUM,
+                rule="GenericCrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"KMSKey"},
+            )
+        ],
+    )
+
+
 @pytest.mark.parametrize(
     "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
@@ -295,38 +328,76 @@ def test_kms_cross_account_success(principal):
     rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
     result = rule.invoke(model)
-
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
 
 
-def test_sts_valid(template_valid_with_sts):
-    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
-    result = rule.invoke(template_valid_with_sts)
-
+@pytest.mark.parametrize(
+    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+)
+def test_generic_cross_account_with_kms_key_success(principal):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(extra_params={"Principal": principal})
+    result = rule.invoke(model)
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
 
 
-def test_sts_failure(template_invalid_with_sts):
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_valid_with_sts(), True, []),
+        (
+            template_invalid_with_sts(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="KmsMasterKey has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an KMS Key Policy",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="KMSKeyCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"KmsMasterKey"},
+                )
+            ],
+        ),
+    ],
+)
+def test_kms_key_cross_account_sts(template, is_valid, failures):
     rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
-    result = rule.invoke(template_invalid_with_sts)
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
 
-    assert not result.valid
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity=RuleGranularity.RESOURCE,
-                reason="KmsMasterKey has forbidden cross-account policy allow with arn:aws:sts::999999999:assumed-role/test-role/session for an KMS Key Policy",
-                risk_value=RuleRisk.MEDIUM,
-                rule="KMSKeyCrossAccountTrustRule",
-                rule_mode=RuleMode.BLOCKING,
-                actions=None,
-                resource_ids={"KmsMasterKey"},
-            )
-        ],
-    )
+
+@skip("in need of pycfmodel 0.17.0")
+@pytest.mark.parametrize(
+    "template,is_valid,failures",
+    [
+        (template_valid_with_sts(), True, []),
+        (
+            template_invalid_with_sts(),
+            False,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="KmsMasterKey has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericCrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"KmsMasterKey"},
+                )
+            ],
+        ),
+    ],
+)
+def test_generic_kms_key_cross_account_sts(template, is_valid, failures):
+    rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    result = rule.invoke(template)
+    assert result.valid == is_valid
+    assert compare_lists_of_failures(result.failures, failures)
 
 
 @pytest.mark.parametrize(
