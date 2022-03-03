@@ -110,6 +110,7 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
     """
     Checks if the trust policy of every resource grants permissions to principals from other accounts.
     Do not use whole accounts as principals.
+    It doesn't check if policies allow permissions to assume roles in other accounts.
 
     Risk:
         It might allow other AWS identities to escalate privileges.

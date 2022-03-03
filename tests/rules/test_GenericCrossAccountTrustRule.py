@@ -90,14 +90,15 @@ def template_mixed_invalid_generic_resources():
 
 
 @fixture()
-def template_valid_iam_role_full_admin_rds():
-    return get_cfmodel_from("rules/CrossAccountTrustRule/valid_iam_role_full_admin_rds.yaml").resolve()
+def template_iam_role_to_jump_to_another_account():
+    return get_cfmodel_from("rules/CrossAccountTrustRule/iam_role_to_jump_to_another_account.yaml").resolve()
 
 
-def test_valid_iam_role_full_admin_rds(template_valid_iam_role_full_admin_rds):
+def test_iam_role_to_jump_to_another_account(template_iam_role_to_jump_to_another_account):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789"))
-    result = rule.invoke(template_valid_iam_role_full_admin_rds)
-    assert not result.valid
+    result = rule.invoke(template_iam_role_to_jump_to_another_account)
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
 
 
 def test_s3_bucket_cross_account_with_generic(s3_bucket_cross_account):
