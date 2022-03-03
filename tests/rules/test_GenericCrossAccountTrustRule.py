@@ -453,7 +453,7 @@ def test_generic_cross_account_es_domain_cross_account_success(principal):
         "*",
     ],
 )
-def test_generic_cross_account_rul_es_domain_cross_account_failure(principal):
+def test_generic_cross_account_rule_es_domain_cross_account_failure(principal):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/es_domain_basic.yml").resolve(
         extra_params={"Principal": principal}
