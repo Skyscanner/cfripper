@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  ValidIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: "valid-ec2-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+
+  PolicyToManageRDSEverywhere:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "TestRDSFullAdmin"
+      Description: "Policy to manage RDS"
+      Roles:
+        - !Ref ValidIAMRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "sts:AssumeRole"
+            Resource: "arn:aws:iam::222222222222:role/*"
