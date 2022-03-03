@@ -1,0 +1,18 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Non existent resource without policies",
+  "Resources": {
+    "NonexistentResource": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value"
+      }
+    },
+    "NonexistentResourceTwo": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value"
+      }
+    }
+  }
+}

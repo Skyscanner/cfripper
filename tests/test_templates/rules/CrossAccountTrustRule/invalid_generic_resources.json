@@ -1,0 +1,55 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Non existent resource without policies",
+  "Resources": {
+    "NonexistentResource": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value",
+        "Policies": [
+          {
+            "PolicyName": "APolicyName",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:iam::123456789:role/test-role",
+                      "arn:aws:sts::999999999:assumed-role/test-role/session"
+                    ]
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "NonexistentResourceSecond": {
+      "Type": "AWS::Non::Existent",
+      "Properties": {
+        "PropertyOne": "test-value",
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": [
+                      "arn:aws:sts::999999999:assumed-role/test-role/session",
+                      "arn:aws:iam::123456789:role/test-role"
+                    ]
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
