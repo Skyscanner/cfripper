@@ -1,5 +1,4 @@
 import pytest
-from pytest import fixture
 
 from cfripper.config.config import Config
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
@@ -8,17 +7,17 @@ from cfripper.rules import GenericCrossAccountTrustRule
 from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
-@fixture()
+@pytest.fixture()
 def s3_bucket_cross_account():
     return get_cfmodel_from("rules/S3CrossAccountTrustRule/s3_bucket_cross_account.json").resolve()
 
 
-@fixture()
+@pytest.fixture()
 def s3_bucket_cross_account_from_aws_service():
     return get_cfmodel_from("rules/S3CrossAccountTrustRule/s3_bucket_cross_account_from_aws_service.json").resolve()
 
 
-@fixture()
+@pytest.fixture()
 def s3_bucket_cross_account_and_normal():
     return get_cfmodel_from("rules/S3CrossAccountTrustRule/s3_bucket_cross_account_and_normal.json").resolve()
 
@@ -89,7 +88,7 @@ def template_mixed_invalid_generic_resources():
     return get_cfmodel_from("rules/CrossAccountTrustRule/mixed_invalid_generic_resources.json").resolve()
 
 
-@fixture()
+@pytest.fixture()
 def template_iam_role_to_jump_to_another_account():
     return get_cfmodel_from("rules/CrossAccountTrustRule/iam_role_to_jump_to_another_account.yaml").resolve()
 
