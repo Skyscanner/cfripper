@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.1]
+### Updates
+- Created `GenericResourceWildcardPolicyRule` in order to check for WildcardPolicy issues in generic resources.
+- Added documentation regarding the deprecation of `S3BucketPolicyWildcardActionRule`, `SNSTopicPolicyWildcardActionRule` and `SQSQueuePolicyWildcardActionRule`.
+- Covering cases for already mapped models in rules inherited from `GenericWildcardPolicyRule` with the new `GenericResourceWildcardPolicyRule`.
+
 ## [1.5.0]
 ### Updates
 - Created `GenericCrossAccountTrustRule` in order to check for CrossAccount issues for generic resources.

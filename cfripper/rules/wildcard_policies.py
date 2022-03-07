@@ -1,5 +1,6 @@
 __all__ = [
     "GenericWildcardPolicyRule",
+    "GenericResourceWildcardPolicyRule",
     "S3BucketPolicyWildcardActionRule",
     "SNSTopicPolicyWildcardActionRule",
     "SQSQueuePolicyWildcardActionRule",
@@ -57,8 +58,39 @@ class GenericWildcardPolicyRule(Rule):
         return result
 
 
+class GenericResourceWildcardPolicyRule(GenericWildcardPolicyRule):
+    """
+    Rule that checks for use of the wildcard `*` character in Actions of Policy Documents of Generic AWS Resources.
+    """
+
+    REASON = "{} should not allow a `*` action"
+    GRANULARITY = RuleGranularity.RESOURCE
+
+    def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
+        result = Result()
+        for logical_id, resource in cfmodel.Resources.items():
+            policy_documents = resource.policy_documents
+            if policy_documents:
+                for document in policy_documents:
+                    if document.policy_document.allowed_actions_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
+                        self.add_failure_to_result(
+                            result,
+                            self.REASON.format(logical_id),
+                            resource_ids={logical_id},
+                            context={
+                                "config": self._config,
+                                "extras": extras,
+                                "logical_id": logical_id,
+                                "resource": resource,
+                            },
+                        )
+        return result
+
+
 class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
+    Soon to be replaced by `GenericResourceWildcardPolicyRule`.
+
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of S3 Bucket Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
 
@@ -76,6 +108,8 @@ class S3BucketPolicyWildcardActionRule(GenericWildcardPolicyRule):
 
 class SNSTopicPolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
+    Soon to be replaced by `GenericResourceWildcardPolicyRule`.
+
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of SQS Queue Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
 
@@ -93,6 +127,8 @@ class SNSTopicPolicyWildcardActionRule(GenericWildcardPolicyRule):
 
 class SQSQueuePolicyWildcardActionRule(GenericWildcardPolicyRule):
     """
+    Soon to be replaced by `GenericResourceWildcardPolicyRule`.
+
     Checks for use of the wildcard `*` character in the Actions of Policy Documents of SQS Queue Policies.
     This rule is a subclass of `GenericWildcardPolicyRule`.
 

@@ -38,6 +38,7 @@ from cfripper.rules.sqs_queue_policy import (
     SQSQueuePolicyPublicRule,
 )
 from cfripper.rules.wildcard_policies import (
+    GenericResourceWildcardPolicyRule,
     S3BucketPolicyWildcardActionRule,
     SNSTopicPolicyWildcardActionRule,
     SQSQueuePolicyWildcardActionRule,
@@ -57,6 +58,7 @@ DEFAULT_RULES = {
         ElasticsearchDomainCrossAccountTrustRule,
         FullWildcardPrincipalRule,
         GenericCrossAccountTrustRule,
+        GenericResourceWildcardPolicyRule,
         HardcodedRDSPasswordRule,
         IAMRolesOverprivilegedRule,
         IAMRoleWildcardActionOnPolicyRule,
