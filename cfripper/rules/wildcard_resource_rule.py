@@ -5,7 +5,6 @@ from typing import Dict, Optional
 
 from pycfmodel.model.resources.generic_resource import GenericResource
 from pycfmodel.model.resources.iam_role import IAMRole
-from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
 from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.resource import Resource
@@ -53,8 +52,6 @@ class WildcardResourceRule(ResourceSpecificRule):
             self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
         if isinstance(resource, IAMRole):
             self._check_policy_document(result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras)
-        elif isinstance(resource, KMSKey):
-            self._check_policy_document(result, logical_id, resource.Properties.KeyPolicy, None, extras)
         elif isinstance(resource, GenericResource):
             policy_document = getattr(resource.Properties, "PolicyDocument", None)
             if policy_document:
