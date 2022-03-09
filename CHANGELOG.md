@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.2]
+### Updates
+- Updates `WildcardResourceRule` for a better use with the `GenericResource`.
+
 ## [1.5.1]
 ### Updates
 - Created `GenericResourceWildcardPolicyRule` in order to check for WildcardPolicy issues in generic resources.
