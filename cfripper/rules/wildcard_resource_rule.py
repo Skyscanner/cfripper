@@ -94,9 +94,9 @@ class WildcardResourceRule(ResourceSpecificRule):
 
         if statement.actions_with(REGEX_IS_STAR):
             if statement.Condition:
-                self._add_failure_to_result(result, logical_id, policy_name, None, statement, extras, monitor=True)
+                self._add_to_result(result, logical_id, policy_name, None, statement, extras, monitor=True)
             else:
-                self._add_failure_to_result(result, logical_id, policy_name, None, statement, extras)
+                self._add_to_result(result, logical_id, policy_name, None, statement, extras)
         else:
             for action in statement.get_expanded_action_list():
                 if action in CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD:
@@ -107,13 +107,11 @@ class WildcardResourceRule(ResourceSpecificRule):
                     # Source: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
                     logger.info(f"KMS Action {action} only accepts wildcard, ignoring...")
                 elif statement.Condition:
-                    self._add_failure_to_result(
-                        result, logical_id, policy_name, action, statement, extras, monitor=True
-                    )
+                    self._add_to_result(result, logical_id, policy_name, action, statement, extras, monitor=True)
                 else:
-                    self._add_failure_to_result(result, logical_id, policy_name, action, statement, extras)
+                    self._add_to_result(result, logical_id, policy_name, action, statement, extras)
 
-    def _add_failure_to_result(
+    def _add_to_result(
         self,
         result: Result,
         logical_id: str,
