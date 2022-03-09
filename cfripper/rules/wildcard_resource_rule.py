@@ -31,9 +31,9 @@ class WildcardResourceRule(ResourceSpecificRule):
     Filters context:
         | Parameter    | Type             | Description                                                     |
         |:------------:|:----------------:|:---------------------------------------------------------------:|
-        |`config`      | str              | `config` variable available inside the rule                     |
-        |`extras`      | str              | `extras` variable available inside the rule                     |
-        |`logical_id`  | str              | ID used in Cloudformation to refer the resource being analysed  |
+        |`config`      | `str`            | `config` variable available inside the rule                     |
+        |`extras`      | `str`            | `extras` variable available inside the rule                     |
+        |`logical_id`  | `str`            | ID used in CloudFormation to refer the resource being analysed  |
         |`policy_name` | `Optional[str]`  | If available, the policy name                                   |
         |`statement`   | `Statement`      | Statement being checked found in the Resource                   |
         |`action`      | `Optional[str]`  | Action that has a wildcard resource. If None, means all actions |
@@ -46,18 +46,24 @@ class WildcardResourceRule(ResourceSpecificRule):
     REASON_ALL_ACTIONS_WITHOUT_POLICY_NAME = '"{}" is using a wildcard resource allowing all actions'
 
     def resource_invoke(self, resource: Resource, logical_id: str, extras: Optional[Dict] = None) -> Result:
+        """
+        Checks each policy of a given resource.
+        If it's an IAMRole, it will check its AssumeRolePolicyDocument as well.
+        There are some cases where GenericResource contains a property called PolicyDocument that can be a str and
+        therefore, it's not being retrieved in the initial for loop.
+        For those cases, we run another check transforming the str to a PolicyDocument.
+        """
         result = Result()
 
         for policy in resource.policy_documents:
             self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
+
         if isinstance(resource, IAMRole):
             self._check_policy_document(result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras)
         elif isinstance(resource, GenericResource):
             policy_document = getattr(resource.Properties, "PolicyDocument", None)
             if policy_document:
                 try:
-                    # PolicyDocument requires a dict. If we receive a string, attempt a conversion to dict.
-                    # If this conversion fails, show the appropriate warning and continue.
                     formatted_policy_document = (
                         json.loads(policy_document) if isinstance(policy_document, str) else policy_document
                     )
@@ -96,8 +102,8 @@ class WildcardResourceRule(ResourceSpecificRule):
                 if action in CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD:
                     logger.info(f"Action {action} only accepts wildcard, ignoring...")
                 elif action.lower().startswith("kms:"):
-                    # When KMS Key policies use * in the resource, that * will only apply this policy to the KMS Key being created
-                    # so we must not flag this
+                    # When KMS Key policies use * in the resource, that * will only apply this policy to the KMS Key
+                    # being created so, we must not flag this
                     # Source: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
                     logger.info(f"KMS Action {action} only accepts wildcard, ignoring...")
                 elif statement.Condition:
