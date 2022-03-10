@@ -4,14 +4,9 @@ import re
 from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
-from pycfmodel.model.resources.iam_managed_policy import IAMManagedPolicy
-from pycfmodel.model.resources.iam_policy import IAMPolicy
 from pycfmodel.model.resources.iam_role import IAMRole
-from pycfmodel.model.resources.iam_user import IAMUser
+from pycfmodel.model.resources.kms_key import KMSKey
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
-from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
-from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
-from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
 from cfripper.config.regex import REGEX_FULL_WILDCARD_PRINCIPAL, REGEX_PARTIAL_WILDCARD_PRINCIPAL
 from cfripper.model.enums import RuleGranularity, RuleRisk
@@ -22,6 +17,31 @@ logger = logging.getLogger(__file__)
 
 
 class GenericWildcardPrincipalRule(PrincipalCheckingRule):
+    """
+    Checks for any wildcard principal defined in any statement.
+    To be inherited into more precise rules.
+    Ignores KMS Keys, since they have `KMSKeyWildcardPrincipalRule`.
+    For IAM Roles, it also checks `AssumeRolePolicyDocument`.
+
+    Risk:
+        It might allow other AWS identities to escalate privileges.
+
+    Fix:
+        Where possible, restrict the access to only the required resources.
+        For example, instead of `Principal: "*"`, include a list of the roles that need access.
+
+    Filters context:
+        | Parameter   | Type               | Description                                                    |
+        |:-----------:|:------------------:|:--------------------------------------------------------------:|
+        |`config`     | `str`              | `config` variable available inside the rule                    |
+        |`extras`     | `str`              | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`              | ID used in CloudFormation to refer the resource being analysed |
+        |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
+        |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
+        |`principal`  | `str`              | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`              | Account ID found in the principal                              |
+    """
+
     REASON_WILDCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
     GRANULARITY = RuleGranularity.RESOURCE
 
@@ -32,20 +52,21 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
-                self.check_for_wildcards(result, logical_id, resource.Properties.PolicyDocument, extras)
-            elif isinstance(resource, (IAMRole, IAMUser)):
-                if isinstance(resource, IAMRole):
-                    self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument, extras)
-                if resource.Properties and resource.Properties.Policies:
-                    for policy in resource.Properties.Policies:
-                        self.check_for_wildcards(result, logical_id, policy.PolicyDocument, extras)
+            if isinstance(resource, KMSKey):
+                # Ignoring KMSKey because there's already a rule for it `KMSKeyWildcardPrincipalRule`
+                continue
+            if isinstance(resource, IAMRole):
+                # Checking the `AssumeRolePolicyDocument` for IAM Roles
+                self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument, extras)
+            for policy in resource.policy_documents:
+                self.check_for_wildcards(result, logical_id, policy.policy_document, extras)
+
         return result
 
     def check_for_wildcards(
         self, result: Result, logical_id: str, resource: PolicyDocument, extras: Optional[Dict] = None
     ):
-        for statement in resource._statement_as_list():
+        for statement in resource.statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
                 for principal in statement.get_principal_list():
                     account_id_match = self.IAM_PATTERN.match(principal) or self.AWS_ACCOUNT_ID_PATTERN.match(principal)
@@ -92,13 +113,13 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Filters context:
         | Parameter   | Type               | Description                                                    |
         |:-----------:|:------------------:|:--------------------------------------------------------------:|
-        |`config`     | str                | `config` variable available inside the rule                    |
-        |`extras`     | str                | `extras` variable available inside the rule                    |
-        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`              | `config` variable available inside the rule                    |
+        |`extras`     | `str`              | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`              | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
         |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
-        |`principal`  | str                | AWS Principal being checked found in the statement             |
-        |`account_id` | str                | Account ID found in the principal                              |
+        |`principal`  | `str`              | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`              | Account ID found in the principal                              |
     """
 
     REASON_WILDCARD_PRINCIPAL = (
@@ -110,7 +131,7 @@ class PartialWildcardPrincipalRule(GenericWildcardPrincipalRule):
 
 class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
     """
-    Checks for any wildcard principals defined in any statements.
+    Checks for any wildcard principal defined in any statement.
 
     Risk:
         It might allow other AWS identities to escalate privileges.
@@ -122,13 +143,13 @@ class FullWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Filters context:
         | Parameter   | Type               | Description                                                    |
         |:-----------:|:------------------:|:--------------------------------------------------------------:|
-        |`config`     | str                | `config` variable available inside the rule                    |
-        |`extras`     | str                | `extras` variable available inside the rule                    |
-        |`logical_id` | str                | ID used in Cloudformation to refer the resource being analysed |
+        |`config`     | `str`              | `config` variable available inside the rule                    |
+        |`extras`     | `str`              | `extras` variable available inside the rule                    |
+        |`logical_id` | `str`              | ID used in CloudFormation to refer the resource being analysed |
         |`resource`   | `S3BucketPolicy`   | Resource that is being addressed                               |
         |`statement`  | `Statement`        | Statement being checked found in the Resource                  |
-        |`principal`  | str                | AWS Principal being checked found in the statement             |
-        |`account_id` | str                | Account ID found in the principal                              |
+        |`principal`  | `str`              | AWS Principal being checked found in the statement             |
+        |`account_id` | `str`              | Account ID found in the principal                              |
     """
 
     RISK_VALUE = RuleRisk.HIGH

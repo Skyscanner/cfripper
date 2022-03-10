@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.3]
+ ### Updates
+ - Updates `GenericWildcardPrincipalRule` to understand the `GenericResource`.
+ ### Fixes
+ - Stopped using `_statement_as_list()` when retrieving statements in favor of `statement_as_list()`.
+ 
 ## [1.5.1]
 ### Updates
 - Created `GenericResourceWildcardPolicyRule` in order to check for WildcardPolicy issues in generic resources.
