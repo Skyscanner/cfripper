@@ -38,7 +38,7 @@ class SQSQueuePolicyNotPrincipalRule(ResourceSpecificRule):
 
     def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for statement in resource.Properties.PolicyDocument._statement_as_list():
+        for statement in resource.Properties.PolicyDocument.statement_as_list():
             if statement.NotPrincipal:
                 self.add_failure_to_result(
                     result,
@@ -80,7 +80,7 @@ class SQSQueuePolicyPublicRule(ResourceSpecificRule):
     def resource_invoke(self, resource: SQSQueuePolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
         if resource.Properties.PolicyDocument.allowed_principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
-            for statement in resource.Properties.PolicyDocument._statement_as_list():
+            for statement in resource.Properties.PolicyDocument.statement_as_list():
                 if statement.Effect == "Allow" and statement.principals_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
                     if statement.Condition and statement.Condition.dict():
                         # Ignoring condition checks since they will get reviewed in other rules and future improvements

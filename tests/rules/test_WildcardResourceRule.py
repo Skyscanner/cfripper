@@ -89,7 +89,7 @@ def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wi
 
 def test_kms_key_with_wildcard_resource_not_allowed_is_not_flagged(kms_key_with_wildcard_policy):
     # When KMS Key policies use * in the resource, that * will only apply this policy to the KMS Key being created
-    # so we must not flag this
+    # so, we must not flag this
     # Source: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
     rule = WildcardResourceRule(None)
     rule._config.stack_name = "stack3"
@@ -734,5 +734,5 @@ def test_policy_document_with_wildcard_resource_without_policy_name_is_detected(
 def test_policy_document_with_wildcard_resource_and_wildcard_action_without_policy_name_is_detected():
     with pytest.raises(pydantic.ValidationError):
         get_cfmodel_from(
-            "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wilcard_action_without_policy_name.json"
+            "rules/WildcardResourceRule/iam_policy_with_wildcard_resource_and_wildcard_action_without_policy_name.json"
         )
