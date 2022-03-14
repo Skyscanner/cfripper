@@ -34,7 +34,7 @@ class SNSTopicPolicyNotPrincipalRule(ResourceSpecificRule):
 
     def resource_invoke(self, resource: SNSTopicPolicy, logical_id: str, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for statement in resource.Properties.PolicyDocument._statement_as_list():
+        for statement in resource.Properties.PolicyDocument.statement_as_list():
             if statement.NotPrincipal:
                 self.add_failure_to_result(
                     result,
