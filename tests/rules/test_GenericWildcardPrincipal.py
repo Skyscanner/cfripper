@@ -55,7 +55,7 @@ def test_failures_are_raised(bad_template):
     )
 
 
-def test_generic_wildcard_ignores_kms():
+def test_generic_wildcard_ignores_kms_keys_since_they_have_another_rule_for_them():
     rule = GenericWildcardPrincipalRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
     model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_basic.yml").resolve(
         extra_params={"Principal": "arn:aws:iam::*:*"}
