@@ -43,7 +43,12 @@ from cfripper.rules.wildcard_policies import (
     SNSTopicPolicyWildcardActionRule,
     SQSQueuePolicyWildcardActionRule,
 )
-from cfripper.rules.wildcard_principals import FullWildcardPrincipalRule, PartialWildcardPrincipalRule
+from cfripper.rules.wildcard_principals import (
+    FullWildcardPrincipalRule,
+    GenericResourceFullWildcardPrincipalRule,
+    GenericResourcePartialWildcardPrincipalRule,
+    PartialWildcardPrincipalRule,
+)
 from cfripper.rules.wildcard_resource_rule import WildcardResourceRule
 
 DEFAULT_RULES = {
@@ -58,6 +63,8 @@ DEFAULT_RULES = {
         ElasticsearchDomainCrossAccountTrustRule,
         FullWildcardPrincipalRule,
         GenericCrossAccountTrustRule,
+        GenericResourceFullWildcardPrincipalRule,
+        GenericResourcePartialWildcardPrincipalRule,
         GenericResourceWildcardPolicyRule,
         HardcodedRDSPasswordRule,
         IAMRolesOverprivilegedRule,
