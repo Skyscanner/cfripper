@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.5.4]
+## [1.6.0]
 ### Updates
 - Created `GenericResourceWildcardPrincipalRule` to be an abstract for wildcard principals for Generic resources.
 - Created `GenericResourcePartialWildcardPrincipalRule` and `GenericResourceFullWildcardPrincipalRule` to evaluate Generic resources.
