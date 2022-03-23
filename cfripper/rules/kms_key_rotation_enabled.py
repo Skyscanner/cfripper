@@ -41,6 +41,7 @@ class KMSKeyEnabledKeyRotation(Rule):
                         result,
                         self.REASON.format(logical_id),
                         resource_ids={logical_id},
+                        resource_types={resource.Type},
                         context={
                             "config": self._config,
                             "extras": extras,

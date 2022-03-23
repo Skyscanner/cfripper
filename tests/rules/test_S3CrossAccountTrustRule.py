@@ -38,6 +38,7 @@ def test_s3_bucket_cross_account(s3_bucket_cross_account):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )
@@ -59,6 +60,7 @@ def test_s3_bucket_cross_account_and_normal(s3_bucket_cross_account_and_normal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )
@@ -80,6 +82,7 @@ def test_s3_bucket_cross_account_and_normal_with_org_aws_account(s3_bucket_cross
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )

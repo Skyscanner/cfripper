@@ -28,6 +28,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3Bucket"},
+                resource_types={"AWS::S3::Bucket"},
             )
         ],
     )

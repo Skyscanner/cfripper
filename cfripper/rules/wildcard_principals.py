@@ -67,18 +67,41 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, (IAMManagedPolicy, IAMPolicy, S3BucketPolicy, SNSTopicPolicy, SQSQueuePolicy)):
-                self.check_for_wildcards(result, logical_id, resource.Properties.PolicyDocument, extras)
+                self.check_for_wildcards(
+                    result=result,
+                    logical_id=logical_id,
+                    resource=resource.Properties.PolicyDocument,
+                    resource_type=resource.Type,
+                    extras=extras,
+                )
             elif isinstance(resource, (IAMRole, IAMUser)):
                 if isinstance(resource, IAMRole):
-                    self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument, extras)
+                    self.check_for_wildcards(
+                        result=result,
+                        logical_id=logical_id,
+                        resource=resource.Properties.AssumeRolePolicyDocument,
+                        resource_type=resource.Type,
+                        extras=extras,
+                    )
                 if resource.Properties and resource.Properties.Policies:
                     for policy in resource.Properties.Policies:
-                        self.check_for_wildcards(result, logical_id, policy.PolicyDocument, extras)
+                        self.check_for_wildcards(
+                            result=result,
+                            logical_id=logical_id,
+                            resource=policy.PolicyDocument,
+                            resource_type=resource.Type,
+                            extras=extras,
+                        )
 
         return result
 
     def check_for_wildcards(
-        self, result: Result, logical_id: str, resource: PolicyDocument, extras: Optional[Dict] = None
+        self,
+        result: Result,
+        logical_id: str,
+        resource: PolicyDocument,
+        resource_type: str,
+        extras: Optional[Dict] = None,
     ):
         for statement in resource.statement_as_list():
             if statement.Effect == "Allow" and statement.principals_with(self.FULL_REGEX):
@@ -99,6 +122,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
                             result,
                             self.REASON_WILDCARD_PRINCIPAL.format(logical_id, principal),
                             resource_ids={logical_id},
+                            resource_types={resource_type},
                             context={
                                 "config": self._config,
                                 "extras": extras,
@@ -203,9 +227,21 @@ class GenericResourceWildcardPrincipalRule(GenericWildcardPrincipalRule):
                 continue
             if isinstance(resource, IAMRole):
                 # Checking the `AssumeRolePolicyDocument` for IAM Roles
-                self.check_for_wildcards(result, logical_id, resource.Properties.AssumeRolePolicyDocument, extras)
+                self.check_for_wildcards(
+                    result=result,
+                    logical_id=logical_id,
+                    resource=resource.Properties.AssumeRolePolicyDocument,
+                    resource_type=resource.Type,
+                    extras=extras,
+                )
             for policy in resource.policy_documents:
-                self.check_for_wildcards(result, logical_id, policy.policy_document, extras)
+                self.check_for_wildcards(
+                    result=result,
+                    logical_id=logical_id,
+                    resource=policy.policy_document,
+                    resource_type=resource.Type,
+                    extras=extras,
+                )
 
         return result
 

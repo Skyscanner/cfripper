@@ -59,5 +59,6 @@ class CloudFormationAuthenticationRule(Rule):
                     self.REASON.format(logical_id),
                     resource_ids={logical_id},
                     context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                    resource_types={resource.Type},
                 )
         return result

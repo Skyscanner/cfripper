@@ -44,6 +44,7 @@ def test_failures_are_raised(bad_template_no_configuration):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"OutputBucket"},
+                resource_types={"AWS::S3::Bucket"},
             )
         ],
     )

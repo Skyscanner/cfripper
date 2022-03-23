@@ -48,6 +48,7 @@ class Rule(ABC):
         reason: str,
         granularity: Optional[RuleGranularity] = None,
         resource_ids: Optional[Set] = None,
+        resource_types: Optional[Set] = None,
         actions: Optional[Set] = None,
         risk_value: Optional[RuleRisk] = None,
         rule_mode: Optional[RuleMode] = None,
@@ -57,13 +58,13 @@ class Rule(ABC):
         risk_value = risk_value or self.risk_value
         granularity = granularity or self.GRANULARITY
 
-        for fltr in self.rule_filters:
+        for rule_filter in self.rule_filters:
             try:
-                if fltr(**context):
-                    risk_value = fltr.risk_value or risk_value
-                    rule_mode = fltr.rule_mode or rule_mode
+                if rule_filter(**context):
+                    risk_value = rule_filter.risk_value or risk_value
+                    rule_mode = rule_filter.rule_mode or rule_mode
             except Exception:
-                logger.exception(f"Exception raised while evaluating filter for `{fltr.reason}`", extra=context)
+                logger.exception(f"Exception raised while evaluating filter for `{rule_filter.reason}`", extra=context)
 
         if rule_mode != RuleMode.ALLOWED:
             result.add_failure(
@@ -72,6 +73,7 @@ class Rule(ABC):
                 rule_mode=rule_mode,
                 risk_value=risk_value,
                 resource_ids=resource_ids,
+                resource_types=resource_types,
                 actions=actions,
                 granularity=granularity,
             )
@@ -172,7 +174,9 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
     @classmethod
     @abstractmethod
     def DANGEROUS_ACTIONS(cls) -> List[str]:
-        # This is designed to be overwritten as a class variable
+        """
+        This is designed to be overwritten as a class variable
+        """
         raise NotImplementedError
 
     def resource_invoke(self, resource: Resource, logical_id: str, extras: Optional[Dict] = None) -> Result:
@@ -185,6 +189,7 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
                     result,
                     self.REASON.format(logical_id, sorted(dangerous_actions)),
                     resource_ids={logical_id},
+                    resource_types={resource.Type},
                     actions=dangerous_actions,
                     context={
                         "config": self._config,

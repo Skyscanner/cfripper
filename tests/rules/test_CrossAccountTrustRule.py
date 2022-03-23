@@ -81,6 +81,7 @@ def expected_result_two_roles():
             resource_ids={"RootRoleOne"},
             actions=None,
             granularity=RuleGranularity.RESOURCE,
+            resource_types={"AWS::IAM::Role"},
         ),
         Failure(
             rule="CrossAccountTrustRule",
@@ -93,6 +94,7 @@ def expected_result_two_roles():
             resource_ids={"RootRoleTwo"},
             actions=None,
             granularity=RuleGranularity.RESOURCE,
+            resource_types={"AWS::IAM::Role"},
         ),
     ]
 
@@ -116,6 +118,7 @@ def test_report_format_is_the_one_expected(template_one_role):
                 resource_ids={"RootRole"},
                 actions=None,
                 granularity=RuleGranularity.RESOURCE,
+                resource_types={"AWS::IAM::Role"},
             ),
         ],
     )
@@ -214,6 +217,7 @@ def test_org_accounts_cause_cross_account_issues(template_one_role):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -246,6 +250,7 @@ def test_kms_cross_account_failure(principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"KMSKey"},
+                resource_types={"AWS::KMS::Key"},
             )
         ],
     )
@@ -278,6 +283,7 @@ def test_kms_cross_account_success(principal):
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"KmsMasterKey"},
+                    resource_types={"AWS::KMS::Key"},
                 )
             ],
         ),
@@ -319,6 +325,7 @@ def test_es_domain_cross_account_failure(principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestDomain"},
+                resource_types={"AWS::Elasticsearch::Domain"},
             )
         ],
     )
@@ -354,6 +361,7 @@ def test_es_domain_cross_account_success(principal):
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"TestDomain"},
+                    resource_types={"AWS::Elasticsearch::Domain"},
                 )
             ],
         ),
@@ -395,6 +403,7 @@ def test_opensearch_domain_cross_account_failure(principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestDomain"},
+                resource_types={"AWS::OpenSearchService::Domain"},
             )
         ],
     )
@@ -430,6 +439,7 @@ def test_opensearch_domain_cross_account_success(principal):
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"TestDomain"},
+                    resource_types={"AWS::OpenSearchService::Domain"},
                 )
             ],
         ),

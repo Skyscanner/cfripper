@@ -27,6 +27,7 @@ def test_sqs_policy_not_principal(sqs_policy_not_principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"QueuePolicyWithNotPrincipal"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             )
         ],
     )

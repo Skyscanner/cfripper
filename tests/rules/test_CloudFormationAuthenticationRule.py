@@ -45,6 +45,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"EC2I4LBA1"},
+                resource_types={"AWS::EC2::Instance"},
             )
         ],
     )

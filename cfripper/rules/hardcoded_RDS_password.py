@@ -97,6 +97,7 @@ class HardcodedRDSPasswordRule(Rule):
                 self.REASON_DEFAULT.format(resource_type, logical_id),
                 resource_ids={logical_id},
                 context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                resource_types={resource.Type},
             )
             return True
         elif master_user_password not in (Parameter.NO_ECHO_NO_DEFAULT, Parameter.NO_ECHO_WITH_VALUE):
@@ -105,6 +106,7 @@ class HardcodedRDSPasswordRule(Rule):
                 self.REASON_MISSING_NOECHO.format(resource_type, logical_id),
                 resource_ids={logical_id},
                 context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                resource_types={resource.Type},
             )
             return True
 

@@ -39,6 +39,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"securityGroupIngress1"},
+                resource_types={"AWS::EC2::SecurityGroupIngress"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -48,6 +49,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"securityGroupIngress2"},
+                resource_types={"AWS::EC2::SecurityGroupIngress"},
             ),
         ],
     )
@@ -142,6 +144,7 @@ def test_non_matching_filters_are_reported_normally(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"securityGroupIngress1"},
+                resource_types={"AWS::EC2::SecurityGroupIngress"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -151,6 +154,7 @@ def test_non_matching_filters_are_reported_normally(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"securityGroupIngress2"},
+                resource_types={"AWS::EC2::SecurityGroupIngress"},
             ),
         ],
     )

@@ -37,6 +37,7 @@ def test_valid_role_inline_policy(valid_role_inline_policy):
                 rule_mode=RuleMode.BLOCKING,
                 actions={"iam:AddUserToGroup", "iam:CreatePolicy"},
                 resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
             )
         ],
     )
@@ -58,6 +59,7 @@ def test_privilege_escalation_using_role(privilege_escalation_role_cf):
                 rule_mode=RuleMode.BLOCKING,
                 actions={"iam:UpdateAssumeRolePolicy"},
                 resource_ids={"PrivilegeInjectorRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )

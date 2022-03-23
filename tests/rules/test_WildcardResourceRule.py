@@ -73,6 +73,7 @@ def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wi
                 rule_mode="BLOCKING",
                 actions={"s3:ListBucket", "s3:DeleteBucket"},
                 resource_ids={"userWithInline"},
+                resource_types={"AWS::IAM::User"},
             ),
             Failure(
                 granularity="ACTION",
@@ -82,6 +83,7 @@ def test_user_with_inline_policy_with_wildcard_resource_is_detected(user_with_wi
                 rule_mode="BLOCKING",
                 actions={"s3:ListBucket", "s3:DeleteBucket"},
                 resource_ids={"userWithInline"},
+                resource_types={"AWS::IAM::User"},
             ),
         ],
     )
@@ -130,6 +132,7 @@ def test_policy_document_with_wildcard_resource_is_detected(iam_policy_with_wild
                 rule_mode="BLOCKING",
                 actions={"*"},
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             )
         ],
     )
@@ -153,6 +156,7 @@ def test_policy_document_with_condition_is_ignored(iam_policy_with_wildcard_reso
                 rule_mode=RuleMode.MONITOR,
                 actions={"*"},
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             )
         ],
     )
@@ -176,6 +180,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                 rule_mode="BLOCKING",
                 actions={"s3:ListBucket", "s3:DeleteBucket"},
                 resource_ids={"userWithInline"},
+                resource_types={"AWS::IAM::User"},
             ),
             Failure(
                 granularity="ACTION",
@@ -185,6 +190,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                 rule_mode="BLOCKING",
                 actions={"s3:ListBucket", "s3:DeleteBucket"},
                 resource_ids={"userWithInline"},
+                resource_types={"AWS::IAM::User"},
             ),
             Failure(
                 granularity="ACTION",
@@ -206,6 +212,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -227,6 +234,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -248,6 +256,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -269,6 +278,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -290,6 +300,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -311,6 +322,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -332,6 +344,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -353,6 +366,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -374,6 +388,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -395,6 +410,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -416,6 +432,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -437,6 +454,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -458,6 +476,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -479,6 +498,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -500,6 +520,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -521,6 +542,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -542,6 +564,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -563,6 +586,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -584,6 +608,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -605,6 +630,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -626,6 +652,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -647,6 +674,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity="ACTION",
@@ -668,6 +696,7 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
                     "dynamodb:Get*",
                 },
                 resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
             ),
         ],
     )
@@ -689,6 +718,7 @@ def test_policy_s3_wildcard_and_all_buckets(policy_with_s3_wildcard_and_all_buck
             rule_mode="BLOCKING",
             actions={"s3:*"},
             resource_ids={"RolePolicy"},
+            resource_types={"AWS::IAM::Policy"},
         )
         in result.failures
     )
@@ -710,6 +740,7 @@ def test_policy_with_string_policy_document(policy_with_string_policy_document):
             rule_mode="BLOCKING",
             actions={"logs:CreateLogStream"},
             resource_ids={"GuardDutyResourcePolicy"},
+            resource_types={"AWS::Logs::ResourcePolicy"},
         )
     ]
 

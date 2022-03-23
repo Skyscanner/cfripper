@@ -33,6 +33,7 @@ def test_sqs_dangerous_policy_actions(sqs_policy):
                     "sqs:TagQueue",
                 },
                 resource_ids={"QueuePolicyPublic1"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.ACTION,
@@ -48,6 +49,7 @@ def test_sqs_dangerous_policy_actions(sqs_policy):
                     "sqs:TagQueue",
                 },
                 resource_ids={"QueuePolicyPublic2"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.ACTION,
@@ -63,6 +65,7 @@ def test_sqs_dangerous_policy_actions(sqs_policy):
                     "sqs:TagQueue",
                 },
                 resource_ids={"QueuePolicyPublic3"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.ACTION,
@@ -78,6 +81,7 @@ def test_sqs_dangerous_policy_actions(sqs_policy):
                     "sqs:TagQueue",
                 },
                 resource_ids={"QueuePolicyPublic4"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
         ],
     )

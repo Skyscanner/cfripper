@@ -42,6 +42,7 @@ def test_failures_are_raised(template_path, success):
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"KMSKey"},
+                    resource_types={"AWS::KMS::Key"},
                 )
             ],
         )

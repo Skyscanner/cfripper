@@ -57,6 +57,7 @@ class S3LifecycleConfigurationRule(ResourceSpecificRule):
                 result,
                 self.REASON.format(logical_id),
                 resource_ids={logical_id},
+                resource_types={resource.Type},
                 context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
             )
         return result
