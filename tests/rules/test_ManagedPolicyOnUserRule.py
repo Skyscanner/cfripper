@@ -40,6 +40,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"DirectManagedPolicy"},
+                resource_types={"AWS::IAM::ManagedPolicy"},
             )
         ],
     )

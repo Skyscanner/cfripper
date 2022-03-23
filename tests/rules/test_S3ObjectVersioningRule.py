@@ -36,6 +36,7 @@ def test_failures_are_raised(template_path):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"VersionBucket"},
+                resource_types={"AWS::S3::Bucket"},
             )
         ],
     )

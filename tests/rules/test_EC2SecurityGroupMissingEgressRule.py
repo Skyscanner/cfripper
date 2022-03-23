@@ -38,6 +38,7 @@ def test_single_security_group_one_cidr_ingress(single_security_group_one_cidr_i
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"sg"},
+                resource_types=None,
             )
         ],
     )
@@ -101,6 +102,7 @@ def test_non_matching_filters_are_reported_normally(single_security_group_one_ci
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"sg"},
+                resource_types=None,
             )
         ],
     )

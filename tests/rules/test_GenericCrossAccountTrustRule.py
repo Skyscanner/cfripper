@@ -128,6 +128,7 @@ def test_s3_bucket_cross_account_with_generic(s3_bucket_cross_account):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )
@@ -149,6 +150,7 @@ def test_s3_bucket_cross_account_and_normal_with_generic(s3_bucket_cross_account
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )
@@ -170,6 +172,7 @@ def test_s3_bucket_cross_account_and_normal_with_org_aws_account_with_generic(s3
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicyAccountAccess"},
+                resource_types={"AWS::S3::BucketPolicy"},
             )
         ],
     )
@@ -241,6 +244,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestDomain"},
+                resource_types={"AWS::OpenSearchService::Domain"},
             )
         ],
     )
@@ -263,6 +267,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"TestDomain"},
+                    resource_types={"AWS::Elasticsearch::Domain"},
                 )
             ],
         ),
@@ -279,6 +284,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"KmsMasterKey"},
+                    resource_types={"AWS::KMS::Key"},
                 )
             ],
         ),
@@ -296,6 +302,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"TestDomain"},
+                    resource_types={"AWS::OpenSearchService::Domain"},
                 )
             ],
         ),
@@ -313,6 +320,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResource"},
+                    resource_types={"AWS::Non::Existent"},
                 )
             ],
         ),
@@ -328,6 +336,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResource"},
+                    resource_types={"AWS::Non::Existent"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -337,6 +346,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResourceSecond"},
+                    resource_types={"AWS::Non::Existent"},
                 ),
             ],
         ),
@@ -352,6 +362,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResourceSecond"},
+                    resource_types={"AWS::Non::Existent"},
                 ),
             ],
         ),
@@ -369,6 +380,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResource"},
+                    resource_types={"AWS::Non::Existent"},
                 )
             ],
         ),
@@ -384,6 +396,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResource"},
+                    resource_types={"AWS::Non::Existent"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -393,6 +406,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResourceTwo"},
+                    resource_types={"AWS::Non::Existent"},
                 ),
             ],
         ),
@@ -408,6 +422,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NonexistentResourceTwo"},
+                    resource_types={"AWS::Non::Existent"},
                 )
             ],
         ),
@@ -462,6 +477,7 @@ def test_generic_cross_account_rule_es_domain_cross_account_failure(principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestDomain"},
+                resource_types={"AWS::Elasticsearch::Domain"},
             )
         ],
     )
@@ -505,6 +521,7 @@ def test_generic_cross_account_with_kms_key_failure(principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"KMSKey"},
+                resource_types={"AWS::KMS::Key"},
             )
         ],
     )

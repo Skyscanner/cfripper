@@ -48,6 +48,7 @@ def test_valid_iam_policy_permissions(iam_role_with_wildcard_action):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"WildcardActionRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -69,6 +70,7 @@ def test_valid_iam_policy_trust(iam_role_with_wildcard_action_on_trust):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"WildcardActionRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -90,6 +92,7 @@ def test_invalid_managed_policy_template(iam_managed_policy_bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"CreateTestDBPolicy3"},
+                resource_types={"AWS::IAM::ManagedPolicy"},
             )
         ],
     )

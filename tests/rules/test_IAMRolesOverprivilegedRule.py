@@ -63,6 +63,7 @@ def test_with_invalid_role_inline_policy(invalid_role_inline_policy):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -84,6 +85,7 @@ def test_with_invalid_role_inline_policy_resource_as_array(invalid_role_inline_p
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -113,6 +115,7 @@ def test_with_invalid_role_managed_policy(invalid_role_managed_policy):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )
@@ -134,6 +137,7 @@ def test_with_invalid_role_inline_policy_fn_if(invalid_role_inline_policy_fn_if)
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
             )
         ],
     )

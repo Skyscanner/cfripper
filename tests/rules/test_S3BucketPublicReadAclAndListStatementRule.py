@@ -38,6 +38,7 @@ def test_s3_read_plus_list(s3_read_plus_list):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -47,6 +48,7 @@ def test_s3_read_plus_list(s3_read_plus_list):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy2"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
         ],
     )

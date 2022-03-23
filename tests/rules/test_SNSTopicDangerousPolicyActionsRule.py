@@ -27,6 +27,7 @@ def test_sns_dangerous_policy_actions(sqs_policy):
                 rule_mode=RuleMode.BLOCKING,
                 actions={"sns:RemovePermission", "sns:UntagResource", "sns:AddPermission", "sns:TagResource"},
                 resource_ids={"mysnspolicyA"},
+                resource_types={"AWS::SNS::TopicPolicy"},
             )
         ],
     )

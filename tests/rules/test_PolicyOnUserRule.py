@@ -41,6 +41,7 @@ def test_failures_are_raised(bad_template: CFModel):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"Policy"},
+                resource_types={"AWS::IAM::Policy"},
             )
         ],
     )

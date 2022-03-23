@@ -42,6 +42,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"mysnspolicy1"},
+                    resource_types={"AWS::SNS::TopicPolicy"},
                 )
             ],
         ),
@@ -57,6 +58,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"mysqspolicy1"},
+                    resource_types={"AWS::SQS::QueuePolicy"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -66,6 +68,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"mysqspolicy1b"},
+                    resource_types={"AWS::SQS::QueuePolicy"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -75,6 +78,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"mysqspolicy1c"},
+                    resource_types={"AWS::SQS::QueuePolicy"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -84,6 +88,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"mysqspolicy1d"},
+                    resource_types={"AWS::SQS::QueuePolicy"},
                 ),
             ],
         ),
@@ -99,6 +104,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"S3BucketPolicy"},
+                    resource_types={"AWS::S3::BucketPolicy"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -108,6 +114,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"S3BucketPolicy2"},
+                    resource_types={"AWS::S3::BucketPolicy"},
                 ),
             ],
         ),
@@ -123,6 +130,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NotMapped4"},
+                    resource_types={"AWS::Not::Mapped"},
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
@@ -132,6 +140,7 @@ def sns_topic_with_wildcards_fixture():
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NotMapped5"},
+                    resource_types={"AWS::Not::Mapped"},
                 ),
             ],
         ),

@@ -27,6 +27,7 @@ def test_sns_topic_not_principal(sns_topic_not_principal):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysnspolicyA"},
+                resource_types={"AWS::SNS::TopicPolicy"},
             )
         ],
     )

@@ -55,6 +55,7 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -64,6 +65,7 @@ def test_s3_bucket_with_wildcards(s3_bucket_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy2"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
         ],
     )
@@ -85,6 +87,7 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysqspolicy1"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -94,6 +97,7 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysqspolicy1b"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -103,6 +107,7 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysqspolicy1c"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -112,6 +117,7 @@ def test_sqs_queue_with_wildcards(sqs_queue_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysqspolicy1d"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
         ],
     )
@@ -133,6 +139,7 @@ def test_sns_topic_with_wildcards(sns_topic_with_wildcards):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"mysnspolicy1"},
+                resource_types={"AWS::SNS::TopicPolicy"},
             )
         ],
     )

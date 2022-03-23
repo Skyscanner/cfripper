@@ -13,6 +13,7 @@ class Failure(BaseModel):
     rule_mode: RuleMode
     actions: Optional[set] = set()
     resource_ids: Optional[set] = set()
+    resource_types: Optional[set] = set()
 
     class Config(BaseModel.Config):
         extra = Extra.forbid
@@ -24,6 +25,7 @@ class Failure(BaseModel):
             "rule_mode": self.rule_mode,
             "risk_value": self.risk_value,
             "resource_ids": sorted(self.resource_ids or []),
+            "resource_types": sorted(self.resource_types or []),
             "actions": sorted(self.actions or []),
             "granularity": self.granularity,
         }
@@ -61,6 +63,7 @@ class Result(BaseModel):
         risk_value: RuleRisk,
         granularity: RuleGranularity,
         resource_ids=None,
+        resource_types=None,
         actions=None,
     ):
         self.failures.append(
@@ -70,6 +73,7 @@ class Result(BaseModel):
                 rule_mode=rule_mode,
                 risk_value=risk_value,
                 resource_ids=resource_ids,
+                resource_types=resource_types,
                 actions=actions,
                 granularity=granularity,
             )

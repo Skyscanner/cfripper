@@ -54,6 +54,7 @@ class GenericWildcardPolicyRule(Rule):
                             "logical_id": logical_id,
                             "resource": resource,
                         },
+                        resource_types={resource.Type},
                     )
         return result
 
@@ -83,6 +84,7 @@ class GenericResourceWildcardPolicyRule(GenericWildcardPolicyRule):
                                 "logical_id": logical_id,
                                 "resource": resource,
                             },
+                            resource_types={resource.Type},
                         )
         return result
 

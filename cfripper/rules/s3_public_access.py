@@ -56,6 +56,7 @@ class S3BucketPublicReadAclAndListStatementRule(Rule):
                         result,
                         self.REASON.format(logical_id),
                         resource_ids={logical_id},
+                        resource_types={resource.Type},
                         context={
                             "config": self._config,
                             "extras": extras,
@@ -99,6 +100,7 @@ class S3BucketPublicReadWriteAclRule(ResourceSpecificRule):
                 result,
                 self.REASON.format(logical_id),
                 resource_ids={logical_id},
+                resource_types={resource.Type},
                 context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
             )
         return result
@@ -136,6 +138,7 @@ class S3BucketPublicReadAclRule(ResourceSpecificRule):
                 result,
                 self.REASON.format(logical_id),
                 resource_ids={logical_id},
+                resource_types={resource.Type},
                 context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
             )
         return result

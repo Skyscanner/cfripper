@@ -62,11 +62,11 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                             "resource": resource,
                             "statement": statement,
                         }
-                        self._do_statement_check(result, logical_id, statement, filters_available_context)
+                        self._do_statement_check(result, logical_id, statement, filters_available_context, resource)
         return result
 
     def _do_statement_check(
-        self, result: Result, logical_id: str, statement: Statement, filters_available_context: Dict
+        self, result: Result, logical_id: str, statement: Statement, filters_available_context: Dict, resource: Resource
     ):
         if statement.Effect == "Allow":
             for principal in statement.get_principal_list():
@@ -96,6 +96,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                             rule_mode=RuleMode.DEBUG,
                             resource_ids={logical_id},
                             context=filters_available_context,
+                            resource_types={resource.Type},
                         )
                     else:
                         self.add_failure_to_result(
@@ -103,6 +104,7 @@ class CrossAccountCheckingRule(PrincipalCheckingRule, ABC):
                             self.REASON.format(logical_id, principal),
                             resource_ids={logical_id},
                             context=filters_available_context,
+                            resource_types={resource.Type},
                         )
 
 
@@ -147,7 +149,7 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
                             "resource": resource,
                             "statement": statement,
                         }
-                        self._do_statement_check(result, logical_id, statement, filters_available_context)
+                        self._do_statement_check(result, logical_id, statement, filters_available_context, resource)
 
         return result
 

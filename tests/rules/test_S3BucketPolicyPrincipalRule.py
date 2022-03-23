@@ -28,6 +28,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -37,6 +38,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"S3BucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
         ],
     )

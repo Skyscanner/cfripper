@@ -41,6 +41,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"TestVolume"},
+                resource_types={"AWS::EC2::Volume"},
             )
         ],
     )

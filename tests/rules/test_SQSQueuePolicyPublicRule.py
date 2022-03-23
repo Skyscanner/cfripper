@@ -27,6 +27,7 @@ def test_sqs_policy_public(sqs_policy_public):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"QueuePolicyPublic1"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -36,6 +37,7 @@ def test_sqs_policy_public(sqs_policy_public):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"QueuePolicyPublic2"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -45,6 +47,7 @@ def test_sqs_policy_public(sqs_policy_public):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"QueuePolicyPublic3"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -54,6 +57,7 @@ def test_sqs_policy_public(sqs_policy_public):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"QueuePolicyPublic4"},
+                resource_types={"AWS::SQS::QueuePolicy"},
             ),
         ],
     )

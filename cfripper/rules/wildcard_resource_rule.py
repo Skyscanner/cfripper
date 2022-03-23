@@ -56,10 +56,19 @@ class WildcardResourceRule(ResourceSpecificRule):
         result = Result()
 
         for policy in resource.policy_documents:
-            self._check_policy_document(result, logical_id, policy.policy_document, policy.name, extras)
+            self._check_policy_document(
+                result, logical_id, policy.policy_document, policy.name, extras, resource_type=resource.Type
+            )
 
         if isinstance(resource, IAMRole):
-            self._check_policy_document(result, logical_id, resource.Properties.AssumeRolePolicyDocument, None, extras)
+            self._check_policy_document(
+                result,
+                logical_id,
+                resource.Properties.AssumeRolePolicyDocument,
+                None,
+                extras,
+                resource_type=resource.Type,
+            )
         elif isinstance(resource, GenericResource):
             policy_document = getattr(resource.Properties, "PolicyDocument", None)
             if policy_document:
@@ -68,7 +77,12 @@ class WildcardResourceRule(ResourceSpecificRule):
                         json.loads(policy_document) if isinstance(policy_document, str) else policy_document
                     )
                     self._check_policy_document(
-                        result, logical_id, PolicyDocument(**formatted_policy_document), None, extras
+                        result,
+                        logical_id,
+                        PolicyDocument(**formatted_policy_document),
+                        None,
+                        extras,
+                        resource_type=resource.Type,
                     )
                 except Exception:
                     logger.warning(
@@ -78,25 +92,43 @@ class WildcardResourceRule(ResourceSpecificRule):
         return result
 
     def _check_policy_document(
-        self, result: Result, logical_id: str, policy_document: PolicyDocument, policy_name: Optional[str], extras: Dict
+        self,
+        result: Result,
+        logical_id: str,
+        policy_document: PolicyDocument,
+        policy_name: Optional[str],
+        extras: Dict,
+        resource_type: str,
     ):
         statements_to_review = policy_document.statements_with(REGEX_IS_STAR) + policy_document.statements_with(
             REGEX_WILDCARD_ARN
         )
         for statement in statements_to_review:
-            self._check_statement(result, logical_id, policy_name, statement, extras=extras)
+            self._check_statement(
+                result, logical_id, policy_name, statement, extras=extras, resource_type=resource_type
+            )
 
     def _check_statement(
-        self, result: Result, logical_id: str, policy_name: Optional[str], statement: Statement, extras: Dict
+        self,
+        result: Result,
+        logical_id: str,
+        policy_name: Optional[str],
+        statement: Statement,
+        extras: Dict,
+        resource_type: str,
     ):
         if statement.Effect and statement.Effect == "Deny":
             return
 
         if statement.actions_with(REGEX_IS_STAR):
             if statement.Condition:
-                self._add_to_result(result, logical_id, policy_name, None, statement, extras, monitor=True)
+                self._add_to_result(
+                    result, logical_id, policy_name, None, statement, extras, monitor=True, resource_type=resource_type
+                )
             else:
-                self._add_to_result(result, logical_id, policy_name, None, statement, extras)
+                self._add_to_result(
+                    result, logical_id, policy_name, None, statement, extras, resource_type=resource_type
+                )
         else:
             for action in statement.get_expanded_action_list():
                 if action in CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD:
@@ -107,9 +139,20 @@ class WildcardResourceRule(ResourceSpecificRule):
                     # Source: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
                     logger.info(f"KMS Action {action} only accepts wildcard, ignoring...")
                 elif statement.Condition:
-                    self._add_to_result(result, logical_id, policy_name, action, statement, extras, monitor=True)
+                    self._add_to_result(
+                        result,
+                        logical_id,
+                        policy_name,
+                        action,
+                        statement,
+                        extras,
+                        monitor=True,
+                        resource_type=resource_type,
+                    )
                 else:
-                    self._add_to_result(result, logical_id, policy_name, action, statement, extras)
+                    self._add_to_result(
+                        result, logical_id, policy_name, action, statement, extras, resource_type=resource_type
+                    )
 
     def _add_to_result(
         self,
@@ -119,6 +162,7 @@ class WildcardResourceRule(ResourceSpecificRule):
         action: Optional[str],
         statement: Statement,
         extras: Dict,
+        resource_type: str,
         monitor: bool = False,
     ):
         self.add_failure_to_result(
@@ -126,6 +170,7 @@ class WildcardResourceRule(ResourceSpecificRule):
             reason=self._build_reason(logical_id, action, policy_name),
             granularity=RuleGranularity.ACTION,
             resource_ids={logical_id},
+            resource_types={resource_type},
             actions=set(statement.get_action_list()),
             rule_mode=RuleMode.MONITOR if monitor else None,
             context={

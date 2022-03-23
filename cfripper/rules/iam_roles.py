@@ -48,6 +48,7 @@ class IAMRolesOverprivilegedRule(Rule):
                     result,
                     f"Role {logical_id} has forbidden Managed Policy {managed_policy_arn}",
                     resource_ids={logical_id},
+                    resource_types={role.Type},
                     context={
                         "config": self._config,
                         "extras": extras,
@@ -74,6 +75,7 @@ class IAMRolesOverprivilegedRule(Rule):
                                     f"Role '{logical_id}' contains an insecure permission '{action}' in policy "
                                     f"'{policy.PolicyName}'",
                                     resource_ids={logical_id},
+                                    resource_types={role.Type},
                                     context={
                                         "config": self._config,
                                         "extras": extras,
@@ -112,6 +114,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                         result,
                         self.REASON.format(logical_id, "AssumeRolePolicy"),
                         resource_ids={logical_id},
+                        resource_types={resource.Type},
                         context={
                             "config": self._config,
                             "extras": extras,
@@ -128,6 +131,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                                 result,
                                 self.REASON.format(logical_id, f"{policy.PolicyName} policy"),
                                 resource_ids={logical_id},
+                                resource_types={resource.Type},
                                 context={
                                     "config": self._config,
                                     "extras": extras,
@@ -144,6 +148,7 @@ class IAMRoleWildcardActionOnPolicyRule(Rule):
                     result,
                     self.REASON.format(logical_id, "AWS::IAM::ManagedPolicy"),
                     resource_ids={logical_id},
+                    resource_types={resource.Type},
                     context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
                 )
         return result

@@ -47,6 +47,7 @@ def test_failures_are_raised_for_instances(bad_template_instances):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadDb3"},
+                resource_types={"AWS::RDS::DBInstance"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -56,6 +57,7 @@ def test_failures_are_raised_for_instances(bad_template_instances):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadDb5"},
+                resource_types={"AWS::RDS::DBInstance"},
             ),
         ],
     )
@@ -77,6 +79,7 @@ def test_failures_are_raised_for_clusters(bad_template_clusters):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadCluster1"},
+                resource_types={"AWS::RDS::DBCluster"},
             )
         ],
     )
@@ -106,6 +109,7 @@ def test_failures_are_raised_for_instances_without_protected_clusters(bad_templa
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadDb5"},
+                resource_types={"AWS::RDS::DBInstance"},
             )
         ],
     )
@@ -127,6 +131,7 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadCluster99"},
+                resource_types={"AWS::RDS::DBCluster"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -136,6 +141,7 @@ def test_failures_are_raised_for_bad_instances_and_bad_clusters(bad_template_clu
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"BadDb33"},
+                resource_types={"AWS::RDS::DBInstance"},
             ),
         ],
     )

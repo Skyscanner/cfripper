@@ -90,6 +90,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -99,6 +100,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -108,6 +110,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -117,6 +120,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -126,6 +130,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -135,6 +140,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
             ),
         ],
     )

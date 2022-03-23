@@ -40,6 +40,7 @@ def test_failures_are_raised(bad_template):
                 risk_value=RuleRisk.HIGH,
                 actions=None,
                 resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
             )
         ],
     )

@@ -53,6 +53,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -62,6 +63,7 @@ def test_failures_are_raised(bad_template):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
             ),
         ],
     )
@@ -83,6 +85,7 @@ def test_failures_for_correct_account_ids(intra_account_root_access):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"AccLoadBalancerAccessLogBucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
@@ -92,6 +95,7 @@ def test_failures_for_correct_account_ids(intra_account_root_access):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"AccLoadBalancerAccessLogBucketPolicy"},
+                resource_types={"AWS::S3::BucketPolicy"},
             ),
         ],
     )
