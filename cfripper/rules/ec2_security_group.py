@@ -34,6 +34,7 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
         logical_id: str,
         ingress: Union[SecurityGroupIngressProp, SecurityGroupIngressProperties],
         filters_available_context: Dict,
+        resource_type: str,
     ):
         if self.non_compliant_ip_range(ingress=ingress):
             open_ports = list(range(ingress.FromPort, ingress.ToPort + 1))
@@ -50,6 +51,7 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
                     result,
                     self.REASON.format(self.get_open_ports_wording(non_allowed_open_ports), ip_range, logical_id,),
                     resource_ids={logical_id},
+                    resource_types={resource_type},
                     context=filters_available_context,
                 )
 
@@ -158,7 +160,7 @@ class EC2SecurityGroupOpenToWorldRule(SecurityGroupOpenToWorldRule):
                     "logical_id": logical_id,
                     "resource": resource,
                 }
-                self.analyse_ingress(result, logical_id, ingress, filters_available_context)
+                self.analyse_ingress(result, logical_id, ingress, filters_available_context, resource.Type)
         return result
 
 
@@ -248,7 +250,7 @@ class EC2SecurityGroupIngressOpenToWorldRule(SecurityGroupOpenToWorldRule):
                 "logical_id": logical_id,
                 "resource": resource,
             }
-            self.analyse_ingress(result, logical_id, resource.Properties, filters_available_context)
+            self.analyse_ingress(result, logical_id, resource.Properties, filters_available_context, resource.Type)
         return result
 
 
@@ -324,6 +326,7 @@ class EC2SecurityGroupMissingEgressRule(Rule):
                     result,
                     self.REASON.format(logical_id),
                     resource_ids={logical_id},
+                    resource_types={resource.Type},
                     context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
                 )
         return result

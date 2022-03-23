@@ -70,7 +70,7 @@ def test_security_group_type_slash0(security_group_type_slash0):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
@@ -137,7 +137,7 @@ def test_invalid_security_group_port78_81(invalid_security_group_port78_81):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
@@ -159,7 +159,7 @@ def test_invalid_security_group_cidripv6(invalid_security_group_cidripv6):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
@@ -181,7 +181,7 @@ def test_invalid_security_group_range(invalid_security_group_range):
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
@@ -203,7 +203,7 @@ def test_invalid_security_group_multiple_statements(invalid_security_group_multi
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
@@ -264,7 +264,7 @@ def test_non_matching_filters_are_reported_normally(invalid_security_group_range
                 rule_mode=RuleMode.BLOCKING,
                 actions=None,
                 resource_ids={"SecurityGroup"},
-                resource_types=None,
+                resource_types={"AWS::EC2::SecurityGroup"},
             )
         ],
     )
