@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.0]
+### Updates
+- Added `resource_types` to failures.
+
 ## [1.6.0]
 ### Updates
 - Created `GenericResourceWildcardPrincipalRule` to be an abstract for wildcard principals for Generic resources.
