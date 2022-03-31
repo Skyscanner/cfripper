@@ -1,5 +1,10 @@
 ## Rule Config
 Allows to overwrite the default behaviour of the rule, such as changing the rule mode and risk value.
+Although this config has `None` as default values, `Rule` will use the following values as default if no config is given.
+```python3
+RULE_MODE = RuleMode.BLOCKING
+RISK_VALUE = RuleRisk.MEDIUM
+```
  
 {{ inline_source('cfripper.config.rule_config.RuleConfig') }}
 
