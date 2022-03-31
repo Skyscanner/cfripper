@@ -15,5 +15,6 @@ class RuleConfig(BaseModel):
     RISK_VALUE = RuleRisk.MEDIUM
     ```
     """
+
     rule_mode: Optional[RuleMode] = None
     risk_value: Optional[RuleRisk] = None

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Updates
 - Update `RuleConfig` documentation.
 ### Improvements
-- Bump `pycfmodel` to `0.17.1`
+- Bump `pycfmodel` to `0.17.1`.
 
 ## [1.7.0]
 ### Updates
