@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.1]
+### Updates
+- Update `RuleConfig` documentation.
+### Improvements
+- Bump `pycfmodel` to `0.17.1`
+
 ## [1.7.0]
 ### Updates
 - Added `resource_types` to failures.
