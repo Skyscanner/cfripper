@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.1]
+### Fixes
+- Add support to `EC2SecurityGroupOpenToWorldRule` for use cases where ports are not defined in the CloudFormation template. By default, this means all ports are included.
+
 ## [1.7.0]
 ### Updates
 - Added `resource_types` to failures.
