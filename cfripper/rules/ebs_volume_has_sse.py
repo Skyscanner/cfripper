@@ -50,7 +50,7 @@ class EBSVolumeHasSSERule(Rule):
         for logical_id, resource in cfmodel.resources_filtered_by_type("AWS::EC2::Volume").items():
             encrypted_status = getattr(resource.Properties, "Encrypted", None)
 
-            if encrypted_status is None or encrypted_status is False or encrypted_status.lower() != "true":
+            if encrypted_status is None or str(encrypted_status).lower() != "true":
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(logical_id),
