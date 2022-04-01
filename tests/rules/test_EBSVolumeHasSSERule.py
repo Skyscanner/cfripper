@@ -25,9 +25,12 @@ def test_no_failures_are_raised(good_template):
     assert compare_lists_of_failures(result.failures, [])
 
 
-def test_failures_are_raised(bad_template):
+@pytest.mark.parametrize(
+    "template_path", ["rules/EBSVolumeHasSSERule/bad_template.json", "rules/EBSVolumeHasSSERule/bad_template.yaml"],
+)
+def test_failures_are_raised(template_path):
     rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"))
-    result = rule.invoke(bad_template)
+    result = rule.invoke(get_cfmodel_from(template_path).resolve())
 
     assert not result.valid
     assert compare_lists_of_failures(
