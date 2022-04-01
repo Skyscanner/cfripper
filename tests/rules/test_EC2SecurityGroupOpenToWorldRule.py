@@ -54,6 +54,13 @@ def invalid_security_group_port78_81():
     return get_cfmodel_from("rules/EC2SecurityGroupOpenToWorldRule/invalid_security_group_port78_81.json").resolve()
 
 
+@pytest.fixture()
+def invalid_security_group_no_ports_defined():
+    return get_cfmodel_from(
+        "rules/EC2SecurityGroupOpenToWorldRule/invalid_security_group_no_ports_defined.json"
+    ).resolve()
+
+
 def test_security_group_type_slash0(security_group_type_slash0):
     rule = EC2SecurityGroupOpenToWorldRule(None)
     result = rule.invoke(security_group_type_slash0)
@@ -132,6 +139,30 @@ def test_invalid_security_group_port78_81(invalid_security_group_port78_81):
             Failure(
                 granularity=RuleGranularity.RESOURCE,
                 reason="Port(s) 78-81 open to public IPs: (0.0.0.0/0) in security group 'SecurityGroup'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="EC2SecurityGroupOpenToWorldRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"SecurityGroup"},
+                resource_types={"AWS::EC2::SecurityGroup"},
+            )
+        ],
+    )
+
+
+def test_invalid_security_group_no_ports_defined(invalid_security_group_no_ports_defined):
+    rule = EC2SecurityGroupOpenToWorldRule(
+        Config(rules=["EC2SecurityGroupOpenToWorldRule"], aws_account_id="123456789", stack_name="mockstack",)
+    )
+    result = rule.invoke(invalid_security_group_no_ports_defined)
+
+    assert not result.valid
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="Port(s) 0-65535 open to public IPs: (23.45.67.88/29) in security group 'SecurityGroup'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="EC2SecurityGroupOpenToWorldRule",
                 rule_mode=RuleMode.BLOCKING,
