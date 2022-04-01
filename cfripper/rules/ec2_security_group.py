@@ -14,6 +14,7 @@ from pycfmodel.model.resources.properties.security_group_ingress_prop import Sec
 from pycfmodel.model.resources.security_group import SecurityGroup
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress, SecurityGroupIngressProperties
 
+from cfripper.config.constants import MAX_PORT_NUMBER, MIN_PORT_NUMBER
 from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
@@ -37,7 +38,7 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
         resource_type: str,
     ):
         if self.non_compliant_ip_range(ingress=ingress):
-            open_ports = list(range(ingress.FromPort, ingress.ToPort + 1))
+            open_ports = list(range(ingress.FromPort or MIN_PORT_NUMBER, (ingress.ToPort or MAX_PORT_NUMBER) + 1))
             non_allowed_open_ports = sorted(set(open_ports))
 
             if non_allowed_open_ports:

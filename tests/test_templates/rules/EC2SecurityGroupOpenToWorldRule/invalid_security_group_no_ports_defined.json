@@ -1,0 +1,18 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "description",
+        "SecurityGroupIngress": [
+          {
+            "Description": "Some Office IP",
+            "IpProtocol": "-1",
+            "CidrIp": "23.45.67.88/29"
+          }
+        ]
+      }
+    }
+  }
+}
