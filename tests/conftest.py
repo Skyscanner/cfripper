@@ -46,3 +46,8 @@ def default_allow_all_config():
             ),
         ],
     )
+
+
+@pytest.fixture
+def default_aws_region() -> str:
+    return "eu-west-1"

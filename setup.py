@@ -16,14 +16,17 @@ install_requires = [
     "PyYAML>=4.2b1",
 ]
 
+# docker is needed to use moto 3.0.0 and above
+# see https://github.com/spulec/moto/issues/3567#issuecomment-947047013
 dev_requires = [
     "black==19.10b0",
+    "docker>=5.0.0",
     "flake8>=3.3.0",
     "isort==4.3.21",
     "pytest>=3.6",
     "pytest-cov>=2.5.1",
     "pip-tools>=5.3.1",
-    "moto==1.3.14",
+    "moto>=3.0.0",
 ]
 
 docs_requires = [
