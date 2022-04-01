@@ -50,7 +50,11 @@ class SecurityGroupOpenToWorldRule(Rule, ABC):
 
                 self.add_failure_to_result(
                     result,
-                    self.REASON.format(self.get_open_ports_wording(non_allowed_open_ports), ip_range, logical_id,),
+                    self.REASON.format(
+                        self.get_open_ports_wording(non_allowed_open_ports),
+                        ip_range,
+                        logical_id,
+                    ),
                     resource_ids={logical_id},
                     resource_types={resource_type},
                     context=filters_available_context,

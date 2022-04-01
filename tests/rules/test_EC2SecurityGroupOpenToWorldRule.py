@@ -152,7 +152,11 @@ def test_invalid_security_group_port78_81(invalid_security_group_port78_81):
 
 def test_invalid_security_group_no_ports_defined(invalid_security_group_no_ports_defined):
     rule = EC2SecurityGroupOpenToWorldRule(
-        Config(rules=["EC2SecurityGroupOpenToWorldRule"], aws_account_id="123456789", stack_name="mockstack",)
+        Config(
+            rules=["EC2SecurityGroupOpenToWorldRule"],
+            aws_account_id="123456789",
+            stack_name="mockstack",
+        )
     )
     result = rule.invoke(invalid_security_group_no_ports_defined)
 

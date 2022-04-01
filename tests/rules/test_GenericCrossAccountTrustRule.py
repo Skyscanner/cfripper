@@ -203,7 +203,8 @@ def test_generic_rule_supports_filter_config(s3_bucket_cross_account_and_normal,
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_generic_cross_account_for_opensearch_domain_with_principal_params(principal):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
@@ -436,7 +437,8 @@ def test_generic_cross_account_rule_for_resources_with_set_principals(template, 
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_generic_cross_account_es_domain_cross_account_success(principal):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
@@ -484,7 +486,8 @@ def test_generic_cross_account_rule_es_domain_cross_account_failure(principal):
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_generic_cross_account_with_kms_key_success(principal):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))

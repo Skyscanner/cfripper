@@ -150,7 +150,10 @@ def test_generic_rule_with_already_mapped_resources(template, is_valid, failures
     rule = GenericResourceWildcardPolicyRule(None)
     result = rule.invoke(template)
     assert result.valid == is_valid
-    assert compare_lists_of_failures(result.failures, failures,)
+    assert compare_lists_of_failures(
+        result.failures,
+        failures,
+    )
 
 
 def test_rule_supports_filter_config(sns_topic_with_wildcards_fixture, default_allow_all_config):

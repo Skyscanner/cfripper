@@ -173,7 +173,11 @@ class FakePrincipalCheckingRule(PrincipalCheckingRule):
                 "b14d6a125bdf69854ed8ef2e71d8a20b7c490f252229b806e514966e490b8d83",
             },
         ),
-        (FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]})), None, {"a", "b", "c"},),
+        (
+            FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"]})),
+            None,
+            {"a", "b", "c"},
+        ),
         (
             FakePrincipalCheckingRule(config=Config(aws_service_accounts={"A": ["a", "b", "c"], "B": ["d", "e", "f"]})),
             None,

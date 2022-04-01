@@ -98,7 +98,12 @@ DEFAULT_RULES = {
 
 BASE_CLASSES = {
     rule.__name__: rule
-    for rule in (BaseDangerousPolicyActions, CrossAccountCheckingRule, PrincipalCheckingRule, ResourceSpecificRule,)
+    for rule in (
+        BaseDangerousPolicyActions,
+        CrossAccountCheckingRule,
+        PrincipalCheckingRule,
+        ResourceSpecificRule,
+    )
 }
 
 
