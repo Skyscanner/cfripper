@@ -47,21 +47,15 @@ class EBSVolumeHasSSERule(Rule):
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
-        for logical_id, resource in cfmodel.Resources.items():
-            if resource.Type == "AWS::EC2::Volume":
-                encrypted_status = getattr(resource.Properties, "Encrypted", None)
+        for logical_id, resource in cfmodel.resources_filtered_by_type("AWS::EC2::Volume").items():
+            encrypted_status = getattr(resource.Properties, "Encrypted", None)
 
-                if encrypted_status is None or encrypted_status.lower() != "true":
-                    self.add_failure_to_result(
-                        result,
-                        self.REASON.format(logical_id),
-                        resource_ids={logical_id},
-                        resource_types={resource.Type},
-                        context={
-                            "config": self._config,
-                            "extras": extras,
-                            "logical_id": logical_id,
-                            "resource": resource,
-                        },
-                    )
+            if encrypted_status is None or encrypted_status is False:
+                self.add_failure_to_result(
+                    result,
+                    self.REASON.format(logical_id),
+                    resource_ids={logical_id},
+                    resource_types={resource.Type},
+                    context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
+                )
         return result

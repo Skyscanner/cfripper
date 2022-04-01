@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.1]
+### Fixes
+- `EBSVolumeHasSSERule` can now understand `encrypted_status` if modelled as a `bool`.
+### Updates
+- Updated `EBSVolumeHasSSERule` to iterate only over `AWS::EC2::Volume` resources.
+
 ## [1.7.0]
 ### Updates
 - Added `resource_types` to failures.
