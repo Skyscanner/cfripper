@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - Updated `EBSVolumeHasSSERule` to iterate only over `AWS::EC2::Volume` resources.
 - Update `RuleConfig` documentation.
 ### Improvements
-- Bump `pycfmodel` to `0.17.1`.
+- Bump `pycfmodel` to `0.18.0`.
 
 ## [1.7.0]
 ### Updates
