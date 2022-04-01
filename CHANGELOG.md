@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 - Add support to `EC2SecurityGroupOpenToWorldRule` for use cases where ports are not defined in the CloudFormation template. By default, this means all ports are included.
 ### Updates
 - Updated `EBSVolumeHasSSERule` to iterate only over `AWS::EC2::Volume` resources.
+- Update `RuleConfig` documentation.
+### Improvements
+- Bump `pycfmodel` to `0.18.0`.
 
 ## [1.7.0]
 ### Updates
