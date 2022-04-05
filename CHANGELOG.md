@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.8.0]
+### Improvements
+- Pin `click` to at least version `8.0.0`.
+- Update `black` to `22.3.0`, and run `make format` with this new version of `black`.
+
 ## [1.7.1]
 ### Fixes
 - `EBSVolumeHasSSERule` can now understand `encrypted_status` if modelled as a `bool`.

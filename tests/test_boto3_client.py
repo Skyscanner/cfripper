@@ -248,7 +248,12 @@ def test_urlencoded_url(s3_bucket, boto3_client):
 @pytest.mark.parametrize(
     "aws_responses, expected_exports, mocked_warning_logs, mocked_exceptions",
     [
-        ([[{"Name": "A", "Value": "a"}]], {"A": "a"}, [], [],),
+        (
+            [[{"Name": "A", "Value": "a"}]],
+            {"A": "a"},
+            [],
+            [],
+        ),
         (
             [[{"Foo": "Bar"}], [{"Name": "A", "Value": "a"}]],
             {"A": "a"},
