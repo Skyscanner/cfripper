@@ -9,7 +9,7 @@ project_root_path = Path(__file__).parent
 install_requires = [
     "boto3>=1.4.7,<2",
     "cfn_flip>=1.2.0",
-    "click~=7.1.1",
+    "click>=8.0.0",
     "pluggy~=0.13.1",
     "pycfmodel>=0.18.0",
     "pydash~=4.7.6",
@@ -19,7 +19,7 @@ install_requires = [
 # docker is needed to use moto 3.0.0 and above
 # see https://github.com/spulec/moto/issues/3567#issuecomment-947047013
 dev_requires = [
-    "black==19.10b0",
+    "black==22.3.0",
     "docker>=5.0.0",
     "flake8>=3.3.0",
     "isort==4.3.21",

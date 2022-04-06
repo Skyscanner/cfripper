@@ -153,7 +153,11 @@ def test_filter_works_as_expected(template_two_roles_dict, expected_result_two_r
 def test_filter_works_as_expected_with_rules_config_file(
     template_two_roles_dict, expected_result_two_roles, test_files_location
 ):
-    config = Config(rules=["CrossAccountTrustRule"], aws_account_id="123456789", stack_name="mockstack",)
+    config = Config(
+        rules=["CrossAccountTrustRule"],
+        aws_account_id="123456789",
+        stack_name="mockstack",
+    )
     config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
     config.add_filters_from_dir(f"{test_files_location}/filters")
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
@@ -257,7 +261,8 @@ def test_kms_cross_account_failure(principal):
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_kms_cross_account_success(principal):
     rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
@@ -332,7 +337,8 @@ def test_es_domain_cross_account_failure(principal):
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_es_domain_cross_account_success(principal):
     rule = ElasticsearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
@@ -410,7 +416,8 @@ def test_opensearch_domain_cross_account_failure(principal):
 
 
 @pytest.mark.parametrize(
-    "principal", ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
+    "principal",
+    ["arn:aws:iam::123456789:root", "arn:aws:iam::123456789:not-root", "arn:aws:iam::123456789:not-root*"],
 )
 def test_opensearch_domain_cross_account_success(principal):
     rule = OpenSearchDomainCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))

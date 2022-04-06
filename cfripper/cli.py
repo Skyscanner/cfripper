@@ -184,7 +184,9 @@ def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optio
     show_default=True,
 )
 @click.option(
-    "--rules-config-file", type=click.File("r"), help="Loads rules configuration file (type: [.py, .pyc])",
+    "--rules-config-file",
+    type=click.File("r"),
+    help="Loads rules configuration file (type: [.py, .pyc])",
 )
 @click.option(
     "--rules-filters-folder",

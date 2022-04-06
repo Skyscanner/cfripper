@@ -82,7 +82,9 @@ def test_filter_do_not_report_anything(filter_eval_object, bad_template):
         stack_name="mockstack",
         rules_filters=[
             Filter(
-                rule_mode=RuleMode.ALLOWED, eval=filter_eval_object, rules={"EC2SecurityGroupIngressOpenToWorldRule"},
+                rule_mode=RuleMode.ALLOWED,
+                eval=filter_eval_object,
+                rules={"EC2SecurityGroupIngressOpenToWorldRule"},
             )
         ],
     )
@@ -109,10 +111,18 @@ def test_filter_context_set_correctly(mock_failure_to_result, bad_template):
     assert mock_failure_to_result.mock_calls[0][2]["context"]["ingress_ip"] == "11.0.0.0/8"
     assert mock_failure_to_result.mock_calls[1][2]["context"]["ingress_ip"] == "::/0"
     assert mock_failure_to_result.mock_calls[0][2]["context"]["ingress_obj"] == SecurityGroupIngressProperties(
-        CidrIp=IPv4Network("11.0.0.0/8"), FromPort=46, IpProtocol="tcp", ToPort=46, GroupId="sg-12341234",
+        CidrIp=IPv4Network("11.0.0.0/8"),
+        FromPort=46,
+        IpProtocol="tcp",
+        ToPort=46,
+        GroupId="sg-12341234",
     )
     assert mock_failure_to_result.mock_calls[1][2]["context"]["ingress_obj"] == SecurityGroupIngressProperties(
-        CidrIpv6=IPv6Network("::/0"), FromPort=46, IpProtocol="tcp", ToPort=46, GroupId="sg-12341234",
+        CidrIpv6=IPv6Network("::/0"),
+        FromPort=46,
+        IpProtocol="tcp",
+        ToPort=46,
+        GroupId="sg-12341234",
     )
 
 

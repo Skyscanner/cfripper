@@ -1,12 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.8.0]
+## [1.9.0]
 ### Improvements
 - CFRipper is now compatible with Python3.10
 ### Updates
 - Bump dev dependency `moto` to allow `>=3.0.0`.
 - Add `docker` dev dependency since it's needed for `moto`.
+
+## [1.8.0]
+### Improvements
+- Pin `click` to at least version `8.0.0`.
+- Update `black` to `22.3.0`, and run `make format` with this new version of `black`.
 
 ## [1.7.1]
 ### Fixes

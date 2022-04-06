@@ -26,7 +26,8 @@ def test_no_failures_are_raised(good_template):
 
 
 @pytest.mark.parametrize(
-    "template_path", ["rules/EBSVolumeHasSSERule/bad_template.json", "rules/EBSVolumeHasSSERule/bad_template.yaml"],
+    "template_path",
+    ["rules/EBSVolumeHasSSERule/bad_template.json", "rules/EBSVolumeHasSSERule/bad_template.yaml"],
 )
 def test_failures_are_raised(template_path):
     rule = EBSVolumeHasSSERule(Config(aws_account_id="123456789"))

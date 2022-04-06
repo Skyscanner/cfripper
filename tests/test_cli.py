@@ -9,10 +9,12 @@ from tests.utils import FIXTURE_ROOT_PATH
 
 
 @pytest.mark.parametrize(
-    "aws_account_id_arg, validation_result", [(None, None), ("", None), ("123456789012", "123456789012")],
+    "aws_account_id_arg, validation_result",
+    [(None, None), ("", None), ("123456789012", "123456789012")],
 )
 def test_validate_aws_account_id(
-    aws_account_id_arg, validation_result,
+    aws_account_id_arg,
+    validation_result,
 ):
     fake_command = click.Command("fake_command")
     fake_context = click.Context(fake_command)
@@ -42,7 +44,8 @@ def test_validate_aws_account_id_with_malformed_arg():
     ],
 )
 def test_validate_aws_principals(
-    aws_principals_arg, validation_result,
+    aws_principals_arg,
+    validation_result,
 ):
     fake_command = click.Command("fake_command")
     fake_context = click.Context(fake_command)
