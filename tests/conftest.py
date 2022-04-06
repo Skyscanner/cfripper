@@ -31,7 +31,7 @@ def test_files_location() -> Path:
 def default_allow_all_config():
     return Config(
         rules=DEFAULT_RULES,
-        aws_account_id="123456789",
+        aws_account_id="123456789012",
         stack_name="mockstack",
         rules_filters=[
             Filter(
