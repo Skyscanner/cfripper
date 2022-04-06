@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.8.1]
+### Improvements
+- Bump `pycfmodel` to `0.18.1`.
+
 ## [1.8.0]
 ### Improvements
 - Pin `click` to at least version `8.0.0`.
