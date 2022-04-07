@@ -137,7 +137,7 @@ REGEX_STS_ARN = re.compile(r"^arn:aws:sts::(\d+):(.*)$")
 
 
 """
-Check for wildcards immediately after the last colon
+Check for a wildcard star or wildcards immediately after the last colon
 Valid:
 - *
 - arn:aws:iam::123456789012:*
