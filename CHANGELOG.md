@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.0]
+### Improvements
+- CFRipper is now able to detect new types of wildcard usage.
+
 ## [1.8.0]
 ### Improvements
 - Pin `click` to at least version `8.0.0`.
