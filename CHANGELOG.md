@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.9.0]
 ### Improvements
 - CFRipper is now able to detect new types of wildcard usage.
+- Default config will now detect lambda resource wildcards as through IAM overpowered roles.
 
 ## [1.8.0]
 ### Improvements
