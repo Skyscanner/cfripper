@@ -11,7 +11,7 @@ install_requires = [
     "cfn_flip>=1.2.0",
     "click>=8.0.0",
     "pluggy~=0.13.1",
-    "pycfmodel>=0.18.0",
+    "pycfmodel>=0.18.1",
     "pydash~=4.7.6",
     "PyYAML>=4.2b1",
 ]
