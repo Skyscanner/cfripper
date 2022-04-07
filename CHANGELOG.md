@@ -6,7 +6,6 @@ All notable changes to this project will be documented in this file.
 - CFRipper is now compatible with Python3.10
 ### Updates
 - Bump dev dependency `moto` to allow `>=3.0.0`.
-- Add `docker` dev dependency since it's needed for `moto`.
 
 ## [1.8.0]
 ### Improvements
