@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Improvements
 - CFRipper is now compatible with Python3.10
 - CFRipper is now able to detect new types of wildcard usage.
+- Default config will now detect lambda resource wildcards as through IAM overpowered roles.
 
 ### Updates
 - Bump dev dependency `moto` to allow `>=3.0.0`.
