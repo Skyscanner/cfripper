@@ -18,16 +18,18 @@ TEST_BUCKET_NAME = "megabucket"
 
 
 @pytest.fixture
-def s3_bucket():
+def s3_bucket(default_aws_region):
     with mock_s3():
-        boto3.client("s3").create_bucket(Bucket=TEST_BUCKET_NAME)
+        boto3.client("s3").create_bucket(
+            Bucket=TEST_BUCKET_NAME, CreateBucketConfiguration={"LocationConstraint": default_aws_region}
+        )
         yield boto3.resource("s3").Bucket(TEST_BUCKET_NAME)
 
 
 @pytest.fixture
-def boto3_client():
+def boto3_client(default_aws_region):
     with mock_sts():
-        yield Boto3Client("123456789", "eu-west-1", "stack-id")
+        yield Boto3Client("123456789", default_aws_region, "stack-id")
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.9.0]
 ### Improvements
+- CFRipper is now compatible with Python3.10
 - CFRipper is now able to detect new types of wildcard usage.
+
+### Updates
+- Bump dev dependency `moto` to allow `>=3.0.0`.
 
 ## [1.8.0]
 ### Improvements

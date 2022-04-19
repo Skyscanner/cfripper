@@ -23,7 +23,7 @@ dev_requires = [
     "pytest>=3.6",
     "pytest-cov>=2.5.1",
     "pip-tools>=5.3.1",
-    "moto==1.3.14",
+    "moto[cloudformation,s3]>=3.0.0",
 ]
 
 docs_requires = [
