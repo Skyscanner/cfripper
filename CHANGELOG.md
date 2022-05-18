@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.0]
+### Improvements
+- `GenericCrossAccountTrustRule` can now scan IAM Roles correctly as `CrossAccountTrustRule` does
+
 ## [1.9.0]
 ### Improvements
 - CFRipper is now compatible with Python3.10
