@@ -20,6 +20,7 @@ from pycfmodel.model.resources.opensearch_domain import OpenSearchDomain
 from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
+from pycfmodel.model.utils import OptionallyNamedPolicyDocument
 
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Result
@@ -138,7 +139,15 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            policy_documents = resource.policy_documents
+            if isinstance(resource, IAMRole):
+                # todo - pending a release from pycfmodel
+                policy_documents = [
+                    OptionallyNamedPolicyDocument(
+                        policy_document=getattr(resource.Properties, "AssumeRolePolicyDocument"), name=None
+                    )
+                ]
+            else:
+                policy_documents = resource.policy_documents
             if policy_documents:
                 for document in policy_documents:
                     for statement in document.policy_document.statement_as_list():
@@ -156,6 +165,8 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks if the trust policy of a role grants permissions to principals from other accounts.
     Do not use whole accounts as principals.
 
