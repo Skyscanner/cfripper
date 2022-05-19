@@ -7,18 +7,18 @@ from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 
 @fixture()
-def rds_policy():
+def rds_sg():
     return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_sg.yaml").resolve()
 
 
 @fixture()
-def rds_ingress_policy():
+def rds_sg_ingress():
     return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_sg_ingress.yaml").resolve()
 
 
-def test_dangerous_rds_securitygroup(rds_policy):
+def test_dangerous_rds_securitygroup(rds_sg):
     rule = RDSSecurityGroupIngressOpenToWorldRule(None)
-    result = rule.invoke(rds_policy)
+    result = rule.invoke(rds_sg)
 
     assert not result.valid
     assert compare_lists_of_failures(
@@ -41,9 +41,9 @@ def test_dangerous_rds_securitygroup(rds_policy):
     )
 
 
-def test_dangerous_rds_securitygroup_ingress(rds_ingress_policy):
+def test_dangerous_rds_securitygroup_ingress(rds_sg_ingress):
     rule = RDSSecurityGroupIngressOpenToWorldRule(None)
-    result = rule.invoke(rds_ingress_policy)
+    result = rule.invoke(rds_sg_ingress)
 
     assert not result.valid
     assert compare_lists_of_failures(
@@ -66,9 +66,9 @@ def test_dangerous_rds_securitygroup_ingress(rds_ingress_policy):
     )
 
 
-def test_rule_supports_filter_config(rds_policy, default_allow_all_config):
+def test_rule_supports_filter_config(rds_sg, default_allow_all_config):
     rule = RDSSecurityGroupIngressOpenToWorldRule(default_allow_all_config)
-    result = rule.invoke(rds_policy)
+    result = rule.invoke(rds_sg)
 
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
