@@ -8,12 +8,12 @@ from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 @fixture()
 def rds_policy():
-    return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_policy.yaml").resolve()
+    return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_sg.yaml").resolve()
 
 
 @fixture()
 def rds_ingress_policy():
-    return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_ingress_policy.yaml").resolve()
+    return get_cfmodel_from("rules/RDSSecurityGroupIngressOpenToWorldRule/rds_sg_ingress.yaml").resolve()
 
 
 def test_dangerous_rds_securitygroup(rds_policy):
