@@ -60,7 +60,7 @@ class RDSSecurityGroupIngressOpenToWorldRule(ResourceSpecificRule):
     RESOURCE_TYPES = (RDSDBSecurityGroup, RDSDBSecurityGroupIngress)
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.HIGH
-    REASON = "RDS DB Security group policy {} should not have ingress open to the world"
+    REASON = "RDS DB Security group {} should not have ingress open to the world"
 
     def resource_invoke(
         self,
