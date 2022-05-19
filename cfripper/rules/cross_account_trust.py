@@ -20,7 +20,6 @@ from pycfmodel.model.resources.opensearch_domain import OpenSearchDomain
 from pycfmodel.model.resources.properties.statement import Statement
 from pycfmodel.model.resources.resource import Resource
 from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
-from pycfmodel.model.utils import OptionallyNamedPolicyDocument
 
 from cfripper.model.enums import RuleGranularity, RuleMode
 from cfripper.model.result import Result
@@ -140,12 +139,7 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, IAMRole):
-                # todo - pending a release from pycfmodel
-                policy_documents = [
-                    OptionallyNamedPolicyDocument(
-                        policy_document=getattr(resource.Properties, "AssumeRolePolicyDocument"), name=None
-                    )
-                ]
+                policy_documents = resource.assume_role_as_optionally_named_policy_document_list
             else:
                 policy_documents = resource.policy_documents
             if policy_documents:
