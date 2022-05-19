@@ -10,7 +10,7 @@ from cfripper.rules import ResourceSpecificRule
 
 class RDSSecurityGroupIngressOpenToWorldRule(ResourceSpecificRule):
     """
-    Checks if security groups have an ingress IP that is open to the world an RDS security group.
+    Checks if RDS native security groups have an ingress IP that is open to the world.
 
     Fix:
         Most security groups only need to be [accessed privately](https://en.wikipedia.org/wiki/Private_network), and
