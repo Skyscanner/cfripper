@@ -28,8 +28,7 @@ def test_dangerous_rds_securitygroup(rds_sg):
                 actions=None,
                 granularity=RuleGranularity.RESOURCE,
                 reason=(
-                    "RDS DB Security group NonCompliantRDSSecurityGroup "
-                    + "should not have ingress open to the world"
+                    "RDS DB Security group NonCompliantRDSSecurityGroup " + "should not have ingress open to the world"
                 ),
                 risk_value=RuleRisk.HIGH,
                 rule="RDSSecurityGroupIngressOpenToWorldRule",
