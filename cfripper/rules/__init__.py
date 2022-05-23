@@ -23,6 +23,7 @@ from cfripper.rules.kms_key_wildcard_principal import KMSKeyWildcardPrincipalRul
 from cfripper.rules.managed_policy_on_user import ManagedPolicyOnUserRule
 from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
+from cfripper.rules.rds_security_group import RDSSecurityGroupIngressOpenToWorldRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_lifecycle_configuration import S3LifecycleConfigurationRule
 from cfripper.rules.s3_object_versioning import S3ObjectVersioningRule
@@ -77,6 +78,7 @@ DEFAULT_RULES = {
         PartialWildcardPrincipalRule,
         PolicyOnUserRule,
         PrivilegeEscalationRule,
+        RDSSecurityGroupIngressOpenToWorldRule,
         S3BucketPolicyPrincipalRule,
         S3LifecycleConfigurationRule,
         S3BucketPolicyWildcardActionRule,

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 ## [1.10.0]
 ### Improvements
 - `GenericCrossAccountTrustRule` can now scan IAM Roles correctly as `CrossAccountTrustRule` does
+### Additions
+- New rule: `RDSSecurityGroupIngressOpenToWorldRule`
 ### Updates
 - Bumped minimum `pycfmodel` version to `0.20.0`
 

@@ -1,0 +1,15 @@
+Resources:
+  CompliantRDSSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      EC2VpcId: "vpc-id"
+      DBSecurityGroupIngress:
+        - CIDRIP: 10.0.0.0/8
+      GroupDescription: Compliant RDS security group
+  NonCompliantRDSSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      EC2VpcId: "vpc-id"
+      DBSecurityGroupIngress:
+        - CIDRIP: 0.0.0.0/0
+      GroupDescription: Risky RDS security group
