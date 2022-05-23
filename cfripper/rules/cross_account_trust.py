@@ -138,7 +138,10 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            policy_documents = resource.policy_documents
+            if isinstance(resource, IAMRole):
+                policy_documents = resource.assume_role_as_optionally_named_policy_document_list
+            else:
+                policy_documents = resource.policy_documents
             if policy_documents:
                 for document in policy_documents:
                     for statement in document.policy_document.statement_as_list():
@@ -156,6 +159,8 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
 
 class CrossAccountTrustRule(CrossAccountCheckingRule):
     """
+    To be replaced by GenericCrossAccountTrustRule.
+
     Checks if the trust policy of a role grants permissions to principals from other accounts.
     Do not use whole accounts as principals.
 

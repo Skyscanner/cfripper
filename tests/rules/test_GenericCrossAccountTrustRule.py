@@ -105,11 +105,25 @@ def test_iam_role_to_jump_to_another_account(template_iam_role_to_jump_to_anothe
     assert compare_lists_of_failures(result.failures, [])
 
 
-def test_iam_role_is_ignored_in_generic_rule(template_one_role):
+def test_iam_role_is_checked_in_generic_rule(template_one_role):
     rule = GenericCrossAccountTrustRule(Config(aws_account_id="123456789"))
     result = rule.invoke(template_one_role)
-    assert result.valid
-    assert compare_lists_of_failures(result.failures, [])
+    assert not result.valid
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRole has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                risk_value=RuleRisk.MEDIUM,
+                rule="GenericCrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRole"},
+                resource_types={"AWS::IAM::Role"},
+            )
+        ],
+    )
 
 
 def test_s3_bucket_cross_account_with_generic(s3_bucket_cross_account):
