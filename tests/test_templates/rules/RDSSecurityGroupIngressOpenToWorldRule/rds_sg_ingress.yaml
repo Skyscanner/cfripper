@@ -1,0 +1,11 @@
+Resources:
+  CompliantRDSSecurityGroupIngress:
+    Type: AWS::RDS::DBSecurityGroupIngress
+    Properties:
+      CIDRIP: 10.0.0.0/8
+      DBSecurityGroupName: RDS security group ingress open to a private range
+  NonCompliantRDSSecurityGroupIngress:
+    Type: AWS::RDS::DBSecurityGroupIngress
+    Properties:
+      CIDRIP: 0.0.0.0/0
+      DBSecurityGroupName: Risky RDS security group ingress
