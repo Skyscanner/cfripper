@@ -88,6 +88,30 @@
           ]
         }
       }
+    },
+    "NotMapped7": {
+      "Type": "AWS::Not::Mapped",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "?"
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:s3:::fakebucketfakebucket/*",
+              "Principal": {
+                "AWS": [
+                  "156460612806"
+                ]
+              }
+            }
+          ]
+        }
+      }
     }
   }
 }

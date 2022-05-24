@@ -36,7 +36,7 @@ def sns_topic_with_wildcards_fixture():
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="mysnspolicy1 should not allow a `*` action",
+                    reason="mysnspolicy1 should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -52,7 +52,7 @@ def sns_topic_with_wildcards_fixture():
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="mysqspolicy1 should not allow a `*` action",
+                    reason="mysqspolicy1 should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -62,7 +62,7 @@ def sns_topic_with_wildcards_fixture():
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="mysqspolicy1b should not allow a `*` action",
+                    reason="mysqspolicy1b should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -72,7 +72,7 @@ def sns_topic_with_wildcards_fixture():
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="mysqspolicy1c should not allow a `*` action",
+                    reason="mysqspolicy1c should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -82,7 +82,7 @@ def sns_topic_with_wildcards_fixture():
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="mysqspolicy1d should not allow a `*` action",
+                    reason="mysqspolicy1d should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -98,7 +98,7 @@ def sns_topic_with_wildcards_fixture():
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="S3BucketPolicy should not allow a `*` action",
+                    reason="S3BucketPolicy should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -108,7 +108,7 @@ def sns_topic_with_wildcards_fixture():
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="S3BucketPolicy2 should not allow a `*` action",
+                    reason="S3BucketPolicy2 should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -124,7 +124,7 @@ def sns_topic_with_wildcards_fixture():
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NotMapped4 should not allow a `*` action",
+                    reason="NotMapped4 should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -134,12 +134,22 @@ def sns_topic_with_wildcards_fixture():
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NotMapped5 should not allow a `*` action",
+                    reason="NotMapped5 should not allow a wildcard (`*` or `?`) action",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericResourceWildcardPolicyRule",
                     rule_mode=RuleMode.BLOCKING,
                     actions=None,
                     resource_ids={"NotMapped5"},
+                    resource_types={"AWS::Not::Mapped"},
+                ),
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="NotMapped7 should not allow a wildcard (`*` or `?`) action",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="GenericResourceWildcardPolicyRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"NotMapped7"},
                     resource_types={"AWS::Not::Mapped"},
                 ),
             ],
