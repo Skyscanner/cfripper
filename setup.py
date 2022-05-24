@@ -23,7 +23,7 @@ dev_requires = [
     "pytest>=3.6",
     "pytest-cov>=2.5.1",
     "pip-tools>=5.3.1",
-    "moto[cloudformation,s3]==3.1.9",  # coverage fails for 3.1.10
+    "moto[cloudformation,s3]==3.1.9",  # coverage fails for 3.1.10, issue is https://github.com/spulec/moto/issues/5162
 ]
 
 docs_requires = [
