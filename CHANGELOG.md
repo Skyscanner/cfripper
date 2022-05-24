@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - New regex `REGEX_CONTAINS_WILDCARD` to check for any wildcard
 ### Updates
 - `GenericResourceWildcardPolicyRule` now uses `REGEX_CONTAINS_WILDCARD` instead of `REGEX_HAS_STAR_OR_STAR_AFTER_COLON`.
+- Bump dev dependency `moto` to `==3.1.9`.
 
 ## [1.10.0]
 ### Improvements
