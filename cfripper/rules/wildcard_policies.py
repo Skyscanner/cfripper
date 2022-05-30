@@ -14,7 +14,7 @@ from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy
 from pycfmodel.model.resources.sns_topic_policy import SNSTopicPolicy
 from pycfmodel.model.resources.sqs_queue_policy import SQSQueuePolicy
 
-from cfripper.config.regex import REGEX_HAS_STAR_OR_STAR_AFTER_COLON
+from cfripper.config.regex import REGEX_CONTAINS_WILDCARD, REGEX_HAS_STAR_OR_STAR_AFTER_COLON
 from cfripper.model.enums import RuleGranularity
 from cfripper.model.result import Result
 from cfripper.rules.base_rules import Rule
@@ -61,10 +61,10 @@ class GenericWildcardPolicyRule(Rule):
 
 class GenericResourceWildcardPolicyRule(GenericWildcardPolicyRule):
     """
-    Rule that checks for use of the wildcard `*` character in Actions of Policy Documents of Generic AWS Resources.
+    Rule that checks for use of a wildcard `*` or `?` character in Actions of Policy Documents of Generic AWS Resources.
     """
 
-    REASON = "{} should not allow a `*` action"
+    REASON = "{} should not allow a wildcard (`*` or `?`) action"
     GRANULARITY = RuleGranularity.RESOURCE
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
@@ -73,7 +73,7 @@ class GenericResourceWildcardPolicyRule(GenericWildcardPolicyRule):
             policy_documents = resource.policy_documents
             if policy_documents:
                 for document in policy_documents:
-                    if document.policy_document.allowed_actions_with(REGEX_HAS_STAR_OR_STAR_AFTER_COLON):
+                    if document.policy_document.allowed_actions_with(REGEX_CONTAINS_WILDCARD):
                         self.add_failure_to_result(
                             result,
                             self.REASON.format(logical_id),

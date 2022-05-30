@@ -69,6 +69,23 @@ Invalid:
 """
 REGEX_CONTAINS_STAR = re.compile(r"^.*[*].*$")
 
+"""
+Check for an str where a wildcard (* or ?) is being used.
+Valid:
+- *
+- ?
+- abc*def
+- abc?def
+- abcdef*
+- abcdef?
+- *abcdef
+- ?abcdef
+Invalid:
+- arn:aws:iam::123456789012:not-root
+- potato
+"""
+REGEX_CONTAINS_WILDCARD = re.compile(r"^.*[*?].*$")
+
 
 """
 Check for root wildcard
