@@ -4,7 +4,7 @@ strict: true
 site_url: https://cfripper.readthedocs.io
 
 theme:
-  name: 'material'
+  name: 'break-the-tests'
   logo: 'img/logo.png'
   favicon: 'img/favicon.ico'
   features:
