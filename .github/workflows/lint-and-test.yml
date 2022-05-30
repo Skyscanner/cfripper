@@ -26,3 +26,7 @@ jobs:
       - run: make lint
 
       - run: make coverage
+
+      - run: make install-docs
+
+      - run: make test-docs

@@ -1,3 +1,4 @@
+# IDEs
 .idea/
 .vscode/
 
@@ -7,6 +8,7 @@
 # Virtualenv
 venv
 
+# Other
 .DS_Store
 .project
 .pydevproject
@@ -44,10 +46,6 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -74,3 +72,6 @@ venv.bak/
 
 # Snyk Code
 .dccache
+
+# MkDocs local builds
+site/
