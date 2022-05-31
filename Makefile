@@ -37,6 +37,9 @@ coverage:
 
 test: lint unit
 
+test-docs:
+	mkdocs build --strict
+
 freeze:
 	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --no-annotate --output-file requirements.txt setup.py
 
