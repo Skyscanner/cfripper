@@ -45,7 +45,7 @@ def test_failures_are_raised(bad_template):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow wildcards in principals (principal: 'arn:aws:iam::123445:*')",
+                reason="PolicyA should not allow wildcards in principals (principal: 'arn:aws:iam::*:12345')",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
