@@ -65,6 +65,26 @@ def test_failures_are_raised(bad_template):
                 resource_ids={"PolicyA"},
                 resource_types={"AWS::IAM::Policy"},
             ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="PolicyA should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at '79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="PolicyA should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'eb2fe74dc7e8125d8f8fcae89d90e6dfdecabf896e1a69d55e949b009fd95a97'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"PolicyA"},
+                resource_types={"AWS::IAM::Policy"},
+            ),
         ],
     )
 

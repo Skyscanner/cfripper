@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 - Fix `GenericWildcardPrincipalRule` that could add a false-positive
 - Fix `GenericWildcardPrincipalRule` that wasn't handling canonical IDs
+- Fix `REGEX_PARTIAL_WILDCARD_PRINCIPAL` to crrectly handle canonical IDs and account IDs
 - Fix unit tests
 
 ## [1.11.0]

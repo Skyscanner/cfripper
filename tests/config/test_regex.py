@@ -92,6 +92,8 @@ from cfripper.config.regex import (
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "arn:aws:iam::123456789012:service-*", True),
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "arn:aws:iam::123456789012:root", True),
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "123456789012", True),
+        (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be", True),
+        (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "eb2fe74dc7e8125d8f8fcae89d90e6dfdecabf896e1a69d55e949b009fd95a97", True),
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "*", False),
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "potato", False),
         (REGEX_PARTIAL_WILDCARD_PRINCIPAL, "arn:aws:iam::123456789012:*-role", True),
