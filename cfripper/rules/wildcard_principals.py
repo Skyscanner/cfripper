@@ -56,7 +56,9 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
         |`account_id` | `str`              | Account ID found in the principal                              |
     """
 
-    REASON_WILDCARD_PRINCIPAL = "{} should not allow wildcards in principals (principal: '{}')"
+    REASON_WILDCARD_PRINCIPAL = (
+        "{} should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '{}'"
+    )
     GRANULARITY = RuleGranularity.RESOURCE
 
     FULL_REGEX = REGEX_FULL_WILDCARD_PRINCIPAL

@@ -23,7 +23,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
- - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*')
  - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Valid: True
@@ -37,7 +37,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
- - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*')
  - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.

@@ -35,7 +35,7 @@ def test_failures_are_raised(bad_template):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow wildcards in principals (principal: 'somewhatrestricted:*')",
+                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at 'somewhatrestricted:*'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericResourceWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -45,7 +45,7 @@ def test_failures_are_raised(bad_template):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow wildcards in principals (principal: 'arn:aws:iam::*:12345')",
+                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at 'arn:aws:iam::*:12345'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericResourceWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
