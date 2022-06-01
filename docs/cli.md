@@ -13,7 +13,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*')
+	- FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'
 	- IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Valid: True
@@ -26,7 +26,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*')
+	- FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'
 	- IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
@@ -68,8 +68,8 @@ Not adding S3CrossAccountTrustRule failure in S3BucketPolicyAccountAccess becaus
 Not adding S3CrossAccountTrustRule failure in S3BucketPolicyAccountAccess because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role')
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::666555444333:root')
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role'
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::666555444333:root'
 	- S3BucketPolicyPrincipalRule: S3 Bucket S3BucketPolicyAccountAccess policy has non-allowed principals 123456789012
 	- S3BucketPolicyPrincipalRule: S3 Bucket S3BucketPolicyAccountAccess policy has non-allowed principals 123456789012
 	- S3BucketPolicyPrincipalRule: S3 Bucket S3BucketPolicyAccountAccess policy has non-allowed principals 123456789012
@@ -90,8 +90,8 @@ Analysing ./tests/test_templates/rules/S3CrossAccountTrustRule/s3_bucket_cross_a
 Using `UNDEFINED_PARAM_S3Bucket` for S3Bucket. Original value wasn't available.
 Valid: False
 Issues found:
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role')
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::666555444333:root')
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role'
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::666555444333:root'
 	- S3BucketPolicyPrincipalRule: S3 Bucket S3BucketPolicyAccountAccess policy has non-allowed principals 666555444333
 	- S3BucketPolicyPrincipalRule: S3 Bucket S3BucketPolicyAccountAccess policy has non-allowed principals 666555444333
 	- S3BucketPublicReadAclAndListStatementRule: S3 Bucket S3BucketPolicyAccountAccess should not have a public read acl and list bucket statement
@@ -105,8 +105,8 @@ Analysing ./tests/test_templates/rules/S3CrossAccountTrustRule/s3_bucket_cross_a
 Using `UNDEFINED_PARAM_S3Bucket` for S3Bucket. Original value wasn't available.
 Valid: False
 Issues found:
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role')
-	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::666555444333:root')
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789012:role/some-role/some-other-sub-role'
+	- PartialWildcardPrincipalRule: S3BucketPolicyAccountAccess should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::666555444333:root'
 	- S3BucketPublicReadAclAndListStatementRule: S3 Bucket S3BucketPolicyAccountAccess should not have a public read acl and list bucket statement
 	- S3CrossAccountTrustRule: S3BucketPolicyAccountAccess has forbidden cross-account policy allow with arn:aws:iam::666555444333:root for an S3 bucket.
 ```

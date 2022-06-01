@@ -47,7 +47,7 @@ def test_failures_are_raised(bad_template):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123445:12345*')",
+                reason="PolicyA should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123445:12345*'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="PartialWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -57,7 +57,7 @@ def test_failures_are_raised(bad_template):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123445:root')",
+                reason="PolicyA should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123445:root'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="PartialWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -79,7 +79,7 @@ def test_failures_for_correct_account_ids(intra_account_root_access):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="AccLoadBalancerAccessLogBucketPolicy should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789012:root')",
+                reason="AccLoadBalancerAccessLogBucketPolicy should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789012:root'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="PartialWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -89,7 +89,7 @@ def test_failures_for_correct_account_ids(intra_account_root_access):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="AccLoadBalancerAccessLogBucketPolicy should not allow wildcard in principals or account-wide principals (principal: '987654321012')",
+                reason="AccLoadBalancerAccessLogBucketPolicy should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at '987654321012'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="PartialWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,

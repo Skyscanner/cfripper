@@ -94,7 +94,7 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="RootRoleTwo should not allow wildcard in principals or account-wide principals (principal: 'arn:aws:iam::123456789:root')",
+                reason="RootRoleTwo should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789:root'",
                 risk_value=RuleRisk.MEDIUM,
                 rule="PartialWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
