@@ -35,7 +35,7 @@ def test_failures_are_raised(bad_template):
             Failure(
                 rule_mode=RuleMode.BLOCKING,
                 rule="GenericResourceFullWildcardPrincipalRule",
-                reason="PolicyA should not allow wildcards in principals (principal: '*')",
+                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'",
                 granularity=RuleGranularity.RESOURCE,
                 risk_value=RuleRisk.HIGH,
                 actions=None,

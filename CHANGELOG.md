@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.12.0]
+### Improvements
+- Refactored the `KMSKeyWildcardPrincipalRule` rule
+### Updates
+- Update `GenericWildcardPrincipalRule`, `PartialWildcardPrincipalRule` and `GenericResourcePartialWildcardPrincipalRule` message
+- Update docs
+### Fixes
+- Fix `GenericWildcardPrincipalRule` that could add a false-positive
+- Fix `GenericWildcardPrincipalRule` that wasn't handling canonical IDs
+- Fix `REGEX_PARTIAL_WILDCARD_PRINCIPAL` to correctly handle canonical IDs and account IDs
+- Fix unit tests
+
 ## [1.11.0]
 ### Additions
 - New regex `REGEX_CONTAINS_WILDCARD` to check for any wildcard

@@ -23,7 +23,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
- - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'
  - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Valid: True
@@ -37,7 +37,7 @@ Analysing /tmp/root.yaml...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
 Valid: False
 Issues found:
- - FullWildcardPrincipalRule: rootRole should not allow wildcards in principals (principal: '*')
+ - FullWildcardPrincipalRule: rootRole should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'
  - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Analysing /tmp/root_bypass.json...
 Not adding CrossAccountTrustRule failure in rootRole because no AWS Account ID was found in the config.
@@ -46,8 +46,7 @@ Issues found:
  - IAMRolesOverprivilegedRule: Role 'rootRole' contains an insecure permission '*' in policy 'root'
 Monitored issues found:
  - PartialWildcardPrincipalRule: rootRole contains an unknown principal: 123456789012
- - PartialWildcardPrincipalRule: rootRole should not allow wildcard in principals or account-wide principals
-(principal: 'arn:aws:iam::123456789012:root')
+ - PartialWildcardPrincipalRule: rootRole should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789012:root'
 ```
 
 ### Using json format and output-folder argument

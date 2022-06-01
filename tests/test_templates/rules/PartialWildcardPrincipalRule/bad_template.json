@@ -15,7 +15,9 @@
               ],
               "Principal": [
                 "arn:aws:iam::123445:12345*",
-                "arn:aws:iam::123445:root"
+                "arn:aws:iam::123445:root",
+                "79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be",
+                "eb2fe74dc7e8125d8f8fcae89d90e6dfdecabf896e1a69d55e949b009fd95a97"
               ],
               "Resource": [
                 "arn:aws:glue:eu-west-1:12345678:catalog"

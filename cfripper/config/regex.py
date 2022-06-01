@@ -33,12 +33,16 @@ Valid:
 - arn:aws:iam::123456789012:root
 - arn:aws:iam::123456789012:*-role
 - 123456789012
+- 79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
+- eb2fe74dc7e8125d8f8fcae89d90e6dfdecabf896e1a69d55e949b009fd95a97
 Invalid:
 - *
 - potato
 - arn:aws:iam::123456789012:not-root
 """
-REGEX_PARTIAL_WILDCARD_PRINCIPAL = re.compile(r"^(\d+)|(arn:aws:iam::(\d+):(.*[*?]+|[*?]+.*|root))$")
+REGEX_PARTIAL_WILDCARD_PRINCIPAL = re.compile(
+    r"^(\d{12})|([a-fA-F0-9]{64})|(arn:aws:iam::(\d+):(.*[*?]+|[*?]+.*|root))$"
+)
 
 """
 Check for use of wildcard, when applied to the specific elements of an Action.
