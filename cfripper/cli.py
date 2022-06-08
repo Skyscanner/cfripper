@@ -179,7 +179,7 @@ def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optio
     "--logging",
     "logging_level",
     type=click.Choice(LOGGING_LEVELS.keys(), case_sensitive=True),
-    default="INFO",
+    default="WARNING",
     help="Logging level",
     show_default=True,
 )
