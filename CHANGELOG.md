@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.13.0]
 ### Additions
-- `Config` now includes a metrics logger now being used to register when a filter is used
+- `Config` includes a metrics logger and it is called to register when a filter is used
 
 ## [1.12.0]
 ### Improvements
