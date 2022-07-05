@@ -63,6 +63,8 @@ class Rule(ABC):
                 if rule_filter(**context):
                     risk_value = rule_filter.risk_value or risk_value
                     rule_mode = rule_filter.rule_mode or rule_mode
+                    if self._config.metrics_logger:
+                        self._config.metrics_logger(rule=self.__class__.__name__, filter_reason=rule_filter.reason)
             except Exception:
                 logger.exception(f"Exception raised while evaluating filter for `{rule_filter.reason}`", extra=context)
 

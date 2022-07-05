@@ -135,6 +135,7 @@ class Config:
         aws_service_accounts=None,
         rules_config=None,
         rules_filters=None,
+        metrics_logger=None,
     ):
         self.project_name = project_name
         self.service_name = service_name
@@ -146,6 +147,7 @@ class Config:
         self.aws_account_name = aws_account_name
         self.aws_account_id = aws_account_id
         self.aws_user_agent = aws_user_agent
+        self.metrics_logger = metrics_logger
         if aws_service_accounts is None:
             self.aws_service_accounts = {
                 "cloudtrail_account_ids": AWS_CLOUDTRAIL_ACCOUNT_IDS,
