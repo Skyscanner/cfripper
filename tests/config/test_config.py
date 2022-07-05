@@ -19,6 +19,7 @@ def test_init_with_no_params():
     assert config.rules is None
     assert config.aws_account_id is None
     assert config.aws_principals == []
+    assert config.metrics_logger is None
 
 
 def test_init_with_nonexistent_params():
