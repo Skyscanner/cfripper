@@ -57,7 +57,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     """
 
     REASON_WILDCARD_PRINCIPAL = (
-        "{} should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '{}'"
+        "{} should not allow full wildcard `*`, or wildcard in account ID like `arn:aws:iam::*:12345` at `{}`"
     )
     GRANULARITY = RuleGranularity.RESOURCE
 
@@ -223,8 +223,9 @@ class GenericResourceWildcardPrincipalRule(GenericWildcardPrincipalRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, KMSKey):
+            if isinstance(resource, KMSKey) or resource.Type == "AWS::KMS::ReplicaKey":
                 # Ignoring KMSKey because there's already a rule for it `KMSKeyWildcardPrincipalRule`
+                # Ignoring KMS ReplicaKey, since it's the same use case as a KMS Key
                 continue
             if isinstance(resource, IAMRole):
                 # Checking the `AssumeRolePolicyDocument` for IAM Roles

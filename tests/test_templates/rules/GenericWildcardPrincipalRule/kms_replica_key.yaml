@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Test KMS ReplicaKey"
+
+
+Resources:
+  ReplicaKey:
+    Type: AWS::KMS::ReplicaKey
+    Properties:
+      Description: KMS replica key used for CSE Encryption
+      Enabled: true
+      PrimaryKeyArn: arn:aws:kms:eu-west-1:123456789012:key/secret-arn
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: 'Enable permissions for another account'
+            Principal:
+              AWS: !Sub "arn:aws:iam::123456789012:root"
+            Effect: Allow
+            Action:
+              - kms:*
+            Resource: '*'
