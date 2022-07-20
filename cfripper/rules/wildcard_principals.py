@@ -199,6 +199,7 @@ class GenericResourceWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Checks for any wildcard principal defined in any statement for any type of resource.
     To be inherited into more precise rules.
     Ignores KMS Keys, since they have `KMSKeyWildcardPrincipalRule`.
+    Ignores KMS ReplicaKeys, since it applies the same use case as KMS Keys.
     For IAM Roles, it also checks `AssumeRolePolicyDocument`.
 
     Risk:
