@@ -133,7 +133,7 @@ class GenericCrossAccountTrustRule(CrossAccountCheckingRule):
         |`account_id` | `str`       | Account ID found in the principal                              |
     """
 
-    REASON = "{} has forbidden cross-account with {}"
+    REASON = "{} has forbidden cross-account with `{}`"
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
