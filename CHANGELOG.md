@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.13.1]
+### Fixes
+- Fixes `GenericResourcePartialWildcardPrincipalRule` and `GenericCrossAccountTrustRule` message, since sometimes it was bad-formatted in markdown.
+
 ## [1.13.0]
 ### Additions
 - Default logging level from INFO to WARNING #230
