@@ -275,7 +275,7 @@ class GenericResourcePartialWildcardPrincipalRule(GenericResourceWildcardPrincip
     """
 
     REASON_WILDCARD_PRINCIPAL = (
-        "{} should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at '{}'"
+        "{} should not allow wildcard, account-wide or root in resource-id like `arn:aws:iam::12345:root` at `{}`"
     )
     RISK_VALUE = RuleRisk.MEDIUM
     FULL_REGEX = REGEX_PARTIAL_WILDCARD_PRINCIPAL
