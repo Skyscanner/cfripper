@@ -6,6 +6,10 @@
         "BucketName": "fakebucketfakebucket",
         "AccessControl": "PublicRead"
       }
+    },
+    "S3Bucket2": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
     }
   }
 }

@@ -21,6 +21,10 @@
         "AccessControl": "PublicRead"
       }
     },
+    "S3Bucket4": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
+    },
     "S3BucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
