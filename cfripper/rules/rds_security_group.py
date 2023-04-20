@@ -28,7 +28,7 @@ class RDSSecurityGroupIngressOpenToWorldRule(ResourceSpecificRule):
 
     Code example:
 
-        ````yaml
+        ```yaml
         Resources:
           CompliantRDSSecurityGroup:
             Type: AWS::RDS::DBSecurityGroup
@@ -44,7 +44,7 @@ class RDSSecurityGroupIngressOpenToWorldRule(ResourceSpecificRule):
               DBSecurityGroupIngress:
                 - CIDRIP: 0.0.0.0/0
               GroupDescription: Risky RDS security group
-    ````
+        ```
 
     Filters context:
         | Parameter               | Type                                           | Description                                                    |
