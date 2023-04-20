@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.13.2]
+### Fixes
+- Fixes docs formatting with #235
+
 ## [1.13.1]
 ### Fixes
 - Fixes `GenericResourcePartialWildcardPrincipalRule` and `GenericCrossAccountTrustRule` message, since sometimes it was bad-formatted in markdown.
