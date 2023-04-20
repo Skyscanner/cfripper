@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.13.2]
 ### Fixes
-- Fixes docs formatting with #235
+- Fixes docs formatting with [#235](https://github.com/Skyscanner/cfripper/pull/235)
 
 ## [1.13.1]
 ### Fixes
