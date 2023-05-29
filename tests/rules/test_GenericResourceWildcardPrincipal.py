@@ -17,9 +17,22 @@ def bad_template():
     return get_cfmodel_from("rules/GenericWildcardPrincipalRule/bad_template.json").resolve()
 
 
+@pytest.fixture()
+def kms_replica_key_template():
+    return get_cfmodel_from("rules/GenericWildcardPrincipalRule/kms_replica_key.yaml").resolve()
+
+
 def test_no_failures_are_raised(good_template):
     rule = GenericResourceWildcardPrincipalRule(None)
     result = rule.invoke(good_template)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
+def test_ignores_kms_replica_key(kms_replica_key_template):
+    rule = GenericResourceWildcardPrincipalRule(None)
+    result = rule.invoke(kms_replica_key_template)
 
     assert result.valid
     assert compare_lists_of_failures(result.failures, [])
@@ -35,7 +48,7 @@ def test_failures_are_raised(bad_template):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at 'somewhatrestricted:*'",
+                reason="PolicyA should not allow full wildcard `*`, or wildcard in account ID like `arn:aws:iam::*:12345` at `somewhatrestricted:*`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericResourceWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -45,7 +58,7 @@ def test_failures_are_raised(bad_template):
             ),
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at 'arn:aws:iam::*:12345'",
+                reason="PolicyA should not allow full wildcard `*`, or wildcard in account ID like `arn:aws:iam::*:12345` at `arn:aws:iam::*:12345`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericResourceWildcardPrincipalRule",
                 rule_mode=RuleMode.BLOCKING,

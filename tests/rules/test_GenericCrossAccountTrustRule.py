@@ -114,7 +114,7 @@ def test_iam_role_is_checked_in_generic_rule(template_one_role):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="RootRole has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                reason="RootRole has forbidden cross-account with `arn:aws:iam::999999999:role/someuser@bla.com`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -136,7 +136,7 @@ def test_s3_bucket_cross_account_with_generic(s3_bucket_cross_account):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="S3BucketPolicyAccountAccess has forbidden cross-account with arn:aws:iam::987654321:root",
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account with `arn:aws:iam::987654321:root`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -158,7 +158,7 @@ def test_s3_bucket_cross_account_and_normal_with_generic(s3_bucket_cross_account
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="S3BucketPolicyAccountAccess has forbidden cross-account with arn:aws:iam::666555444333:root",
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account with `arn:aws:iam::666555444333:root`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -180,7 +180,7 @@ def test_s3_bucket_cross_account_and_normal_with_org_aws_account_with_generic(s3
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="S3BucketPolicyAccountAccess has forbidden cross-account with arn:aws:iam::666555444333:root",
+                reason="S3BucketPolicyAccountAccess has forbidden cross-account with `arn:aws:iam::666555444333:root`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -253,7 +253,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason=f"TestDomain has forbidden cross-account with {principal}",
+                reason=f"TestDomain has forbidden cross-account with `{principal}`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -276,7 +276,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="TestDomain has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="TestDomain has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -293,7 +293,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="KmsMasterKey has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="KmsMasterKey has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -311,7 +311,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="TestDomain has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="TestDomain has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -329,7 +329,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResource has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="NonexistentResource has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -345,7 +345,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResource has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="NonexistentResource has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -355,7 +355,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResourceSecond has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="NonexistentResourceSecond has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -371,7 +371,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResourceSecond has forbidden cross-account with arn:aws:sts::999999999:assumed-role/test-role/session",
+                    reason="NonexistentResourceSecond has forbidden cross-account with `arn:aws:sts::999999999:assumed-role/test-role/session`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -389,7 +389,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResource has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                    reason="NonexistentResource has forbidden cross-account with `arn:aws:iam::999999999:role/someuser@bla.com`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -405,7 +405,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResource has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                    reason="NonexistentResource has forbidden cross-account with `arn:aws:iam::999999999:role/someuser@bla.com`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -415,7 +415,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
                 ),
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResourceTwo has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                    reason="NonexistentResourceTwo has forbidden cross-account with `arn:aws:iam::999999999:role/someuser@bla.com`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -431,7 +431,7 @@ def test_generic_cross_account_for_opensearch_domain_different_principals(princi
             [
                 Failure(
                     granularity=RuleGranularity.RESOURCE,
-                    reason="NonexistentResourceTwo has forbidden cross-account with arn:aws:iam::999999999:role/someuser@bla.com",
+                    reason="NonexistentResourceTwo has forbidden cross-account with `arn:aws:iam::999999999:role/someuser@bla.com`",
                     risk_value=RuleRisk.MEDIUM,
                     rule="GenericCrossAccountTrustRule",
                     rule_mode=RuleMode.BLOCKING,
@@ -487,7 +487,7 @@ def test_generic_cross_account_rule_es_domain_cross_account_failure(principal):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason=f"TestDomain has forbidden cross-account with {principal}",
+                reason=f"TestDomain has forbidden cross-account with `{principal}`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,
@@ -532,7 +532,7 @@ def test_generic_cross_account_with_kms_key_failure(principal):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason=f"KMSKey has forbidden cross-account with {principal}",
+                reason=f"KMSKey has forbidden cross-account with `{principal}`",
                 risk_value=RuleRisk.MEDIUM,
                 rule="GenericCrossAccountTrustRule",
                 rule_mode=RuleMode.BLOCKING,

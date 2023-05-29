@@ -8,12 +8,12 @@ from tests.utils import compare_lists_of_failures, get_cfmodel_from
 
 @pytest.fixture()
 def good_template():
-    return get_cfmodel_from("rules/FullWilcardPrincipalRule/good_template.json").resolve()
+    return get_cfmodel_from("rules/FullWildcardPrincipalRule/good_template.json").resolve()
 
 
 @pytest.fixture()
 def bad_template():
-    return get_cfmodel_from("rules/FullWilcardPrincipalRule/bad_template.json").resolve()
+    return get_cfmodel_from("rules/FullWildcardPrincipalRule/bad_template.json").resolve()
 
 
 def test_no_failures_are_raised(good_template):
@@ -35,7 +35,7 @@ def test_failures_are_raised(bad_template):
             Failure(
                 rule_mode=RuleMode.BLOCKING,
                 rule="GenericResourceFullWildcardPrincipalRule",
-                reason="PolicyA should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '*'",
+                reason="PolicyA should not allow full wildcard `*`, or wildcard in account ID like `arn:aws:iam::*:12345` at `*`",
                 granularity=RuleGranularity.RESOURCE,
                 risk_value=RuleRisk.HIGH,
                 actions=None,

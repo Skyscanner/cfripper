@@ -57,7 +57,7 @@ class GenericWildcardPrincipalRule(PrincipalCheckingRule):
     """
 
     REASON_WILDCARD_PRINCIPAL = (
-        "{} should not allow full wildcard '*', or wildcard in account ID like 'arn:aws:iam::*:12345' at '{}'"
+        "{} should not allow full wildcard `*`, or wildcard in account ID like `arn:aws:iam::*:12345` at `{}`"
     )
     GRANULARITY = RuleGranularity.RESOURCE
 
@@ -199,6 +199,7 @@ class GenericResourceWildcardPrincipalRule(GenericWildcardPrincipalRule):
     Checks for any wildcard principal defined in any statement for any type of resource.
     To be inherited into more precise rules.
     Ignores KMS Keys, since they have `KMSKeyWildcardPrincipalRule`.
+    Ignores KMS ReplicaKeys, since it applies the same use case as KMS Keys.
     For IAM Roles, it also checks `AssumeRolePolicyDocument`.
 
     Risk:
@@ -223,8 +224,9 @@ class GenericResourceWildcardPrincipalRule(GenericWildcardPrincipalRule):
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, KMSKey):
+            if isinstance(resource, KMSKey) or resource.Type == "AWS::KMS::ReplicaKey":
                 # Ignoring KMSKey because there's already a rule for it `KMSKeyWildcardPrincipalRule`
+                # Ignoring KMS ReplicaKey, since it's the same use case as a KMS Key
                 continue
             if isinstance(resource, IAMRole):
                 # Checking the `AssumeRolePolicyDocument` for IAM Roles
@@ -273,7 +275,7 @@ class GenericResourcePartialWildcardPrincipalRule(GenericResourceWildcardPrincip
     """
 
     REASON_WILDCARD_PRINCIPAL = (
-        "{} should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at '{}'"
+        "{} should not allow wildcard, account-wide or root in resource-id like `arn:aws:iam::12345:root` at `{}`"
     )
     RISK_VALUE = RuleRisk.MEDIUM
     FULL_REGEX = REGEX_PARTIAL_WILDCARD_PRINCIPAL

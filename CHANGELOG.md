@@ -1,9 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.13.0]
+## [1.14.0]
 ### Additions
 - `Config` includes a metrics logger and it is called to register when a filter is used
+
+## [1.13.2]
+### Fixes
+- Fixes docs formatting with [#235](https://github.com/Skyscanner/cfripper/pull/235)
+
+## [1.13.1]
+### Fixes
+- Fixes `GenericResourcePartialWildcardPrincipalRule` and `GenericCrossAccountTrustRule` message, since sometimes it was bad-formatted in markdown.
+
+## [1.13.0]
+### Additions
+- Default logging level from INFO to WARNING #230
+### Updates
+- `GenericResourceWildcardPrincipalRule` (therefore `GenericResourcePartialWildcardPrincipalRule` and `GenericResourceFullWildcardPrincipalRule` as well) now ignores `AWS::KMS::ReplicaKey`. It as the same use case as a `AWS::KMS::Key`.
+### Fixes
+- Update `GenericWildcardPrincipalRule`, `FullWildcardPrincipalRule`, `GenericResourceWildcardPrincipalRule` and `GenericResourceFullWildcardPrincipalRule` message, since sometimes it was bad-formatted in markdown.
 
 ## [1.12.0]
 ### Improvements
