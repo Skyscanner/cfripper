@@ -1,5 +1,6 @@
 import logging
 from typing import Callable
+from unittest import mock
 
 import pytest
 
@@ -276,6 +277,7 @@ def test_exist_function_and_property_does_not_exist(template_cross_account_role_
 
 
 def test_exist_function_and_property_exists(template_cross_account_role_with_name):
+    mock_metrics_logger = mock.Mock()
     mock_config = Config(
         rules=["CrossAccountTrustRule"],
         aws_account_id="123456789",
@@ -297,6 +299,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
                 rules={"CrossAccountTrustRule"},
             ),
         ],
+        metrics_logger=mock_metrics_logger,
     )
 
     rules = [DEFAULT_RULES.get(rule)(mock_config) for rule in mock_config.rules]
@@ -304,6 +307,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
 
     assert result.valid
+    mock_metrics_logger.assert_called()
     assert compare_lists_of_failures(result.failures, [])
 
 
