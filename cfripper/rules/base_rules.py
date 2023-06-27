@@ -165,7 +165,7 @@ class BaseDangerousPolicyActions(ResourceSpecificRule, ABC):
         |`extras`      | str              | `extras` variable available inside the rule                     |
         |`logical_id`  | str              | ID used in Cloudformation to refer the resource being analysed  |
         |`policy_name` | `Optional[str]`  | If available, the policy name                                   |
-        |`action`      | `List[str]`      | List of dangerous actions contained within the policy           |
+        |`actions`      | `List[str]`      | List of dangerous actions contained within the policy           |
     """
 
     REASON = "Resource {} should not include the following dangerous actions: {}"
