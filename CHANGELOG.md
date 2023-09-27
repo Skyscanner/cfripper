@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 - `Config` includes a metrics logger, and it is called to register when a filter is used
 ### Fixes
 - Update dependency constraints with `pydash`, to be able to support newer versions and fix security issues
+- Fix typo in base_rule actions [#237](https://github.com/Skyscanner/cfripper/pull/237)
+- (internal) Updating PyPi release workflow
 
 ## [1.13.2]
 ### Fixes
