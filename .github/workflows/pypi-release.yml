@@ -23,6 +23,9 @@ jobs:
       - name: Build a binary wheel
         run: python setup.py sdist bdist_wheel
 
+#      This doesn't add any value. It mostly passes, and if a release fails in the non-test PyPi
+#      this step then needs to be skipped.
+#      Leaving it commented until we find a cause to keep it that adds value to the project.
 #      - name: Publish distribution 📦 to Test PyPI
 #        uses: pypa/gh-action-pypi-publish@master
 #        with:
