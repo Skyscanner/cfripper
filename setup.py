@@ -12,7 +12,7 @@ install_requires = [
     "click>=8.0.0",
     "pluggy~=0.13.1",
     "pycfmodel>=0.20.0",
-    "pydash~=4.7.6",
+    "pydash>=4.7.6",
     "PyYAML>=4.2b1",
 ]
 
