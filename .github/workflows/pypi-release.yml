@@ -23,13 +23,17 @@ jobs:
       - name: Build a binary wheel
         run: python setup.py sdist bdist_wheel
 
-      - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          password: ${{ secrets.test_pypi_password }}
-          repository_url: https://test.pypi.org/legacy/
+#      This doesn't add any value. It mostly passes, and if a release fails in the non-test PyPi
+#      this step then needs to be skipped.
+#      Leaving it commented until we find a cause to keep it that adds value to the project.
+#      - name: Publish distribution 📦 to Test PyPI
+#        uses: pypa/gh-action-pypi-publish@master
+#        with:
+#          password: ${{ secrets.test_pypi_password }}
+#          repository_url: https://test.pypi.org/legacy/
 
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.pypi_password }}
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
