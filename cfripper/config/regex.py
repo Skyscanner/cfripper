@@ -173,3 +173,18 @@ Invalid:
 - sns:Get*
 """
 REGEX_HAS_STAR_OR_STAR_AFTER_COLON = re.compile(r"^(\w*:)*[*?]+$")
+
+
+"""
+Check that stack name only consists of alphanumerical characters and hyphens.
+Valid:
+- abcdefg
+- ABCDEFG
+- abcdEFG
+- aBc-DeFG
+Invalid:
+- abc_defg
+- AB:cdefg
+- !@£$$%aA
+"""
+REGEX_ALPHANUMERICAL_OR_HYPHEN = re.compile(r"^[A-Za-z0-9\-]+$")
