@@ -1,4 +1,3 @@
-import re
 from typing import Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
