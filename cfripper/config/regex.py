@@ -182,6 +182,7 @@ Valid:
 - ABCDEFG
 - abcdEFG
 - aBc-DeFG
+- a1b2c3
 Invalid:
 - abc_defg
 - AB:cdefg
