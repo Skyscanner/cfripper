@@ -1,0 +1,17 @@
+Resources:
+  DBMaster:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "100"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 14
+      DBInstanceIdentifier: !Sub ${AWS::StackName}-master
+      DBName: "some-name"
+      Engine: aurora-postgresql
+      EngineVersion: "13.2"
+      KmsKeyId: !GetAtt RDSKMSKey.Arn
+      MultiAZ: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-master

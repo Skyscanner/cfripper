@@ -1,0 +1,16 @@
+Resources:
+  SomeResource:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      AllocatedStorage: "100"
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 14
+      DBClusterIdentifier: !Sub ${AWS::StackName}-master
+      DatabaseName: "some-name"
+      Engine: aurora-postgresql
+      EngineVersion: "13.2"
+      KmsKeyId: !GetAtt RDSKMSKey.Arn
+      StorageEncrypted: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-master
