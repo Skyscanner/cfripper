@@ -18,10 +18,9 @@ class StackNameMatchesRegexRule(Rule):
     RULE_MODE = RuleMode.DEBUG  # for demonstration purposes
     RISK_VALUE = RuleRisk.LOW
     GRANULARITY = RuleGranularity.STACK
-    REASON = (
-        "The stack name {} does not follow the naming convention (only alphanumerical characters and hyphens allowed)."
-    )
+    REASON = "The stack name {} does not follow the naming convention, reason: {}"
     REGEX = REGEX_ALPHANUMERICAL_OR_HYPHEN
+    REGEX_REASON = "Only alphanumerical characters and hyphens allowed."
 
     def _stack_name_matches_regex(self, stack_name: str) -> bool:
         """Check that stack name follows naming convention."""
@@ -38,7 +37,7 @@ class StackNameMatchesRegexRule(Rule):
         if not self._stack_name_matches_regex(stack_name):
             self.add_failure_to_result(
                 result,
-                self.REASON.format(stack_name),
+                self.REASON.format(stack_name, self.REGEX_REASON),
                 self.GRANULARITY,
                 risk_value=self.RISK_VALUE,
                 context={"config": self._config, "extras": extras},

@@ -43,8 +43,8 @@ def test_failure_is_added_for_invalid_stack_name():
     assert result.failures
     assert (
         result.failures[0].reason
-        == "The stack name some_invalid_stack_name does not follow the naming convention (only alphanumerical "
-        "characters and hyphens allowed)."
+        == "The stack name some_invalid_stack_name does not follow the naming convention, reason: Only alphanumerical "
+        "characters and hyphens allowed."
     )
 
 
@@ -55,6 +55,6 @@ def test_failure_is_added_for_invalid_stack_name_from_extras():
     assert result.failures
     assert (
         result.failures[0].reason
-        == "The stack name some_invalid_stack_name does not follow the naming convention (only alphanumerical "
-        "characters and hyphens allowed)."
+        == "The stack name some_invalid_stack_name does not follow the naming convention, reason: Only alphanumerical "
+        "characters and hyphens allowed."
     )
