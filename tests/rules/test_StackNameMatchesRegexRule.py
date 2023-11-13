@@ -59,13 +59,13 @@ def test_failure_is_added_for_invalid_stack_name_from_extras():
         "characters and hyphens allowed."
     )
 
-    
+
 def failure_is_added_for_invalid_stack_name_from_extras():
     rule = StackNameMatchesRegexRule(Config(rules=["StackNameMatchesRegexRule"]))
     extras = {"stack": {"tags": [{"key": "project", "value": "some_project"}]}, "stack_name": "some_invalid_stack_name"}
     result = rule.invoke(cfmodel=CFModel(), extras=extras)
     assert result.failures
     assert (
-            result.failures[0].reason
-            == "The stack name some_invalid_stack_name does not follow the naming convention (only alphanumerical characters and hyphens allowed)."
+        result.failures[0].reason
+        == "The stack name some_invalid_stack_name does not follow the naming convention (only alphanumerical characters and hyphens allowed)."
     )

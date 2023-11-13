@@ -38,10 +38,8 @@ from cfripper.rules.sqs_queue_policy import (
     SQSQueuePolicyNotPrincipalRule,
     SQSQueuePolicyPublicRule,
 )
-
 from cfripper.rules.stack_name_matches_regex import StackNameMatchesRegexRule
 from cfripper.rules.storage_encrypted_rule import StorageEncryptedRule
-
 from cfripper.rules.wildcard_policies import (
     GenericResourceWildcardPolicyRule,
     S3BucketPolicyWildcardActionRule,
