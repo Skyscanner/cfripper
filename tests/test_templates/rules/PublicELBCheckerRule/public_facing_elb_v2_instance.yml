@@ -1,0 +1,34 @@
+Resources:
+  PublicV2LoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Name: 'AWS::StackName-extlb'
+      Scheme: internet-facing
+      SecurityGroups:
+        - !GetAtt
+          - LoadBalancerHttpsSG
+          - GroupId
+      Subnets: !If
+        - ExtLoadBalancer
+        - - !ImportValue PublicSubnetA
+          - !ImportValue PublicSubnetB
+          - !ImportValue PublicSubnetC
+        - - !ImportValue PrivateSubnetA
+          - !ImportValue PrivateSubnetB
+          - !ImportValue PrivateSubnetC
+      Type: application
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '3600'
+      Tags:
+        - Key: Name
+          Value: !Join
+            - '-'
+            - - !Ref 'AWS::StackName'
+              - LoadBalancerv2
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Contact
+          Value: !Ref ContactEmail
+        - Key: StackName
+          Value: !Ref 'AWS::StackName'
