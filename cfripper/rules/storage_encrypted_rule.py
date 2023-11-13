@@ -22,7 +22,11 @@ class StorageEncryptedRule(Rule):
         for resource in cfmodel.Resources.values():
             is_encrypted = getattr(resource.Properties, "StorageEncrypted", False)
             db_name = getattr(resource.Properties, "DBName", "(could not get DB name)")
-            if resource.Type == "AWS::RDS::DBInstance" and not is_encrypted:
+            if (
+                resource.Type == "AWS::RDS::DBInstance"
+                and not is_encrypted
+                and not getattr(resource.Properties, "Engine", "").startswith("aurora")
+            ):
 
                 self.add_failure_to_result(
                     result,

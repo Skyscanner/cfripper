@@ -7,7 +7,7 @@ Resources:
       BackupRetentionPeriod: 14
       DBClusterIdentifier: !Sub ${AWS::StackName}-master
       DatabaseName: "some-name"
-      Engine: aurora-postgresql
+      Engine: mysql
       EngineVersion: "13.2"
       KmsKeyId: !GetAtt RDSKMSKey.Arn
       StorageEncrypted: false
