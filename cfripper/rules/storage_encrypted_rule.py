@@ -8,7 +8,7 @@ from cfripper.rules.base_rules import Rule
 
 
 class StorageEncryptedRule(Rule):
-    RULE_MODE = RuleMode.DEBUG # for demonstration purposes
+    RULE_MODE = RuleMode.DEBUG  # for demonstration purposes
     RISK_VALUE = RuleRisk.LOW
     REASON = (
         "The database {} does not seem to be encrypted. Database resources should be encrypted and have the property "
