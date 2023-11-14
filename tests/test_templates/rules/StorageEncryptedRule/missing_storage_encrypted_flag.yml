@@ -10,7 +10,7 @@ Resources:
       DBName: "some-name"
       Engine: mysql
       EngineVersion: "13.2"
-      KmsKeyId: !GetAtt RDSKMSKey.Arn
+      KmsKeyId: "some-kms-key"
       MultiAZ: true
       Tags:
         - Key: Name
