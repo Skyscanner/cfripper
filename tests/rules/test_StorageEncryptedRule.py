@@ -16,7 +16,7 @@ def test_storage_encrypted_rule_valid_results():
     assert result.failures == []
 
 
-def test_rule_not_invoked_for_aurora():
+def test_rule_not_failing_for_aurora():
     rule = StorageEncryptedRule(None)
     model = get_cfmodel_from("rules/StorageEncryptedRule/aurora_engine_used.yml")
     resolved_model = model.resolve()
