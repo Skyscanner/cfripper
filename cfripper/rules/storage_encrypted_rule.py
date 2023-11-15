@@ -25,7 +25,9 @@ class StorageEncryptedRule(Rule):
             if (
                 resource.Type == "AWS::RDS::DBInstance"
                 and not is_encrypted
-                and not getattr(resource.Properties, "Engine", "").startswith("aurora")
+                and not getattr(resource.Properties, "Engine", "").startswith(
+                    "aurora"
+                )  # not applicable for aurora since the encryption for DB instances is managed by the DB cluster
             ):
 
                 self.add_failure_to_result(
