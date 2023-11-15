@@ -22,21 +22,23 @@ def test_invoke_private_elbs_passes(template):
 
 
 @pytest.mark.parametrize(
-    "template, logical_id, resource_type",
+    "template, logical_id, resource_type, reason",
     [
         (
             "rules/PublicELBCheckerRule/public_facing_elb_instance.yml",
             "PublicLoadBalancer",
             "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Creation of public facing ELBs is restricted. LogicalId: PublicLoadBalancer",
         ),
         (
             "rules/PublicELBCheckerRule/public_facing_elb_v2_instance.yml",
             "PublicV2LoadBalancer",
             "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Creation of public facing ELBs is restricted. LogicalId: PublicV2LoadBalancer",
         ),
     ],
 )
-def test_invoke_public_elbs_fail(template, logical_id, resource_type):
+def test_invoke_public_elbs_fail(template, logical_id, resource_type, reason):
     rule = PublicELBCheckerRule(None)
     rule._config.stack_name = "stackname"
     result = rule.invoke(cfmodel=get_cfmodel_from(template).resolve())
@@ -45,7 +47,7 @@ def test_invoke_public_elbs_fail(template, logical_id, resource_type):
     assert result.failures == [
         Failure(
             granularity="RESOURCE",
-            reason="Creation of public facing ELBs is restricted. LogicalId: " + logical_id,
+            reason=reason,
             risk_value="LOW",
             rule="PublicELBCheckerRule",
             rule_mode="BLOCKING",
