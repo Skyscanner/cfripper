@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.0]
+### Additions
+- New rules: `StackNameMatchesRegexRule` and `StorageEncryptedRule`
+- New regex: `REGEX_ALPHANUMERICAL_OR_HYPHEN` to check if stack name only consists of alphanumerical characters and hyphens.
+
 ## [1.14.0]
 ### Additions
 - `Config` includes a metrics logger, and it is called to register when a filter is used
