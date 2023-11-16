@@ -1,0 +1,16 @@
+Resources:
+  SomeResource:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      AllocatedStorage: "100"
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 14
+      DBClusterIdentifier: !Sub ${AWS::StackName}-master
+      DatabaseName: "some-name"
+      Engine: mysql
+      EngineVersion: "13.2"
+      KmsKeyId: "some-kms-key"
+      StorageEncrypted: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-master
