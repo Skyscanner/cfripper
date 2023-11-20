@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.16.0]
+### Additions
+- Config has a few extra methods that should make handling Filters easier
+
 ## [1.15.0]
 ### Additions
 - New rules: `PublicELBCheckerRule`, `StackNameMatchesRegexRule`, and `StorageEncryptedRule`
