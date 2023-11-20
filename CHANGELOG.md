@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Additions
 - New rules: `PublicELBCheckerRule`, `StackNameMatchesRegexRule`, and `StorageEncryptedRule`
 - New regex: `REGEX_ALPHANUMERICAL_OR_HYPHEN` to check if stack name only consists of alphanumerical characters and hyphens.
+- Config has a few extra methods that should make handling Filters easier
 
 ## [1.14.0]
 ### Additions
