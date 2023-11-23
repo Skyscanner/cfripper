@@ -1,4 +1,4 @@
-<p style="text-align:center">
+<p align="center">
 <img src="docs/img/logo.png" width="200" alt="cfripper logo">
 </p>
 
