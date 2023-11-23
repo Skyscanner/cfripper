@@ -1,5 +1,5 @@
-<p align="center">
-<img src="docs/img/logo.png" width="200">
+<p style="text-align:center">
+<img src="docs/img/logo.png" width="200" alt="cfripper logo">
 </p>
 
 # CFRipper
