@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 - Fix documentation.
 
+## [1.15.2]
+### Fixes
+- Fixes https://github.com/Skyscanner/cfripper/issues/260
+
+## [1.15.1]
+### Fixes
+- Fix docs generation
+
 ## [1.15.0]
 ### Additions
 - New rules: `PublicELBCheckerRule`, `StackNameMatchesRegexRule`, and `StorageEncryptedRule`
