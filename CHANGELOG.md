@@ -1,10 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.15.1]
-### Fixes
-- Fix documentation.
-
 ## [1.15.2]
 ### Fixes
 - Fixes https://github.com/Skyscanner/cfripper/issues/260
