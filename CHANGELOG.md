@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.3]
+## Changes
+- Update invalid_role_inline_policy_fn_if.json 
+- Improve logging for the exception when applying rule filters
+- Add release drafter 
+
 ## [1.15.2]
 ### Fixes
 - Fixes https://github.com/Skyscanner/cfripper/issues/260
