@@ -68,7 +68,8 @@ class Rule(ABC):
             except Exception:
                 logger.exception(
                     f"Exception raised while evaluating rule {self.__class__.__name__} "
-                    f"with filter for `{rule_filter.reason}`. Stack: {self._config.stack_name}",
+                    f"with filter for `{rule_filter.reason}`. "
+                    f"Stack: {self._config.stack_name} Account: {self._config.aws_account_id}",
                     extra=context,
                 )
 
