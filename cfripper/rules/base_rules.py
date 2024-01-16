@@ -66,7 +66,12 @@ class Rule(ABC):
                     if self._config.metrics_logger:
                         self._config.metrics_logger(rule=self.__class__.__name__, filter_reason=rule_filter.reason)
             except Exception:
-                logger.exception(f"Exception raised while evaluating filter for `{rule_filter.reason}`", extra=context)
+                logger.exception(
+                    f"Exception raised while evaluating rule {self.__class__.__name__} "
+                    f"with filter for `{rule_filter.reason}`. "
+                    f"Stack: {self._config.stack_name} Account: {self._config.aws_account_id}",
+                    extra=context,
+                )
 
         if rule_mode != RuleMode.ALLOWED:
             result.add_failure(
