@@ -17,7 +17,7 @@ def user_with_wildcard_resource():
 
 @pytest.fixture()
 def kms_key_with_wildcard_policy():
-    return get_cfmodel_from("rules/WildcardResourceRule/kms_key_with_wildcard_resource.json").resolve()
+    return get_cfmodel_from("rules/KMSKeyWildcardPrincipalRule/kms_key_with_wildcard_resource.json").resolve()
 
 
 @pytest.fixture()
@@ -436,6 +436,28 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
             ),
             Failure(
                 granularity="ACTION",
+                reason='"RolePolicy" is using a wildcard resource in "TheExtremePolicy" for "dynamodb:GetResourcePolicy"',
+                risk_value="MEDIUM",
+                rule="WildcardResourceRule",
+                rule_mode="BLOCKING",
+                actions={
+                    "dynamodb:CreateTable",
+                    "dynamodb:BatchGet*",
+                    "dynamodb:Scan",
+                    "dynamodb:Update*",
+                    "dynamodb:Query",
+                    "dynamodb:Delete*",
+                    "dynamodb:PutItem",
+                    "dynamodb:DescribeStream",
+                    "dynamodb:DescribeTable",
+                    "dynamodb:BatchWrite*",
+                    "dynamodb:Get*",
+                },
+                resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
+            ),
+            Failure(
+                granularity="ACTION",
                 reason='"RolePolicy" is using a wildcard resource in "TheExtremePolicy" for "dynamodb:GetShardIterator"',
                 risk_value="MEDIUM",
                 rule="WildcardResourceRule",
@@ -591,6 +613,28 @@ def test_multiple_resources_with_wildcard_resources_are_detected(user_and_policy
             Failure(
                 granularity="ACTION",
                 reason='"RolePolicy" is using a wildcard resource in "TheExtremePolicy" for "dynamodb:UpdateGlobalTableSettings"',
+                risk_value="MEDIUM",
+                rule="WildcardResourceRule",
+                rule_mode="BLOCKING",
+                actions={
+                    "dynamodb:CreateTable",
+                    "dynamodb:BatchGet*",
+                    "dynamodb:Scan",
+                    "dynamodb:Update*",
+                    "dynamodb:Query",
+                    "dynamodb:Delete*",
+                    "dynamodb:PutItem",
+                    "dynamodb:DescribeStream",
+                    "dynamodb:DescribeTable",
+                    "dynamodb:BatchWrite*",
+                    "dynamodb:Get*",
+                },
+                resource_ids={"RolePolicy"},
+                resource_types={"AWS::IAM::Policy"},
+            ),
+            Failure(
+                granularity="ACTION",
+                reason='"RolePolicy" is using a wildcard resource in "TheExtremePolicy" for "dynamodb:UpdateGlobalTableVersion"',
                 risk_value="MEDIUM",
                 rule="WildcardResourceRule",
                 rule_mode="BLOCKING",

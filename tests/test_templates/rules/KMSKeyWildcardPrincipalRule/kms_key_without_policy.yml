@@ -1,0 +1,9 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  MyKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      EnableKeyRotation: true
+      Enabled: true
