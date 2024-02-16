@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "cfripper"
 description="Library and CLI tool for analysing CloudFormation templates and check them for security compliance."
 readme = "README.md"
-requires-python = ">=3.7.0"
+requires-python = ">=3.8.0"
 dynamic = ["version"]
 license = { text = "Apache-2.0" }
 authors = [
@@ -96,9 +96,7 @@ exclude = [
 ]
 line-length = 120
 indent-width = 4
-
-# Assume Python 3.7
-target-version = "py37"
+target-version = "py38"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
