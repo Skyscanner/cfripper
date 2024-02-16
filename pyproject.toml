@@ -8,7 +8,7 @@ description="Library and CLI tool for analysing CloudFormation templates and che
 readme = "README.md"
 requires-python = ">=3.8.0"
 dynamic = ["version"]
-license = { text = "Apache-2.0" }
+license = { file = "LICENSE.md" }
 authors = [
     { name = "Skyscanner Security", email = "security@skyscanner.net" }
 ]
