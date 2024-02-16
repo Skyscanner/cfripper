@@ -20,10 +20,7 @@ unit:
 	pytest -svvv tests
 
 coverage:
-	coverage run --source=cfripper --branch -m pytest tests/ --junitxml=build/test.xml -v
-	coverage report
-	coverage xml -i -o build/coverage.xml
-	coverage html
+	pytest --cov cfripper
 
 test: lint unit
 
