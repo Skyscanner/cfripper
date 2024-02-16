@@ -5,32 +5,30 @@ on:
     types: [published]
 
 jobs:
-  build:
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
-
+    environment:
+      name: pypi
+      url: https://pypi.org/p/cfripper
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup python
         uses: actions/setup-python@v4
         with:
           python-version: '3.7'
 
-      - run: pip install setuptools wheel
-
-      - run: make install
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U twine build
 
       - name: Build a binary wheel
         run: python setup.py sdist bdist_wheel
-
-#      This doesn't add any value. It mostly passes, and if a release fails in the non-test PyPi
-#      this step then needs to be skipped.
-#      Leaving it commented until we find a cause to keep it that adds value to the project.
-#      - name: Publish distribution 📦 to Test PyPI
-#        uses: pypa/gh-action-pypi-publish@master
-#        with:
-#          password: ${{ secrets.test_pypi_password }}
-#          repository_url: https://test.pypi.org/legacy/
 
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

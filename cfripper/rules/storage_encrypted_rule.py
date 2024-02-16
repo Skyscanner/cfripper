@@ -29,7 +29,6 @@ class StorageEncryptedRule(Rule):
                     "aurora"
                 )  # not applicable for aurora since the encryption for DB instances is managed by the DB cluster
             ):
-
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(db_name),
