@@ -145,7 +145,7 @@ def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optio
 
 
 @click.command()
-@click.version_option(prog_name="cfripper", version=version("package-name"))
+@click.version_option(prog_name="cfripper", version=version("cfripper"))
 @click.argument("templates", type=click.File("r"), nargs=-1)
 @click.option(
     "--resolve/--no-resolve",
