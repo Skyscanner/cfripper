@@ -1,7 +1,7 @@
 import logging
 import re
 import sys
-from importlib.metadata import PackageNotFoundError, version
+from importlib.metadata import version
 from io import TextIOWrapper
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -17,7 +17,6 @@ from cfripper.model.enums import RuleMode
 from cfripper.model.result import Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
-
 
 LOGGING_LEVELS = {
     "ERROR": logging.ERROR,
