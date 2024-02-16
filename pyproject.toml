@@ -57,23 +57,6 @@ docs = [
     "mkdocs-minify-plugin==0.5.0",
 ]
 
-[tool.black]
-line-length = 120
-exclude = '''
-/(
-  | \.venv
-  | venv
-)/
-'''
-
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-combine_as_imports = true
-line_length = 120
-skip = [".eggs", ".venv", "venv", "build", "site"]
-
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -99,13 +82,12 @@ indent-width = 4
 target-version = "py38"
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 log_cli = true
 log_level = "INFO"
 
 [tool.coverage.report]
 show_missing = true
-skip_covered = true
+skip_covered = false
 
 [tool.coverage.run]
 branch = true

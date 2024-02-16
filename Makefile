@@ -1,6 +1,4 @@
-SOURCE_DIRS = cfripper tests docs
-SOURCE_FILES = setup.py
-SOURCE_ALL = $(SOURCE_DIRS) $(SOURCE_FILES)
+SOURCES = cfripper tests docs
 
 PIP_COMMAND = pip
 install:
@@ -13,19 +11,10 @@ install-docs:
 	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt
 
 format:
-	isort --recursive $(SOURCE_ALL)
-	black $(SOURCE_ALL)
+	ruff format $(SOURCES)
 
-lint: isort-lint black-lint flake8-lint
-
-isort-lint:
-	isort --check-only --recursive $(SOURCE_ALL)
-
-black-lint:
-	black --check $(SOURCE_ALL)
-
-flake8-lint:
-	flake8 $(SOURCE_ALL)
+lint:
+	ruff check $(SOURCES)
 
 unit:
 	pytest -svvv tests
@@ -54,11 +43,11 @@ freeze: freeze-base freeze-dev freeze-docs
 freeze-upgrade-base:
 	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --output-file requirements.txt
 freeze-upgrade-dev:
-	$(FREEZE_COMMAND) pyproject.toml --upgrade --extra dev --output-file requirements-dev.txt
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra dev --output-file requirements-dev.txt
 freeze-upgrade-docs:
-	$(FREEZE_COMMAND) pyproject.toml --upgrade --extra docs --extra dev --output-file requirements-docs.txt
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra docs --extra dev --output-file requirements-docs.txt
 freeze-upgrade: freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs
 
 
-.PHONY: install install-dev install-docs format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade\
+.PHONY: install install-dev install-docs format lint unit coverage test freeze freeze-upgrade\
 	freeze-base freeze-dev freeze-docs freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs
