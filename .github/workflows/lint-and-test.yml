@@ -21,8 +21,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: python -m pip install uv
-
       - run: make install-dev
 
       - run: make lint
