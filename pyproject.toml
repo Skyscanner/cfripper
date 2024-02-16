@@ -81,6 +81,25 @@ line-length = 120
 indent-width = 4
 target-version = "py38"
 
+[tool.ruff.lint]
+select = ["E", "F", "W", "A", "PLC", "PLE", "PLW", "I"]
+ignore = ["A002", "E501"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
 [tool.pytest.ini_options]
 log_cli = true
 log_level = "INFO"
