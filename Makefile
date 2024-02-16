@@ -8,7 +8,7 @@ install-dev:
 	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt .
 
 install-docs:
-	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt .
 
 format:
 	ruff format $(SOURCES)
