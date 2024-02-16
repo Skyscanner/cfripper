@@ -4,8 +4,8 @@ PIP_COMMAND = pip
 install:
 	$(PIP_COMMAND) install -r requirements.txt
 
-install-dev: install
-	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt
+install-dev:
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt .
 
 install-docs:
 	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt
