@@ -2,14 +2,15 @@ SOURCE_DIRS = cfripper tests docs
 SOURCE_FILES = setup.py
 SOURCE_ALL = $(SOURCE_DIRS) $(SOURCE_FILES)
 
+PIP_COMMAND = pip
 install:
-	uv pip install -r requirements.txt
+	$(PIP_COMMAND) install -r requirements.txt
 
 install-dev: install
-	uv pip install -r requirements.txt -r requirements-dev.txt
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt
 
 install-docs:
-	uv pip install -r requirements.txt -r requirements-docs.txt
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt
 
 format:
 	isort --recursive $(SOURCE_ALL)
