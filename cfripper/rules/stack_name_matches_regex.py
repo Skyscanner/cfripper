@@ -28,11 +28,11 @@ class StackNameMatchesRegexRule(Rule):
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
+        if not extras:
+            extras = {}
         stack_name = self._config.stack_name or extras.get("stack_name", "")
         if not stack_name:
             return result
-        if not extras:
-            extras = {}
 
         if not self._stack_name_matches_regex(stack_name):
             self.add_failure_to_result(

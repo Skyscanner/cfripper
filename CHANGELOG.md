@@ -1,9 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.4]
+## Fixes
+- Fix `KMSKeyWildcardPrincipalRule` to work without a KMS policy
+- Fix release drafter template to show PR titles
+### Updates
+- Bumped minimum `pycfmodel` version to `0.22.0`
+
+## [1.15.3]
+## Changes
+- Update invalid_role_inline_policy_fn_if.json 
+- Improve logging for the exception when applying rule filters
+- Add release drafter 
+
+## [1.15.2]
+### Fixes
+- Fixes https://github.com/Skyscanner/cfripper/issues/260
+
 ## [1.15.1]
 ### Fixes
-- Fix documentation.
+- Fix docs generation
 
 ## [1.15.0]
 ### Additions
