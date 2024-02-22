@@ -11,7 +11,7 @@ click==8.1.2
 jmespath==1.0.0
 pluggy==0.13.1
 pycfmodel==0.22.0
-pydantic==1.9.0
+pydantic==2.6.1
 pydash==6.0.0
 python-dateutil==2.8.2
 pyyaml==6.0.1
