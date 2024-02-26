@@ -1,6 +1,7 @@
 import logging
 import re
 import sys
+from importlib.metadata import version
 from io import TextIOWrapper
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -9,7 +10,6 @@ import click
 import pycfmodel
 from pycfmodel.model.cf_model import CFModel
 
-from cfripper.__version__ import __version__
 from cfripper.config.config import Config
 from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.exceptions import FileEmptyException
@@ -145,7 +145,7 @@ def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optio
 
 
 @click.command()
-@click.version_option(prog_name="cfripper", version=__version__)
+@click.version_option(prog_name="cfripper", version=version("cfripper"))
 @click.argument("templates", type=click.File("r"), nargs=-1)
 @click.option(
     "--resolve/--no-resolve",

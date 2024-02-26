@@ -4,7 +4,7 @@ from unittest.mock import call, patch
 import boto3
 import pytest
 from botocore.exceptions import ClientError
-from moto import mock_cloudformation, mock_s3, mock_sts
+from moto import mock_aws
 
 from cfripper.boto3_client import Boto3Client
 from cfripper.model.utils import InvalidURLException, convert_json_or_yaml_to_dict
@@ -19,7 +19,7 @@ TEST_BUCKET_NAME = "megabucket"
 
 @pytest.fixture
 def s3_bucket(default_aws_region):
-    with mock_s3():
+    with mock_aws():
         boto3.client("s3").create_bucket(
             Bucket=TEST_BUCKET_NAME, CreateBucketConfiguration={"LocationConstraint": default_aws_region}
         )
@@ -28,7 +28,7 @@ def s3_bucket(default_aws_region):
 
 @pytest.fixture
 def boto3_client(default_aws_region):
-    with mock_sts():
+    with mock_aws():
         yield Boto3Client("123456789", default_aws_region, "stack-id")
 
 
@@ -301,7 +301,7 @@ def test_get_exports(
     assert patched_exceptions.mock_calls == mocked_exceptions
 
 
-@mock_cloudformation
+@mock_aws
 def test_export_values(boto3_client: Boto3Client):
     cf_client = boto3_client.session.client("cloudformation", "eu-west-1")
     cf_client.create_stack(
@@ -324,4 +324,4 @@ def test_export_values(boto3_client: Boto3Client):
     # actual suffix changes between tests
     export_values = boto3_client.get_exports()
     assert len(export_values) == 1
-    assert "arn:aws:sqs:eu-west-1:123456789012:Test-Stack-MyQueue-" in export_values["MainQueue"]
+    assert "arn:aws:sqs:eu-west-1:123456789:Test-Stack-MyQueue-" in export_values["MainQueue"]
