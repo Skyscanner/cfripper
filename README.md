@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/img/logo.png" width="200" alt="cfripper logo">
+<img src="https://raw.githubusercontent.com/Skyscanner/cfripper/master/docs/img/logo.png" width="200" alt="cfripper logo">
 </p>
 
 # CFRipper
