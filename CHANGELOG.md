@@ -1,15 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.6]
+### Changes
+- Fix logo in pypi @ignaciobolonio (#274)
+- Update .readthedocs.yaml @jsoucheiron (#275)
+- Bump actions/setup-python from 4 to 5 (#270)
+- Bump cryptography from 42.0.3 to 42.0.4 (#272)
+
+## [1.15.5]
+### Changes
+- Migrate to pyproject.toml @jsoucheiron (#269)
+- Add dependabot config @w0rmr1d3r (#257)
+
 ## [1.15.4]
-## Fixes
+### Fixes
 - Fix `KMSKeyWildcardPrincipalRule` to work without a KMS policy
 - Fix release drafter template to show PR titles
 ### Updates
 - Bumped minimum `pycfmodel` version to `0.22.0`
 
 ## [1.15.3]
-## Changes
+### Changes
 - Update invalid_role_inline_policy_fn_if.json 
 - Improve logging for the exception when applying rule filters
 - Add release drafter 
