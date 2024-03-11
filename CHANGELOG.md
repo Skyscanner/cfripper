@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.7]
+### Other updates
+- Add PR template @w0rmr1d3r (#279)
+
 ## [1.15.6]
 ### Changes
 - Fix logo in pypi @ignaciobolonio (#274)
