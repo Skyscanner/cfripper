@@ -15,6 +15,7 @@ logger = logging.getLogger(__file__)
 
 
 class Rule(ABC):
+    ACTIONABILITY = True
     RULE_MODE = RuleMode.BLOCKING
     RISK_VALUE = RuleRisk.MEDIUM
     GRANULARITY = RuleGranularity.STACK
