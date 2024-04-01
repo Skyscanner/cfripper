@@ -48,7 +48,7 @@ py-partiql-parser==0.5.1
 pyasn1==0.5.1
 pycfmodel==0.22.0
 pycparser==2.21
-pydantic==1.10.14
+pydantic==2.6.4
 pydash==7.0.7
 pyparsing==3.1.1
 pytest==7.4.4
