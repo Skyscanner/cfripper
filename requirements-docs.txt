@@ -91,7 +91,7 @@ typing-extensions==4.9.0
 urllib3==1.26.18
 uv==0.1.2
 watchdog==4.0.0
-werkzeug==3.0.1
+werkzeug==3.0.3
 wrapt==1.16.0
 xmltodict==0.13.0
 zipp==3.17.0
