@@ -8,7 +8,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import DefaultDict, Dict, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 from cfripper.config.constants import (
     AWS_CLOUDTRAIL_ACCOUNT_IDS,
@@ -201,7 +201,7 @@ class Config:
             spec.loader.exec_module(module)
             rules_config = vars(module).get("RULES_CONFIG")
             # Validate rules_config format
-            RulesConfigMapping(__root__=rules_config)
+            RulesConfigMapping.model_validate(rules_config)
             self.rules_config = rules_config
         except Exception:
             logger.exception(f"Failed to read config file: {filename}")
@@ -236,7 +236,7 @@ class Config:
         spec.loader.exec_module(module)
         filters = vars(module).get("FILTERS") or []
         # Validate filters format
-        RulesFiltersMapping(__root__=filters)
+        RulesFiltersMapping.model_validate(filters)
         return filters
 
     def add_filters(self, filters: List[Filter]):
@@ -245,9 +245,5 @@ class Config:
                 self.rules_filters[rule].append(rule_filter)
 
 
-class RulesConfigMapping(BaseModel):
-    __root__: Dict[str, RuleConfig]
-
-
-class RulesFiltersMapping(BaseModel):
-    __root__: List[Filter]
+RulesConfigMapping = RootModel[Dict[str, RuleConfig]]
+RulesFiltersMapping = RootModel[List[Filter]]
