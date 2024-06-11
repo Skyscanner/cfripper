@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.15.7]
+### Updates
+- Bumped pycfmodel to use pydantic v2
+
+## [1.15.6]
+## Fixes
+- Fix logo displayed in pypi
+### Updates
+- Bumped python used in readthedocs to 3.9
+
+## [1.15.5]
+### Changes
+- Add dependabot config
+- Migrate to `pyproject.toml`
+
 ## [1.15.4]
 ## Fixes
 - Fix `KMSKeyWildcardPrincipalRule` to work without a KMS policy

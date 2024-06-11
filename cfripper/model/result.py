@@ -1,6 +1,6 @@
 from typing import Collection, List, Optional
 
-from pydantic import BaseModel, Extra, ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 

@@ -8,7 +8,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import DefaultDict, Dict, List
 
-from pydantic import BaseModel, RootModel
+from pydantic import RootModel
 
 from cfripper.config.constants import (
     AWS_CLOUDTRAIL_ACCOUNT_IDS,
