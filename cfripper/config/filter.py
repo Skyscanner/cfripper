@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from pydash.objects import get
 
 from cfripper.model.enums import RuleMode, RuleRisk
@@ -83,9 +83,10 @@ class Filter(BaseModel):
     risk_value: Optional[RuleRisk] = None
     rules: Set[str] = None
 
-    @validator("eval", pre=True)
+    @field_validator("eval", mode="before")
+    @classmethod
     def set_eval(cls, eval, values):
-        return build_evaluator(eval, values["debug"])
+        return build_evaluator(eval, values.data["debug"])
 
     def __call__(self, **kwargs):
         if self.debug:

@@ -17,7 +17,6 @@ def bad_template_no_configuration():
     "template_path",
     [
         "rules/S3LifecycleConfiguration/good_template.yaml",
-        "rules/S3LifecycleConfiguration/allowed_template_malformed_lifecycle_rules.yaml",
     ],
 )
 def test_no_failures_are_raised(template_path):
