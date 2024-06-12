@@ -1,6 +1,6 @@
 from typing import Collection, List, Optional
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict
 
 from cfripper.model.enums import RuleGranularity, RuleMode, RuleRisk
 
@@ -15,8 +15,7 @@ class Failure(BaseModel):
     resource_ids: Optional[set] = set()
     resource_types: Optional[set] = set()
 
-    class Config(BaseModel.Config):
-        extra = Extra.forbid
+    model_config = ConfigDict(extra="forbid")
 
     def serializable(self):
         return {
@@ -32,9 +31,7 @@ class Failure(BaseModel):
 
 
 class Result(BaseModel):
-    class Config(BaseModel.Config):
-        extra = Extra.forbid
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
     exceptions: List[Exception] = []
     failures: List[Failure] = []

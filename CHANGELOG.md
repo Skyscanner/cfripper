@@ -2,13 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.15.7]
+### Updates
+- Bumped pycfmodel to use pydantic v2
 ### Other updates
 - Add PR template @w0rmr1d3r (#279)
 
 ## [1.15.6]
-### Changes
+### Fixes
 - Fix logo in pypi @ignaciobolonio (#274)
+### Updates
 - Update .readthedocs.yaml @jsoucheiron (#275)
+### Bumps
 - Bump actions/setup-python from 4 to 5 (#270)
 - Bump cryptography from 42.0.3 to 42.0.4 (#272)
 
