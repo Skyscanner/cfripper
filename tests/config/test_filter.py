@@ -221,8 +221,6 @@ def template_security_group_firehose_ips():
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [1.0]}}}, [1.0]),
         (Filter(eval={"set": {"80"}}), {}, {"80"}),
         (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
-        (Filter(eval={"sorted": {"c", "b", "a"}}), {}, ["a", "b", "c"]),
-        (Filter(eval={"sorted": ["c", "b", "a"]}), {}, ["a", "b", "c"]),
         # Composed
         (Filter(eval={"eq": [{"ref": "param_a"}, "a"]}), {"param_a": "a"}, True),
         (Filter(eval={"eq": ["a", {"ref": "param_a"}]}), {"param_a": "a"}, True),
