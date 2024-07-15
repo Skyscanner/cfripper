@@ -7,23 +7,25 @@ from pydash.objects import get
 
 from cfripper.model.enums import RuleMode, RuleRisk
 
-VALID_FUNCTIONS = [
+VALID_FUNCTIONS = {
+    "and",
+    "empty",
     "eq",
-    "ne",
-    "lt",
-    "gt",
-    "le",
+    "exists",
     "ge",
+    "gt",
+    "in",
+    "le",
+    "lt",
+    "ne",
     "not",
     "or",
-    "and",
-    "in",
+    "ref",
     "regex",
     "regex:ignorecase",
-    "exists",
-    "empty",
-    "ref",
-]
+    "set",
+    "sorted",
+}
 
 logger = logging.getLogger(__file__)
 
@@ -40,21 +42,22 @@ def get_implemented_filter_function(function_name: str, debug: bool) -> Callable
         return wrap
 
     implemented_filter_functions = {
+        "and": lambda *args, **kwargs: all(arg(kwargs) for arg in args),
+        "empty": param_resolver(lambda *args, **kwargs: len(args) == 0),
         "eq": param_resolver(lambda a, b, **kwargs: a == b),
-        "ne": param_resolver(lambda a, b, **kwargs: a != b),
-        "lt": param_resolver(lambda a, b, **kwargs: a < b),
-        "gt": param_resolver(lambda a, b, **kwargs: a > b),
-        "le": param_resolver(lambda a, b, **kwargs: a <= b),
+        "exists": param_resolver(lambda a, **kwargs: a is not None),
         "ge": param_resolver(lambda a, b, **kwargs: a >= b),
+        "gt": param_resolver(lambda a, b, **kwargs: a > b),
+        "in": param_resolver(lambda a, b, **kwargs: a in b),
+        "le": param_resolver(lambda a, b, **kwargs: a <= b),
+        "lt": param_resolver(lambda a, b, **kwargs: a < b),
+        "ne": param_resolver(lambda a, b, **kwargs: a != b),
         "not": param_resolver(lambda a, **kwargs: not a),
         "or": lambda *args, **kwargs: any(arg(kwargs) for arg in args),
-        "and": lambda *args, **kwargs: all(arg(kwargs) for arg in args),
-        "in": param_resolver(lambda a, b, **kwargs: a in b),
+        "ref": param_resolver(lambda param_name, **kwargs: get(kwargs, param_name)),
         "regex": param_resolver(lambda *args, **kwargs: bool(re.match(*args))),
         "regex:ignorecase": param_resolver(lambda *args, **kwargs: bool(re.match(*args, re.IGNORECASE))),
-        "exists": param_resolver(lambda a, **kwargs: a is not None),
-        "empty": param_resolver(lambda *args, **kwargs: len(args) == 0),
-        "ref": param_resolver(lambda param_name, **kwargs: get(kwargs, param_name)),
+        "set": lambda *args, **kwargs: {arg(kwargs) for arg in args},
     }
     return implemented_filter_functions[function_name]
 

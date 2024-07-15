@@ -29,7 +29,7 @@ def template_security_group_firehose_ips():
 
 
 @pytest.mark.parametrize(
-    "filter, args, expected_result",
+    "filter_name, args, expected_result",
     [
         (Filter(eval={"eq": ["string", "string"]}), {}, True),
         (Filter(eval={"eq": [1, 1]}), {}, True),
@@ -219,7 +219,10 @@ def template_security_group_firehose_ips():
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [1]}}}, [1]),
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [-1]}}}, [-1]),
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [1.0]}}}, [1.0]),
-        (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [-1.0]}}}, [-1.0]),
+        (Filter(eval={"set": {"80"}}), {}, {"80"}),
+        (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
+        (Filter(eval={"sorted": {"c", "b", "a"}}), {}, ["a", "b", "c"]),
+        (Filter(eval={"sorted": ["c", "b", "a"]}), {}, ["a", "b", "c"]),
         # Composed
         (Filter(eval={"eq": [{"ref": "param_a"}, "a"]}), {"param_a": "a"}, True),
         (Filter(eval={"eq": ["a", {"ref": "param_a"}]}), {"param_a": "a"}, True),
@@ -242,8 +245,22 @@ def template_security_group_firehose_ips():
         ),
     ],
 )
-def test_filter(filter, args, expected_result):
-    assert filter(**args) == expected_result
+def test_filter(filter_name, args, expected_result):
+    assert filter_name(**args) == expected_result
+
+
+@pytest.mark.parametrize(
+    "filter_name, args, expected_result",
+    [
+        (Filter(eval={"set": []}), {}, set()),
+        (Filter(eval={"set": {"80"}}), {}, {"80"}),
+        (Filter(eval={"set": ["80"]}), {}, {"80"}),
+        (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
+        (Filter(eval={"set": ["80", "443", "8080"]}), {}, {"80", "443", "8080"}),
+    ],
+)
+def test_filter_set(filter_name, args, expected_result):
+    assert filter_name(**args) == expected_result
 
 
 def test_exist_function_and_property_does_not_exist(template_cross_account_role_no_name):
