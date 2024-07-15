@@ -253,7 +253,10 @@ def test_filter(filter_name, args, expected_result):
         (Filter(eval={"set": []}), {}, set()),
         (Filter(eval={"set": {"80"}}), {}, {"80"}),
         (Filter(eval={"set": ["80"]}), {}, {"80"}),
+        (Filter(eval={"set": {"80": 100}}), {}, {"80"}),
+        (Filter(eval={"set": {"80": 100, "90": 100}}), {}, {"80", "90"}),
         (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
+        (Filter(eval={"set": {"80", "443"}}), {}, {"80", "443"}),
         (Filter(eval={"set": ["80", "443", "8080"]}), {}, {"80", "443", "8080"}),
     ],
 )
