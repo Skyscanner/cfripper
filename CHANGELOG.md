@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.16.0]
+### Additions
+- Added 2 new filter functions: `set` and `sorted`
+
+
 ## [1.15.7]
 ### Updates
 - Bumped pycfmodel to use pydantic v2
