@@ -219,8 +219,26 @@ def template_security_group_firehose_ips():
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [1]}}}, [1]),
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [-1]}}}, [-1]),
         (Filter(eval={"ref": "param_a.param_b.param_c"}), {"param_a": {"param_b": {"param_c": [1.0]}}}, [1.0]),
+        (Filter(eval={"set": []}), {}, set()),
+        (Filter(eval={"set": {}}), {}, set()),
+        (Filter(eval={"set": set()}), {}, set()),
         (Filter(eval={"set": {"80"}}), {}, {"80"}),
+        (Filter(eval={"set": ["80"]}), {}, {"80"}),
+        (Filter(eval={"set": {"80": 100}}), {}, {"80"}),
+        (Filter(eval={"set": {"80": 100, "90": 100}}), {}, {"80", "90"}),
         (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
+        (Filter(eval={"set": {"80", "443"}}), {}, {"80", "443"}),
+        (Filter(eval={"set": ["80", "443", "8080"]}), {}, {"80", "443", "8080"}),
+        (Filter(eval={"sorted": []}), {}, []),
+        (Filter(eval={"sorted": {}}), {}, []),
+        (Filter(eval={"sorted": set()}), {}, []),
+        (Filter(eval={"sorted": {"80"}}), {}, ["80"]),
+        (Filter(eval={"sorted": ["80"]}), {}, ["80"]),
+        (Filter(eval={"sorted": {"80": 100}}), {}, ["80"]),
+        (Filter(eval={"sorted": {"80": 100, "90": 100}}), {}, ["80", "90"]),
+        (Filter(eval={"sorted": ["80", "443"]}), {}, ["443", "80"]),
+        (Filter(eval={"sorted": {"80", "443"}}), {}, ["443", "80"]),
+        (Filter(eval={"sorted": ["80", "443", "8080"]}), {}, ["443", "80", "8080"]),
         # Composed
         (Filter(eval={"eq": [{"ref": "param_a"}, "a"]}), {"param_a": "a"}, True),
         (Filter(eval={"eq": ["a", {"ref": "param_a"}]}), {"param_a": "a"}, True),
@@ -244,23 +262,6 @@ def template_security_group_firehose_ips():
     ],
 )
 def test_filter(filter_name, args, expected_result):
-    assert filter_name(**args) == expected_result
-
-
-@pytest.mark.parametrize(
-    "filter_name, args, expected_result",
-    [
-        (Filter(eval={"set": []}), {}, set()),
-        (Filter(eval={"set": {"80"}}), {}, {"80"}),
-        (Filter(eval={"set": ["80"]}), {}, {"80"}),
-        (Filter(eval={"set": {"80": 100}}), {}, {"80"}),
-        (Filter(eval={"set": {"80": 100, "90": 100}}), {}, {"80", "90"}),
-        (Filter(eval={"set": ["80", "443"]}), {}, {"80", "443"}),
-        (Filter(eval={"set": {"80", "443"}}), {}, {"80", "443"}),
-        (Filter(eval={"set": ["80", "443", "8080"]}), {}, {"80", "443", "8080"}),
-    ],
-)
-def test_filter_set(filter_name, args, expected_result):
     assert filter_name(**args) == expected_result
 
 

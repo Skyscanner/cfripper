@@ -41,6 +41,19 @@ def get_implemented_filter_function(function_name: str, debug: bool) -> Callable
 
         return wrap
 
+    def single_param_resolver(f):
+        def wrap(*args, **kwargs):
+            calculated_parameters = [arg(kwargs) for arg in args]
+            if len(calculated_parameters) == 1 and isinstance(calculated_parameters[0], (dict, set)):
+                result = f(*calculated_parameters, **kwargs)
+            else:
+                result = f(calculated_parameters, **kwargs)
+            if debug:
+                logger.debug(f"{function_name}({', '.join(str(x) for x in calculated_parameters)}) -> {result}")
+            return result
+
+        return wrap
+
     implemented_filter_functions = {
         "and": lambda *args, **kwargs: all(arg(kwargs) for arg in args),
         "empty": param_resolver(lambda *args, **kwargs: len(args) == 0),
@@ -57,7 +70,8 @@ def get_implemented_filter_function(function_name: str, debug: bool) -> Callable
         "ref": param_resolver(lambda param_name, **kwargs: get(kwargs, param_name)),
         "regex": param_resolver(lambda *args, **kwargs: bool(re.match(*args))),
         "regex:ignorecase": param_resolver(lambda *args, **kwargs: bool(re.match(*args, re.IGNORECASE))),
-        "set": lambda *args, **kwargs: {arg(kwargs) for arg in args},
+        "set": single_param_resolver(lambda *args, **kwargs: set(*args)),
+        "sorted": single_param_resolver(lambda *args, **kwargs: sorted(*args)),
     }
     return implemented_filter_functions[function_name]
 
