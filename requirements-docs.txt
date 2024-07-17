@@ -7,7 +7,7 @@ aws-sam-translator==1.89.0
 aws-xray-sdk==2.14.0
 boto3==1.34.123
 botocore==1.34.123
-certifi==2024.6.2
+certifi==2024.7.4
 cffi==1.16.0
 cfn-flip==1.3.0
 cfn-lint==0.87.5
@@ -89,7 +89,7 @@ sympy==1.12.1
 termcolor==2.4.0
 tomli==2.0.1
 typing-extensions==4.12.2
-urllib3==1.26.18
+urllib3==1.26.19
 uv==0.2.10
 watchdog==4.0.1
 werkzeug==3.0.3
