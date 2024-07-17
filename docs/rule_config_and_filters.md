@@ -29,7 +29,7 @@ When loading filters from a folder the order is alphabetical.
 ### Implemented filter functions
 
 |      Function      |                                 Description                                 |                 Example                 |
-| :----------------: | :-------------------------------------------------------------------------: | :-------------------------------------: |
+|:------------------:|:---------------------------------------------------------------------------:|:---------------------------------------:|
 |        `eq`        |                               Same as a == b                                |     `{"eq": ["string", "string"]}`      |
 |        `ne`        |                               Same as a != b                                | `{"ne": ["string", "not_that_string"]}` |
 |        `lt`        |                                Same as a < b                                |            `{"lt": [0, 1]}`             |
@@ -45,6 +45,8 @@ When loading filters from a folder the order is alphabetical.
 |      `exists`      |                            True if a is not None                            |           `{"exists": None}`            |
 |      `empty`       |                           True if len(a) equals 0                           |             `{"empty": []}`             |
 |       `ref`        | Get the value at any depth of the context based on the path described by a. |      `{"ref": "param_a.param_b"}`       |
+|       `set`        |                         Turns the input into a set                          |          `{"set": [80, 443]}`           |
+|      `sorted`      |                      Return the sorted input as a list                      |         `{"sorted": [80, 443]}`         |
 
 ### Examples
 
