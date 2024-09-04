@@ -14,7 +14,7 @@ cfn-lint==0.87.5
 charset-normalizer==3.3.2
 click==8.1.7
 coverage==7.5.3
-cryptography==42.0.8
+cryptography==43.0.1
 docker==7.1.0
 exceptiongroup==1.2.1
 graphql-core==3.2.3
