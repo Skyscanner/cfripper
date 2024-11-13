@@ -1,49 +1,50 @@
-SOURCE_DIRS = cfripper tests docs
-SOURCE_FILES = setup.py
-SOURCE_ALL = $(SOURCE_DIRS) $(SOURCE_FILES)
+SOURCES = cfripper tests docs
 
+PIP_COMMAND = pip
 install:
-	pip install -r requirements.txt
+	$(PIP_COMMAND) install -r requirements.txt
 
-install-dev: install
-	pip install -e ".[dev]"
+install-dev:
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt .
 
 install-docs:
-	pip install -e ".[dev,docs]"
+	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt .
 
 format:
-	isort --recursive $(SOURCE_ALL)
-	black $(SOURCE_ALL)
+	ruff format $(SOURCES)
 
-lint: isort-lint black-lint flake8-lint
-
-isort-lint:
-	isort --check-only --recursive $(SOURCE_ALL)
-
-black-lint:
-	black --check $(SOURCE_ALL)
-
-flake8-lint:
-	flake8 $(SOURCE_ALL)
+lint:
+	ruff check $(SOURCES)
 
 unit:
 	pytest -svvv tests
 
 coverage:
-	coverage run --source=cfripper --branch -m pytest tests/ --junitxml=build/test.xml -v
-	coverage report
-	coverage xml -i -o build/coverage.xml
-	coverage html
+	pytest --cov cfripper
 
 test: lint unit
 
 test-docs:
 	mkdocs build --strict
 
-freeze:
-	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --no-annotate --output-file requirements.txt setup.py
+FREEZE_COMMAND = CUSTOM_COMPILE_COMMAND="make freeze" uv pip compile
+FREEZE_OPTIONS = --no-emit-index-url --no-annotate -v
+freeze-base: pyproject.toml
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --output-file requirements.txt
+freeze-dev: pyproject.toml
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --extra dev --output-file requirements-dev.txt
+freeze-docs: pyproject.toml
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --extra dev --extra docs --output-file requirements-docs.txt
+freeze: freeze-base freeze-dev freeze-docs
 
-freeze-upgrade:
-	CUSTOM_COMPILE_COMMAND="make freeze" pip-compile --no-emit-index-url --upgrade --no-annotate --output-file requirements.txt setup.py
+freeze-upgrade-base:
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --output-file requirements.txt
+freeze-upgrade-dev:
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra dev --output-file requirements-dev.txt
+freeze-upgrade-docs:
+	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra docs --extra dev --output-file requirements-docs.txt
+freeze-upgrade: freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs
 
-.PHONY: install install-dev install-docs format lint isort-lint black-lint flake8-lint unit coverage test freeze freeze-upgrade
+
+.PHONY: install install-dev install-docs format lint unit coverage test freeze freeze-upgrade\
+	freeze-base freeze-dev freeze-docs freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs

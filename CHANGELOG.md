@@ -1,6 +1,63 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.17.0]
+### Additions
+- Add support for python 3.13
+### Removals
+- Remove support for python 3.8
+
+## [1.16.0]
+### Additions
+- Added 2 new filter functions: `set` and `sorted`
+
+## [1.15.7]
+### Updates
+- Bumped pycfmodel to use pydantic v2
+### Other updates
+- Add PR template @w0rmr1d3r (#279)
+
+## [1.15.6]
+### Fixes
+- Fix logo in pypi @ignaciobolonio (#274)
+### Updates
+- Update .readthedocs.yaml @jsoucheiron (#275)
+### Bumps
+- Bump actions/setup-python from 4 to 5 (#270)
+- Bump cryptography from 42.0.3 to 42.0.4 (#272)
+
+## [1.15.5]
+### Changes
+- Migrate to pyproject.toml @jsoucheiron (#269)
+- Add dependabot config @w0rmr1d3r (#257)
+
+## [1.15.4]
+### Fixes
+- Fix `KMSKeyWildcardPrincipalRule` to work without a KMS policy
+- Fix release drafter template to show PR titles
+### Updates
+- Bumped minimum `pycfmodel` version to `0.22.0`
+
+## [1.15.3]
+### Changes
+- Update invalid_role_inline_policy_fn_if.json 
+- Improve logging for the exception when applying rule filters
+- Add release drafter 
+
+## [1.15.2]
+### Fixes
+- Fixes https://github.com/Skyscanner/cfripper/issues/260
+
+## [1.15.1]
+### Fixes
+- Fix docs generation
+
+## [1.15.0]
+### Additions
+- New rules: `PublicELBCheckerRule`, `StackNameMatchesRegexRule`, and `StorageEncryptedRule`
+- New regex: `REGEX_ALPHANUMERICAL_OR_HYPHEN` to check if stack name only consists of alphanumerical characters and hyphens.
+- Config has a few extra methods that should make handling Filters easier
+
 ## [1.14.0]
 ### Additions
 - `Config` includes a metrics logger, and it is called to register when a filter is used

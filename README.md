@@ -1,13 +1,13 @@
 <p align="center">
-<img src="docs/img/logo.png" width="200">
+<img src="https://raw.githubusercontent.com/Skyscanner/cfripper/master/docs/img/logo.png" width="200" alt="cfripper logo">
 </p>
 
 # CFRipper
 
 ![Build Status](https://github.com/Skyscanner/cfripper/workflows/PyPI%20release/badge.svg)
 [![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Skyscanner/cfripper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Skyscanner/cfripper/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Skyscanner/cfripper.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Skyscanner/cfripper/context:python)
+[![homebrew version](https://img.shields.io/homebrew/v/cfripper)](https://formulae.brew.sh/formula/cfripper)
+![License](https://img.shields.io/github/license/skyscanner/cfripper)
 
 CFRipper is a Library and CLI security analyzer for AWS CloudFormation templates. You can use CFRipper to prevent deploying insecure AWS resources into your Cloud environment. You can write your own compliance checks by adding new custom plugins.
 

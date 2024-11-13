@@ -1,0 +1,15 @@
+Resources:
+  DBMaster:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      DBInstanceIdentifier: !Sub ${AWS::StackName}-master
+      DBName: "some-name"
+      Engine: aurora-postgresql
+      EngineVersion: "13.2"
+      KmsKeyId: "some-kms-key"
+      MultiAZ: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-master

@@ -1,0 +1,18 @@
+Resources:
+  DBMaster:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "100"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 14
+      DBInstanceIdentifier: !Sub ${AWS::StackName}-master
+      DBName: "some-name"
+      Engine: mysql
+      EngineVersion: "13.2"
+      KmsKeyId: "some-kms-key"
+      MultiAZ: true
+      StorageEncrypted: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-master

@@ -3,11 +3,12 @@ import itertools
 import logging
 import sys
 from collections import defaultdict
+from importlib.util import module_from_spec, spec_from_file_location
 from io import TextIOWrapper
 from pathlib import Path
 from typing import DefaultDict, Dict, List
 
-from pydantic import BaseModel
+from pydantic import RootModel
 
 from cfripper.config.constants import (
     AWS_CLOUDTRAIL_ACCOUNT_IDS,
@@ -117,6 +118,8 @@ class Config:
         "directconnect:",
         "trustedadvisor:",
     ]
+    RULES_CONFIG_MODULE_NAME = "__rules_config__"
+    FILTER_CONFIG_MODULE_NAME = "__filter_config__"
 
     def __init__(
         self,
@@ -189,7 +192,7 @@ class Config:
 
         try:
             ext = Path(filename).suffix
-            module_name = "__rules_config__"
+            module_name = self.RULES_CONFIG_MODULE_NAME
             if ext not in [".py", ".pyc"]:
                 raise RuntimeError("Configuration file should have a valid Python extension.")
             spec = importlib.util.spec_from_file_location(module_name, filename)
@@ -198,44 +201,49 @@ class Config:
             spec.loader.exec_module(module)
             rules_config = vars(module).get("RULES_CONFIG")
             # Validate rules_config format
-            RulesConfigMapping(__root__=rules_config)
+            RulesConfigMapping.model_validate(rules_config)
             self.rules_config = rules_config
         except Exception:
             logger.exception(f"Failed to read config file: {filename}")
             raise
 
     def add_filters_from_dir(self, path: str):
+        self.add_filters(filters=self.get_filters_from_dir(path))
+
+    @classmethod
+    def get_filters_from_dir(cls, path: str) -> List[Filter]:
+        filters = []
+        for filename in cls.get_filenames_from_dir(path):
+            try:
+                filters.extend(cls.get_filters_from_filename_path(filename))
+            except Exception:
+                logger.exception(f"Failed to read files in path: {path} ({filename})")
+                raise
+        return filters
+
+    @classmethod
+    def get_filenames_from_dir(cls, path: str) -> List[Path]:
         if not Path(path).is_dir():
             raise RuntimeError(f"{path} doesn't exist")
+        filenames = sorted(itertools.chain(Path(path).glob("*.py"), Path(path).glob("*.pyc")))
+        return filenames
 
-        try:
-            module_name = "__rules_config__"
-            filenames = sorted(itertools.chain(Path(path).glob("*.py"), Path(path).glob("*.pyc")))
-            for filename in filenames:
-                spec = importlib.util.spec_from_file_location(module_name, filename.absolute())
-                module = importlib.util.module_from_spec(spec)
-                sys.modules[module_name] = module
-                spec.loader.exec_module(module)
-                filters = vars(module).get("FILTERS")
-                if not filters:
-                    continue
-                # Validate filters format
-                RulesFiltersMapping(__root__=filters)
-                self.add_filters(filters=filters)
-                logger.debug(f"{filename} loaded")
-        except Exception:
-            logger.exception(f"Failed to read files in path: {path}")
-            raise
+    @classmethod
+    def get_filters_from_filename_path(cls, filename: Path) -> List[Filter]:
+        spec = spec_from_file_location(cls.FILTER_CONFIG_MODULE_NAME, filename.absolute())
+        module = module_from_spec(spec)
+        sys.modules[cls.FILTER_CONFIG_MODULE_NAME] = module
+        spec.loader.exec_module(module)
+        filters = vars(module).get("FILTERS") or []
+        # Validate filters format
+        RulesFiltersMapping.model_validate(filters)
+        return filters
 
     def add_filters(self, filters: List[Filter]):
-        for filter in filters:
-            for rule in filter.rules:
-                self.rules_filters[rule].append(filter)
+        for rule_filter in filters:
+            for rule in rule_filter.rules:
+                self.rules_filters[rule].append(rule_filter)
 
 
-class RulesConfigMapping(BaseModel):
-    __root__: Dict[str, RuleConfig]
-
-
-class RulesFiltersMapping(BaseModel):
-    __root__: List[Filter]
+RulesConfigMapping = RootModel[Dict[str, RuleConfig]]
+RulesFiltersMapping = RootModel[List[Filter]]

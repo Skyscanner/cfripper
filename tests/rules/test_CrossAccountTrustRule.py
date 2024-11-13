@@ -301,6 +301,14 @@ def test_kms_key_cross_account_sts(template, is_valid, failures):
     assert compare_lists_of_failures(result.failures, failures)
 
 
+def test_kms_key__without_policy():
+    rule = KMSKeyCrossAccountTrustRule(Config(aws_account_id="123456789", aws_principals=["999999999"]))
+    model = get_cfmodel_from("rules/CrossAccountTrustRule/kms_key_without_policy.yml")
+    result = rule.invoke(model)
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
 @pytest.mark.parametrize(
     "principal",
     [

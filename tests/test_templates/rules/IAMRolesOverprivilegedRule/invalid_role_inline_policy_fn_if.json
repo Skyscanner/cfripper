@@ -35,7 +35,7 @@
                     {
                       "Action": "sts:AssumeRole",
                       "Effect": "Allow",
-                      "Resource": "arn:aws:iam::325714046698:role/sandbox-secrets-access"
+                      "Resource": "arn:aws:iam::123456789012:role/test-role"
                     }
                   ],
                   "Version": "2012-10-17"

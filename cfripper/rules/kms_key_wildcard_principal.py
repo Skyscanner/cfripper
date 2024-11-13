@@ -37,26 +37,27 @@ class KMSKeyWildcardPrincipalRule(Rule):
         result = Result()
         for logical_id, resource in cfmodel.Resources.items():
             if isinstance(resource, KMSKey):
-                for statement in resource.Properties.KeyPolicy._statement_as_list():
-                    filtered_principals = statement.principals_with(self.CONTAINS_WILDCARD_PATTERN)
-                    if statement.Effect == "Allow" and filtered_principals:
-                        for principal in filtered_principals:
-                            if statement.Condition and statement.Condition.dict():
-                                # Ignoring condition checks since they will get reviewed in other
-                                # rules and future improvements
-                                pass
-                            else:
-                                self.add_failure_to_result(
-                                    result,
-                                    self.REASON.format(logical_id),
-                                    resource_ids={logical_id},
-                                    context={
-                                        "config": self._config,
-                                        "extras": extras,
-                                        "logical_id": logical_id,
-                                        "resource": resource,
-                                        "statement": statement,
-                                        "principal": principal,
-                                    },
-                                )
+                if resource.Properties.KeyPolicy:
+                    for statement in resource.Properties.KeyPolicy._statement_as_list():
+                        filtered_principals = statement.principals_with(self.CONTAINS_WILDCARD_PATTERN)
+                        if statement.Effect == "Allow" and filtered_principals:
+                            for principal in filtered_principals:
+                                if statement.Condition and statement.Condition.dict():
+                                    # Ignoring condition checks since they will get reviewed in other
+                                    # rules and future improvements
+                                    pass
+                                else:
+                                    self.add_failure_to_result(
+                                        result,
+                                        self.REASON.format(logical_id),
+                                        resource_ids={logical_id},
+                                        context={
+                                            "config": self._config,
+                                            "extras": extras,
+                                            "logical_id": logical_id,
+                                            "resource": resource,
+                                            "statement": statement,
+                                            "principal": principal,
+                                        },
+                                    )
         return result
