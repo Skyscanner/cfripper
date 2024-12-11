@@ -63,7 +63,7 @@ rfc3339-validator==0.1.4
 rpds-py==0.20.1
 ruff==0.7.2
 s3transfer==0.10.3
-setuptools==75.3.0
+setuptools==75.6.0
 six==1.16.0
 sympy==1.13.3
 tomli==2.0.2
