@@ -25,7 +25,7 @@ idna==3.10
 importlib-metadata==8.5.0
 importlib-resources==6.4.5
 iniconfig==2.0.0
-jinja2==3.1.4
+jinja2==3.1.5
 jmespath==1.0.1
 joserfc==1.0.0
 jsmin==3.0.1
