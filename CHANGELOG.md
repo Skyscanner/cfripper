@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.17.0]
 ### Additions
 - Add support for python 3.13
+- Add RequestCertificate to wildcard whitelist @undergroundwires (#308)
 ### Removals
 - Remove support for python 3.8
 
