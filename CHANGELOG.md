@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.17.1]
+### Updates
+- Solve low-severity warnings for better readability
+
 ## [1.17.0]
 ### Additions
 - Add support for python 3.13

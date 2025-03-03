@@ -1,0 +1,78 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: "00 7 * * 1" # “At 07:00 on Monday.”
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ python ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          token: ${{ steps.app-token.outputs.token }}
+          upload: never
+
+      # Workaround for parallel GitHub bugs
+      # * Can't use GHA token with IP allowlisting
+      #   https://docs.github.com/en/enterprise-cloud@latest/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/managing-allowed-ip-addresses-for-your-organization#using-github-actions-with-an-ip-allow-list
+      # * Can't use codeql-action/analyze with custom token
+      #   https://support.github.com/ticket/enterprise/3427/3214517
+      - name: Prepare for CodeQL Upload
+        run: |
+          echo '{"commit_sha": "${{ github.sha }}", "ref": "${{ github.ref }}"}' > ./codeql-upload.json
+
+      - name: Gzip CodeQL SARIF Result
+        run: |
+          gzip -c ../results/${{ matrix.language }}.sarif | base64 -w0 > codeql-results.sarif.gz.base64
+    
+      - name: Staple SARIF result to CodeQL upload
+        run: |
+          jq --rawfile sarif codeql-results.sarif.gz.base64 '.sarif = $sarif' codeql-upload.json > codeql-upload-with-sarif.json
+
+      - name: Upload CodeQL Results
+        run: |
+          curl --fail-with-body \
+            -X POST \
+            -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            --data "@codeql-upload-with-sarif.json" \
+            https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs
