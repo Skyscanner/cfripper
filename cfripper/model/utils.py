@@ -101,24 +101,28 @@ def get_aws_service_from_arn(arn: str) -> Optional[str]:
     match = REGEX_ARN.match(arn)
     if match:
         return match.group(1)
+    return None
 
 
 def get_account_id_from_arn(arn: str) -> Optional[str]:
     match = REGEX_ARN.match(arn)
     if match:
         return match.group(3)
+    return None
 
 
 def get_account_id_from_iam_arn(arn: str) -> Optional[str]:
     match = REGEX_IAM_ARN.match(arn)
     if match:
         return match.group(1)
+    return None
 
 
 def get_account_id_from_sts_arn(arn: str) -> Optional[str]:
     match = REGEX_STS_ARN.match(arn)
     if match:
         return match.group(1)
+    return None
 
 
 def get_account_id_from_principal(principal: str) -> Optional[str]:
