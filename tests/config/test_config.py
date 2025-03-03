@@ -42,7 +42,6 @@ def test_init_with_existent_params():
 def test_load_rules_config_file_success(test_files_location):
     mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
-
     with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
         config.load_rules_config_file(f)
         config.add_filters_from_dir(f"{test_files_location}/filters")
@@ -58,7 +57,8 @@ def test_load_rules_config_file_no_file(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(FileNotFoundError):
-        config.load_rules_config_file(open(f"{test_files_location}/config/non_existing_file.py"))
+        with open(f"{test_files_location}/config/non_existing_file.py") as f:
+            config.load_rules_config_file(f)
 
 
 def test_load_rules_config_file_invalid_file(test_files_location):
@@ -66,7 +66,8 @@ def test_load_rules_config_file_invalid_file(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(ValidationError):
-        config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_invalid.py"))
+        with open(f"{test_files_location}/config/rules_config_invalid.py") as f:
+            config.load_rules_config_file(f)
 
 
 def test_load_filters_work_with_several_rules(template_two_roles_dict, test_files_location):
@@ -75,38 +76,39 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
         aws_account_id="123456789",
         stack_name="mockstack",
     )
-    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
-    config.add_filters_from_dir(f"{test_files_location}/filters")
-    rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
-    processor = RuleProcessor(*rules)
-    result = processor.process_cf_template(template_two_roles_dict, config)
+    with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
+        config.load_rules_config_file(f)
+        config.add_filters_from_dir(f"{test_files_location}/filters")
+        rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
+        processor = RuleProcessor(*rules)
+        result = processor.process_cf_template(template_two_roles_dict, config)
 
-    assert not result.valid
-    assert compare_lists_of_failures(
-        result.failures,
-        [
-            Failure(
-                granularity=RuleGranularity.RESOURCE,
-                reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
-                risk_value=RuleRisk.MEDIUM,
-                rule="CrossAccountTrustRule",
-                rule_mode=RuleMode.BLOCKING,
-                actions=None,
-                resource_ids={"RootRoleTwo"},
-                resource_types={"AWS::IAM::Role"},
-            ),
-            Failure(
-                granularity=RuleGranularity.RESOURCE,
-                reason="RootRoleTwo should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789:root'",
-                risk_value=RuleRisk.MEDIUM,
-                rule="PartialWildcardPrincipalRule",
-                rule_mode=RuleMode.BLOCKING,
-                actions=None,
-                resource_ids={"RootRoleTwo"},
-                resource_types={"AWS::IAM::Role"},
-            ),
-        ],
-    )
+        assert not result.valid
+        assert compare_lists_of_failures(
+            result.failures,
+            [
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="CrossAccountTrustRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"RootRoleTwo"},
+                    resource_types={"AWS::IAM::Role"},
+                ),
+                Failure(
+                    granularity=RuleGranularity.RESOURCE,
+                    reason="RootRoleTwo should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789:root'",
+                    risk_value=RuleRisk.MEDIUM,
+                    rule="PartialWildcardPrincipalRule",
+                    rule_mode=RuleMode.BLOCKING,
+                    actions=None,
+                    resource_ids={"RootRoleTwo"},
+                    resource_types={"AWS::IAM::Role"},
+                ),
+            ],
+        )
 
 
 def test_load_filters_file_invalid_file(test_files_location):
