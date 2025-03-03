@@ -42,13 +42,15 @@ def test_init_with_existent_params():
 def test_load_rules_config_file_success(test_files_location):
     mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
-    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
-    config.add_filters_from_dir(f"{test_files_location}/filters")
-    rule_config = config.get_rule_config("CrossAccountTrustRule")
-    filters = config.get_rule_filters("CrossAccountTrustRule")
-    assert not rule_config.risk_value
-    assert not rule_config.rule_mode
-    assert len(filters) == 1
+
+    with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
+        config.load_rules_config_file(f)
+        config.add_filters_from_dir(f"{test_files_location}/filters")
+        rule_config = config.get_rule_config("CrossAccountTrustRule")
+        filters = config.get_rule_filters("CrossAccountTrustRule")
+        assert not rule_config.risk_value
+        assert not rule_config.rule_mode
+        assert len(filters) == 1
 
 
 def test_load_rules_config_file_no_file(test_files_location):
