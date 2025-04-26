@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from time import sleep
 from typing import Dict, Optional
 
@@ -22,7 +22,7 @@ class Boto3Client:
         logger.info(f"Preparing to assume role: {arn}")
 
         client = boto3.client("sts")
-        now = datetime.utcnow().isoformat().replace(":", ".")
+        now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat().replace(":", ".")
         role_session_name = f"CfRipper{now}{stack_id.replace(':', '.')}"[:64]  # Limit of 64 chars
         response = client.assume_role(RoleArn=arn, RoleSessionName=role_session_name)
         self.session = boto3.Session(
