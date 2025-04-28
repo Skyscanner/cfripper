@@ -44,12 +44,12 @@ def test_load_rules_config_file_success(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules)
     with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
         config.load_rules_config_file(f)
-        config.add_filters_from_dir(f"{test_files_location}/filters")
-        rule_config = config.get_rule_config("CrossAccountTrustRule")
-        filters = config.get_rule_filters("CrossAccountTrustRule")
-        assert not rule_config.risk_value
-        assert not rule_config.rule_mode
-        assert len(filters) == 1
+    config.add_filters_from_dir(f"{test_files_location}/filters")
+    rule_config = config.get_rule_config("CrossAccountTrustRule")
+    filters = config.get_rule_filters("CrossAccountTrustRule")
+    assert not rule_config.risk_value
+    assert not rule_config.rule_mode
+    assert len(filters) == 1
 
 
 def test_load_rules_config_file_no_file(test_files_location):
@@ -78,37 +78,37 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
     )
     with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
         config.load_rules_config_file(f)
-        config.add_filters_from_dir(f"{test_files_location}/filters")
-        rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
-        processor = RuleProcessor(*rules)
-        result = processor.process_cf_template(template_two_roles_dict, config)
+    config.add_filters_from_dir(f"{test_files_location}/filters")
+    rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
+    processor = RuleProcessor(*rules)
+    result = processor.process_cf_template(template_two_roles_dict, config)
 
-        assert not result.valid
-        assert compare_lists_of_failures(
-            result.failures,
-            [
-                Failure(
-                    granularity=RuleGranularity.RESOURCE,
-                    reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
-                    risk_value=RuleRisk.MEDIUM,
-                    rule="CrossAccountTrustRule",
-                    rule_mode=RuleMode.BLOCKING,
-                    actions=None,
-                    resource_ids={"RootRoleTwo"},
-                    resource_types={"AWS::IAM::Role"},
-                ),
-                Failure(
-                    granularity=RuleGranularity.RESOURCE,
-                    reason="RootRoleTwo should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789:root'",
-                    risk_value=RuleRisk.MEDIUM,
-                    rule="PartialWildcardPrincipalRule",
-                    rule_mode=RuleMode.BLOCKING,
-                    actions=None,
-                    resource_ids={"RootRoleTwo"},
-                    resource_types={"AWS::IAM::Role"},
-                ),
-            ],
-        )
+    assert not result.valid
+    assert compare_lists_of_failures(
+        result.failures,
+        [
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo has forbidden cross-account trust relationship with arn:aws:iam::999999999:role/someuser@bla.com",
+                risk_value=RuleRisk.MEDIUM,
+                rule="CrossAccountTrustRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
+            ),
+            Failure(
+                granularity=RuleGranularity.RESOURCE,
+                reason="RootRoleTwo should not allow wildcard, account-wide or root in resource-id like 'arn:aws:iam::12345:root' at 'arn:aws:iam::123456789:root'",
+                risk_value=RuleRisk.MEDIUM,
+                rule="PartialWildcardPrincipalRule",
+                rule_mode=RuleMode.BLOCKING,
+                actions=None,
+                resource_ids={"RootRoleTwo"},
+                resource_types={"AWS::IAM::Role"},
+            ),
+        ],
+    )
 
 
 def test_load_filters_file_invalid_file(test_files_location):
