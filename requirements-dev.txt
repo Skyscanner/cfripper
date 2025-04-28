@@ -21,7 +21,7 @@ graphql-core==3.2.5
 idna==3.10
 importlib-resources==6.4.5
 iniconfig==2.0.0
-jinja2==3.1.5
+jinja2==3.1.6
 jmespath==1.0.1
 joserfc==1.0.0
 jsondiff==2.2.1
