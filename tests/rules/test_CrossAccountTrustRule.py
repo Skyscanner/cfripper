@@ -158,7 +158,8 @@ def test_filter_works_as_expected_with_rules_config_file(
         aws_account_id="123456789",
         stack_name="mockstack",
     )
-    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
+        config.load_rules_config_file(f)
     config.add_filters_from_dir(f"{test_files_location}/filters")
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)

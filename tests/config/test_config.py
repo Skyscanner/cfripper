@@ -42,7 +42,8 @@ def test_init_with_existent_params():
 def test_load_rules_config_file_success(test_files_location):
     mock_rules = ["RuleThatUsesResourceAllowlist", "SecurityGroupOpenToWorldRule"]
     config = Config(stack_name="test_stack", rules=mock_rules)
-    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
+        config.load_rules_config_file(f)
     config.add_filters_from_dir(f"{test_files_location}/filters")
     rule_config = config.get_rule_config("CrossAccountTrustRule")
     filters = config.get_rule_filters("CrossAccountTrustRule")
@@ -56,7 +57,8 @@ def test_load_rules_config_file_no_file(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(FileNotFoundError):
-        config.load_rules_config_file(open(f"{test_files_location}/config/non_existing_file.py"))
+        with open(f"{test_files_location}/config/non_existing_file.py") as f:
+            config.load_rules_config_file(f)
 
 
 def test_load_rules_config_file_invalid_file(test_files_location):
@@ -64,7 +66,8 @@ def test_load_rules_config_file_invalid_file(test_files_location):
     config = Config(stack_name="test_stack", rules=mock_rules)
 
     with pytest.raises(ValidationError):
-        config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_invalid.py"))
+        with open(f"{test_files_location}/config/rules_config_invalid.py") as f:
+            config.load_rules_config_file(f)
 
 
 def test_load_filters_work_with_several_rules(template_two_roles_dict, test_files_location):
@@ -73,7 +76,8 @@ def test_load_filters_work_with_several_rules(template_two_roles_dict, test_file
         aws_account_id="123456789",
         stack_name="mockstack",
     )
-    config.load_rules_config_file(open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py"))
+    with open(f"{test_files_location}/config/rules_config_CrossAccountTrustRule.py") as f:
+        config.load_rules_config_file(f)
     config.add_filters_from_dir(f"{test_files_location}/filters")
     rules = [DEFAULT_RULES.get(rule)(config) for rule in config.rules]
     processor = RuleProcessor(*rules)
