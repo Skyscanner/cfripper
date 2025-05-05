@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.17.2]
+## [1.18.0]
 ### Updates
 - Add support for repo_name in config
 
