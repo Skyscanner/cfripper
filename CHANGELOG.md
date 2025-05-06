@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.18.0]
+### Updates
+- Add support for repo_name in config
+
 ## [1.17.1]
 ### Updates
 - Solve low-severity warnings for better readability

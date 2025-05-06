@@ -127,6 +127,7 @@ class Config:
         project_name=None,
         service_name=None,
         stack_name=None,
+        repo_name=None,
         rules=None,
         event=None,
         template_url=None,
@@ -143,6 +144,7 @@ class Config:
         self.project_name = project_name
         self.service_name = service_name
         self.stack_name = stack_name
+        self.repo_name = repo_name
         self.event = event
         self.rules = rules
         self.template_url = template_url
