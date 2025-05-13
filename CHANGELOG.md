@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.18.1]
+### Updates
+- Truncate metric arguments to 4000 characters
+
 ## [1.18.0]
 ### Updates
 - Add support for repo_name in config

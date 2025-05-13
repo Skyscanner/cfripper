@@ -65,7 +65,7 @@ class Rule(ABC):
                     rule_mode = rule_filter.rule_mode or rule_mode
                     if self._config.metrics_logger:
                         self._config.metrics_logger(
-                            rule=self.__class__.__name__, filter_reason=rule_filter.reason[:4000]
+                            rule=self.__class__.__name__[:4000], filter_reason=rule_filter.reason[:4000]
                         )
             except Exception:
                 logger.exception(
