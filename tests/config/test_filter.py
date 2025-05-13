@@ -303,6 +303,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
         stack_name="mockstack",
         rules_filters=[
             Filter(
+                reason="x" * 5000,
                 rule_mode=RuleMode.ALLOWED,
                 eval={
                     "and": [
@@ -326,7 +327,7 @@ def test_exist_function_and_property_exists(template_cross_account_role_with_nam
     result = processor.process_cf_template(template_cross_account_role_with_name, mock_config)
 
     assert result.valid
-    mock_metrics_logger.assert_called()
+    mock_metrics_logger.assert_called_with(rule="CrossAccountTrustRule", filter_reason="x" * 4000)
     assert compare_lists_of_failures(result.failures, [])
 
 
