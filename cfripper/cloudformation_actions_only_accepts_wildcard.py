@@ -1,5 +1,5 @@
 CLOUDFORMATION_ACTIONS_ONLY_ACCEPTS_WILDCARD = [
-    'acm:RequestCertificate',
+    "acm:RequestCertificate",
     "batch:CancelJob",
     "batch:DescribeComputeEnvironments",
     "batch:DescribeJobDefinitions",
