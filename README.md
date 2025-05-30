@@ -5,7 +5,7 @@
 # CFRipper
 
 ![Build Status](https://github.com/Skyscanner/cfripper/workflows/PyPI%20release/badge.svg)
-[![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)
+[![PyPI version](https://badge.fury.io/py/cfripper.svg)](https://badge.fury.io/py/cfripper)testing ruleset
 [![homebrew version](https://img.shields.io/homebrew/v/cfripper)](https://formulae.brew.sh/formula/cfripper)
 ![License](https://img.shields.io/github/license/skyscanner/cfripper)
 
