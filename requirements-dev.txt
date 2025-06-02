@@ -3,7 +3,7 @@
 annotated-types==0.7.0
 antlr4-python3-runtime==4.13.2
 attrs==24.2.0
-aws-sam-translator==1.91.0
+aws-sam-translator==1.97.0
 aws-xray-sdk==2.14.0
 boto3==1.35.54
 botocore==1.35.54
