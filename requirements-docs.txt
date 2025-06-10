@@ -72,7 +72,7 @@ pyyaml==6.0.2
 pyyaml-env-tag==0.1
 referencing==0.35.1
 regex==2024.11.6
-requests==2.32.3
+requests==2.32.4
 responses==0.25.3
 rfc3339-validator==0.1.4
 rpds-py==0.20.1
