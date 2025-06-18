@@ -16,4 +16,4 @@ pyyaml==6.0.2
 s3transfer==0.10.3
 six==1.16.0
 typing-extensions==4.12.2
-urllib3==1.26.20
+urllib3==2.5.0
