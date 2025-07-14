@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.18.0]
+### Removals
+- Remove support for python 3.9
+
 ## [1.17.2]
 ### Updates
 - Truncate metric arguments to 4000 characters

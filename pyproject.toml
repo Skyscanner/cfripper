@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "cfripper"
 description="Library and CLI tool for analysing CloudFormation templates and check them for security compliance."
 readme = "README.md"
-requires-python = ">=3.9.0"
+requires-python = ">=3.10.0"
 dynamic = ["version"]
 license = { file = "LICENSE.md" }
 authors = [
@@ -26,7 +26,6 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -89,7 +88,7 @@ exclude = [
 ]
 line-length = 120
 indent-width = 4
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "A", "PLC", "PLE", "PLW", "I"]
