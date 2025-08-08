@@ -11,7 +11,7 @@
 
 CFRipper is a Library and CLI security analyzer for AWS CloudFormation templates. You can use CFRipper to prevent deploying insecure AWS resources into your Cloud environment. You can write your own compliance checks by adding new custom plugins.
 
-Docs and more details available in https://cfripper.readthedocs.io/
+Docs and more details are available in https://cfripper.readthedocs.io/
 
 ## CLI Usage
 
