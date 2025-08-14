@@ -9,7 +9,7 @@
 [![homebrew version](https://img.shields.io/homebrew/v/cfripper)](https://formulae.brew.sh/formula/cfripper)
 ![License](https://img.shields.io/github/license/skyscanner/cfripper)
 
-CFRipper is a Library and CLI security analyzer for AWS CloudFormation templates. You can use CFRipper to prevent deploying insecure AWS resources into your Cloud environment. You can write your own compliance checks by adding new custom plugins.
+CFRipper is a Library and CLI security analyzer for AWS CloudFormation templates. You can use CFRipper to prevent deploying insecure AWS resources into your Cloud environment. You can write your own compliance checks by adding new custom plugins. 
 
 Docs and more details are available in https://cfripper.readthedocs.io/
 
