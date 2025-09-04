@@ -31,7 +31,7 @@ jsondiff==2.2.1
 jsonpatch==1.33
 jsonpath-ng==1.7.0
 jsonpointer==3.0.0
-jsonschema==4.23.0
+jsonschema==4.25.1
 jsonschema-path==0.3.3
 jsonschema-specifications==2023.12.1
 lazy-object-proxy==1.10.0
