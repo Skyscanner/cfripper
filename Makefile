@@ -1,6 +1,6 @@
 SOURCES = cfripper tests docs
 
-PIP_COMMAND = pip
+PIP_COMMAND := $(shell command -v uv >/dev/null 2>&1 && echo "uv pip" || echo "pip")
 install:
 	$(PIP_COMMAND) install -r requirements.txt
 
@@ -12,6 +12,7 @@ install-docs:
 
 format:
 	ruff format $(SOURCES)
+	ruff check --fix $(SOURCES)
 
 lint:
 	ruff check $(SOURCES)
@@ -28,7 +29,7 @@ test-docs:
 	mkdocs build --strict
 
 FREEZE_COMMAND = CUSTOM_COMPILE_COMMAND="make freeze" uv pip compile
-FREEZE_OPTIONS = --no-emit-index-url --no-annotate -v
+FREEZE_OPTIONS = --no-emit-index-url --no-annotate
 freeze-base: pyproject.toml
 	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --output-file requirements.txt
 freeze-dev: pyproject.toml

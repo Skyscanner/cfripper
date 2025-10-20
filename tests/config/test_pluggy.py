@@ -1,6 +1,6 @@
+from importlib import metadata as importlib_metadata
 from typing import Dict, Optional
 
-from pluggy.manager import importlib_metadata
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper import rules

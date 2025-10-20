@@ -30,6 +30,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Security"
 ]
 
@@ -37,7 +38,7 @@ dependencies = [
     "boto3>=1.4.7,<2",
     "cfn_flip>=1.2.0",
     "click>=8.0.0",
-    "pluggy~=0.13.1",
+    "pluggy>=0.13.1",
     "pycfmodel>=1.0.0",
     "pydash>=4.7.6",
     "PyYAML>=4.2b1"
