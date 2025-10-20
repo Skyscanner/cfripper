@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.19.0]
+### Additions
+- Add support for python 3.14
+
 ## [1.18.0]
 ### Removals
 - Remove support for python 3.9
