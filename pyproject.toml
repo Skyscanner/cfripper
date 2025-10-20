@@ -60,7 +60,7 @@ dev = [
 ]
 docs = [
     "mkdocs==1.4.1",
-    "mkdocs-macros-plugin==0.7.0",
+    "mkdocs-macros-plugin==1.4.0",
     "mkdocs-material==8.2.8",
     "mkdocs-material-extensions==1.0.3",
     "mkdocs-minify-plugin==0.8.0",
