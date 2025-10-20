@@ -1,6 +1,6 @@
 SOURCES = cfripper tests docs
 
-PIP_COMMAND = uv pip
+PIP_COMMAND := $(shell command -v uv >/dev/null 2>&1 && echo "uv pip" || echo "pip")
 install:
 	$(PIP_COMMAND) install -r requirements.txt
 
@@ -12,6 +12,7 @@ install-docs:
 
 format:
 	ruff format $(SOURCES)
+	ruff check --fix $(SOURCES)
 
 lint:
 	ruff check $(SOURCES)

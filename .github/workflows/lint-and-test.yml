@@ -16,10 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Setup python
-        uses: actions/setup-python@v6
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v6
         with:
+          enable-cache: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version: '0.5.23'
           python-version: ${{ matrix.python-version }}
+          activate-environment: true
 
       - run: make install-dev
 
