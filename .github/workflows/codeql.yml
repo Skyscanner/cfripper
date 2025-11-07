@@ -60,7 +60,7 @@ jobs:
       #   https://support.github.com/ticket/enterprise/3427/3214517
       - name: Prepare for CodeQL Upload
         run: |
-          echo '{"commit_sha": "${{ github.sha }}", "ref": "${GITHUB_REF}"}' > ./codeql-upload.json
+          echo "{\"commit_sha\": \"${{ github.sha }}\", \"ref\": \"${GITHUB_REF}\"}" > ./codeql-upload.json
 
       - name: Gzip CodeQL SARIF Result
         run: |
