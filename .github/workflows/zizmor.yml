@@ -12,41 +12,14 @@ permissions: {}
 
 jobs:
   zizmor:
-    runs-on: ubuntu-24.04-8cores-public
+    runs-on: ubuntu-24.04-2cores-tools-public
     permissions:
       security-events: write
-      contents: read
-      actions: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-
-      # TODO: We can hopefully make this less terse in the future
-      #       https://github.com/zizmorcore/zizmor-action/issues/40
-      - name: Check for default config
-        shell: sh
-        env:
-          ZIZMOR_DEFAULT_CONFIG: |-
-            rules:
-              unpinned-uses:
-                config:
-                  policies:
-                    actions/*: any # trust GitHub
-        run: |
-          if [ -f "zizmor.yml" ]; then
-            echo "Found local zizmor.yml"
-            exit 0
-          fi
-
-          if [ -f ".github/zizmor.yml" ]; then
-            echo "Found local .github/zizmor.yml"
-            exit 0
-          fi
-
-          echo "Couldn't find a local zizmor.yml or .github/zizmor.yml. Using default config."
-          echo "$ZIZMOR_DEFAULT_CONFIG" > zizmor.yml
 
       - name: Run zizmor 🌈
         uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
