@@ -10,7 +10,7 @@ on:
     # Only following types are handled by the action, but one can default to all as well
     types: [opened, reopened, synchronize]
   # pull_request_target event is required for autolabeler to support PRs from forks
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [opened, reopened, synchronize]
 
 permissions:
@@ -24,15 +24,9 @@ jobs:
       # write permission is required for autolabeler
       # otherwise, read permission is required at least
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-2cores-tools-public
     steps:
       # Drafts your next Release notes as Pull Requests are merged into "master"
-      - uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        id: app-token
-        with:
-          app-id: ${{ vars.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
       - uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
