@@ -16,6 +16,7 @@ from cfripper.rules.ec2_security_group import (
     EC2SecurityGroupMissingEgressRule,
     EC2SecurityGroupOpenToWorldRule,
 )
+from cfripper.rules.elasticache_redis_usage import ElastiCacheRedisUsageRule
 from cfripper.rules.hardcoded_RDS_password import HardcodedRDSPasswordRule
 from cfripper.rules.iam_roles import IAMRolesOverprivilegedRule, IAMRoleWildcardActionOnPolicyRule
 from cfripper.rules.kms_key_rotation_enabled import KMSKeyEnabledKeyRotation
@@ -64,6 +65,7 @@ DEFAULT_RULES = {
         EC2SecurityGroupIngressOpenToWorldRule,
         EC2SecurityGroupMissingEgressRule,
         EC2SecurityGroupOpenToWorldRule,
+        ElastiCacheRedisUsageRule,
         ElasticsearchDomainCrossAccountTrustRule,
         FullWildcardPrincipalRule,
         GenericCrossAccountTrustRule,

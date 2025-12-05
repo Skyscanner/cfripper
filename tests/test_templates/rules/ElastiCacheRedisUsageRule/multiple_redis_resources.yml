@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Multiple Redis resources for testing
+
+Resources:
+  RedisCluster1:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      CacheNodeType: cache.t3.micro
+      Engine: redis
+      NumCacheNodes: 1
+      Port: 6379
+
+  RedisReplicationGroup1:
+    Type: AWS::ElastiCache::ReplicationGroup
+    Properties:
+      ReplicationGroupDescription: Redis replication group
+      CacheNodeType: cache.t3.micro
+      Engine: redis
+      NumCacheClusters: 2

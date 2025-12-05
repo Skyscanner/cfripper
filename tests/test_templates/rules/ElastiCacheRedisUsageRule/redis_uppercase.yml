@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ElastiCache Redis with uppercase engine name for testing case insensitivity
+
+Resources:
+  RedisCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      CacheNodeType: cache.t3.micro
+      Engine: REDIS
+      NumCacheNodes: 1
+      Port: 6379

@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ElastiCache Redis replication group template for testing
+
+Resources:
+  RedisReplicationGroup:
+    Type: AWS::ElastiCache::ReplicationGroup
+    Properties:
+      ReplicationGroupDescription: Redis replication group
+      CacheNodeType: cache.t3.micro
+      Engine: redis
+      NumCacheClusters: 2
+      AutomaticFailoverEnabled: true

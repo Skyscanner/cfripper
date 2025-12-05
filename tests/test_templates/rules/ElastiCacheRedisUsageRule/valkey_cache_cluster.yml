@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ElastiCache Valkey cluster template for testing
+
+Resources:
+  ValkeyCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      CacheNodeType: cache.t3.micro
+      Engine: valkey
+      NumCacheNodes: 1
+      Port: 6379

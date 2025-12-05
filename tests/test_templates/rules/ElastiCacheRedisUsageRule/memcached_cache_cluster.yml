@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ElastiCache Memcached cluster template for testing
+
+Resources:
+  MemcachedCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      CacheNodeType: cache.t3.micro
+      Engine: memcached
+      NumCacheNodes: 1
+      Port: 11211

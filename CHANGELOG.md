@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.20.0]
+### Additions
+- Add `ElastiCacheRedisUsageRule` to detect Redis usage and recommend Valkey migration
+
 ## [1.19.0]
 ### Additions
 - Add support for python 3.14
