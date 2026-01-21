@@ -34,8 +34,8 @@ class SlingshotSecretNoEchoRule(Rule):
     Filters context:
         | Parameter          | Type        | Description                                   |
         |:------------------:|:-----------:|:---------------------------------------------:|
-        |`config`            | Config      | `config` variable available inside the rule   |
-        |`extras`            | dict        | `extras` variable available inside the rule   |
+        |`config`            | str         | `config` variable available inside the rule   |
+        |`extras`            | str         | `extras` variable available inside the rule   |
         |`parameter`         | Parameter   | Parameter object from the template (or None)  |
         |`parameter_name`    | str         | Name of the parameter being checked           |
     """
