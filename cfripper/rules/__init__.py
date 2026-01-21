@@ -26,7 +26,6 @@ from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.public_elb_checker_rule import PublicELBCheckerRule
 from cfripper.rules.rds_security_group import RDSSecurityGroupIngressOpenToWorldRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
-from cfripper.rules.slingshot_secret_noecho import SlingshotSecretNoEchoRule
 from cfripper.rules.s3_lifecycle_configuration import S3LifecycleConfigurationRule
 from cfripper.rules.s3_object_versioning import S3ObjectVersioningRule
 from cfripper.rules.s3_public_access import (
@@ -34,6 +33,7 @@ from cfripper.rules.s3_public_access import (
     S3BucketPublicReadAclRule,
     S3BucketPublicReadWriteAclRule,
 )
+from cfripper.rules.slingshot_secret_noecho import SlingshotSecretNoEchoRule
 from cfripper.rules.sns_topic_policy import SNSTopicDangerousPolicyActionsRule, SNSTopicPolicyNotPrincipalRule
 from cfripper.rules.sqs_queue_policy import (
     SQSDangerousPolicyActionsRule,
