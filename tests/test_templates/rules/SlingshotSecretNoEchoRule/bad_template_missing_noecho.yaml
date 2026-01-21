@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template with missing NoEcho for secret parameters
+
+Parameters:
+  AccountId:
+    Type: String
+    Description: Account ID (missing NoEcho)
+
+  OAuthClientId:
+    Type: String
+    Description: OAuth client ID (missing NoEcho)
+
+  OAuthClientSecret:
+    Type: String
+    NoEcho: false
+    Description: OAuth client secret (NoEcho explicitly false)
+
+  Environment:
+    Type: String
+    Default: sandbox
+    Description: Environment name (not a secret)
+
+Resources:
+  DummyTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Ref Environment

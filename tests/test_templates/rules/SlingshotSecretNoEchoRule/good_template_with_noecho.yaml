@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template with NoEcho enabled for secret parameters
+
+Parameters:
+  DBPassword:
+    Type: String
+    NoEcho: true
+    Description: Database password (with NoEcho)
+
+  OAuthClientId:
+    Type: String
+    NoEcho: true
+    Description: OAuth client ID (with NoEcho)
+
+  OAuthClientSecret:
+    Type: String
+    NoEcho: true
+    Description: OAuth client secret (with NoEcho)
+
+  Environment:
+    Type: String
+    Default: sandbox
+    Description: Environment name (not a secret)
+
+Resources:
+  DummyTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Ref Environment

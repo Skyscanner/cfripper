@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template where secret parameter is not defined in template
+
+Parameters:
+  Environment:
+    Type: String
+    Default: sandbox
+    Description: Environment name (not a secret)
+
+Resources:
+  DummyTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Ref Environment
