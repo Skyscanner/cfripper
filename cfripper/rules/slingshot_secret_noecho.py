@@ -1,6 +1,6 @@
 __all__ = ["SlingshotSecretNoEchoRule"]
 
-from inspect import Parameter
+from pycfmodel.model.parameter import Parameter
 from typing import Any, Dict, Optional
 
 from pycfmodel.model.cf_model import CFModel
