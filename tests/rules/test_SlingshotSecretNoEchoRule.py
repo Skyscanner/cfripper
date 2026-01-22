@@ -23,7 +23,6 @@ def bad_template_parameter_not_defined():
 
 class TestSlingshotSecretNoEchoRule:
     def test_no_failures_when_noecho_is_set(self, good_template_with_noecho):
-        """Parameters with <SECRET:...> values should pass when NoEcho is true."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {
             "stack": {
@@ -41,7 +40,6 @@ class TestSlingshotSecretNoEchoRule:
         assert compare_lists_of_failures(result.failures, [])
 
     def test_failures_raised_when_noecho_missing(self, bad_template_missing_noecho):
-        """Parameters with <SECRET:...> values should fail when NoEcho is not set."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {
             "stack": {
@@ -93,7 +91,6 @@ class TestSlingshotSecretNoEchoRule:
         )
 
     def test_failure_when_parameter_not_in_template(self, bad_template_parameter_not_defined):
-        """Secret parameter not defined in template should trigger failure."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {
             "stack": {
@@ -123,7 +120,6 @@ class TestSlingshotSecretNoEchoRule:
         )
 
     def test_no_failures_when_no_secrets(self, good_template_with_noecho):
-        """Parameters without <SECRET:...> values should not trigger failures."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {
             "stack": {
@@ -139,7 +135,6 @@ class TestSlingshotSecretNoEchoRule:
         assert compare_lists_of_failures(result.failures, [])
 
     def test_no_failures_when_extras_empty(self, good_template_with_noecho):
-        """Empty extras should not trigger failures."""
         rule = SlingshotSecretNoEchoRule(None)
 
         result = rule.invoke(good_template_with_noecho, None)
@@ -151,7 +146,6 @@ class TestSlingshotSecretNoEchoRule:
         assert compare_lists_of_failures(result.failures, [])
 
     def test_no_failures_when_stack_parameters_empty(self, good_template_with_noecho):
-        """Empty stack parameters should not trigger failures."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {"stack": {"parameters": {}}}
 
@@ -161,7 +155,6 @@ class TestSlingshotSecretNoEchoRule:
         assert compare_lists_of_failures(result.failures, [])
 
     def test_detects_secret_in_middle_of_value(self, bad_template_missing_noecho):
-        """Secret placeholder in the middle of a value should be detected."""
         rule = SlingshotSecretNoEchoRule(None)
         extras = {
             "stack": {
@@ -177,7 +170,6 @@ class TestSlingshotSecretNoEchoRule:
         assert result.failures[0].resource_ids == {"AccountId"}
 
     def test_rule_supports_filter_config(self, bad_template_missing_noecho, default_allow_all_config):
-        """Rule should respect filter configuration."""
         rule = SlingshotSecretNoEchoRule(default_allow_all_config)
         extras = {
             "stack": {
