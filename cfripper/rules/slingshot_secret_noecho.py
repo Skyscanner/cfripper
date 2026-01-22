@@ -24,12 +24,12 @@ class SlingshotSecretNoEchoRule(Rule):
         (`<SECRET:...>` placeholder).
 
     Code for fix:
-        ````yml
+        ```yml
         Parameters:
           DBPassword:
             NoEcho: true
             Type: String
-        ````
+        ```
 
     Filters context:
         | Parameter          | Type        | Description                                   |
