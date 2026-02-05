@@ -90,3 +90,26 @@ Exit codes:
   - 3 = unknown / unhandled exception in scanning the templates
 """
 ```
+
+## Development
+
+### Prerequisites
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management. Install it with:
+
+```bash
+brew install uv
+```
+
+### Setup
+
+```bash
+# Install development dependencies
+make install-dev
+
+# Run tests
+make test
+
+# Run linter
+make lint
+```
