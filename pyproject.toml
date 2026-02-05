@@ -58,7 +58,6 @@ dev = [
     "pytest>=3.6",
     "ruff>=0.7.0",
     "twine>=6.0.0",
-    "uv>=0.8.0",
 ]
 docs = [
     "mkdocs==1.6.1",
