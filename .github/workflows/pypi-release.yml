@@ -27,8 +27,11 @@ jobs:
       - name: Build package
         run: uv build
 
+      - name: Install dev dependencies
+        run: uv sync --extra dev
+
       - name: Check package
-        run: uvx twine check --strict dist/*
+        run: uv run twine check --strict dist/*
 
       - name: Publish distribution 📦 to PyPI
         # zizmor: ignore[use-trusted-publishing] https://github.com/pypi/warehouse/issues/17700
