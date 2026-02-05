@@ -1,14 +1,13 @@
 SOURCES = cfripper tests docs
 
-PIP_COMMAND := $(shell command -v uv >/dev/null 2>&1 && echo "uv pip" || echo "pip")
 install:
-	$(PIP_COMMAND) install -r requirements.txt
+	uv sync --no-dev
 
 install-dev:
-	$(PIP_COMMAND) install -r requirements.txt -r requirements-dev.txt .
+	uv sync --all-extras
 
 install-docs:
-	$(PIP_COMMAND) install -r requirements.txt -r requirements-docs.txt .
+	uv sync --extra docs
 
 format:
 	ruff format $(SOURCES)
@@ -28,24 +27,10 @@ test: lint unit
 test-docs:
 	mkdocs build --strict
 
-FREEZE_COMMAND = CUSTOM_COMPILE_COMMAND="make freeze" uv pip compile
-FREEZE_OPTIONS = --no-emit-index-url --no-annotate
-freeze-base: pyproject.toml
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --output-file requirements.txt
-freeze-dev: pyproject.toml
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --extra dev --output-file requirements-dev.txt
-freeze-docs: pyproject.toml
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --extra dev --extra docs --output-file requirements-docs.txt
-freeze: freeze-base freeze-dev freeze-docs
+lock:
+	uv lock
 
-freeze-upgrade-base:
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --output-file requirements.txt
-freeze-upgrade-dev:
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra dev --output-file requirements-dev.txt
-freeze-upgrade-docs:
-	$(FREEZE_COMMAND) $(FREEZE_OPTIONS) pyproject.toml --upgrade --extra docs --extra dev --output-file requirements-docs.txt
-freeze-upgrade: freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs
+lock-upgrade:
+	uv lock --upgrade
 
-
-.PHONY: install install-dev install-docs format lint unit coverage test freeze freeze-upgrade\
-	freeze-base freeze-dev freeze-docs freeze-upgrade-base freeze-upgrade-dev freeze-upgrade-docs
+.PHONY: install install-dev install-docs format lint unit coverage test test-docs lock lock-upgrade

@@ -130,3 +130,6 @@ include-package-data = false
 include = ["cfripper*"]
 
 [tool.setuptools_scm]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
