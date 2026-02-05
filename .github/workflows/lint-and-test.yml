@@ -27,6 +27,6 @@ jobs:
 
       - run: make install-dev
 
-      - run: uv run make lint
+      - run: make lint
 
-      - run: uv run make coverage
+      - run: make coverage

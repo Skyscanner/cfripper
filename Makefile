@@ -1,31 +1,31 @@
 SOURCES = cfripper tests docs
 
 install:
-	uv sync --no-dev
+	uv sync --no-dev --frozen
 
 install-dev:
-	uv sync --all-extras
+	uv sync --all-extras --frozen
 
 install-docs:
-	uv sync --extra docs
+	uv sync --extra docs --frozen
 
 format:
-	ruff format $(SOURCES)
-	ruff check --fix $(SOURCES)
+	uv run --frozen ruff format $(SOURCES)
+	uv run --frozen ruff check --fix $(SOURCES)
 
 lint:
-	ruff check $(SOURCES)
+	uv run --frozen ruff check $(SOURCES)
 
 unit:
-	pytest -svvv tests
+	uv run --frozen pytest -svvv tests
 
 coverage:
-	pytest --cov cfripper
+	uv run --frozen pytest --cov cfripper
 
 test: lint unit
 
 test-docs:
-	mkdocs build --strict
+	uv run --frozen mkdocs build --strict
 
 lock:
 	uv lock
