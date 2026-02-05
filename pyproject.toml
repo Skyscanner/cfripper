@@ -66,6 +66,7 @@ docs = [
     "mkdocs-material==8.2.8",
     "mkdocs-material-extensions==1.0.3",
     "mkdocs-minify-plugin==0.8.0",
+    "requests>=2.25.0",
 ]
 
 [tool.ruff]

@@ -250,6 +250,7 @@ docs = [
     { name = "mkdocs-material" },
     { name = "mkdocs-material-extensions" },
     { name = "mkdocs-minify-plugin" },
+    { name = "requests" },
 ]
 
 [package.metadata]
@@ -269,6 +270,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=3.6" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=2.5.1" },
     { name = "pyyaml", specifier = ">=4.2b1" },
+    { name = "requests", marker = "extra == 'docs'", specifier = ">=2.25.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.7.0" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "uv", marker = "extra == 'dev'", specifier = ">=0.8.0" },
