@@ -26,13 +26,13 @@ jobs:
           enable-cache: false
 
       - name: Build package
-        run: uv build
+        run: make build
 
       - name: Install dev dependencies
-        run: uv sync --extra dev
+        run: make install-dev
 
       - name: Check package
-        run: uv run twine check --strict dist/*
+        run: make check-package
 
       - name: Publish distribution 📦 to PyPI
         # zizmor: ignore[use-trusted-publishing] https://github.com/pypi/warehouse/issues/17700
