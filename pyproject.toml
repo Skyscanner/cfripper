@@ -51,7 +51,7 @@ repository = "https://github.com/Skyscanner/cfripper"
 [project.scripts]
 cfripper = "cfripper.cli:cli"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "moto[all]>=5",
     "pytest-cov>=2.5.1",

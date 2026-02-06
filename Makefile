@@ -4,10 +4,10 @@ install:
 	uv sync --no-dev --frozen
 
 install-dev:
-	uv sync --all-extras --frozen
+	uv sync --group dev --frozen
 
 install-docs:
-	uv sync --extra docs --frozen
+	uv sync --group docs --frozen
 
 format:
 	uv run --frozen ruff format $(SOURCES)
