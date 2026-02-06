@@ -33,4 +33,10 @@ lock:
 lock-upgrade:
 	uv lock --upgrade
 
-.PHONY: install install-dev install-docs format lint unit coverage test test-docs lock lock-upgrade
+build:
+	uv build
+
+check-package:
+	uv run --frozen twine check --strict dist/*
+
+.PHONY: install install-dev install-docs format lint unit coverage test test-docs lock lock-upgrade build check-package
