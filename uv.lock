@@ -235,7 +235,7 @@ dependencies = [
     { name = "pyyaml" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "moto", extra = ["all"] },
     { name = "pytest" },
@@ -257,23 +257,28 @@ requires-dist = [
     { name = "boto3", specifier = ">=1.4.7,<2" },
     { name = "cfn-flip", specifier = ">=1.2.0" },
     { name = "click", specifier = ">=8.0.0" },
-    { name = "mkdocs", marker = "extra == 'docs'", specifier = "==1.6.1" },
-    { name = "mkdocs-macros-plugin", marker = "extra == 'docs'", specifier = "==1.4.0" },
-    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==8.2.8" },
-    { name = "mkdocs-material-extensions", marker = "extra == 'docs'", specifier = "==1.0.3" },
-    { name = "mkdocs-minify-plugin", marker = "extra == 'docs'", specifier = "==0.8.0" },
-    { name = "moto", extras = ["all"], marker = "extra == 'dev'", specifier = ">=5" },
     { name = "pluggy", specifier = ">=0.13.1" },
     { name = "pycfmodel", specifier = ">=1.2.0" },
     { name = "pydash", specifier = ">=4.7.6" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=3.6" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=2.5.1" },
     { name = "pyyaml", specifier = ">=4.2b1" },
-    { name = "requests", marker = "extra == 'docs'", specifier = ">=2.25.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.7.0" },
-    { name = "twine", marker = "extra == 'dev'", specifier = ">=6.0.0" },
 ]
-provides-extras = ["dev", "docs"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "moto", extras = ["all"], specifier = ">=5" },
+    { name = "pytest", specifier = ">=3.6" },
+    { name = "pytest-cov", specifier = ">=2.5.1" },
+    { name = "ruff", specifier = ">=0.7.0" },
+    { name = "twine", specifier = ">=6.0.0" },
+]
+docs = [
+    { name = "mkdocs", specifier = "==1.6.1" },
+    { name = "mkdocs-macros-plugin", specifier = "==1.4.0" },
+    { name = "mkdocs-material", specifier = "==8.2.8" },
+    { name = "mkdocs-material-extensions", specifier = "==1.0.3" },
+    { name = "mkdocs-minify-plugin", specifier = "==0.8.0" },
+    { name = "requests", specifier = ">=2.25.0" },
+]
 
 [[package]]
 name = "charset-normalizer"
