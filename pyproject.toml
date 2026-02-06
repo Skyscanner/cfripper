@@ -134,4 +134,3 @@ include = ["cfripper*"]
 
 [tool.uv]
 index-url = "https://pypi.org/simple"
-default-groups = ["dev"]

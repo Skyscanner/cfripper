@@ -4,7 +4,7 @@ install:
 	uv sync --no-dev --frozen
 
 install-dev:
-	uv sync --frozen
+	uv sync --group dev --frozen
 
 install-docs:
 	uv sync --group docs --frozen
