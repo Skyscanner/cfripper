@@ -114,9 +114,15 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 # Install development dependencies
 make install-dev
 
-# Run tests
+# Run tests (lint + unit)
 make test
 
 # Run linter
 make lint
+
+# Format code
+make format
+
+# Update lock file after changing dependencies
+make lock
 ```
