@@ -257,7 +257,7 @@ requires-dist = [
     { name = "cfn-flip", specifier = ">=1.2.0" },
     { name = "click", specifier = ">=8.0.0" },
     { name = "pluggy", specifier = ">=0.13.1" },
-    { name = "pycfmodel", specifier = ">=1.2.0" },
+    { name = "pycfmodel", specifier = ">=2.0.1" },
     { name = "pydash", specifier = ">=4.7.6" },
     { name = "pyyaml", specifier = ">=4.2b1" },
 ]
@@ -1336,14 +1336,14 @@ wheels = [
 
 [[package]]
 name = "pycfmodel"
-version = "1.2.0"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/37/12/32eb36667d1af57fb07cd25233c94f83760a5e1ff9e162107687bac666a1/pycfmodel-1.2.0.tar.gz", hash = "sha256:42373cdaeaa1f55e0b82b23af724ce3cc5bc1fb5ff91700d94713d80386d5afe", size = 155513, upload-time = "2025-12-22T10:46:00.266Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/29/e486b2961a534fe5175b27d5811933380cf51908caaa97edac0a75b9fb0a/pycfmodel-2.0.1.tar.gz", hash = "sha256:dbe50a37c261b5ead6dc2252f914dd795f5ff9ac43d5e0c1b61d2d462183b8c5", size = 315286, upload-time = "2026-02-17T10:08:43.345Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/1f/d56e67d7dc7a33c8a70ff7ded10fa700987eec46a08584c83a85637153da/pycfmodel-1.2.0-py3-none-any.whl", hash = "sha256:efd915ca2e39becf5dbbfc405616664e66c8da47d9c8f0d57d981bedb5b91122", size = 160299, upload-time = "2025-12-22T10:45:59.263Z" },
+    { url = "https://files.pythonhosted.org/packages/94/cc/01242194dd6dd8a6af2fe1aca25cc2e4682cf5049cb3655c49669c38b84f/pycfmodel-2.0.1-py3-none-any.whl", hash = "sha256:df2e3ec013ab8b763bb4ad8a5ada32bfe2e0ceb2b34bfc2b81a9b633ed3821be", size = 186379, upload-time = "2026-02-17T10:08:41.754Z" },
 ]
 
 [[package]]
