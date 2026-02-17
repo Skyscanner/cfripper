@@ -8,13 +8,12 @@ AccessControl attribute unless the template explicitly sets one. Accessing
 resource.Properties.AccessControl directly raises AttributeError.
 """
 
-import pytest
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.generic import Generic
 from pycfmodel.model.resources.generic_resource import GenericResource
-from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy, S3BucketPolicyProperties
 from pycfmodel.model.resources.properties.policy_document import PolicyDocument
 from pycfmodel.model.resources.properties.statement import Statement
+from pycfmodel.model.resources.s3_bucket_policy import S3BucketPolicy, S3BucketPolicyProperties
 
 from cfripper.config.config import Config
 from cfripper.rules.s3_public_access import (

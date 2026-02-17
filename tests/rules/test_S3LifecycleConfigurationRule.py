@@ -22,9 +22,7 @@ def bad_template_no_configuration():
 def test_no_failures_are_raised(template_path):
     rule = S3LifecycleConfigurationRule(None)
     result = rule.invoke(
-        get_cfmodel_from(template_path).resolve(
-            extra_params={"LogsExpirationInDays": 30, "ModelsExpirationInDays": 90}
-        )
+        get_cfmodel_from(template_path).resolve(extra_params={"LogsExpirationInDays": 30, "ModelsExpirationInDays": 90})
     )
 
     assert result.valid
