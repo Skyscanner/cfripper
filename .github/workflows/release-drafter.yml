@@ -6,12 +6,12 @@ on:
     branches:
       - master
   # pull_request event is required only for autolabeler
-  pull_request:
+  #pull_request:
     # Only following types are handled by the action, but one can default to all as well
-    types: [opened, reopened, synchronize]
+    # types: [opened, reopened, synchronize]
   # pull_request_target event is required for autolabeler to support PRs from forks
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
-    types: [opened, reopened, synchronize]
+  #pull_request_target: # zizmor: ignore[dangerous-triggers]
+    # types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
       contents: write
       # write permission is required for autolabeler
       # otherwise, read permission is required at least
-      pull-requests: write
+      pull-requests: read
     runs-on: ubuntu-24.04-2cores-tools-public
     steps:
       # Drafts your next Release notes as Pull Requests are merged into "master"
