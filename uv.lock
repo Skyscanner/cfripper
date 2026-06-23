@@ -272,7 +272,7 @@ dev = [
 ]
 docs = [
     { name = "mkdocs", specifier = "==1.6.1" },
-    { name = "mkdocs-macros-plugin", specifier = "==1.4.0" },
+    { name = "mkdocs-macros-plugin", specifier = "==1.5.0" },
     { name = "mkdocs-material", specifier = "==8.2.8" },
     { name = "mkdocs-material-extensions", specifier = "==1.0.3" },
     { name = "mkdocs-minify-plugin", specifier = "==0.8.0" },
@@ -1059,7 +1059,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-macros-plugin"
-version = "1.4.0"
+version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "hjson" },
@@ -1069,12 +1069,13 @@ dependencies = [
     { name = "pathspec" },
     { name = "python-dateutil" },
     { name = "pyyaml" },
+    { name = "requests" },
     { name = "super-collections" },
     { name = "termcolor" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/8a/1be9f663fff066d68598762e91a9a9e9e4ff901ef1a49fea506847b3b1f5/mkdocs_macros_plugin-1.4.0.tar.gz", hash = "sha256:687e710988736731d1a059633fc34cf66d21e57a07801bdd1991419199e0677c", size = 34758, upload-time = "2025-09-22T14:18:07.258Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/15/e6a44839841ebc9c5872fa0e6fad1c3757424e4fe026093b68e9f386d136/mkdocs_macros_plugin-1.5.0.tar.gz", hash = "sha256:12aa45ce7ecb7a445c66b9f649f3dd05e9b92e8af6bc65e4acd91d26f878c01f", size = 37730, upload-time = "2025-11-13T08:08:55.545Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/88/d20e962f7fddf46094e0e9365bf8167a82a32e3086851b32ef25978ac6cf/mkdocs_macros_plugin-1.4.0-py3-none-any.whl", hash = "sha256:630de99fe14d39c26c7915725b39bb7730058c622f547226432eb371cabff33c", size = 39593, upload-time = "2025-09-22T14:18:06.058Z" },
+    { url = "https://files.pythonhosted.org/packages/51/62/9fffba5bb9ed3d31a932ad35038ba9483d59850256ee0fea7f1187173983/mkdocs_macros_plugin-1.5.0-py3-none-any.whl", hash = "sha256:c10fabd812bf50f9170609d0ed518e54f1f0e12c334ac29141723a83c881dd6f", size = 44626, upload-time = "2025-11-13T08:08:53.878Z" },
 ]
 
 [[package]]
