@@ -1,3 +1,11 @@
+Parameters:
+  LogsExpirationInDays:
+    Type: Number
+    Default: 30
+  ModelsExpirationInDays:
+    Type: Number
+    Default: 90
+
 Resources:
   OutputBucket:
     Type: AWS::S3::Bucket
