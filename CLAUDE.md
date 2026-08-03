@@ -7,7 +7,7 @@ CFRipper is a library and CLI security analyzer for AWS CloudFormation templates
 - `make install-dev` - Install development dependencies
 - `make install-docs` - Install docs dependencies
 - `make test` - Run lint + unit tests
-- `make unit` - Run unit tests only (`uv run --frozen pytest -svvv tests`)
+- `make unit` - Run unit tests only (`uv run --locked pytest -svvv tests`)
 - `make lint` - Run ruff linter
 - `make format` - Format code with ruff
 - `make coverage` - Run tests with coverage
@@ -23,7 +23,7 @@ CFRipper is a library and CLI security analyzer for AWS CloudFormation templates
 - `docs/` - MkDocs documentation source
 - `pyproject.toml` - Project metadata and dependencies
 - `uv.lock` - Locked dependencies (managed by uv)
-- `Makefile` - All dev commands use `uv run --frozen`
+- `Makefile` - All dev commands use `uv run --locked`
 
 ## Dependencies
 
