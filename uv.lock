@@ -94,16 +94,16 @@ wheels = [
 
 [[package]]
 name = "boto3"
-version = "1.43.67"
+version = "1.43.72"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "botocore" },
     { name = "jmespath" },
     { name = "s3transfer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ad/bf/ef5de9b55523bc2141d072fbe6614627088e3e6f97b47850216e99de6a1c/boto3-1.43.67.tar.gz", hash = "sha256:75fe983b70d39cfdc274dc51f9bb02b8a0a104bdad4fa073c1af85a35e707c91", size = 112665, upload-time = "2026-08-07T19:30:20.418Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/96/cc/f22093524c3b38e94ba2d0e6743d7e264f7190d149c8dceaf9603822c595/boto3-1.43.72.tar.gz", hash = "sha256:6280ce03cc85e9110fd9fb7e2fbf11eae0b1177cb041a0d69aa88edc9d178cf9", size = 112688, upload-time = "2026-08-14T19:24:53.29Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/0f/b41f8968452dc6bf3b83f15f5e9f76a27fd93e246906aeb2e0555f494375/boto3-1.43.67-py3-none-any.whl", hash = "sha256:082cf9df068168cb44028a1703822374c1eb7e48fa49470d7e8a76f0c977d0bc", size = 140025, upload-time = "2026-08-07T19:30:18.49Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/b7/fa7b827ce0fc9bd697381e40f59d69a74c6ab553e246271685ec0acc75b2/boto3-1.43.72-py3-none-any.whl", hash = "sha256:f1bbbad5ed8d8a8c64edb0cd092dc443c95a85623b2ac88b6f6d633717605f00", size = 140025, upload-time = "2026-08-14T19:24:52.013Z" },
 ]
 
 [[package]]
@@ -1370,14 +1370,14 @@ wheels = [
 
 [[package]]
 name = "pycfmodel"
-version = "2.1.1"
+version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/da/18/09339f32224d2bf0d68638bfee7abb033f944173adf4f0e5350200cf721c/pycfmodel-2.1.1.tar.gz", hash = "sha256:95535d05c6fc0c89a05c610802ea1f7d95c66b07236d2fa7118ba5ad2964f642", size = 303676, upload-time = "2026-06-23T07:34:09.834Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/db/58f46626c8c33da9115dd3263e6cbea7edc66806671203d610bb6827ff09/pycfmodel-2.1.2.tar.gz", hash = "sha256:437b535efea69eae77be59b369ebad19214afd808bf1ddf95387456096dcd019", size = 306176, upload-time = "2026-08-11T14:15:32.542Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/22/f626f4bbecc7b8f9c9ea46aeb6ddea05bdd2a9e39542b6dffda2171116d6/pycfmodel-2.1.1-py3-none-any.whl", hash = "sha256:5340cdbc31c871fa2b0d17910b9df9b25a8a255e40d05d8aacd2ea567f8a3ef5", size = 193084, upload-time = "2026-06-23T07:34:08.311Z" },
+    { url = "https://files.pythonhosted.org/packages/54/76/4087eb491ed966b5b42da9c8bcde27419ebb6ccb5e3fcc6c190a9a9192b2/pycfmodel-2.1.2-py3-none-any.whl", hash = "sha256:b2455e7ddb6c0b97178d0051630fd014733468e7250ba19cbafc65ca42d7c45d", size = 193960, upload-time = "2026-08-11T14:15:31.142Z" },
 ]
 
 [[package]]
