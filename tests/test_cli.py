@@ -121,12 +121,19 @@ def test_format_result_junit_is_well_formed_xml():
     assert root.attrib["errors"] == "0"
 
     cases = root.findall("testcase")
-    assert [c.attrib["name"] for c in cases] == ["PolicyOnUserRule", "PrivilegeEscalationRule"]
+    # `Result.failures` has no documented ordering, so compare order-independently:
+    # asserting on a list here would fail if the implementation ever changed the
+    # order it iterates failures in.
+    assert sorted(c.attrib["name"] for c in cases) == ["PolicyOnUserRule", "PrivilegeEscalationRule"]
     # Each case carries a <failure> child, which is what a reporter counts.
     assert all(c.find("failure") is not None for c in cases)
-    assert cases[0].find("failure").attrib["type"] == "MEDIUM"
+    by_name = {c.attrib["name"]: c for c in cases}
+    direct_policy = by_name["PolicyOnUserRule"].find("failure")
+    assert direct_policy is not None
+    assert direct_policy.attrib["type"] == "MEDIUM"
     # The full detail lives in the element text, not only in the message.
-    assert "resource_ids: DirectPolicy" in cases[0].find("failure").text
+    assert direct_policy.text is not None
+    assert "resource_ids: DirectPolicy" in direct_policy.text
 
 
 def test_format_result_junit_escapes_reasons_and_resource_ids():
@@ -149,8 +156,10 @@ def test_format_result_junit_escapes_reasons_and_resource_ids():
     root = ET.fromstring(xml)  # raises if the escaping is wrong
 
     assert len(root.findall("testcase")) == 1
-    # No injected element from the reason text.
-    assert root.findall("injected") == []
+    # No injected element from the reason text, anywhere in the tree: a bare
+    # `findall("injected")` would only look at direct children of the suite and
+    # miss a node injected under a <testcase>.
+    assert root.findall(".//injected") == []
     text = root.find("testcase").find("failure").text
     assert "<not escaped>" in text
     assert "<weird & id>" in text

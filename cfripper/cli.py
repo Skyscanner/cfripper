@@ -105,14 +105,16 @@ def _build_junit_failure_message(failure) -> str:  # noqa: ANN001
 def format_result_junit(result: Result, template_name: str = _JUNIT_TESTSUITE_NAME) -> str:
     """Render the result as a JUnit XML document.
 
-    The mapping is one test case per *rule that was checked*, which is what a CI
-    reporter expects: a failing case is a violation, and the pass/fail counts add
-    up to the rules that ran. Only rules that produced a failure are reported
-    individually — the result does not carry the list of rules that passed, so
-    the suite's counts are derived from the failures it does have rather than
-    invented. `errors` counts the exceptions the scan raised, which is why they
-    are emitted as `<error>` elements: they are the scan failing to complete, not
-    a template violating a rule.
+    The mapping is one test case per *failure*, plus one per exception:
+
+    * a rule violation is a failing case carrying a `<failure>` child;
+    * an exception is the scan failing to complete rather than a template
+      violating a rule, so it becomes a `<testcase>` with an `<error>` child;
+    * rules that passed are not represented as cases, because `Result` does not
+      carry the list of rules that ran without producing a failure. The suite's
+      counts are therefore derived from the failures and exceptions it does
+      have rather than invented, and a template that passes every rule yields a
+      suite with zero cases, which JUnit readers accept as "nothing to report".
     """
     suite = ET.Element("testsuite", {"name": template_name})
 
