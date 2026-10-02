@@ -12,10 +12,11 @@ import pycfmodel
 from pycfmodel.model.cf_model import CFModel
 
 from cfripper.config.config import Config
+from cfripper.config.constants import JUNIT_TESTSUITE_NAME
 from cfripper.config.pluggy.utils import get_all_rules
 from cfripper.exceptions import FileEmptyException
 from cfripper.model.enums import RuleMode
-from cfripper.model.result import Result
+from cfripper.model.result import Failure, Result
 from cfripper.model.utils import convert_json_or_yaml_to_dict
 from cfripper.rule_processor import RuleProcessor
 
@@ -85,10 +86,7 @@ def format_result_txt(result: Result) -> str:
 # tree is built with `ET.SubElement` rather than by string formatting: hand-rolled
 # XML would produce either invalid output or an injection point in a report that
 # CI tooling parses.
-_JUNIT_TESTSUITE_NAME = "cfripper"
-
-
-def _build_junit_failure_message(failure) -> str:  # noqa: ANN001
+def _build_junit_failure_message(failure: Failure) -> str:
     """Render one failure as the `<failure>` element's message, one fact per line."""
     lines = [failure.reason, f"rule: {failure.rule}", f"rule_mode: {failure.rule_mode.value}"]
     if failure.risk_value:
@@ -102,7 +100,7 @@ def _build_junit_failure_message(failure) -> str:  # noqa: ANN001
     return "\n".join(lines)
 
 
-def format_result_junit(result: Result, template_name: str = _JUNIT_TESTSUITE_NAME) -> str:
+def format_result_junit(result: Result, template_name: str = JUNIT_TESTSUITE_NAME) -> str:
     """Render the result as a JUnit XML document.
 
     The mapping is one test case per *failure*, plus one per exception:
@@ -142,7 +140,7 @@ def format_result_junit(result: Result, template_name: str = _JUNIT_TESTSUITE_NA
     return ET.tostring(suite, encoding="unicode")
 
 
-def format_result(result: Result, output_format: str, template_name: str = _JUNIT_TESTSUITE_NAME) -> str:
+def format_result(result: Result, output_format: str, template_name: str = JUNIT_TESTSUITE_NAME) -> str:
     if output_format == "json":
         return format_result_json(result)
     elif output_format == "junit":

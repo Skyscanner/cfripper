@@ -86,8 +86,9 @@ def test_aws_principles_cli_option(patched_process_template: MagicMock):
 # --- JUnitXML output (#186) --------------------------------------------------
 
 
-def _result_with_failures():
-    """Build a Result carrying one blocking failure and one monitored failure."""
+@pytest.fixture
+def result_with_failures() -> Result:
+    """A Result carrying one blocking failure and one monitored failure."""
 
     result = Result()
     result.add_failure(
@@ -110,25 +111,27 @@ def _result_with_failures():
     return result
 
 
-def test_format_result_junit_is_well_formed_xml():
-    xml = format_result_junit(_result_with_failures(), template_name="template.yaml")
+def test_format_result_junit_is_well_formed_xml(result_with_failures: Result):
+    # Given a result carrying one blocking and one monitored failure.
+    # When it is rendered as JUnit and re-parsed.
+    xml = format_result_junit(result_with_failures, template_name="template.yaml")
     root = ET.fromstring(xml)
+    cases = root.findall("testcase")
+    # `Result.failures` has no documented ordering, so the names are collected
+    # order-independently: asserting on the iteration order would be fragile.
+    case_names = sorted(case.attrib["name"] for case in cases)
+    failure_nodes = [case.find("failure") for case in cases]
+    direct_policy = {case.attrib["name"]: case for case in cases}["PolicyOnUserRule"].find("failure")
 
+    # Then the suite describes both failures.
     assert root.tag == "testsuite"
     assert root.attrib["name"] == "template.yaml"
     assert root.attrib["tests"] == "2"
     assert root.attrib["failures"] == "2"
     assert root.attrib["errors"] == "0"
-
-    cases = root.findall("testcase")
-    # `Result.failures` has no documented ordering, so compare order-independently:
-    # asserting on a list here would fail if the implementation ever changed the
-    # order it iterates failures in.
-    assert sorted(c.attrib["name"] for c in cases) == ["PolicyOnUserRule", "PrivilegeEscalationRule"]
+    assert case_names == ["PolicyOnUserRule", "PrivilegeEscalationRule"]
     # Each case carries a <failure> child, which is what a reporter counts.
-    assert all(c.find("failure") is not None for c in cases)
-    by_name = {c.attrib["name"]: c for c in cases}
-    direct_policy = by_name["PolicyOnUserRule"].find("failure")
+    assert all(node is not None for node in failure_nodes)
     assert direct_policy is not None
     assert direct_policy.attrib["type"] == "MEDIUM"
     # The full detail lives in the element text, not only in the message.
@@ -142,6 +145,8 @@ def test_format_result_junit_escapes_reasons_and_resource_ids():
     The report is parsed by CI tooling; a reason containing `<` or `&` must be
     escaped rather than producing invalid XML or injecting a node.
     """
+    # Given a failure whose reason and resource id both carry XML
+    # metacharacters and a closing tag.
     result = Result()
     result.add_failure(
         rule="SomeRule",
@@ -152,54 +157,73 @@ def test_format_result_junit_escapes_reasons_and_resource_ids():
         resource_ids={"<weird & id>"},
     )
 
-    xml = format_result_junit(result)
-    root = ET.fromstring(xml)  # raises if the escaping is wrong
-
-    assert len(root.findall("testcase")) == 1
-    # No injected element from the reason text, anywhere in the tree: a bare
-    # `findall("injected")` would only look at direct children of the suite and
-    # miss a node injected under a <testcase>.
-    assert root.findall(".//injected") == []
+    # When it is rendered and re-parsed (which raises if the escaping is wrong).
+    root = ET.fromstring(format_result_junit(result))
+    cases = root.findall("testcase")
+    injected = root.findall(".//injected")
     text = root.find("testcase").find("failure").text
+
+    # Then the metacharacters survive as text and no node was injected.
+    # The search covers the whole tree: a bare `findall("injected")` would only
+    # look at direct children of the suite and miss one nested under a <testcase>.
+    assert len(cases) == 1
+    assert injected == []
+    assert text is not None
     assert "<not escaped>" in text
     assert "<weird & id>" in text
 
 
 def test_format_result_junit_reports_a_clean_template_as_zero_cases():
+    # Given a result with no failures and no exceptions.
+    # When it is rendered as JUnit and re-parsed.
     root = ET.fromstring(format_result_junit(Result()))
+    cases = root.findall("testcase")
 
+    # Then the suite reports nothing to run.
     assert root.attrib["tests"] == "0"
     assert root.attrib["failures"] == "0"
-    assert root.findall("testcase") == []
+    assert cases == []
 
 
 def test_format_result_junit_reports_exceptions_as_errors():
     """An exception is the scan failing, not a rule violation — hence <error>."""
+    # Given a result carrying one exception.
     result = Result()
     result.add_exception(ValueError("could not parse template"))
 
+    # When it is rendered as JUnit and re-parsed.
     root = ET.fromstring(format_result_junit(result))
+    error = root.find("testcase").find("error")
 
+    # Then the exception is reported as an error rather than a failure.
     assert root.attrib["errors"] == "1"
     assert root.attrib["failures"] == "0"
-    assert root.find("testcase").find("error").attrib["type"] == "ValueError"
+    assert error is not None
+    assert error.attrib["type"] == "ValueError"
 
 
-def test_format_result_dispatches_junit():
-    xml = format_result(_result_with_failures(), "junit", template_name="t.yaml")
+def test_format_result_dispatches_junit(result_with_failures: Result):
+    # Given a result and the name of the JUnit format.
+    # When the dispatcher renders it.
+    xml = format_result(result_with_failures, "junit", template_name="t.yaml")
+
+    # Then the JUnit renderer produced a suite named after the template.
     assert xml.startswith("<testsuite")
     assert 'name="t.yaml"' in xml
 
 
-def test_cli_accepts_junit_format_and_names_the_suite_after_the_template(tmp_path):
+def test_cli_accepts_junit_format_and_names_the_suite_after_the_template():
     """The option reaches the formatter with the template name, through the CLI."""
+    # Given the CLI invoked on a template with --format junit.
     template = FIXTURE_ROOT_PATH / "others" / "iam_policy_on_user.json"
     runner = CliRunner()
     with patch("cfripper.cli.process_template") as patched:
         patched.return_value = True
         result = runner.invoke(undertest.cli, [str(template), "--format", "junit"])
+    output_format = patched.call_args[1]["output_format"]
 
-    assert result.exit_code == 0, result.output
+    # Then the option reached the formatter as "junit".
     # The formatter is called with the template's file name, not its full path,
     # so a report from several templates stays readable.
-    assert patched.call_args[1]["output_format"] == "junit"
+    assert result.exit_code == 0, result.output
+    assert output_format == "junit"
