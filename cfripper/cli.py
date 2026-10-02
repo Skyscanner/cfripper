@@ -5,6 +5,7 @@ from importlib.metadata import version
 from io import TextIOWrapper
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from xml.etree import ElementTree as ET
 
 import click
 import pycfmodel
@@ -78,9 +79,72 @@ def format_result_txt(result: Result) -> str:
     return "\n".join(result_lines)
 
 
-def format_result(result: Result, output_format: str) -> str:
+# Rule reasons embed resource ids, actions and, for some rules, fragments of the
+# template itself, so they routinely contain `<`, `&` and other XML metacharacters.
+# ElementTree escapes text and attribute values on serialisation, which is why the
+# tree is built with `ET.SubElement` rather than by string formatting: hand-rolled
+# XML would produce either invalid output or an injection point in a report that
+# CI tooling parses.
+_JUNIT_TESTSUITE_NAME = "cfripper"
+
+
+def _build_junit_failure_message(failure) -> str:  # noqa: ANN001
+    """Render one failure as the `<failure>` element's message, one fact per line."""
+    lines = [failure.reason, f"rule: {failure.rule}", f"rule_mode: {failure.rule_mode.value}"]
+    if failure.risk_value:
+        lines.append(f"risk_value: {failure.risk_value.value}")
+    if failure.resource_ids:
+        lines.append(f"resource_ids: {', '.join(sorted(str(r) for r in failure.resource_ids))}")
+    if failure.resource_types:
+        lines.append(f"resource_types: {', '.join(sorted(str(r) for r in failure.resource_types))}")
+    if failure.actions:
+        lines.append(f"actions: {', '.join(sorted(str(a) for a in failure.actions))}")
+    return "\n".join(lines)
+
+
+def format_result_junit(result: Result, template_name: str = _JUNIT_TESTSUITE_NAME) -> str:
+    """Render the result as a JUnit XML document.
+
+    The mapping is one test case per *rule that was checked*, which is what a CI
+    reporter expects: a failing case is a violation, and the pass/fail counts add
+    up to the rules that ran. Only rules that produced a failure are reported
+    individually — the result does not carry the list of rules that passed, so
+    the suite's counts are derived from the failures it does have rather than
+    invented. `errors` counts the exceptions the scan raised, which is why they
+    are emitted as `<error>` elements: they are the scan failing to complete, not
+    a template violating a rule.
+    """
+    suite = ET.Element("testsuite", {"name": template_name})
+
+    # `exceptions` and `failures` are the only signals the Result carries, so the
+    # counts are their lengths. A template that passes every rule yields a suite
+    # with zero cases, which JUnit readers accept as "nothing to report".
+    suite.set("tests", str(len(result.failures) + len(result.exceptions)))
+    suite.set("failures", str(len(result.failures)))
+    suite.set("errors", str(len(result.exceptions)))
+    suite.set("skipped", "0")
+
+    for exception in result.exceptions:
+        case = ET.SubElement(suite, "testcase", {"name": f"exception: {type(exception).__name__}"})
+        error = ET.SubElement(case, "error", {"message": str(exception)})
+        error.set("type", type(exception).__name__)
+
+    for failure in result.failures:
+        case = ET.SubElement(suite, "testcase", {"name": failure.rule})
+        node = ET.SubElement(case, "failure", {"message": failure.reason})
+        node.set("type", failure.risk_value.value if failure.risk_value else failure.rule_mode.value)
+        # The element's text carries the full detail; `message` is kept short
+        # because CI UIs render it inline and truncate.
+        node.text = _build_junit_failure_message(failure)
+
+    return ET.tostring(suite, encoding="unicode")
+
+
+def format_result(result: Result, output_format: str, template_name: str = _JUNIT_TESTSUITE_NAME) -> str:
     if output_format == "json":
         return format_result_json(result)
+    elif output_format == "junit":
+        return format_result_junit(result, template_name=template_name)
     else:
         return format_result_txt(result)
 
@@ -122,7 +186,9 @@ def process_template(
 
     result = analyse_template(cfmodel, rule_processor, config)
 
-    formatted_result = format_result(result, output_format)
+    # The JUnit suite is named after the template so a multi-template run
+    # produces distinguishable suites in one report.
+    formatted_result = format_result(result, output_format, template_name=Path(template.name).name)
 
     output_handling(template.name, formatted_result, output_format, output_folder)
 
@@ -165,7 +231,7 @@ def validate_aws_principals(ctx: click.Context, param: str, value: str) -> Optio
 @click.option(
     "--format",
     "output_format",
-    type=click.Choice(["json", "txt"], case_sensitive=False),
+    type=click.Choice(["json", "txt", "junit"], case_sensitive=False),
     default="txt",
     help="Output format",
     show_default=True,
