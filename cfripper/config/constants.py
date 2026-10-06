@@ -91,3 +91,6 @@ AWS_ELASTICACHE_BACKUP_CANONICAL_IDS = [
 
 MIN_PORT_NUMBER = 0
 MAX_PORT_NUMBER = 65535
+
+# Name given to the JUnit `<testsuite>` when the CLI renders `--format junit`.
+JUNIT_TESTSUITE_NAME = "cfripper"
