@@ -15,15 +15,16 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup UV
-        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
         with:
           python-version: '3.10'
           enable-cache: false
+          version: latest-known
 
       - name: Build package
         run: make build
@@ -36,7 +37,7 @@ jobs:
 
       - name: Publish distribution 📦 to PyPI
         # zizmor: ignore[use-trusted-publishing] https://github.com/pypi/warehouse/issues/17700
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # v1.14.2
         with:
           user: __token__
           password: ${{ secrets.pypi_publish_token }}
