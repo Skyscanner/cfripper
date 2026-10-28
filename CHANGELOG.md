@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Fixes
+- Fix `EC2SecurityGroupMissingEgressRule` false positive when egress is a standalone `AWS::EC2::SecurityGroupEgress` resource (#140)
+
 ## [1.19.0]
 ### Additions
 - Add support for python 3.14
