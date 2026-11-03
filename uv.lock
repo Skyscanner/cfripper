@@ -1367,14 +1367,14 @@ wheels = [
 
 [[package]]
 name = "pycfmodel"
-version = "2.1.2"
+version = "2.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/db/58f46626c8c33da9115dd3263e6cbea7edc66806671203d610bb6827ff09/pycfmodel-2.1.2.tar.gz", hash = "sha256:437b535efea69eae77be59b369ebad19214afd808bf1ddf95387456096dcd019", size = 306176, upload-time = "2026-08-11T14:15:32.542Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/fd/ffe084171d58fa3e2f077cdf2a52402a7d7bb54c0ae4ea8be7b6f3b13faf/pycfmodel-2.1.3.tar.gz", hash = "sha256:f73817033b6b7ce8d0ce29d9c1dd2cea0130836348818fe353c21cf986f8273c", size = 308343, upload-time = "2026-09-29T10:03:16.465Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/76/4087eb491ed966b5b42da9c8bcde27419ebb6ccb5e3fcc6c190a9a9192b2/pycfmodel-2.1.2-py3-none-any.whl", hash = "sha256:b2455e7ddb6c0b97178d0051630fd014733468e7250ba19cbafc65ca42d7c45d", size = 193960, upload-time = "2026-08-11T14:15:31.142Z" },
+    { url = "https://files.pythonhosted.org/packages/74/a9/c4ba25613d04844a75f75a3a2310c6dc26b7495405f6dcf5e08027287b75/pycfmodel-2.1.3-py3-none-any.whl", hash = "sha256:6a2fa348b6ef3fb201c0218734f962bcc54c6b0ea82d150243c6f4037bcd1540", size = 196243, upload-time = "2026-09-29T10:03:15.136Z" },
 ]
 
 [[package]]
