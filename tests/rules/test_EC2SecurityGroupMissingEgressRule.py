@@ -52,6 +52,88 @@ def test_security_group_with_egress(security_group_with_egress):
     assert compare_lists_of_failures(result.failures, [])
 
 
+def _missing_egress_failure(logical_id: str) -> Failure:
+    return Failure(
+        granularity=RuleGranularity.RESOURCE,
+        reason=(
+            f"Missing egress rule in {logical_id} means all traffic is allowed outbound. Make this explicit if it is "
+            "desired configuration"
+        ),
+        risk_value=RuleRisk.MEDIUM,
+        rule="EC2SecurityGroupMissingEgressRule",
+        rule_mode=RuleMode.BLOCKING,
+        actions=None,
+        resource_ids={logical_id},
+        resource_types={"AWS::EC2::SecurityGroup"},
+    )
+
+
+def test_standalone_egress_getatt_is_not_a_false_positive():
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    # Leave Fn::GetAtt unresolved. resolve() replaces every GetAtt with the placeholder "GETATT".
+    cfmodel = get_cfmodel_from(
+        "rules/EC2SecurityGroupMissingEgressRule/security_group_with_standalone_egress_getatt.json"
+    )
+    result = rule.invoke(cfmodel)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
+def test_standalone_egress_dotted_getatt_is_not_a_false_positive():
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    cfmodel = get_cfmodel_from(
+        "rules/EC2SecurityGroupMissingEgressRule/security_group_with_standalone_egress_getatt_dotted.json"
+    )
+    result = rule.invoke(cfmodel)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
+def test_resolved_getatt_does_not_count_as_egress():
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    cfmodel = get_cfmodel_from(
+        "rules/EC2SecurityGroupMissingEgressRule/security_group_with_standalone_egress_getatt.json"
+    ).resolve()
+    result = rule.invoke(cfmodel)
+
+    assert not result.valid
+    assert compare_lists_of_failures(result.failures, [_missing_egress_failure("EC2SG")])
+
+
+@pytest.mark.parametrize("resolve", [False, True])
+def test_standalone_egress_ref_is_not_a_false_positive(resolve):
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    cfmodel = get_cfmodel_from("rules/EC2SecurityGroupMissingEgressRule/security_group_with_standalone_egress_ref.json")
+    if resolve:
+        cfmodel = cfmodel.resolve()
+    result = rule.invoke(cfmodel)
+
+    assert result.valid
+    assert compare_lists_of_failures(result.failures, [])
+
+
+def test_only_the_security_group_without_standalone_egress_fails():
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    cfmodel = get_cfmodel_from("rules/EC2SecurityGroupMissingEgressRule/two_security_groups_one_standalone_egress.json")
+    result = rule.invoke(cfmodel)
+
+    assert not result.valid
+    assert compare_lists_of_failures(result.failures, [_missing_egress_failure("OtherSG")])
+
+
+def test_physical_group_id_does_not_clear_missing_egress():
+    rule = EC2SecurityGroupMissingEgressRule(None)
+    cfmodel = get_cfmodel_from(
+        "rules/EC2SecurityGroupMissingEgressRule/security_group_with_unrelated_physical_egress.json"
+    ).resolve()
+    result = rule.invoke(cfmodel)
+
+    assert not result.valid
+    assert compare_lists_of_failures(result.failures, [_missing_egress_failure("sg")])
+
+
 def test_filter_do_not_report_anything(single_security_group_one_cidr_ingress):
     mock_config = Config(
         rules=["EC2SecurityGroupMissingEgressRule"],
