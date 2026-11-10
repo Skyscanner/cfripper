@@ -190,7 +190,7 @@ def process_template(
     # produces distinguishable suites in one report.
     formatted_result = format_result(result, output_format, template_name=Path(template.name).name)
 
-    output_handling(template.name, formatted_result, output_format, output_folder)
+    output_handling(Path(template.name).name, formatted_result, output_format, output_folder)
 
     return result.valid
 
