@@ -227,3 +227,39 @@ def test_cli_accepts_junit_format_and_names_the_suite_after_the_template():
     # so a report from several templates stays readable.
     assert result.exit_code == 0, result.output
     assert output_format == "junit"
+
+def test_process_template_saves_report_inside_output_folder(tmp_path):
+    """The report belongs in --output-folder even for absolute template paths.
+
+    ``Path(folder) / absolute`` discards the folder, so passing the full
+    template path through wrote the report next to the template instead of
+    into the requested folder.
+    """
+    from types import SimpleNamespace
+
+    from cfripper.model.result import Result
+
+    output_folder = tmp_path / "reports"
+    output_folder.mkdir()
+    template = SimpleNamespace(name=str(tmp_path / "elsewhere" / "template.yaml"))
+
+    with (
+        patch("cfripper.cli.get_cfmodel"),
+        patch("cfripper.cli.init_cfripper", return_value=(MagicMock(), MagicMock())),
+        patch("cfripper.cli.analyse_template", return_value=Result()),
+    ):
+        valid = undertest.process_template(
+            template=template,
+            resolve=False,
+            resolve_parameters=None,
+            output_folder=str(output_folder),
+            output_format="txt",
+            rules_config_file=None,
+            rules_filters_folder=None,
+            aws_account_id=None,
+            aws_principals=None,
+        )
+
+    assert valid is True
+    saved = output_folder / "template.yaml.cfripper.results.txt"
+    assert saved.read_text().startswith("Valid: True")
