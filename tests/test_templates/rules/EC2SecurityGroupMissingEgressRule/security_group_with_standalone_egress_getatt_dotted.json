@@ -1,0 +1,21 @@
+{
+  "Resources": {
+    "EC2SG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "some_group_desc",
+        "VpcId": "vpc-9f8e9dfa"
+      }
+    },
+    "EC2SGEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Fn::GetAtt": "EC2SG.GroupId"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "127.0.0.1/32"
+      }
+    }
+  }
+}
