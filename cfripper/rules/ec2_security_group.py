@@ -7,11 +7,12 @@ __all__ = [
 from abc import ABC
 from itertools import groupby
 from operator import itemgetter
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from pycfmodel.model.cf_model import CFModel
 from pycfmodel.model.resources.properties.security_group_ingress_prop import SecurityGroupIngressProp
 from pycfmodel.model.resources.security_group import SecurityGroup
+from pycfmodel.model.resources.security_group_egress import SecurityGroupEgress
 from pycfmodel.model.resources.security_group_ingress import SecurityGroupIngress, SecurityGroupIngressProperties
 
 from cfripper.config.constants import MAX_PORT_NUMBER, MIN_PORT_NUMBER
@@ -308,6 +309,30 @@ class EC2SecurityGroupMissingEgressRule(Rule):
         }
         ````
 
+        A standalone ``AWS::EC2::SecurityGroupEgress`` resource that references the security group
+        also satisfies the rule:
+
+        ````json
+        {
+            "Resources": {
+                "EC2SG": {
+                    "Type": "AWS::EC2::SecurityGroup",
+                    "Properties": {
+                        "GroupDescription": "some_group_desc"
+                    }
+                },
+                "EC2SGEgress": {
+                    "Type": "AWS::EC2::SecurityGroupEgress",
+                    "Properties": {
+                        "GroupId": {"Fn::GetAtt": ["EC2SG", "GroupId"]},
+                        "IpProtocol": "-1",
+                        "CidrIp": "127.0.0.1/32"
+                    }
+                }
+            }
+        }
+        ````
+
     Filters context:
         | Parameter   | Type            | Description                                                    |
         |:-----------:|:---------------:|:--------------------------------------------------------------:|
@@ -322,11 +347,18 @@ class EC2SecurityGroupMissingEgressRule(Rule):
         "Missing egress rule in {} means all traffic is allowed outbound. Make this explicit if it is desired "
         "configuration"
     )
+    # pycfmodel replaces an unresolved Ref to a resource with this prefix plus the logical ID.
+    _UNDEFINED_PARAM_PREFIX = "UNDEFINED_PARAM_"
 
     def invoke(self, cfmodel: CFModel, extras: Optional[Dict] = None) -> Result:
         result = Result()
+        groups_with_standalone_egress = self._security_groups_with_standalone_egress(cfmodel)
         for logical_id, resource in cfmodel.Resources.items():
-            if isinstance(resource, SecurityGroup) and not resource.Properties.SecurityGroupEgress:
+            if (
+                isinstance(resource, SecurityGroup)
+                and not resource.Properties.SecurityGroupEgress
+                and logical_id not in groups_with_standalone_egress
+            ):
                 self.add_failure_to_result(
                     result,
                     self.REASON.format(logical_id),
@@ -335,3 +367,54 @@ class EC2SecurityGroupMissingEgressRule(Rule):
                     context={"config": self._config, "extras": extras, "logical_id": logical_id, "resource": resource},
                 )
         return result
+
+    def _security_groups_with_standalone_egress(self, cfmodel: CFModel) -> Set[str]:
+        referenced_groups: Set[str] = set()
+        for resource in cfmodel.resources_filtered_by_type({SecurityGroupEgress}).values():
+            logical_id = self._logical_id_from_egress_group_id(resource.Properties.GroupId)
+            if logical_id:
+                referenced_groups.add(logical_id)
+        return referenced_groups
+
+    def _logical_id_from_egress_group_id(self, group_id: Any) -> Optional[str]:
+        """Return the security group logical ID referenced by an egress GroupId.
+
+        Physical IDs such as ``sg-12341234`` and pycfmodel's resolved ``Fn::GetAtt``
+        placeholder ``GETATT`` are ignored. Neither value identifies a security group
+        logical ID in this template.
+        """
+        if isinstance(group_id, str):
+            if not group_id.startswith(self._UNDEFINED_PARAM_PREFIX):
+                return None
+            logical_id = group_id[len(self._UNDEFINED_PARAM_PREFIX) :]
+            return logical_id or None
+
+        raw_group_id = self._raw_group_id(group_id)
+        if raw_group_id is None:
+            return None
+
+        ref = raw_group_id.get("Ref")
+        if isinstance(ref, str) and ref:
+            return ref
+
+        get_att = raw_group_id.get("Fn::GetAtt")
+        if isinstance(get_att, list) and get_att and isinstance(get_att[0], str) and get_att[0]:
+            return get_att[0]
+        if isinstance(get_att, str):
+            logical_id, separator, _attribute = get_att.partition(".")
+            if separator and logical_id:
+                return logical_id
+        return None
+
+    @staticmethod
+    def _raw_group_id(group_id: Any) -> Optional[Dict]:
+        if isinstance(group_id, dict):
+            return group_id
+        model_extra = getattr(group_id, "model_extra", None)
+        if isinstance(model_extra, dict) and model_extra:
+            return model_extra
+        if hasattr(group_id, "model_dump"):
+            dumped = group_id.model_dump()
+            if isinstance(dumped, dict) and dumped:
+                return dumped
+        return None
