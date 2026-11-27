@@ -24,7 +24,7 @@ def test_rule_passing():
     [
         ("rules/RDSInstancePubliclyAccessible/public_instance.yaml", "AWS::RDS::DBInstance"),
         ("rules/RDSInstancePubliclyAccessible/public_instance_string_value.yaml", "AWS::RDS::DBInstance"),
-        ("rules/RDSInstancePubliclyAccessible/public_cluster.yaml", "AWS::RDS::DBCluster"),
+        ("rules/RDSInstancePubliclyAccessible/public_instance_padded_string_value.yaml", "AWS::RDS::DBInstance"),
     ],
 )
 def test_failures_are_raised(template_path, resource_type):
@@ -37,7 +37,7 @@ def test_failures_are_raised(template_path, resource_type):
         [
             Failure(
                 granularity=RuleGranularity.RESOURCE,
-                reason="RDS resource PublicDatabase should not be publicly accessible, set PubliclyAccessible to false",
+                reason="RDS instance PublicDatabase should not be publicly accessible, set PubliclyAccessible to false",
                 risk_value=RuleRisk.HIGH,
                 rule="RDSInstancePubliclyAccessibleRule",
                 rule_mode=RuleMode.BLOCKING,

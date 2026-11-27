@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.20.0]
 ### Additions
-- Add `RDSInstancePubliclyAccessibleRule` to flag RDS instances and clusters with `PubliclyAccessible` set to true
+- Add `RDSInstancePubliclyAccessibleRule` to flag RDS instances with `PubliclyAccessible` set to true
 
 ## [1.19.0]
 ### Additions
