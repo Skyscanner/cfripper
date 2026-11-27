@@ -24,6 +24,7 @@ from cfripper.rules.managed_policy_on_user import ManagedPolicyOnUserRule
 from cfripper.rules.policy_on_user import PolicyOnUserRule
 from cfripper.rules.privilege_escalation import PrivilegeEscalationRule
 from cfripper.rules.public_elb_checker_rule import PublicELBCheckerRule
+from cfripper.rules.rds_publicly_accessible import RDSInstancePubliclyAccessibleRule
 from cfripper.rules.rds_security_group import RDSSecurityGroupIngressOpenToWorldRule
 from cfripper.rules.s3_bucket_policy import S3BucketPolicyPrincipalRule
 from cfripper.rules.s3_lifecycle_configuration import S3LifecycleConfigurationRule
@@ -82,6 +83,7 @@ DEFAULT_RULES = {
         PolicyOnUserRule,
         PrivilegeEscalationRule,
         PublicELBCheckerRule,
+        RDSInstancePubliclyAccessibleRule,
         RDSSecurityGroupIngressOpenToWorldRule,
         S3BucketPolicyPrincipalRule,
         S3LifecycleConfigurationRule,
